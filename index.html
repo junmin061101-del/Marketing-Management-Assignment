@@ -1,0 +1,876 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="교환학생·썸머스쿨 합격 후 출국까지 준비를 한 곳에서 챙기는 OneStep Abroad 앱 프로토타입">
+<meta name="theme-color" content="#14DBBA">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Crect width=%2724%27 height=%2724%27 rx=%276%27 fill=%27%2314DBBA%27/%3E%3Cpath d=%27M5 11.8 19 5l-5 14-2.5-5.7L5 11.8Z%27 fill=%27white%27/%3E%3C/svg%3E">
+<title>OneStep Abroad</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&family=Roboto:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: one phone-sized app frame on a quiet mint stage, with a screen index beside it on wide screens. */
+:root{
+  --mint:#14DBBA;          /* 김과외 brand mint */
+  --primary:#10BA9D;       /* buttons, filled states */
+  --primary-press:#0D9F86;
+  --primary-ink:#0A8A74;   /* mint text on white */
+  --primary-soft:#E6FBF7;
+  --primary-line:#B8F1E6;
+  --navy:#012743;          /* 김과외 deep navy */
+  --on-primary:#FFFFFF;
+  --ink:#111827;
+  --ink-2:#5F6B76;
+  --ink-3:#9AA4AD;
+  --line:#E7ECEE;
+  --bg:#FFFFFF;
+  --surface:#F4F7F7;
+  --stage:#E9F3F1;
+  --bezel:#0E1A20;
+  --warn:#B45309; --warn-soft:#FEF3E2;
+  --danger:#D93838; --danger-soft:#FDECEC;
+  --shadow:0 6px 24px rgba(1,39,67,.08);
+  --glow:0 18px 60px rgba(20,219,186,.45);
+  --font:'Roboto','Noto Sans KR',system-ui,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --primary:#14C7A8; --primary-press:#10B095; --primary-ink:#45E3C8; --primary-soft:#0F2C28; --primary-line:#1C4C44;
+  --navy:#BFE9FF; --on-primary:#04221D;
+  --ink:#EDF2F3; --ink-2:#A2ADB5; --ink-3:#6E7A83; --line:#25313A;
+  --bg:#0F161A; --surface:#172127; --stage:#070C0E; --bezel:#2A363D;
+  --warn:#F5B454; --warn-soft:#33260F; --danger:#FF7B7B; --danger-soft:#3A1A1A;
+  --shadow:0 6px 24px rgba(0,0,0,.35); --glow:0 18px 60px rgba(20,219,186,.28);
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --primary:#14C7A8; --primary-press:#10B095; --primary-ink:#45E3C8; --primary-soft:#0F2C28; --primary-line:#1C4C44;
+  --navy:#BFE9FF; --on-primary:#04221D;
+  --ink:#EDF2F3; --ink-2:#A2ADB5; --ink-3:#6E7A83; --line:#25313A;
+  --bg:#0F161A; --surface:#172127; --stage:#070C0E; --bezel:#2A363D;
+  --warn:#F5B454; --warn-soft:#33260F; --danger:#FF7B7B; --danger-soft:#3A1A1A;
+  --shadow:0 6px 24px rgba(0,0,0,.35); --glow:0 18px 60px rgba(20,219,186,.28);
+  color-scheme:dark}
+
+html,body{height:100%}
+body{margin:0;background:var(--stage);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.5;
+  display:flex;align-items:center;justify-content:center;gap:64px;padding:24px 16px;box-sizing:border-box;min-height:100%;-webkit-font-smoothing:antialiased}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none;padding:0}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:8px}
+h1,h2,h3{margin:0;text-wrap:balance;letter-spacing:-.02em}
+p{margin:0}
+.ic{flex:none;display:block}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- side index ---------- */
+.side{width:280px;display:flex;flex-direction:column;gap:20px}
+.side .brand{display:flex;align-items:center;gap:12px}
+.side .brand b{font-size:22px;font-weight:900;letter-spacing:-.03em}
+.side p.lead{color:var(--ink-2);font-size:14px}
+.side h4{margin:0;font-size:12px;letter-spacing:.08em;color:var(--ink-3);font-weight:700}
+.jump{display:flex;flex-direction:column;gap:4px}
+.jump button{display:flex;align-items:center;gap:10px;text-align:left;padding:9px 12px;border-radius:12px;color:var(--ink-2);font-size:14px;font-weight:500}
+.jump button span.n{width:22px;height:22px;border-radius:50%;background:var(--bg);display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--ink-3)}
+.jump button:hover{background:var(--bg);color:var(--ink)}
+.jump button.on{background:var(--bg);color:var(--ink);font-weight:700;box-shadow:var(--shadow)}
+.jump button.on span.n{background:var(--primary);color:var(--on-primary)}
+.side .note{font-size:12px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:14px}
+
+/* ---------- phone ---------- */
+.phone{position:relative;width:390px;height:min(844px,calc(100vh - 48px));min-height:640px;background:var(--bg);border:10px solid var(--bezel);border-radius:48px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(1,39,67,.18);flex:none}
+.status{height:44px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font-size:14px;font-weight:700}
+.status .sys{display:flex;gap:5px;align-items:center}
+#view{flex:1;min-height:0;display:flex;flex-direction:column;position:relative}
+.scroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
+.scroll::-webkit-scrollbar{display:none}
+.pad{padding:8px 20px 28px}
+.cta{flex:none;padding:12px 20px 20px;background:var(--bg)}
+.btn{width:100%;height:54px;border-radius:16px;background:var(--primary);color:var(--on-primary);font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 16px rgba(16,186,157,.28);transition:background .15s,transform .1s}
+.btn:hover{background:var(--primary-press)}
+.btn:active{transform:scale(.985)}
+.btn[disabled]{background:var(--line);color:var(--ink-3);box-shadow:none;cursor:not-allowed}
+.btn.ghost{background:var(--surface);color:var(--ink);box-shadow:none}
+.btn.sm{height:40px;border-radius:12px;font-size:14px;width:auto;padding:0 16px}
+
+/* top bar */
+.bar{flex:none;height:52px;display:flex;align-items:center;gap:8px;padding:0 12px 0 8px}
+.bar h2{font-size:17px;font-weight:700;flex:1}
+.iconbtn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--ink)}
+.iconbtn:hover{background:var(--surface)}
+.bar.main{padding:0 12px 0 20px}
+.bar.main h2{font-size:22px;font-weight:800}
+
+/* onboarding */
+.splash{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;text-align:center}
+.appicon{width:120px;height:120px;border-radius:32px;background:var(--mint);display:grid;place-items:center;color:#fff;box-shadow:var(--glow)}
+.appicon.sm{width:36px;height:36px;border-radius:11px;box-shadow:none}
+.splash h1{font-size:36px;font-weight:900;letter-spacing:-.04em;margin-top:6px}
+.splash p{color:var(--ink-2);font-size:16px;margin-top:6px}
+.ob-title{font-size:24px;font-weight:800;line-height:1.35;margin-top:4px}
+.ob-sub{color:var(--ink-2);font-size:14px;margin-top:8px}
+.steps{display:flex;gap:6px;margin:4px 0 22px}
+.steps i{height:4px;flex:1;border-radius:4px;background:var(--line)}
+.steps i.on{background:var(--primary)}
+.field{display:flex;flex-direction:column;gap:8px;margin-top:22px}
+.field label{font-size:13px;font-weight:700;color:var(--ink-2)}
+.input{height:54px;border-radius:14px;border:1px solid var(--line);background:var(--bg);padding:0 16px;font-size:16px;width:100%}
+.input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+select.input{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--ink-3) 50%),linear-gradient(135deg,var(--ink-3) 50%,transparent 50%);background-position:calc(100% - 22px) 24px,calc(100% - 16px) 24px;background-size:6px 6px;background-repeat:no-repeat}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{height:38px;padding:0 16px;border-radius:19px;border:1px solid var(--line);font-size:14px;font-weight:500;color:var(--ink-2);background:var(--bg);white-space:nowrap}
+.chip.on{background:var(--primary-soft);border-color:var(--primary);color:var(--primary-ink);font-weight:700}
+.chip.sm{height:32px;padding:0 12px;font-size:13px}
+.divider{display:flex;align-items:center;gap:12px;color:var(--ink-3);font-size:12px;margin:22px 0 14px}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line)}
+.social{display:flex;flex-direction:column;gap:10px}
+.social button{height:52px;border-radius:14px;border:1px solid var(--line);font-weight:500;font-size:15px}
+.social button:hover{background:var(--surface)}
+
+.seg{display:grid;grid-template-columns:repeat(3,1fr);background:var(--surface);border-radius:14px;padding:4px;gap:4px}
+.seg button{height:40px;border-radius:11px;font-weight:600;color:var(--ink-2);font-size:14px}
+.seg button.on{background:var(--bg);color:var(--ink);font-weight:700;box-shadow:0 1px 4px rgba(1,39,67,.1)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.uni{display:flex;align-items:center;gap:10px;padding:14px 12px;border:1px solid var(--line);border-radius:16px;text-align:left;min-width:0;background:var(--bg)}
+.uni.on{border-color:var(--primary);background:var(--primary-soft)}
+.mono{width:40px;height:40px;border-radius:12px;background:var(--surface);color:var(--navy);display:grid;place-items:center;font-weight:900;font-size:12px;letter-spacing:-.02em;flex:none}
+.uni.on .mono{background:var(--bg);color:var(--primary-ink)}
+.uni .t{min-width:0}
+.uni small{display:block;font-size:12px;color:var(--ink-3)}
+.uni b{display:block;font-size:14px;font-weight:700;line-height:1.3;overflow-wrap:anywhere}
+.prog{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.radio{display:flex;align-items:center;gap:14px;padding:16px;border:1px solid var(--line);border-radius:16px;text-align:left;background:var(--bg)}
+.radio.on{border-color:var(--primary);background:var(--primary-soft)}
+.radio .dot{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);flex:none;display:grid;place-items:center}
+.radio.on .dot{border-color:var(--primary);background:var(--primary)}
+.radio.on .dot::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--on-primary)}
+.radio b{display:block;font-size:15px}
+.radio small{color:var(--ink-2);font-size:13px}
+.sect-label{font-size:13px;font-weight:700;color:var(--ink-2);margin-top:26px}
+.loading{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:0 32px}
+.loading .appicon{animation:pulse 1.1s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(.92)}}
+
+/* home */
+.hero{border-radius:24px;background:var(--primary-soft);padding:20px;display:flex;flex-direction:column;gap:16px}
+.hero .top{display:flex;align-items:center;gap:12px}
+.hero .mono{background:var(--bg);color:var(--primary-ink)}
+.hero .top .t{flex:1;min-width:0}
+.hero .top b{display:block;font-size:16px;font-weight:800;line-height:1.3}
+.hero .top small{color:var(--ink-2);font-size:13px}
+.hero .dday{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.hero .dday .big{font-family:'Roboto',sans-serif;font-size:44px;font-weight:900;line-height:1;color:var(--primary-ink);letter-spacing:-.03em}
+.hero .dday small{display:block;color:var(--ink-2);font-size:13px;margin-bottom:4px}
+.hero .dday .r{text-align:right;font-size:13px;color:var(--ink-2)}
+.hero .dday .r b{display:block;color:var(--ink);font-size:15px}
+.meter{height:8px;border-radius:8px;background:var(--bg);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--primary);border-radius:8px;transition:width .35s}
+.next{margin-top:14px;display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:18px;border:1px solid var(--line);text-align:left;width:100%}
+.next .lbl{font-size:12px;font-weight:700;color:var(--warn)}
+.next b{display:block;font-size:15px}
+.next .t{flex:1;min-width:0}
+.filters{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:24px -20px 6px;padding:0 20px}
+.filters::-webkit-scrollbar{display:none}
+.list-head{display:flex;justify-content:space-between;align-items:baseline;margin-top:22px}
+.list-head h3{font-size:18px;font-weight:800}
+.list-head span{font-size:13px;color:var(--ink-3)}
+.task{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.task:last-child{border-bottom:0}
+.tick{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;color:transparent;flex:none;transition:all .15s}
+.tick:hover{border-color:var(--primary)}
+.tick.on{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.task .body{flex:1;min-width:0;text-align:left;display:flex;align-items:center;gap:8px}
+.task .body .t{flex:1;min-width:0}
+.task b{display:block;font-size:15px;font-weight:700;line-height:1.35}
+.task.done b{color:var(--ink-3);text-decoration:line-through;text-decoration-color:var(--ink-3)}
+.task .meta{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--ink-3);margin-top:3px;flex-wrap:wrap}
+.task .chev{color:var(--ink-3)}
+.pill{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap}
+.pill.cat{background:var(--surface);color:var(--ink-2)}
+.pill.ok{background:var(--primary-soft);color:var(--primary-ink)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.bad{background:var(--danger-soft);color:var(--danger)}
+.pill.navy{background:var(--navy);color:var(--bg)}
+.nudge{margin-top:22px;display:flex;gap:14px;align-items:center;padding:16px;border-radius:18px;background:var(--surface);text-align:left;width:100%}
+.nudge .t{flex:1;min-width:0}
+.nudge b{display:block;font-size:14px}
+.nudge small{font-size:13px;color:var(--ink-2)}
+.nudge .ico{width:44px;height:44px;border-radius:14px;background:var(--bg);display:grid;place-items:center;color:var(--primary-ink);flex:none}
+
+/* detail */
+.d-head{padding:4px 0 20px;border-bottom:8px solid var(--surface);margin:0 -20px;padding-left:20px;padding-right:20px}
+.d-head h1{font-size:24px;font-weight:800;line-height:1.35;margin-top:10px}
+.d-head .when{display:flex;align-items:center;gap:8px;margin-top:12px;color:var(--ink-2);font-size:14px}
+.d-head .when b{color:var(--ink)}
+.d-sec{padding-top:22px}
+.d-sec h3{font-size:16px;font-weight:800;margin-bottom:10px}
+.d-sec p{color:var(--ink);font-size:15px;line-height:1.65}
+.tbl{width:100%;border-collapse:collapse;font-size:14px;border-radius:14px;overflow:hidden;background:var(--surface)}
+.tbl th,.tbl td{text-align:left;padding:12px 14px;vertical-align:top;border-bottom:1px solid var(--bg)}
+.tbl tr:last-child th,.tbl tr:last-child td{border-bottom:0}
+.tbl th{width:34%;color:var(--ink-2);font-weight:500}
+.tbl td{font-weight:500}
+.src{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;text-decoration:none;color:var(--ink);margin-bottom:8px}
+.src:hover{border-color:var(--primary)}
+.src .t{flex:1;min-width:0}
+.src b{display:block;font-size:14px;font-weight:700}
+.src small{display:block;color:var(--ink-3);font-size:12px;overflow-wrap:anywhere}
+.src .ic{color:var(--primary-ink)}
+.verified{display:flex;gap:10px;align-items:flex-start;padding:14px 16px;border-radius:14px;background:var(--primary-soft);font-size:13px;color:var(--ink-2)}
+.verified b{color:var(--ink)}
+.verified .ic{color:var(--primary-ink);margin-top:1px}
+.row-toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0;border-bottom:1px solid var(--line)}
+.row-toggle b{display:block;font-size:15px}
+.row-toggle small{color:var(--ink-3);font-size:13px}
+.switch{width:50px;height:30px;border-radius:15px;background:var(--line);position:relative;flex:none;transition:background .2s}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .2s}
+.switch.on{background:var(--primary)}
+.switch.on::after{transform:translateX(20px)}
+.linkbtn{display:flex;align-items:center;gap:8px;color:var(--ink-2);font-size:14px;padding:16px 0}
+.linkbtn:hover{color:var(--ink)}
+.cta.split{display:flex;gap:10px}
+.cta.split .btn.ghost{flex:0 0 120px}
+
+/* community */
+.peers{display:flex;gap:14px;overflow-x:auto;scrollbar-width:none;margin:0 -20px;padding:4px 20px 6px}
+.peers::-webkit-scrollbar{display:none}
+.peer{display:flex;flex-direction:column;align-items:center;gap:6px;width:62px;flex:none;text-align:center}
+.ava{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:16px;color:var(--navy);background:var(--surface);position:relative;flex:none}
+.ring{padding:3px;border-radius:50%;background:conic-gradient(var(--primary) calc(var(--p)*1%),var(--line) 0)}
+.ring .ava{border:3px solid var(--bg);width:52px;height:52px}
+.peer small{font-size:12px;color:var(--ink-2);line-height:1.25}
+.peer small b{display:block;color:var(--ink);font-weight:700}
+.compose{margin-top:18px;padding:16px;border-radius:18px;border:1px solid var(--line)}
+.compose p{font-size:14px;font-weight:700;margin-bottom:10px}
+.compose .row{display:flex;gap:8px;margin-top:10px}
+.compose .input{height:44px;font-size:14px;border-radius:12px}
+.post{padding:18px 0;border-bottom:1px solid var(--line)}
+.post .who{display:flex;align-items:center;gap:10px}
+.post .who .ava{width:36px;height:36px;font-size:13px}
+.post .who .t{flex:1;min-width:0}
+.post .who b{font-size:14px;display:flex;align-items:center;gap:6px}
+.post .who small{font-size:12px;color:var(--ink-3)}
+.post .txt{margin-top:10px;font-size:15px;line-height:1.6}
+.post .q{font-weight:700}
+.post .foot{display:flex;gap:14px;margin-top:10px;font-size:13px;color:var(--ink-3)}
+.post .foot button{color:var(--ink-3);display:flex;align-items:center;gap:4px}
+.post .foot button.on{color:var(--primary-ink);font-weight:700}
+.answer{margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--surface);font-size:14px;line-height:1.55}
+.answer b{display:flex;align-items:center;gap:6px;font-size:13px;margin-bottom:4px}
+.badge{display:inline-flex;align-items:center;gap:3px;color:var(--primary-ink);font-size:12px;font-weight:700}
+
+/* mentoring */
+.mhero{border-radius:22px;background:var(--navy);color:var(--bg);padding:20px;display:flex;flex-direction:column;gap:12px}
+.mhero b{font-size:18px;font-weight:800;line-height:1.4}
+.mhero .flow{display:flex;gap:6px;flex-wrap:wrap}
+.mhero .flow span{font-size:12px;padding:5px 10px;border-radius:8px;background:rgba(255,255,255,.12);font-weight:500}
+.mentor{display:flex;gap:14px;padding:18px 0;border-bottom:1px solid var(--line);text-align:left;width:100%}
+.mentor .ava{width:56px;height:56px;background:var(--primary-soft);color:var(--primary-ink)}
+.mentor .t{flex:1;min-width:0}
+.mentor .name{display:flex;align-items:center;gap:6px;font-weight:800;font-size:16px}
+.mentor .prog{font-size:13px;color:var(--ink-2);margin-top:2px}
+.mentor .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.mentor .bottom{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:13px}
+.mentor .rate{color:var(--ink-2);display:flex;align-items:center;gap:4px}
+.mentor .rate .ic{color:#F5B400}
+.mentor .price{font-weight:800;font-size:15px}
+.mentor .price small{font-weight:500;color:var(--ink-3);font-size:12px}
+
+/* sheet */
+.scrim{position:absolute;inset:0;background:rgba(1,20,30,.45);z-index:20;opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:21;background:var(--bg);border-radius:26px 26px 0 0;max-height:88%;display:flex;flex-direction:column;transform:translateY(102%);transition:transform .28s cubic-bezier(.2,.8,.2,1)}
+.sheet.on{transform:none}
+.sheet .grab{width:40px;height:5px;border-radius:3px;background:var(--line);margin:10px auto 4px;flex:none}
+.sheet .scroll{padding:8px 20px 8px}
+.vlist{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.vitem{display:flex;gap:10px;align-items:flex-start;font-size:14px}
+.vitem .ic{color:var(--primary-ink);margin-top:2px}
+.vitem small{display:block;color:var(--ink-3);font-size:12px}
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.slots .chip{width:100%;padding:0;height:auto;padding-block:8px;border-radius:12px;display:flex;flex-direction:column;align-items:center;line-height:1.3}
+.slots .chip small{font-size:11px;font-weight:500;opacity:.8}
+.pay{border-radius:14px;background:var(--surface);padding:14px 16px;font-size:14px;display:flex;flex-direction:column;gap:6px}
+.pay div{display:flex;justify-content:space-between}
+.pay .tot{font-weight:800;font-size:16px;border-top:1px solid var(--line);padding-top:8px;margin-top:2px}
+.pay p{font-size:12px;color:var(--ink-3)}
+
+/* benefits */
+.cat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px}
+.cat-row button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border-radius:16px;font-size:12px;font-weight:600;color:var(--ink-2)}
+.cat-row button .ico{width:46px;height:46px;border-radius:15px;background:var(--surface);display:grid;place-items:center;color:var(--ink-2)}
+.cat-row button.on{color:var(--ink)}
+.cat-row button.on .ico{background:var(--primary-soft);color:var(--primary-ink)}
+.offer{display:flex;gap:14px;padding:18px;border-radius:20px;border:1px solid var(--line);margin-top:12px;align-items:center}
+.offer .ico{width:52px;height:52px;border-radius:16px;background:var(--surface);display:grid;place-items:center;font-weight:900;color:var(--navy);font-size:13px;flex:none}
+.offer .t{flex:1;min-width:0}
+.offer b{display:block;font-size:15px}
+.offer small{display:block;font-size:13px;color:var(--ink-2)}
+.offer .deal{font-size:13px;font-weight:800;color:var(--primary-ink);margin-top:4px}
+.why{margin-top:18px;font-size:12px;color:var(--ink-3);line-height:1.6}
+
+/* my */
+.me{display:flex;align-items:center;gap:14px;padding:6px 0 20px}
+.me .ava{width:60px;height:60px;font-size:20px;background:var(--primary-soft);color:var(--primary-ink)}
+.me b{font-size:18px;font-weight:800;display:block}
+.me small{color:var(--ink-2);font-size:13px}
+.menu{border-top:8px solid var(--surface);margin:0 -20px;padding:0 20px}
+.menu button,.menu .m{display:flex;align-items:center;gap:12px;width:100%;padding:16px 0;border-bottom:1px solid var(--line);text-align:left;font-size:15px;font-weight:500}
+.menu button:last-child{border-bottom:0}
+.menu .t{flex:1}
+.menu small{color:var(--ink-3);font-size:13px}
+.apply-card{display:flex;gap:14px;align-items:center;padding:18px;border-radius:20px;background:var(--navy);color:var(--bg);text-align:left;width:100%;margin-bottom:20px}
+.apply-card .t{flex:1}
+.apply-card b{display:block;font-size:16px}
+.apply-card small{font-size:13px;opacity:.8}
+
+/* mentor verification */
+.vstep{display:flex;gap:14px;padding-bottom:22px;position:relative}
+.vstep:not(:last-child)::before{content:"";position:absolute;left:15px;top:34px;bottom:4px;width:2px;background:var(--line)}
+.vstep.done:not(:last-child)::before{background:var(--primary)}
+.vstep .n{width:32px;height:32px;border-radius:50%;background:var(--surface);color:var(--ink-3);display:grid;place-items:center;font-weight:800;font-size:14px;flex:none;z-index:1}
+.vstep.cur .n{background:var(--bg);color:var(--primary-ink);border:2px solid var(--primary)}
+.vstep.done .n{background:var(--primary);color:var(--on-primary)}
+.vstep .t{flex:1;min-width:0;padding-top:4px}
+.vstep b{display:block;font-size:15px}
+.vstep small{display:block;font-size:13px;color:var(--ink-2);margin-top:2px}
+.vstep .act{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.vstep .act .row{display:flex;gap:8px}
+.vstep .act .input{height:46px;font-size:14px;border-radius:12px}
+.file{display:flex;align-items:center;justify-content:center;gap:8px;height:52px;border-radius:12px;border:1.5px dashed var(--primary-line);color:var(--primary-ink);font-weight:700;font-size:14px;cursor:pointer;background:var(--primary-soft)}
+.file input{position:absolute;width:1px;height:1px;opacity:0}
+
+/* tabbar */
+.tabbar{flex:none;display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line);background:var(--bg);padding:6px 6px 14px}
+.tabbar button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;font-size:11px;font-weight:600;color:var(--ink-3)}
+.tabbar button.on{color:var(--ink)}
+.tabbar button.on .ic{color:var(--primary-ink)}
+.tabbar button .dotw{position:relative}
+.tabbar button .dotw i{position:absolute;top:-2px;right:-4px;width:7px;height:7px;border-radius:50%;background:var(--danger)}
+
+.toast{position:absolute;left:20px;right:20px;bottom:96px;z-index:30;background:var(--ink);color:var(--bg);padding:14px 16px;border-radius:14px;font-size:14px;font-weight:500;display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(10px);pointer-events:none;transition:all .25s}
+.toast.on{opacity:1;transform:none}
+.toast .ic{color:var(--mint)}
+.sample{display:inline-flex;font-size:11px;font-weight:700;color:var(--ink-3);border:1px solid var(--line);border-radius:6px;padding:1px 6px}
+
+@media (max-width:980px){.side{display:none}}
+@media (max-width:560px){
+  body{padding:0;display:block}
+  .phone{width:100%;height:100%;height:100dvh;min-height:0;border:0;border-radius:0;box-shadow:none;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  .status{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<aside class="side" aria-label="화면 바로가기">
+  <div class="brand"><div class="appicon sm" id="sideIcon"></div><b>OneStep Abroad</b></div>
+  <p class="lead">교환학생·썸머스쿨 합격 후 출국까지 필요한 준비를 한 곳에서 챙기는 모바일 앱 프로토타입이에요. 오른쪽 화면을 직접 눌러 보거나 아래에서 바로 이동할 수 있어요.</p>
+  <h4>화면 바로가기</h4>
+  <div class="jump" id="jump"></div>
+  <p class="note">대학·멘토·제휴사·일정은 모두 예시 데이터예요. 기준일 2026.10.05 (월).</p>
+</aside>
+
+<div class="phone" id="phone">
+  <div class="status"><span class="num">9:41</span><span class="sys">
+    <svg width="18" height="12" viewBox="0 0 18 12" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="1" fill="currentColor"/><rect x="5" y="5" width="3" height="7" rx="1" fill="currentColor"/><rect x="10" y="2.5" width="3" height="9.5" rx="1" fill="currentColor"/><rect x="15" y="0" width="3" height="12" rx="1" fill="currentColor"/></svg>
+    <svg width="26" height="12" viewBox="0 0 26 12" aria-hidden="true"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="17" height="8" rx="2" fill="currentColor"/><rect x="24" y="4" width="1.6" height="4" rx=".8" fill="currentColor" opacity=".5"/></svg>
+  </span></div>
+  <div id="view"></div>
+  <nav class="tabbar" id="tabbar" hidden></nav>
+  <div class="scrim" id="scrim" data-act="closeSheet"></div>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
+  <div class="toast" id="toast" role="status"></div>
+</div>
+
+<script>
+/* ---------------- icons ---------------- */
+const I={
+  list:'<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/>',
+  chat:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/>',
+  mentor:'<circle cx="9" cy="8" r="4"/><path d="M2 21c0-3.9 3.1-7 7-7 1.5 0 2.9.4 4 1.2"/><path d="m15 18 2 2 4-4"/>',
+  gift:'<rect x="3" y="8" width="18" height="5" rx="1"/><path d="M5 13v8h14v-8M12 8v13M12 8S10.5 3 8 4s-.5 4 4 4Zm0 0s1.5-5 4-4 .5 4-4 4Z"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>',
+  back:'<path d="M15 18l-6-6 6-6"/>',
+  close:'<path d="M6 6l12 12M18 6 6 18"/>',
+  bell:'<path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/>',
+  check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  ext:'<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
+  shield:'<path d="M12 3l8 3v6c0 4.5-3.4 8.4-8 9-4.6-.6-8-4.5-8-9V6l8-3Z"/><path d="m8.5 12 2.5 2.5 4.5-5"/>',
+  star:'<path fill="currentColor" stroke="none" d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9L12 3Z"/>',
+  plane:'<path d="M3 11.5 21 3l-6.5 18-3.2-7.3L3 11.5Z"/><path d="m11.3 13.7 4.2-4.2"/>',
+  chev:'<path d="m9 6 6 6-6 6"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  flag:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
+  send:'<path d="M4 12h16M14 6l6 6-6 6"/>',
+  heart:'<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/>',
+  mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+  upload:'<path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/>',
+  doc:'<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-6-6Z"/><path d="M14 3v6h6M8 13h8M8 17h5"/>',
+  home:'<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/>',
+  sim:'<path d="M7 3h7l5 5v12a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><rect x="9" y="11" width="6" height="6" rx="1"/>',
+  umbrella:'<path d="M3 12a9 9 0 0 1 18 0Z"/><path d="M12 12v7a2 2 0 0 1-4 0"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3Z"/>',
+  swap:'<path d="M7 4 3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/>'
+};
+const ic=(n,s=22,sw=2)=>`<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[n]}</svg>`;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ---------------- dates ---------------- */
+const TODAY=new Date(2026,9,5);
+const D=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const addDays=(d,n)=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+n);
+const dd=d=>Math.round((d-TODAY)/864e5);
+const WD='일월화수목금토';
+const fmt=d=>`${d.getMonth()+1}월 ${d.getDate()}일 (${WD[d.getDay()]})`;
+const fmtShort=d=>`${d.getMonth()+1}/${d.getDate()}`;
+const dot=s=>s.replace(/-/g,'.');
+const ddLabel=n=>n===0?'D-DAY':n>0?`D-${n}`:`D+${-n}`;
+
+/* ---------------- data ---------------- */
+const REGIONS=[['asia','아시아'],['europe','유럽'],['us','미국']];
+const COUNTRY={
+  us:{name:'미국'},
+  be:{name:'벨기에',visa:[['벨기에 이민청 (Immigration Office)','https://dofi.ibz.be']],permit:'장기체류(D) 비자 → 도착 후 시청 거주 등록'},
+  nl:{name:'네덜란드',visa:[['네덜란드 이민귀화청 (IND)','https://ind.nl/en']],permit:'파견교가 IND에 거주허가 대리 신청'},
+  se:{name:'스웨덴',visa:[['스웨덴 이민청 (Migrationsverket)','https://www.migrationsverket.se/English']],permit:'학업 목적 거주허가 온라인 신청'},
+  sg:{name:'싱가포르',visa:[["싱가포르 이민국 (ICA) · Student's Pass",'https://www.ica.gov.sg']],permit:"Student's Pass (파견교 등록 후 SOLAR로 신청)"},
+  jp:{name:'일본',visa:[['일본 외무성 · 비자 안내','https://www.mofa.go.jp/j_info/visit/visa/']],permit:'재류자격인정증명서(COE) 수령 → 유학 비자 신청'},
+  hk:{name:'홍콩',visa:[['홍콩 입국사무처 (ImmD)','https://www.immd.gov.hk']],permit:'파견교 스폰서로 학생비자(entry permit) 신청'}
+};
+const HOSTS=[
+  {id:'uw',region:'us',country:'us',name:'University of Washington',short:'UW',city:'미국 시애틀',url:'https://www.washington.edu'},
+  {id:'ucb',region:'us',country:'us',name:'UC Berkeley',short:'UCB',city:'미국 버클리',url:'https://www.berkeley.edu'},
+  {id:'uta',region:'us',country:'us',name:'UT Austin',short:'UT',city:'미국 오스틴',url:'https://www.utexas.edu'},
+  {id:'unc',region:'us',country:'us',name:'UNC Chapel Hill',short:'UNC',city:'미국 채플힐',url:'https://www.unc.edu'},
+  {id:'kul',region:'europe',country:'be',name:'KU Leuven',short:'KUL',city:'벨기에 루뱅',url:'https://www.kuleuven.be/english'},
+  {id:'uva',region:'europe',country:'nl',name:'University of Amsterdam',short:'UvA',city:'네덜란드 암스테르담',url:'https://www.uva.nl/en'},
+  {id:'lund',region:'europe',country:'se',name:'Lund University',short:'LU',city:'스웨덴 룬드',url:'https://www.lunduniversity.lu.se'},
+  {id:'eur',region:'europe',country:'nl',name:'Erasmus University Rotterdam',short:'EUR',city:'네덜란드 로테르담',url:'https://www.eur.nl/en'},
+  {id:'nus',region:'asia',country:'sg',name:'National University of Singapore',short:'NUS',city:'싱가포르',url:'https://www.nus.edu.sg'},
+  {id:'ntu',region:'asia',country:'sg',name:'Nanyang Technological University',short:'NTU',city:'싱가포르',url:'https://www.ntu.edu.sg'},
+  {id:'utokyo',region:'asia',country:'jp',name:'The University of Tokyo',short:'東大',city:'일본 도쿄',url:'https://www.u-tokyo.ac.jp/en/'},
+  {id:'hkust',region:'asia',country:'hk',name:'HKUST',short:'HKUST',city:'홍콩',url:'https://hkust.edu.hk'}
+];
+const programsOf=h=>[
+  {id:'ex',kind:'교환학생',term:h.id==='utokyo'?'2027 봄학기 (4월 개강)':'2027 봄학기',
+   dep:h.id==='utokyo'?'2027-03-28':{us:'2027-01-02',europe:'2027-01-30',asia:'2027-01-06'}[h.region],len:'1학기 · 약 5개월'},
+  {id:'ss',kind:'썸머스쿨',term:'2027 여름학기',dep:'2027-06-20',len:'4~6주'}
+];
+
+function buildChecklist(h,p){
+  const host=[`${h.name} 공식 홈페이지`,h.url];
+  const safe=['외교부 해외안전여행','https://www.0404.go.kr'];
+  const it=[];
+  const add=o=>it.push(Object.assign({ver:'2026-09-28',by:'운영팀'},o));
+  add({id:'app',cat:'지원',title:'파견교 지원서 제출',off:85,
+    sum:`${h.short} 온라인 지원 포털에서 지원서를 내요. 본교 국제처의 추천(nomination)이 끝나면 파견교에서 포털 안내 메일이 와요. 메일이 안 왔다면 스팸함부터 확인하세요.`,
+    rows:[['제출처',`${h.short} 온라인 지원 포털`],['필요 서류','여권 사본, 영문 성적증명서, 학업계획서'],['선행 조건','본교 추천 완료 후 지원 가능']],links:[host]});
+  add({id:'eng',cat:'지원',title:'영어 성적 제출',off:85,
+    sum:'공인 영어 성적을 지원서와 함께 올리거나 시험 기관에서 파견교로 직접 전송해요. 기준 점수는 학교와 학과마다 달라요.',
+    rows:[['인정 시험','TOEFL iBT, IELTS Academic 등 (학교별 상이)'],['전송 방식','시험 기관 → 파견교 직접 전송이 많아요'],['유효 기간','보통 시험일로부터 2년']],links:[host]});
+
+  if(p.id==='ss'){
+    const C=COUNTRY[h.country];
+    add({id:'visa',cat:'서류·비자',title:'비자 · 입국 요건 확인',off:60,
+      sum:h.country==='us'?'학점을 받는 썸머스쿨은 F-1 학생비자가 필요한 경우가 많고, 짧은 비학점 과정은 ESTA로 입국하기도 해요. 내 프로그램이 어느 쪽인지 파견교 안내로 먼저 확인하세요.':`${C.name}은(는) 단기 체류라면 무비자로 입국할 수 있는 경우가 많아요. 다만 프로그램 성격에 따라 요건이 달라질 수 있으니 공식 안내를 확인하세요.`,
+      rows:[['확인할 것','체류 기간, 학점 취득 여부, 파견교의 비자 안내'],['미국 단기 입국','ESTA (전자여행허가)'],['학생비자 필요 시','입학허가서 수령 후 바로 신청']],
+      links:h.country==='us'?[['U.S. Department of State · 학생비자','https://travel.state.gov/content/travel/en/us-visas/study/student-visa.html'],['ESTA 공식 신청','https://esta.cbp.dhs.gov']]:[...C.visa,host]});
+  } else if(h.region==='us'){
+    add({id:'fin',cat:'서류·비자',title:'재정 증빙 서류 제출',off:70,
+      sum:'DS-2019 발급을 위해 체류 기간 생활비를 감당할 수 있다는 증빙을 내요. 파견교가 공지한 1학기 예상 비용 이상이 잔고로 확인돼야 해요.',
+      rows:[['서류','영문 잔고증명서 (본인 또는 부모 명의)'],['기준 금액','파견교 공지 1학기 예상 비용 이상'],['발급','은행 지점 또는 은행 앱, 최근 발급분']],links:[host]});
+    add({id:'ds2019',cat:'서류·비자',title:'DS-2019 수령',off:45,
+      sum:'J-1 비자 신청에 꼭 필요한 서류예요. 파견교가 SEVIS에 등록한 뒤 PDF나 우편으로 보내 줘요. 이름·생년월일·기간이 여권과 같은지 바로 확인하세요.',
+      rows:[['발급처',`${h.short} International Student Office`],['확인할 것','영문 이름, 생년월일, 프로그램 기간'],['다음 단계','SEVIS ID로 I-901 비용 납부']],links:[host],by:'멘토 이O연'});
+    add({id:'sevis',cat:'서류·비자',title:'SEVIS 비용(I-901) 납부',off:40,
+      sum:'DS-2019 오른쪽 위의 SEVIS ID로 I-901 비용을 온라인 납부해요. 일부 학교는 교환학생 비용을 대신 내 주니 먼저 확인하세요. 영수증은 인터뷰 때 가져가요.',
+      rows:[['대상','J-1 교환학생'],['금액','$220 (학교 대납 여부 확인)'],['결제','해외 결제 가능한 카드']],
+      links:[['SEVIS I-901 공식 납부 사이트','https://www.fmjfee.com']],ver:'2026-09-21'});
+    add({id:'ds160',cat:'서류·비자',title:'DS-160 작성 · 인터뷰 예약',off:38,
+      sum:'온라인 비자 신청서(DS-160)를 작성하고 비자 신청 수수료를 낸 뒤 대사관 인터뷰를 예약해요. 방학 시즌에는 예약이 빨리 차니 DS-2019를 받는 대로 진행하세요.',
+      rows:[['신청서','DS-160 (사진 업로드 필요)'],['수수료','대사관 공지 금액 확인'],['예약','주한 미국대사관 비자 예약 시스템']],
+      links:[['DS-160 온라인 신청','https://ceac.state.gov/genniv/'],['주한 미국대사관 · 비자 안내','https://kr.usembassy.gov/visas/']]});
+    add({id:'visa',cat:'서류·비자',title:'비자 인터뷰',off:25,
+      sum:'예약한 날짜에 대사관에서 인터뷰를 봐요. 승인되면 여권은 보통 며칠 뒤 택배로 돌아와요.',
+      rows:[['준비물','여권, DS-2019, DS-160 확인 페이지, I-901 영수증, 재정 증빙'],['장소','주한 미국대사관 (서울)'],['여권 반환','택배 수령까지 며칠 소요']],
+      links:[['주한 미국대사관 · 비자 안내','https://kr.usembassy.gov/visas/'],['U.S. Department of State · J-1','https://travel.state.gov/content/travel/en/us-visas/study/exchange.html']]});
+  } else {
+    const C=COUNTRY[h.country];
+    add({id:'visa',cat:'서류·비자',title:h.region==='europe'?'장기체류 비자 · 거주허가':'학생비자 · 체류허가',off:h.region==='europe'?60:50,
+      sum:h.region==='europe'?'한국 여권으로 솅겐 지역에 무비자로 머물 수 있는 기간은 180일 중 90일이에요. 한 학기 이상 머문다면 국가별 장기체류 비자나 거주허가가 필요해요.':`${C.name}에서 한 학기 공부하려면 학생 신분의 체류허가가 필요해요. 파견교 합격 서류가 나오면 바로 시작하세요.`,
+      rows:[['국가',C.name],['절차',C.permit],['필요 서류','입학허가서, 여권, 재정 증빙, 보험 증명 등']],
+      links:[...C.visa,host]});
+    if(h.region==='europe') add({id:'la',cat:'학업',title:'Learning Agreement 승인',off:50,
+      sum:'파견교에서 들을 과목을 정하고 본교 학과와 파견교 양쪽의 승인을 받아요. 본교 학점 인정과 연결되니 꼭 사전 승인 받은 과목으로 채우세요.',
+      rows:[['승인','본교 학과 + 파견교 코디네이터'],['변경','도착 후 정해진 기간 안에 수정 가능'],['팁','후보 과목을 여유 있게 넣어 두세요']],links:[host]});
+  }
+
+  add({id:'housing',cat:'생활',title:'기숙사 신청 · 숙소 확정',off:p.id==='ss'?50:60,
+    sum:'파견교 기숙사 포털에서 신청해요. 대기 순번을 받았다면 외부 숙소도 함께 알아보세요. 외부 숙소는 계약 전 실물 확인과 계약서 확인이 먼저예요.',
+    rows:[['1순위','파견교 기숙사 (Housing 포털)'],['대기 시','검증된 숙소 플랫폼, 같은 프로그램 선배 후기 참고'],['주의','보증금 송금은 계약서 확인 후']],links:[host,safe],by:'멘토 정O우'});
+  add({id:'flight',cat:'생활',title:'항공권 예약',off:30,
+    sum:'오리엔테이션 날짜를 확인한 뒤 예약해요. 기숙사 입주 가능일보다 너무 일찍 도착하지 않도록 날짜를 맞추세요.',
+    rows:[['기준','오리엔테이션 · 입주 가능일'],['팁','학생 할인 운임은 수하물 규정이 달라요'],['확인','여권 영문 이름과 예약 이름 일치']],links:[host]});
+  add({id:'ins',cat:'생활',title:'보험 가입 · 면제 신청',off:20,
+    sum:h.region==='us'&&p.id==='ex'?'J-1 교환학생은 국무부가 정한 최소 보장 이상의 보험이 필요해요. 파견교 보험에 자동 가입되는 경우가 많고, 조건을 갖춘 외부 보험으로 면제(waiver)를 신청할 수도 있어요.':'파견교가 정한 보험에 의무 가입해야 하는지 먼저 확인하세요. 별도 가입이라면 체류 기간 전체를 보장하는 유학생 보험을 고르세요.',
+    rows:h.region==='us'&&p.id==='ex'?[['의료비','사고·질병당 $100,000 이상'],['본국 송환','$25,000 이상'],['유해 송환','$50,000 이상'],['자기부담금','$500 이하']]:[['확인','파견교 의무 보험 여부'],['기간','출국일 ~ 귀국일 전체'],['보장','현지 의료비, 배상책임']],
+    links:[host,safe]});
+  add({id:'course',cat:'학업',title:p.id==='ss'?'과목 · 프로그램 등록':'수강신청',off:14,
+    sum:'파견교 수강신청 일정에 맞춰 과목을 등록해요. 인기 과목은 교환학생 자리가 적으니 대체 과목도 미리 정해 두세요.',
+    rows:[['방식',`${h.short} 학사 포털`],['학점 인정','본교 학과 사전 승인 과목'],['주의','교환학생 수강 가능 과목 목록 확인']],links:[host]});
+  return it;
+}
+
+const MENTOR_NAMES=[['이O연','경영학과','15,000','4.9',31],['정O우','컴퓨터공학과','20,000','5.0',18],['한O서','경제학과','12,000','4.8',9]];
+const MENTOR_TOPICS=[['비자 서류','수강신청','현지 생활비'],['기숙사 · 외부 숙소','도착 첫 주','은행 · 통신'],['학점 인정','썸머스쿨 준비','영어 성적']];
+
+/* ---------------- state ---------------- */
+const S={
+  screen:'splash', tab:'home', detail:null, filter:'전체',
+  email:'jun.lee@hanguk.ac.kr',
+  profile:{univ:'한국대학교',major:'경영학과',year:'3학년'},
+  region:'us', hostId:'uw', progId:'ex',
+  done:new Set(['app','eng']), remind:new Set(['fin','ds2019','sevis','ds160','visa','housing']),
+  ctab:'status', liked:new Set(), bcat:'전체',
+  booked:{}, slot:null, mentorSheet:null,
+  apply:{step:0,email:'',file:''},
+  posts:null
+};
+const host=()=>HOSTS.find(h=>h.id===S.hostId);
+const prog=()=>programsOf(host()).find(p=>p.id===S.progId);
+const depDate=()=>D(prog().dep);
+const items=()=>buildChecklist(host(),prog()).map(i=>({...i,date:addDays(depDate(),-i.off)})).sort((a,b)=>a.date-b.date);
+
+function seedPosts(){
+  const h=host();
+  return [
+    {type:'status',who:'박O준',meta:'컴퓨터공학과 3학년',tag:h.region==='us'?'DS-2019 수령':'입학허가서 수령',text:`${h.short}에서 서류 PDF가 먼저 왔어요. 원본은 우편으로 따로 온다고 하네요.`,time:'2시간 전',likes:8},
+    {type:'q',who:'최O린',meta:'국제학부 2학년',text:h.region==='us'?'SEVIS 비용 결제할 때 해외 결제 카드가 꼭 있어야 하나요?':'거주허가 서류에 보험 증명이 필요하다는데, 한국 보험도 인정되나요?',time:'5시간 전',
+      answer:{who:'이O연',mentor:true,text:h.region==='us'?'네, 해외 결제가 되는 카드가 필요해요. 결제 후 영수증 PDF는 인터뷰 때 출력해서 가져가세요.':'국가마다 달라서 파견교 안내 메일에 적힌 보장 조건을 먼저 확인하세요. 영문 보험증서가 필요한 경우가 많아요.'}},
+    {type:'status',who:'김O은',meta:'경제학과 4학년',tag:'숙소 확정',text:'기숙사는 대기 순번이라 외부 숙소로 계약했어요. 학교 근처 쉐어하우스, 계약서 영상 통화로 같이 확인했어요.',time:'어제',likes:14},
+    {type:'q',who:'윤O호',meta:'경영학과 3학년',text:`${h.short} 오리엔테이션 전에 미리 도착하신 분 계세요? 기숙사 입주 전날 숙박이 고민이에요.`,time:'어제',answers:2},
+    {type:'status',who:'서O아',meta:'영어영문학과 3학년',tag:'지원서 제출',text:'지원 포털 메일이 스팸함에 있었어요. 아직 못 받으신 분 꼭 확인해 보세요!',time:'2일 전',likes:21}
+  ];
+}
+const PEERS=[['박','박O준',72,'비자 서류'],['김','김O은',64,'숙소 확정'],['서','서O아',45,'지원 완료'],['최','최O린',38,'영어 성적'],['윤','윤O호',30,'지원 완료'],['정','정O민',18,'준비 시작']];
+
+const OFFERS={
+  '보험':[['GC','글로브케어 유학생 보험','체류 기간 맞춤 · 파견교 면제(waiver) 조건 확인서 제공','학생 전용 12% 할인'],['SB','스튜던트세이프 보험','현지 병원 직접 청구 · 한국어 상담 24시간','첫 달 보험료 무료']],
+  'eSIM':[['RZ','로밍제로 eSIM','출국 전 개통 · 도착 즉시 데이터 사용','교환학생 6개월 요금제 20% 할인'],['NS','넥스트심 현지 유심','공항 수령 · 현지 번호 제공','개통비 면제']],
+  '항공':[['SK','스카이스튜던트 항공권','학생 운임 비교 · 수하물 추가 1개','편도 학생 운임 최대 8% 할인']],
+  '숙소':[['CS','캠퍼스스테이','파견교 주변 검증 숙소 · 영상 투어 제공','첫 달 수수료 면제'],['HM','홈메이트 쉐어하우스','같은 학교 학생끼리 매칭','보증금 분할 결제']]
+};
+const OFFER_ICON={'보험':'umbrella','eSIM':'sim','항공':'plane','숙소':'home'};
+
+/* ---------------- render helpers ---------------- */
+const $=s=>document.querySelector(s);
+const view=$('#view');
+function statusPill(i){
+  const n=dd(i.date);
+  if(S.done.has(i.id)) return '<span class="pill ok">완료</span>';
+  if(n<0) return '<span class="pill bad">마감 지남</span>';
+  if(n<=14) return '<span class="pill warn">임박</span>';
+  return '';
+}
+const bar=(title,back='back',right='')=>`<div class="bar"><button class="iconbtn" data-act="${back}" aria-label="뒤로">${ic('back')}</button><h2>${title}</h2>${right}</div>`;
+
+/* ---------------- screens ---------------- */
+const SCREENS={
+  splash(){return `
+    <div class="splash"><div class="appicon">${ic('plane',56,1.8)}</div>
+      <div><h1>OneStep Abroad</h1><p>합격 후 출국까지, 한 걸음씩</p></div></div>
+    <div class="cta"><button class="btn" data-go="login">시작하기</button></div>`},
+
+  login(){return `${bar('','go:splash')}
+    <div class="scroll pad">
+      <h2 class="ob-title">학교 이메일로<br>시작해요</h2>
+      <p class="ob-sub">같은 학교, 같은 프로그램 학생과 연결하는 데 쓰여요.</p>
+      <div class="field"><label for="email">학교 이메일</label>
+        <input class="input" id="email" type="email" value="${esc(S.email)}" autocomplete="email"></div>
+      <div class="divider">또는</div>
+      <div class="social"><button data-go="profile">카카오로 계속하기</button><button data-go="profile">Google로 계속하기</button></div>
+    </div>
+    <div class="cta"><button class="btn" data-go="profile">계속하기</button></div>`},
+
+  profile(){const P=S.profile;return `${bar('','go:login')}
+    <div class="scroll pad">
+      <div class="steps"><i class="on"></i><i></i></div>
+      <h2 class="ob-title">학교 정보를 알려주세요</h2>
+      <p class="ob-sub">같은 학교 선배 멘토와 동기를 찾는 데 쓰여요.</p>
+      <div class="field"><label for="univ">소속 대학</label>
+        <select class="input" id="univ" data-model="univ">${['한국대학교','서울미래대학교','한빛대학교','누리대학교'].map(u=>`<option${u===P.univ?' selected':''}>${u}</option>`).join('')}</select></div>
+      <div class="field"><label for="major">전공</label>
+        <input class="input" id="major" data-model="major" value="${esc(P.major)}"></div>
+      <div class="field"><label>학년</label>
+        <div class="chips">${['1학년','2학년','3학년','4학년','대학원'].map(y=>`<button class="chip${y===P.year?' on':''}" data-act="year" data-v="${y}">${y}</button>`).join('')}</div></div>
+    </div>
+    <div class="cta"><button class="btn" data-go="program">다음</button></div>`},
+
+  program(){
+    const hs=HOSTS.filter(h=>h.region===S.region);
+    const h=host(); const inRegion=h&&h.region===S.region;
+    return `${bar('','go:profile')}
+    <div class="scroll pad">
+      <div class="steps"><i class="on"></i><i class="on"></i></div>
+      <h2 class="ob-title">합격한 프로그램을<br>선택하세요</h2>
+      <p class="ob-sub">선택한 학교와 프로그램에 맞춰 체크리스트를 만들어요.</p>
+      <div style="margin-top:22px" class="seg" role="tablist">${REGIONS.map(([k,v])=>`<button role="tab" aria-selected="${k===S.region}" class="${k===S.region?'on':''}" data-act="region" data-v="${k}">${v}</button>`).join('')}</div>
+      <div class="grid2">${hs.map(x=>`<button class="uni${inRegion&&x.id===S.hostId?' on':''}" data-act="host" data-v="${x.id}"><span class="mono">${x.short}</span><span class="t"><small>${x.city}</small><b>${x.name}</b></span></button>`).join('')}</div>
+      ${inRegion?`<p class="sect-label">${h.name} 프로그램</p>
+      <div class="prog">${programsOf(h).map(p=>`<button class="radio${p.id===S.progId?' on':''}" data-act="prog" data-v="${p.id}"><span class="dot"></span><span><b>${p.kind} · ${p.term}</b><small>${p.len} · 출국 예정 ${fmt(D(p.dep))}</small></span></button>`).join('')}</div>`:''}
+    </div>
+    <div class="cta"><button class="btn" data-act="build" ${inRegion?'':'disabled'}>체크리스트 만들기</button></div>`},
+
+  building(){const h=host(),p=prog();return `
+    <div class="loading"><div class="appicon">${ic('list',52,1.8)}</div>
+      <h2 class="ob-title">${h.short} ${p.kind}<br>체크리스트를 만들고 있어요</h2>
+      <p class="ob-sub">공식 출처와 선배들의 최신 정보를 모으는 중이에요</p></div>`},
+
+  app(){return ({home:homeTab,community:communityTab,mentor:mentorTab,benefit:benefitTab,my:myTab})[S.tab]()},
+
+  detail(){
+    const i=items().find(x=>x.id===S.detail); const n=dd(i.date); const done=S.done.has(i.id);
+    return `${bar('','back','<button class="iconbtn" data-act="flag" aria-label="정보 변경 제보">'+ic('flag',20)+'</button>')}
+    <div class="scroll pad">
+      <div class="d-head">
+        <div style="display:flex;gap:6px"><span class="pill cat">${i.cat}</span>${statusPill(i)}</div>
+        <h1>${i.title}</h1>
+        <div class="when">${ic('clock',18)}<span>마감 <b>${fmt(i.date)}</b> · <span class="num">${ddLabel(n)}</span></span></div>
+      </div>
+      <div class="d-sec"><h3>무엇을 하나요</h3><p>${i.sum}</p></div>
+      <div class="d-sec"><h3>한눈에 보기</h3><table class="tbl">${i.rows.map(r=>`<tr><th scope="row">${r[0]}</th><td>${r[1]}</td></tr>`).join('')}</table></div>
+      <div class="d-sec"><h3>공식 출처에서 확인하기</h3>${i.links.map(l=>`<a class="src" href="${l[1]}" target="_blank" rel="noopener"><span class="t"><b>${l[0]}</b><small>${l[1].replace(/^https?:\/\//,'')}</small></span>${ic('ext',18)}</a>`).join('')}
+        <div class="verified">${ic('shield',18)}<span><b>${dot(i.ver)} 확인</b> · ${i.by} 검증<br>세부 조건은 바뀔 수 있어요. 제출 전에 공식 출처를 꼭 확인하세요.</span></div></div>
+      <div class="d-sec">
+        <div class="row-toggle"><span><b>마감 알림</b><small>3일 전, 하루 전 오전 9시</small></span><button class="switch${S.remind.has(i.id)?' on':''}" role="switch" aria-checked="${S.remind.has(i.id)}" aria-label="마감 알림" data-act="remind" data-v="${i.id}"></button></div>
+        <button class="linkbtn" data-act="tab" data-v="mentor">${ic('mentor',18)}<span>이 단계를 마친 선배에게 물어보기</span></button>
+        <button class="linkbtn" data-act="flag" style="padding-top:0">${ic('flag',18)}<span>정보가 바뀌었나요? 변경 제보하기</span></button>
+      </div>
+    </div>
+    <div class="cta"><button class="btn${done?' ghost':''}" data-act="toggleDone" data-v="${i.id}">${done?'완료 취소':ic('check',20)+'완료로 표시'}</button></div>`},
+
+  mentorApply(){
+    const st=S.apply.step;
+    const cls=k=>k<st?'done':k===st?'cur':'';
+    const n=k=>k<st?ic('check',16,3):k+1;
+    return `${bar('멘토 인증','back')}
+    <div class="scroll pad">
+      <h2 class="ob-title" style="font-size:22px">다녀온 경험으로<br>후배를 도와주세요</h2>
+      <p class="ob-sub" style="margin-bottom:26px">유료 멘토링이라 실제 수료 여부를 꼼꼼히 확인해요. 심사를 통과하면 인증 멘토 배지가 붙어요.</p>
+      <div class="vstep ${cls(0)}"><span class="n">${n(0)}</span><div class="t"><b>학교 이메일 인증</b><small>본교 이메일로 재학·졸업 신분을 확인해요</small>
+        ${st===0?`<div class="act"><div class="row"><input class="input" id="apEmail" type="email" placeholder="name@university.ac.kr" value="${esc(S.apply.email||S.email)}"><button class="btn sm" data-act="ap0">인증</button></div></div>`:''}</div></div>
+      <div class="vstep ${cls(1)}"><span class="n">${n(1)}</span><div class="t"><b>수료 증빙 제출</b><small>파견교 성적증명서나 수료증(Certificate of Attendance)</small>
+        ${st===1?`<div class="act"><label class="file">${ic('upload',18)}<span>${S.apply.file?esc(S.apply.file):'PDF 또는 이미지 올리기'}</span><input type="file" id="apFile" accept=".pdf,image/*"></label>
+          <button class="btn sm" data-act="ap1" ${S.apply.file?'':'disabled'}>제출하기</button></div>`:''}</div></div>
+      <div class="vstep ${cls(2)}"><span class="n">${n(2)}</span><div class="t"><b>운영팀 심사</b><small>${st===2?'심사 중이에요 · 영업일 기준 3일 이내 결과 안내':'서류와 프로그램 정보를 대조해요'}</small>
+        ${st===2?`<div class="act"><button class="btn sm ghost" data-act="ap2">심사 통과 (데모)</button></div>`:''}</div></div>
+      <div class="vstep ${cls(3)}"><span class="n">${st>=3?ic('shield',16,2.4):4}</span><div class="t"><b>인증 멘토 배지 발급</b><small>${st>=3?'배지가 발급됐어요. 이제 멘토링 일정을 열 수 있어요.':'세션 가격과 가능 시간을 직접 정해요'}</small></div></div>
+    </div>`}
+};
+
+function homeTab(){
+  const h=host(),p=prog(),list=items();
+  const doneN=list.filter(i=>S.done.has(i.id)).length;
+  const pct=Math.round(doneN/list.length*100);
+  const next=list.find(i=>!S.done.has(i.id));
+  const cats=['전체','지원','서류·비자','생활','학업'];
+  const shown=S.filter==='전체'?list:list.filter(i=>i.cat===S.filter);
+  return `<div class="bar main"><h2>내 준비</h2><button class="iconbtn" data-act="toast" data-v="알림 ${S.remind.size}개가 켜져 있어요" aria-label="알림">${ic('bell')}</button></div>
+  <div class="scroll pad">
+    <section class="hero">
+      <div class="top"><span class="mono">${h.short}</span><span class="t"><b>${h.name}</b><small>${p.kind} · ${p.term}</small></span></div>
+      <div class="dday"><div><small>출국까지</small><span class="big num">${ddLabel(dd(depDate()))}</span></div>
+        <div class="r"><b class="num">${doneN} / ${list.length}</b>완료 · ${depDate().getMonth()+1}월 ${depDate().getDate()}일 출국</div></div>
+      <div class="meter" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pct}%"></i></div>
+    </section>
+    ${next?`<button class="next" data-act="open" data-v="${next.id}"><span class="t"><span class="lbl">다음 할 일 · ${ddLabel(dd(next.date))}</span><b>${next.title}</b></span>${ic('chev',20)}</button>`:''}
+    <div class="filters">${cats.map(c=>`<button class="chip sm${c===S.filter?' on':''}" data-act="filter" data-v="${c}">${c}</button>`).join('')}</div>
+    <div class="list-head"><h3>체크리스트</h3><span>마감 순</span></div>
+    <div>${shown.map(i=>{const d=S.done.has(i.id);return `
+      <div class="task${d?' done':''}">
+        <button class="tick${d?' on':''}" data-act="toggleDone" data-v="${i.id}" aria-label="${i.title} 완료" aria-pressed="${d}">${ic('check',16,3)}</button>
+        <button class="body" data-act="open" data-v="${i.id}"><span class="t"><b>${i.title}</b>
+          <span class="meta"><span class="pill cat">${i.cat}</span><span class="num">${fmt(i.date)} · ${ddLabel(dd(i.date))}</span>${statusPill(i)}</span></span><span class="chev">${ic('chev',18)}</span></button>
+      </div>`}).join('')}</div>
+    <button class="nudge" data-act="tab" data-v="benefit"><span class="ico">${ic('umbrella')}</span><span class="t"><b>보험은 비자 서류에도 쓰여요</b><small>학생 제휴 보험을 미리 비교해 보세요</small></span>${ic('chev',18)}</button>
+  </div>`;
+}
+
+function communityTab(){
+  const h=host(),p=prog();
+  if(!S.posts) S.posts=seedPosts();
+  const ps=S.posts.filter(x=>S.ctab==='status'?x.type==='status':x.type==='q');
+  return `<div class="bar main"><h2>커뮤니티</h2></div>
+  <div class="scroll pad">
+    <p style="font-size:13px;color:var(--ink-2);margin-bottom:12px">${h.short} ${p.kind} · ${p.term} · <b style="color:var(--ink)">${PEERS.length+8}명</b> 준비 중</p>
+    <div class="peers">${[['나','나',Math.round(items().filter(i=>S.done.has(i.id)).length/items().length*100),'']].concat(PEERS).map(x=>`<div class="peer"><div class="ring" style="--p:${x[2]}"><div class="ava">${x[0]}</div></div><small><b>${x[1]}</b>${x[3]||'내 진행률'}</small></div>`).join('')}</div>
+    <div style="margin-top:18px" class="seg" role="tablist"><button class="${S.ctab==='status'?'on':''}" data-act="ctab" data-v="status">준비 현황</button><button class="${S.ctab==='q'?'on':''}" data-act="ctab" data-v="q">질문 · 답변</button><button data-act="tab" data-v="mentor">1:1 멘토</button></div>
+    ${S.ctab==='status'?`<div class="compose"><p>내 준비 현황 공유하기</p>
+      <div class="chips">${['지원서 제출','비자 신청 완료','숙소 확정','항공권 예약'].map(t=>`<button class="chip sm" data-act="share" data-v="${t}">${t}</button>`).join('')}</div></div>`
+    :`<div class="compose"><p>같은 프로그램 동기에게 무료로 물어보세요</p>
+      <div class="row"><input class="input" id="qInput" placeholder="예: 기숙사 입주 전날 어디서 묵으셨어요?"><button class="btn sm" data-act="ask" aria-label="질문 올리기">${ic('send',18)}</button></div></div>`}
+    <div>${ps.map((x)=>{const idx=S.posts.indexOf(x);return `<article class="post">
+      <div class="who"><span class="ava">${x.who[0]}</span><span class="t"><b>${x.who}${x.tag?` <span class="pill ok">${x.tag}</span>`:''}</b><small>${x.meta} · ${x.time}</small></span></div>
+      <p class="txt${x.type==='q'?' q':''}">${esc(x.text)}</p>
+      ${x.answer?`<div class="answer"><b>${x.answer.who} <span class="badge">${ic('shield',13,2.4)}인증 멘토</span></b>${x.answer.text}</div>`:''}
+      <div class="foot">${x.type==='status'?`<button class="${S.liked.has(idx)?'on':''}" data-act="like" data-v="${idx}">${ic('heart',15)} 응원 ${x.likes+(S.liked.has(idx)?1:0)}</button>`:`<span>답변 ${x.answer?1:(x.answers||0)}</span>`}</div>
+    </article>`}).join('')}</div>
+  </div>`;
+}
+
+function mentorsFor(){
+  const h=host(),p=prog();
+  return MENTOR_NAMES.map((m,k)=>({id:k,name:m[0],major:m[1],price:m[2],rate:m[3],reviews:m[4],
+    prog:`${h.short} ${k===2?'썸머스쿨 2025':p.kind+(k===0?' 2025 가을':' 2025 봄')} 수료`,topics:MENTOR_TOPICS[k]}));
+}
+function mentorTab(){
+  const h=host();
+  return `<div class="bar main"><h2>멘토링</h2></div>
+  <div class="scroll pad">
+    <section class="mhero"><b>${h.short}를 직접 다녀온<br>인증 선배와 1:1로 이야기해요</b>
+      <div class="flow"><span>학교 이메일 인증</span><span>수료 증빙 확인</span><span>운영팀 심사</span></div></section>
+    <div class="list-head"><h3>${h.short} 인증 멘토</h3><span>30분 영상 · 채팅</span></div>
+    ${mentorsFor().map(m=>`<button class="mentor" data-act="mentor" data-v="${m.id}">
+      <span class="ava">${m.name[0]}</span>
+      <span class="t"><span class="name">${m.name}<span class="badge">${ic('shield',14,2.4)}인증</span>${S.booked[m.id]?'<span class="pill ok">예약됨</span>':''}</span>
+        <span class="prog" style="display:block">${m.prog} · ${m.major}</span>
+        <span class="tags">${m.topics.map(t=>`<span class="pill cat">${t}</span>`).join('')}</span>
+        <span class="bottom"><span class="rate">${ic('star',14)}<b>${m.rate}</b> (${m.reviews})</span><span class="price num">${m.price}원 <small>/ 30분</small></span></span></span>
+    </button>`).join('')}
+    <p class="why">멘토는 실제로 프로그램을 수료한 학생만 될 수 있어요. 결제 금액은 멘토에게 지급되고, 일부는 플랫폼 운영 수수료로 쓰여요.</p>
+  </div>`;
+}
+
+function benefitTab(){
+  const cats=['전체','보험','eSIM','항공','숙소'];
+  const show=S.bcat==='전체'?Object.keys(OFFERS):[S.bcat];
+  return `<div class="bar main"><h2>출국 준비 혜택</h2></div>
+  <div class="scroll pad">
+    <p style="color:var(--ink-2);font-size:14px">출국 전에 꼭 필요한 것만 학생 가격으로 모았어요.</p>
+    <div class="cat-row" style="margin-top:14px">${cats.slice(1).map(c=>`<button class="${S.bcat===c?'on':''}" data-act="bcat" data-v="${c}"><span class="ico">${ic(OFFER_ICON[c])}</span>${c}</button>`).join('')}</div>
+    ${show.map(c=>`<div class="list-head"><h3>${c}</h3><span class="sample">제휴 예시</span></div>
+      ${OFFERS[c].map(o=>`<div class="offer"><span class="ico">${o[0]}</span><span class="t"><b>${o[1]}</b><small>${o[2]}</small><span class="deal" style="display:block">${o[3]}</span></span><button class="btn sm ghost" data-act="toast" data-v="${o[1]} 혜택 페이지로 이동해요">보기</button></div>`).join('')}`).join('')}
+    <p class="why">제휴사를 통해 구매하면 OneStep Abroad가 소개 수수료를 받아요. 체크리스트와 커뮤니티를 무료로 운영하는 데 쓰여요.</p>
+  </div>`;
+}
+
+function myTab(){
+  const h=host(),p=prog(),P=S.profile;
+  return `<div class="bar main"><h2>마이</h2></div>
+  <div class="scroll pad">
+    <div class="me"><span class="ava">${P.major[0]}</span><span><b>이O민</b><small>${P.univ} · ${P.major} · ${P.year}</small></span></div>
+    <button class="apply-card" data-go="mentorApply"><span class="t"><b>${S.apply.step>=3?'인증 멘토예요':'다녀온 뒤 멘토로 활동하기'}</b><small>${S.apply.step>=3?'멘토링 일정을 관리해 보세요':'학교 이메일 + 수료 증빙으로 인증해요'}</small></span>${ic(S.apply.step>=3?'shield':'chev',22)}</button>
+    <div class="menu">
+      <div class="m">${ic('globe',20)}<span class="t">내 프로그램<br><small>${h.name} · ${p.kind} ${p.term}</small></span></div>
+      <button data-act="changeProg">${ic('swap',20)}<span class="t">프로그램 변경</span>${ic('chev',18)}</button>
+      <button data-act="toast" data-v="알림 ${S.remind.size}개가 켜져 있어요">${ic('bell',20)}<span class="t">마감 알림<br><small>${S.remind.size}개 켜짐</small></span>${ic('chev',18)}</button>
+      <button data-act="toast" data-v="예약한 멘토링이 ${Object.keys(S.booked).length}건 있어요">${ic('mentor',20)}<span class="t">멘토링 예약 내역</span><small>${Object.keys(S.booked).length}건</small></button>
+      <button data-go="splash">${ic('back',20)}<span class="t">처음 화면으로 (데모)</span></button>
+    </div>
+  </div>`;
+}
+
+/* ---------------- sheet ---------------- */
+function openMentorSheet(id){
+  const m=mentorsFor()[id]; S.mentorSheet=id; S.slot=null;
+  const slots=[];
+  for(let k=1;slots.length<6;k++){const d=addDays(TODAY,k);[20,21].forEach(hh=>{if(slots.length<6)slots.push({d,hh})})}
+  const sheet=$('#sheet');
+  const draw=()=>{sheet.innerHTML=`<div class="grab"></div>
+    <div class="scroll">
+      <div class="mentor" style="border:0;padding-top:6px"><span class="ava">${m.name[0]}</span><span class="t"><span class="name">${m.name}<span class="badge">${ic('shield',14,2.4)}인증 멘토</span></span><span class="prog" style="display:block">${m.prog} · ${m.major}</span>
+        <span class="bottom"><span class="rate">${ic('star',14)}<b>${m.rate}</b> · 리뷰 ${m.reviews}개</span></span></span></div>
+      <div class="d-sec" style="padding-top:4px"><h3>인증 내역</h3><div class="vlist">
+        <div class="vitem">${ic('mail',18)}<span>학교 이메일 인증<small>본교 재학 확인</small></span></div>
+        <div class="vitem">${ic('doc',18)}<span>${host().short} 성적증명서 확인<small>운영팀 대조 완료</small></span></div>
+        <div class="vitem">${ic('shield',18)}<span>운영팀 심사 통과<small>2025.12 승인</small></span></div></div></div>
+      <div class="d-sec"><h3>시간 선택</h3><div class="slots">${slots.map((s,k)=>`<button class="chip${S.slot===k?' on':''}" data-act="slot" data-v="${k}"><span class="num">${fmtShort(s.d)} (${WD[s.d.getDay()]})</span><small class="num">${s.hh}:00</small></button>`).join('')}</div></div>
+      <div class="d-sec" style="padding-bottom:8px"><div class="pay"><div><span>1:1 멘토링 30분</span><span class="num">${m.price}원</span></div><div class="tot"><span>결제 금액</span><span class="num">${m.price}원</span></div><p>세션 24시간 전까지 무료 취소할 수 있어요.</p></div></div>
+    </div>
+    <div class="cta"><button class="btn" data-act="book" ${S.slot===null?'disabled':''}>${S.slot===null?'시간을 선택하세요':`${fmtShort(slots[S.slot].d)} ${slots[S.slot].hh}:00 예약하기`}</button></div>`;};
+  sheet._draw=draw; sheet._slots=slots; draw();
+  sheet.classList.add('on'); $('#scrim').classList.add('on');
+}
+function closeSheet(){ $('#sheet').classList.remove('on'); $('#scrim').classList.remove('on'); S.mentorSheet=null; }
+
+/* ---------------- toast ---------------- */
+let tt;
+function toast(msg){const t=$('#toast');t.innerHTML=ic('check',18,2.6)+'<span>'+esc(msg)+'</span>';t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2200)}
+
+/* ---------------- render ---------------- */
+const TABS=[['home','list','홈'],['community','chat','커뮤니티'],['mentor','mentor','멘토링'],['benefit','gift','혜택'],['my','user','마이']];
+let lastKey='';
+function render(keepScroll){
+  const key=S.screen+S.tab+S.detail;
+  const sc=view.querySelector('.scroll'); const top=sc&&keepScroll&&key===lastKey?sc.scrollTop:0;
+  view.innerHTML=SCREENS[S.screen]();
+  const ns=view.querySelector('.scroll'); if(ns) ns.scrollTop=top;
+  lastKey=key;
+  const tb=$('#tabbar'); const showTabs=S.screen==='app';
+  tb.hidden=!showTabs;
+  if(showTabs) tb.innerHTML=TABS.map(([k,i,l])=>`<button class="${S.tab===k?'on':''}" data-act="tab" data-v="${k}" aria-current="${S.tab===k?'page':'false'}">${ic(i,24)}${l}</button>`).join('');
+  renderJump();
+}
+const JUMPS=[['시작 화면',{screen:'splash'}],['학교 정보 입력',{screen:'profile'}],['프로그램 선택',{screen:'program'}],['홈 · 맞춤 체크리스트',{screen:'app',tab:'home'}],['항목 상세 · 공식 출처',{screen:'detail',detail:'visa'}],['커뮤니티',{screen:'app',tab:'community'}],['인증 멘토링',{screen:'app',tab:'mentor'}],['출국 준비 혜택',{screen:'app',tab:'benefit'}],['멘토 인증 절차',{screen:'mentorApply'}]];
+function curJump(){return JUMPS.findIndex(([,j])=>j.screen===S.screen&&(!j.tab||j.tab===S.tab))}
+function renderJump(){
+  const c=curJump();
+  $('#jump').innerHTML=JUMPS.map(([l],k)=>`<button class="${k===c?'on':''}" data-jump="${k}"><span class="n">${k+1}</span>${l}</button>`).join('');
+}
+function go(screen){S.screen=screen; if(screen!=='detail')S.detail=null; closeSheet(); render()}
+
+/* ---------------- events ---------------- */
+document.addEventListener('click',e=>{
+  const j=e.target.closest('[data-jump]');
+  if(j){const t=JUMPS[+j.dataset.jump][1]; Object.assign(S,t); if(t.screen==='detail'&&!items().some(i=>i.id===t.detail)) S.detail=items()[2].id; if(t.screen!=='detail')S.detail=null; closeSheet(); render(); return}
+  const g=e.target.closest('[data-go]');
+  if(g){ if(S.screen==='login'){const v=$('#email');if(v)S.email=v.value} go(g.dataset.go); return}
+  const a=e.target.closest('[data-act]'); if(!a) return;
+  const v=a.dataset.v, act=a.dataset.act;
+  if(act.startsWith('go:')) return go(act.slice(3));
+  switch(act){
+    case 'back': go('app'); break;
+    case 'year': S.profile.year=v; render(true); break;
+    case 'region': S.region=v; if(host().region!==v){S.hostId=HOSTS.find(h=>h.region===v).id;} render(true); break;
+    case 'host': S.hostId=v; render(true); break;
+    case 'prog': S.progId=v; render(true); break;
+    case 'build': S.posts=null; S.done=new Set(['app','eng']); S.screen='building'; render(); setTimeout(()=>{S.screen='app';S.tab='home';render()},1100); break;
+    case 'tab': S.tab=v; S.screen='app'; S.detail=null; closeSheet(); render(); break;
+    case 'filter': S.filter=v; render(true); break;
+    case 'open': S.detail=v; go('detail'); break;
+    case 'toggleDone': {const was=S.done.has(v); was?S.done.delete(v):S.done.add(v); render(true); if(!was) toast('완료로 표시했어요'); break}
+    case 'remind': S.remind.has(v)?S.remind.delete(v):S.remind.add(v); render(true); toast(S.remind.has(v)?'마감 알림을 켰어요':'마감 알림을 껐어요'); break;
+    case 'flag': toast('변경 제보를 받았어요. 운영팀이 확인 후 반영해요'); break;
+    case 'toast': toast(v); break;
+    case 'ctab': S.ctab=v; render(true); break;
+    case 'share': {const P=S.profile; S.posts.unshift({type:'status',who:'나',meta:`${P.major} ${P.year}`,tag:v,text:`${v}! 같이 준비하는 분들 화이팅이에요.`,time:'방금',likes:0}); render(); toast('준비 현황을 공유했어요'); break}
+    case 'ask': {const q=$('#qInput'); const t=q&&q.value.trim(); if(!t){q&&q.focus();return} const P=S.profile; S.posts.unshift({type:'q',who:'나',meta:`${P.major} ${P.year}`,text:t,time:'방금',answers:0}); render(); toast('질문을 올렸어요'); break}
+    case 'like': {const k=+v; S.liked.has(k)?S.liked.delete(k):S.liked.add(k); render(true); break}
+    case 'mentor': openMentorSheet(+v); break;
+    case 'closeSheet': closeSheet(); break;
+    case 'slot': S.slot=+v; $('#sheet')._draw(); break;
+    case 'book': {const sl=$('#sheet')._slots[S.slot]; S.booked[S.mentorSheet]=sl; const m=mentorsFor()[S.mentorSheet]; closeSheet(); render(true); toast(`${m.name} 멘토와 ${fmtShort(sl.d)} ${sl.hh}:00 예약했어요`); break}
+    case 'bcat': S.bcat=S.bcat===v?'전체':v; render(true); break;
+    case 'changeProg': S.region=host().region; go('program'); break;
+    case 'ap0': {const em=$('#apEmail').value.trim(); if(!/^[^@\s]+@[^@\s]+\.ac\.kr$/.test(em)){toast('ac.kr로 끝나는 학교 이메일을 입력하세요');return} S.apply.email=em; S.apply.step=1; render(true); toast('학교 이메일을 인증했어요'); break}
+    case 'ap1': S.apply.step=2; render(true); toast('수료 증빙을 제출했어요'); break;
+    case 'ap2': S.apply.step=3; render(true); toast('인증 멘토 배지가 발급됐어요'); break;
+  }
+});
+document.addEventListener('change',e=>{
+  const m=e.target.dataset.model; if(m){S.profile[m]=e.target.value}
+  if(e.target.id==='apFile'&&e.target.files[0]){S.apply.file=e.target.files[0].name; render(true)}
+});
+document.addEventListener('input',e=>{const m=e.target.dataset.model; if(m) S.profile[m]=e.target.value; if(e.target.id==='email') S.email=e.target.value});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet(); if(e.key==='Enter'&&e.target.id==='qInput') document.querySelector('[data-act="ask"]').click()});
+
+$('#sideIcon').innerHTML=ic('plane',20,2);
+render();
+</script>
+
+</body>
+</html>
