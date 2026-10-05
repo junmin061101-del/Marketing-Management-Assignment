@@ -567,6 +567,7 @@ function pagesOf(h){
     exch:find('exch',`${h.short} · Incoming exchange students`,'incoming exchange students'),
     summer:find('summer',SUMMER_NAME[h.name]||`${h.short} · Summer & short-term programs`,'summer school international students'),
     housing:find('housing',`${h.short} · Student housing`,'student housing'),
+    health:find('health',`${h.short} · Immunization requirements`,'immunization requirements international students'),
     home:{label:`${h.short} · Official website`,url:h.url||'https://www.google.com/search?q='+encodeURIComponent(h.name),verified:true}
   };
 }
@@ -674,6 +675,51 @@ function visaGuide(h,p){
     {t:'Gather your documents',d:'Most student visa applications ask for the same core set.',need:['Passport (valid beyond your stay)','Admission letter','Proof of funds','Health insurance','ID photos','Proof of accommodation']},
     {t:'Apply and book any appointment',d:'Submit online or at the embassy in Seoul. Processing can take several weeks, so apply as soon as your admission letter arrives.'},
     {t:'Register after arrival',d:'Many countries ask you to register your address or collect a residence card within days of arriving. Check the deadline.'}]};
+}
+
+
+/* ---------------- immunizations ---------------- */
+const KDCA=L('KDCA Immunization Helper · English certificate (예방접종도우미)','https://nip.kdca.go.kr/irhp/mngm/goVcntMngm.do?menuLv=3&menuCd=341');
+const GOV24=L('Gov24 · Vaccination certificate (정부24)','https://www.gov.kr/mw/AA020InfoCappView.do?CappBizCD=14600000398');
+function healthGuide(h,p){
+  const pg=pagesOf(h), cc=h.cc;
+  const cert={t:'Get your English vaccination certificate',d:'Print it free online from KDCA’s Immunization Helper or Gov24. It lists every shot recorded in Korea’s national registry. Childhood records from before the 2000s can be incomplete, so check it carefully.',link:KDCA};
+  const check={t:'Check what your host asks for',d:'The student health center lists required vaccines, deadlines and any form you must use.',link:pg.health};
+  const clinic={t:'Fill any gaps at a clinic',d:'Visit a hospital international clinic (국제진료센터) or travel clinic for missing doses, or a blood titer test that proves immunity. Some vaccines need doses 4+ weeks apart, so start early.'};
+  const pack={t:'Pack a copy',d:'Keep the English certificate in your carry-on and a scan on your phone. Dorms and clinics abroad sometimes ask for it.'};
+  if(h.region==='us') return {title:'Submit immunization records',
+    sum:`Most U.S. universities require proof of vaccinations before you can register, and many ask international students for a TB screening. Missing records usually put a hold on your registration${p.long?'':' or program check-in'}.`,
+    rows:[['MMR','2 doses (measles, mumps, rubella)'],['Meningococcal','MenACWY, often required for students in housing'],['Tdap','Within the last 10 years'],['TB','Screening form; blood test (IGRA) if required'],['Sometimes','Varicella, Hepatitis B, COVID-19']],
+    steps:[check,cert,{...clinic,need:['MMR ×2','MenACWY','Tdap','Varicella (if no history)','Hepatitis B (some schools)']},
+      {t:'Take a TB test if required',d:'Many schools ask students from Korea for an IGRA blood test (or skin test). A positive result needs a chest X-ray. Results usually must be recent, so check the time window.'},
+      {t:'Have a doctor sign the host’s form',d:'Many schools use their own immunization form, completed and signed by a doctor in English.'},
+      {t:'Upload to the student health portal',d:'Upload everything before the deadline to avoid a registration hold.',link:pg.health}],
+    links:[lk(pg.health),lk(KDCA),lk(GOV24)]};
+  if(h.region==='ca') return {title:'Check immunization requirements',
+    sum:'Canada does not require vaccines for entry, but some universities and residences ask for immunization records, especially for health-related programs.',
+    rows:[['Entry','No vaccine requirement'],['Often asked','MMR, MenACWY (residence), Tdap'],['Health programs','Hepatitis B, TB test']],
+    steps:[check,cert,clinic,pack],links:[lk(pg.health),lk(KDCA),lk(GOV24)]};
+  if(cc==='GB') return {title:'Get recommended vaccinations',
+    sum:'The NHS recommends MenACWY and MMR vaccines before starting university, because meningitis and measles spread easily in student housing.',
+    rows:[['Entry','No vaccine requirement'],['Recommended','MenACWY, MMR ×2']],
+    steps:[{t:'Check the NHS recommendations',d:'Read why students are advised to have MenACWY and MMR.',link:L('NHS · MenACWY vaccine','https://www.nhs.uk/vaccinations/menacwy-vaccine/')},cert,clinic,pack],
+    links:[lk(L('NHS · MenACWY vaccine','https://www.nhs.uk/vaccinations/menacwy-vaccine/')),lk(L('NHS · MMR vaccine','https://www.nhs.uk/vaccinations/mmr-vaccine/')),lk(KDCA)]};
+  if(cc==='CN'&&p.year) return {title:'Complete your physical examination',
+    sum:'X1 visa holders need a Foreigner Physical Examination Record for the residence permit. Many students do the check at the local International Travel Healthcare Center after arrival.',
+    rows:[['Who','X1 visa (over 180 days)'],['Includes','Blood test, chest X-ray, ECG'],['When','Before applying for the residence permit']],
+    steps:[{t:'Ask the host which option to use',d:'Some hosts accept an exam done in Korea on the official form; others send you to a local center after arrival.',link:pg.intl},cert,pack],links:[lk(pg.intl),lk(KDCA)]};
+  if(cc==='TW'&&p.long) return {title:'Get a health certificate',
+    sum:'Resident visa applicants for Taiwan submit a health certificate from an approved hospital, including a chest X-ray and proof of measles and rubella immunity.',
+    rows:[['Who','Resident visa applicants'],['Includes','Chest X-ray, measles & rubella immunity'],['Where','Approved hospital in Korea']],
+    steps:[{t:'Check the form with the Taipei Mission',d:'Download the current health certificate form and list of approved hospitals.',link:L('Taipei Mission in Korea','https://www.roc-taiwan.org/kr_en/')},cert,clinic],links:[lk(L('Taipei Mission in Korea','https://www.roc-taiwan.org/kr_en/')),lk(KDCA)]};
+  if(cc==='SG') return {title:'Prepare a medical report if asked',
+    sum:"ICA may ask Student's Pass applicants for a medical examination report. Your IPA letter says whether you need one.",
+    rows:[['Who','Only if stated in your IPA letter'],['Includes','Chest X-ray, HIV test (if requested)']],
+    steps:[{t:'Read your IPA letter',d:'It lists any medical report you must bring to ICA.',link:L("ICA · Student's Pass",'https://www.ica.gov.sg/reside/STP')},cert,pack],links:[lk(L("ICA · Student's Pass",'https://www.ica.gov.sg/reside/STP')),lk(KDCA)]};
+  return {title:'Check immunization requirements',
+    sum:`${h.country} has no vaccine requirement for Korean students entering the country, but some universities and dorms ask for records, especially for lab or health courses.${cc==='NL'?' Korean citizens are exempt from the Dutch TB test.':''}`,
+    rows:[['Entry','No vaccine requirement'],['Sometimes asked','MMR, Hepatitis B, TB screening']].concat(cc==='NL'?[['TB test (IND)','Exempt for Korean citizens']]:[]),
+    steps:[check,cert,pack],links:[lk(pg.health),lk(KDCA),lk(GOV24)]};
 }
 
 /* ---------------- checklist ---------------- */
@@ -807,6 +853,8 @@ function buildChecklist(h,p){
       links:[lk(pg.exch)]});
   }
 
+  const hg=healthGuide(h,p);
+  add({id:'health',cat:'Health',title:hg.title,off:long?55:40,sum:hg.sum,rows:hg.rows,steps:hg.steps,links:hg.links});
   add({id:'housing',cat:'Living',title:'Apply for housing',off:long?60:35,
     sum:'Apply through the host’s housing portal first. If you are waitlisted, look at off-campus options in parallel. Never pay a deposit before you have seen the contract.',
     rows:[['First choice','Host university housing'],['If waitlisted','Verified platforms, past students’ reviews'],['Watch out','Pay deposits only after checking the contract']],
@@ -850,7 +898,7 @@ const S={
   pick:null,
   host:makeHost(['University of Washington','US','http://www.washington.edu/']),
   progId:'exS', pickProg:'exS',
-  done:new Set(), remind:new Set(['fin','i20','sevis','ds160','appt','visa','housing','eta','permit']),
+  done:new Set(), remind:new Set(['health','fin','i20','sevis','ds160','appt','visa','housing','eta','permit']),
   ctab:'status', liked:new Set(), bcat:'All',
   booked:{}, slot:null, mentorSheet:null,
   apply:{step:0,email:'',file:''},
@@ -1040,7 +1088,7 @@ function homeTab(){
   const doneN=list.filter(i=>S.done.has(i.id)).length;
   const pct=Math.round(doneN/list.length*100);
   const next=list.find(i=>!S.done.has(i.id));
-  const cats=['All','Apply','Visa','Living','Academics','Arrival'].filter(c=>c==='All'||list.some(i=>i.cat===c));
+  const cats=['All','Apply','Visa','Health','Living','Academics','Arrival'].filter(c=>c==='All'||list.some(i=>i.cat===c));
   const shown=S.filter==='All'?list:list.filter(i=>i.cat===S.filter);
   return `<div class="bar main"><h2>My prep</h2><button class="iconbtn" data-act="toast" data-v="${S.remind.size} reminders are on" aria-label="Notifications">${ic('bell')}</button></div>
   <div class="scroll pad">
