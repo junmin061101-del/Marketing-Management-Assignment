@@ -1,22 +1,22 @@
 <!doctype html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="description" content="교환학생·썸머스쿨 합격 후 출국까지 준비를 한 곳에서 챙기는 OneStep Abroad 앱 프로토타입">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>교환가자</title>
+<meta name="description" content="교환가자 — a post-selection preparation app for exchange and summer school students: personalized checklist, program community, verified mentors and departure perks.">
 <meta name="theme-color" content="#14DBBA">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Crect width=%2724%27 height=%2724%27 rx=%276%27 fill=%27%2314DBBA%27/%3E%3Cpath d=%27M5 11.8 19 5l-5 14-2.5-5.7L5 11.8Z%27 fill=%27white%27/%3E%3C/svg%3E">
-<title>OneStep Abroad</title>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&family=Roboto:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Roboto:wght@400;500;700;900&display=swap">
 <style>
-/* Layout: one phone-sized app frame on a quiet mint stage, with a screen index beside it on wide screens. */
+/* Layout: a true-size iPhone (393 × 852 pt) on a quiet mint stage, with a screen index beside it on wide screens. */
 :root{
   --mint:#14DBBA;          /* 김과외 brand mint */
-  --primary:#10BA9D;       /* buttons, filled states */
+  --primary:#10BA9D;
   --primary-press:#0D9F86;
-  --primary-ink:#0A8A74;   /* mint text on white */
+  --primary-ink:#0A8A74;
   --primary-soft:#E6FBF7;
   --primary-line:#B8F1E6;
   --navy:#012743;          /* 김과외 deep navy */
@@ -34,6 +34,7 @@
   --shadow:0 6px 24px rgba(1,39,67,.08);
   --glow:0 18px 60px rgba(20,219,186,.45);
   --font:'Roboto','Noto Sans KR',system-ui,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  --sab:34px;              /* iPhone home-indicator safe area */
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --primary:#14C7A8; --primary-press:#10B095; --primary-ink:#45E3C8; --primary-soft:#0F2C28; --primary-line:#1C4C44;
@@ -54,7 +55,7 @@
 
 html,body{height:100%}
 body{margin:0;background:var(--stage);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.5;
-  display:flex;align-items:center;justify-content:center;gap:64px;padding:24px 16px;box-sizing:border-box;min-height:100%;-webkit-font-smoothing:antialiased}
+  display:flex;align-items:center;justify-content:center;gap:64px;padding:16px;box-sizing:border-box;min-height:100%;-webkit-font-smoothing:antialiased}
 *,*::before,*::after{box-sizing:border-box}
 [hidden]{display:none!important}
 button,input,select,textarea{font:inherit;color:inherit}
@@ -64,30 +65,35 @@ h1,h2,h3{margin:0;text-wrap:balance;letter-spacing:-.02em}
 p{margin:0}
 .ic{flex:none;display:block}
 .num{font-variant-numeric:tabular-nums}
+.ko{font-family:'Noto Sans KR',var(--font)}
 
 /* ---------- side index ---------- */
 .side{width:280px;display:flex;flex-direction:column;gap:20px}
 .side .brand{display:flex;align-items:center;gap:12px}
-.side .brand b{font-size:22px;font-weight:900;letter-spacing:-.03em}
+.side .brand b{font-size:24px;font-weight:900;letter-spacing:-.03em}
 .side p.lead{color:var(--ink-2);font-size:14px}
-.side h4{margin:0;font-size:12px;letter-spacing:.08em;color:var(--ink-3);font-weight:700}
+.side h4{margin:0;font-size:12px;letter-spacing:.08em;color:var(--ink-3);font-weight:700;text-transform:uppercase}
 .jump{display:flex;flex-direction:column;gap:4px}
-.jump button{display:flex;align-items:center;gap:10px;text-align:left;padding:9px 12px;border-radius:12px;color:var(--ink-2);font-size:14px;font-weight:500}
-.jump button span.n{width:22px;height:22px;border-radius:50%;background:var(--bg);display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--ink-3)}
+.jump button{display:flex;align-items:center;gap:10px;text-align:left;padding:8px 12px;border-radius:12px;color:var(--ink-2);font-size:14px;font-weight:500}
+.jump button span.n{width:22px;height:22px;border-radius:50%;background:var(--bg);display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--ink-3);flex:none}
 .jump button:hover{background:var(--bg);color:var(--ink)}
 .jump button.on{background:var(--bg);color:var(--ink);font-weight:700;box-shadow:var(--shadow)}
 .jump button.on span.n{background:var(--primary);color:var(--on-primary)}
 .side .note{font-size:12px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:14px}
 
-/* ---------- phone ---------- */
-.phone{position:relative;width:390px;height:min(844px,calc(100vh - 48px));min-height:640px;background:var(--bg);border:10px solid var(--bezel);border-radius:48px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(1,39,67,.18);flex:none}
-.status{height:44px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font-size:14px;font-weight:700}
-.status .sys{display:flex;gap:5px;align-items:center}
+/* ---------- device: iPhone 15 / 16, 393 × 852 pt ---------- */
+.device{position:relative;padding:12px;background:var(--bezel);border-radius:68px;box-shadow:0 30px 80px rgba(1,39,67,.2);flex:none;zoom:var(--z,1)}
+.phone{position:relative;width:393px;height:852px;background:var(--bg);border-radius:56px;overflow:hidden;display:flex;flex-direction:column}
+.status{height:54px;flex:none;display:grid;grid-template-columns:1fr 126px 1fr;align-items:center;font-size:16px;font-weight:700;padding:0 8px}
+.status .time{text-align:center;letter-spacing:-.01em}
+.status .island{height:37px;border-radius:20px;background:#000;margin-top:-2px}
+.status .sys{display:flex;gap:6px;align-items:center;justify-content:center}
+.homebar{position:absolute;left:50%;bottom:8px;width:134px;height:5px;border-radius:3px;background:var(--ink);transform:translateX(-50%);z-index:40;pointer-events:none;opacity:.9}
 #view{flex:1;min-height:0;display:flex;flex-direction:column;position:relative}
 .scroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
 .scroll::-webkit-scrollbar{display:none}
 .pad{padding:8px 20px 28px}
-.cta{flex:none;padding:12px 20px 20px;background:var(--bg)}
+.cta{flex:none;padding:12px 20px calc(12px + var(--sab));background:var(--bg)}
 .btn{width:100%;height:54px;border-radius:16px;background:var(--primary);color:var(--on-primary);font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 16px rgba(16,186,157,.28);transition:background .15s,transform .1s}
 .btn:hover{background:var(--primary-press)}
 .btn:active{transform:scale(.985)}
@@ -95,60 +101,95 @@ p{margin:0}
 .btn.ghost{background:var(--surface);color:var(--ink);box-shadow:none}
 .btn.sm{height:40px;border-radius:12px;font-size:14px;width:auto;padding:0 16px}
 
-/* top bar */
 .bar{flex:none;height:52px;display:flex;align-items:center;gap:8px;padding:0 12px 0 8px}
 .bar h2{font-size:17px;font-weight:700;flex:1}
 .iconbtn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--ink)}
 .iconbtn:hover{background:var(--surface)}
 .bar.main{padding:0 12px 0 20px}
-.bar.main h2{font-size:22px;font-weight:800}
+.bar.main h2{font-size:26px;font-weight:800}
 
 /* onboarding */
-.splash{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;text-align:center}
+.splash{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;text-align:center;padding:0 24px}
 .appicon{width:120px;height:120px;border-radius:32px;background:var(--mint);display:grid;place-items:center;color:#fff;box-shadow:var(--glow)}
 .appicon.sm{width:36px;height:36px;border-radius:11px;box-shadow:none}
-.splash h1{font-size:36px;font-weight:900;letter-spacing:-.04em;margin-top:6px}
+.splash h1{font-family:'Noto Sans KR',var(--font);font-size:40px;font-weight:900;letter-spacing:-.04em;margin-top:6px}
 .splash p{color:var(--ink-2);font-size:16px;margin-top:6px}
-.ob-title{font-size:24px;font-weight:800;line-height:1.35;margin-top:4px}
+.ob-title{font-size:26px;font-weight:800;line-height:1.3;margin-top:4px}
 .ob-sub{color:var(--ink-2);font-size:14px;margin-top:8px}
 .steps{display:flex;gap:6px;margin:4px 0 22px}
 .steps i{height:4px;flex:1;border-radius:4px;background:var(--line)}
 .steps i.on{background:var(--primary)}
 .field{display:flex;flex-direction:column;gap:8px;margin-top:22px}
-.field label{font-size:13px;font-weight:700;color:var(--ink-2)}
+.field label,.field .lbl{font-size:13px;font-weight:700;color:var(--ink-2)}
 .input{height:54px;border-radius:14px;border:1px solid var(--line);background:var(--bg);padding:0 16px;font-size:16px;width:100%}
 .input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
-select.input{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--ink-3) 50%),linear-gradient(135deg,var(--ink-3) 50%,transparent 50%);background-position:calc(100% - 22px) 24px,calc(100% - 16px) 24px;background-size:6px 6px;background-repeat:no-repeat}
+.search{position:relative}
+.search .ic{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--ink-3);pointer-events:none}
+.search .input{padding-left:46px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{height:38px;padding:0 16px;border-radius:19px;border:1px solid var(--line);font-size:14px;font-weight:500;color:var(--ink-2);background:var(--bg);white-space:nowrap}
 .chip.on{background:var(--primary-soft);border-color:var(--primary);color:var(--primary-ink);font-weight:700}
 .chip.sm{height:32px;padding:0 12px;font-size:13px}
-.divider{display:flex;align-items:center;gap:12px;color:var(--ink-3);font-size:12px;margin:22px 0 14px}
+.chip small{font-weight:500;color:var(--ink-3);margin-left:4px}
+.hscroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -20px;padding:0 20px}
+.hscroll::-webkit-scrollbar{display:none}
+.divider{display:flex;align-items:center;gap:12px;color:var(--ink-3);font-size:12px;margin:22px 0 14px;text-transform:uppercase;letter-spacing:.06em}
 .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line)}
 .social{display:flex;flex-direction:column;gap:10px}
 .social button{height:52px;border-radius:14px;border:1px solid var(--line);font-weight:500;font-size:15px}
 .social button:hover{background:var(--surface)}
+.picked{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:14px;border:1.5px solid var(--primary);background:var(--primary-soft)}
+.picked .t{flex:1;min-width:0;font-weight:700}
+.picked .t small{display:block;font-weight:500;color:var(--ink-2);font-size:12px}
+.picked button{font-size:13px;font-weight:700;color:var(--primary-ink)}
+.sugg{border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.sugg button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);font-size:14px}
+.sugg button:last-child{border-bottom:0}
+.sugg button:hover{background:var(--surface)}
+.sugg .empty{padding:14px;color:var(--ink-3);font-size:13px}
+.sugg mark,.srow mark{background:none;color:var(--primary-ink);font-weight:800}
 
-.seg{display:grid;grid-template-columns:repeat(3,1fr);background:var(--surface);border-radius:14px;padding:4px;gap:4px}
+.seg{display:grid;grid-template-columns:repeat(var(--n,3),1fr);background:var(--surface);border-radius:14px;padding:4px;gap:4px}
 .seg button{height:40px;border-radius:11px;font-weight:600;color:var(--ink-2);font-size:14px}
 .seg button.on{background:var(--bg);color:var(--ink);font-weight:700;box-shadow:0 1px 4px rgba(1,39,67,.1)}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
-.uni{display:flex;align-items:center;gap:10px;padding:14px 12px;border:1px solid var(--line);border-radius:16px;text-align:left;min-width:0;background:var(--bg)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.uni{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:16px;text-align:left;min-width:0;background:var(--bg)}
 .uni.on{border-color:var(--primary);background:var(--primary-soft)}
-.mono{width:40px;height:40px;border-radius:12px;background:var(--surface);color:var(--navy);display:grid;place-items:center;font-weight:900;font-size:12px;letter-spacing:-.02em;flex:none}
-.uni.on .mono{background:var(--bg);color:var(--primary-ink)}
+.mono{width:40px;height:40px;border-radius:12px;background:var(--surface);color:var(--navy);display:grid;place-items:center;font-weight:900;font-size:12px;letter-spacing:-.03em;flex:none;overflow:hidden}
+.uni.on .mono,.srow.on .mono{background:var(--bg);color:var(--primary-ink)}
 .uni .t{min-width:0}
-.uni small{display:block;font-size:12px;color:var(--ink-3)}
-.uni b{display:block;font-size:14px;font-weight:700;line-height:1.3;overflow-wrap:anywhere}
-.prog{display:flex;flex-direction:column;gap:10px;margin-top:12px}
-.radio{display:flex;align-items:center;gap:14px;padding:16px;border:1px solid var(--line);border-radius:16px;text-align:left;background:var(--bg)}
-.radio.on{border-color:var(--primary);background:var(--primary-soft)}
-.radio .dot{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);flex:none;display:grid;place-items:center}
-.radio.on .dot{border-color:var(--primary);background:var(--primary)}
-.radio.on .dot::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--on-primary)}
-.radio b{display:block;font-size:15px}
-.radio small{color:var(--ink-2);font-size:13px}
-.sect-label{font-size:13px;font-weight:700;color:var(--ink-2);margin-top:26px}
+.uni small{display:block;font-size:11px;color:var(--ink-3)}
+.uni b{display:block;font-size:13px;font-weight:700;line-height:1.3;overflow-wrap:anywhere}
+.sect-label{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;font-weight:700;color:var(--ink-2);margin:24px 0 10px}
+.sect-label span{font-weight:500;color:var(--ink-3)}
+.srow{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:10px 8px;border-radius:14px}
+.srow:hover{background:var(--surface)}
+.srow.on{background:var(--primary-soft)}
+.srow .t{flex:1;min-width:0}
+.srow b{display:block;font-size:14px;font-weight:600;line-height:1.35;overflow-wrap:anywhere}
+.srow small{display:block;font-size:12px;color:var(--ink-3)}
+.srow .ok{color:var(--primary-ink)}
+.more{width:100%;height:44px;border-radius:12px;background:var(--surface);font-weight:700;font-size:14px;color:var(--ink-2);margin-top:8px}
+.loadmsg{padding:24px 0;text-align:center;color:var(--ink-3);font-size:14px}
+
+.school-card{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:18px;background:var(--surface)}
+.school-card .mono{background:var(--bg);color:var(--primary-ink);width:46px;height:46px}
+.school-card .t{flex:1;min-width:0}
+.school-card b{display:block;font-size:15px;line-height:1.3}
+.school-card small{color:var(--ink-2);font-size:13px}
+.school-card button{font-size:13px;font-weight:700;color:var(--primary-ink);flex:none}
+.popt{display:block;width:100%;text-align:left;padding:16px;border:1px solid var(--line);border-radius:18px;background:var(--bg);margin-top:10px}
+.popt.on{border-color:var(--primary);background:var(--primary-soft);box-shadow:0 0 0 1px var(--primary) inset}
+.popt .h{display:flex;align-items:center;gap:10px}
+.popt .h .t{flex:1;min-width:0}
+.popt .h b{display:block;font-size:16px;font-weight:800}
+.radio-dot{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);flex:none;display:grid;place-items:center}
+.popt.on .radio-dot{border-color:var(--primary);background:var(--primary)}
+.popt.on .radio-dot::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--on-primary)}
+.popt p{font-size:14px;color:var(--ink-2);margin-top:8px;line-height:1.55}
+.popt dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:12px 0 0;font-size:13px}
+.popt dt{color:var(--ink-3)}
+.popt dd{margin:0;font-weight:600}
 .loading{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:0 32px}
 .loading .appicon{animation:pulse 1.1s ease-in-out infinite}
 @keyframes pulse{50%{transform:scale(.92)}}
@@ -161,18 +202,17 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 .hero .top b{display:block;font-size:16px;font-weight:800;line-height:1.3}
 .hero .top small{color:var(--ink-2);font-size:13px}
 .hero .dday{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
-.hero .dday .big{font-family:'Roboto',sans-serif;font-size:44px;font-weight:900;line-height:1;color:var(--primary-ink);letter-spacing:-.03em}
+.hero .dday .big{font-size:46px;font-weight:900;line-height:1;color:var(--primary-ink);letter-spacing:-.03em}
 .hero .dday small{display:block;color:var(--ink-2);font-size:13px;margin-bottom:4px}
 .hero .dday .r{text-align:right;font-size:13px;color:var(--ink-2)}
 .hero .dday .r b{display:block;color:var(--ink);font-size:15px}
 .meter{height:8px;border-radius:8px;background:var(--bg);overflow:hidden}
 .meter i{display:block;height:100%;background:var(--primary);border-radius:8px;transition:width .35s}
 .next{margin-top:14px;display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:18px;border:1px solid var(--line);text-align:left;width:100%}
-.next .lbl{font-size:12px;font-weight:700;color:var(--warn)}
+.next .lbl{font-size:12px;font-weight:700;color:var(--warn);text-transform:uppercase;letter-spacing:.04em}
 .next b{display:block;font-size:15px}
 .next .t{flex:1;min-width:0}
-.filters{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:24px -20px 6px;padding:0 20px}
-.filters::-webkit-scrollbar{display:none}
+.filters{margin:24px -20px 6px}
 .list-head{display:flex;justify-content:space-between;align-items:baseline;margin-top:22px}
 .list-head h3{font-size:18px;font-weight:800}
 .list-head span{font-size:13px;color:var(--ink-3)}
@@ -192,7 +232,6 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 .pill.ok{background:var(--primary-soft);color:var(--primary-ink)}
 .pill.warn{background:var(--warn-soft);color:var(--warn)}
 .pill.bad{background:var(--danger-soft);color:var(--danger)}
-.pill.navy{background:var(--navy);color:var(--bg)}
 .nudge{margin-top:22px;display:flex;gap:14px;align-items:center;padding:16px;border-radius:18px;background:var(--surface);text-align:left;width:100%}
 .nudge .t{flex:1;min-width:0}
 .nudge b{display:block;font-size:14px}
@@ -200,8 +239,8 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 .nudge .ico{width:44px;height:44px;border-radius:14px;background:var(--bg);display:grid;place-items:center;color:var(--primary-ink);flex:none}
 
 /* detail */
-.d-head{padding:4px 0 20px;border-bottom:8px solid var(--surface);margin:0 -20px;padding-left:20px;padding-right:20px}
-.d-head h1{font-size:24px;font-weight:800;line-height:1.35;margin-top:10px}
+.d-head{border-bottom:8px solid var(--surface);margin:0 -20px;padding:4px 20px 20px}
+.d-head h1{font-size:26px;font-weight:800;line-height:1.3;margin-top:10px}
 .d-head .when{display:flex;align-items:center;gap:8px;margin-top:12px;color:var(--ink-2);font-size:14px}
 .d-head .when b{color:var(--ink)}
 .d-sec{padding-top:22px}
@@ -228,29 +267,27 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 .switch::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .2s}
 .switch.on{background:var(--primary)}
 .switch.on::after{transform:translateX(20px)}
-.linkbtn{display:flex;align-items:center;gap:8px;color:var(--ink-2);font-size:14px;padding:16px 0}
+.linkbtn{display:flex;align-items:center;gap:8px;color:var(--ink-2);font-size:14px;padding:16px 0;text-align:left}
 .linkbtn:hover{color:var(--ink)}
-.cta.split{display:flex;gap:10px}
-.cta.split .btn.ghost{flex:0 0 120px}
 
 /* community */
 .peers{display:flex;gap:14px;overflow-x:auto;scrollbar-width:none;margin:0 -20px;padding:4px 20px 6px}
 .peers::-webkit-scrollbar{display:none}
-.peer{display:flex;flex-direction:column;align-items:center;gap:6px;width:62px;flex:none;text-align:center}
+.peer{display:flex;flex-direction:column;align-items:center;gap:6px;width:64px;flex:none;text-align:center}
 .ava{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:16px;color:var(--navy);background:var(--surface);position:relative;flex:none}
 .ring{padding:3px;border-radius:50%;background:conic-gradient(var(--primary) calc(var(--p)*1%),var(--line) 0)}
 .ring .ava{border:3px solid var(--bg);width:52px;height:52px}
-.peer small{font-size:12px;color:var(--ink-2);line-height:1.25}
-.peer small b{display:block;color:var(--ink);font-weight:700}
+.peer small{font-size:11px;color:var(--ink-2);line-height:1.25}
+.peer small b{display:block;color:var(--ink);font-weight:700;font-size:12px}
 .compose{margin-top:18px;padding:16px;border-radius:18px;border:1px solid var(--line)}
 .compose p{font-size:14px;font-weight:700;margin-bottom:10px}
-.compose .row{display:flex;gap:8px;margin-top:10px}
+.compose .row{display:flex;gap:8px}
 .compose .input{height:44px;font-size:14px;border-radius:12px}
 .post{padding:18px 0;border-bottom:1px solid var(--line)}
 .post .who{display:flex;align-items:center;gap:10px}
 .post .who .ava{width:36px;height:36px;font-size:13px}
 .post .who .t{flex:1;min-width:0}
-.post .who b{font-size:14px;display:flex;align-items:center;gap:6px}
+.post .who b{font-size:14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .post .who small{font-size:12px;color:var(--ink-3)}
 .post .txt{margin-top:10px;font-size:15px;line-height:1.6}
 .post .q{font-weight:700}
@@ -261,7 +298,7 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 .answer b{display:flex;align-items:center;gap:6px;font-size:13px;margin-bottom:4px}
 .badge{display:inline-flex;align-items:center;gap:3px;color:var(--primary-ink);font-size:12px;font-weight:700}
 
-/* mentoring */
+/* mentors */
 .mhero{border-radius:22px;background:var(--navy);color:var(--bg);padding:20px;display:flex;flex-direction:column;gap:12px}
 .mhero b{font-size:18px;font-weight:800;line-height:1.4}
 .mhero .flow{display:flex;gap:6px;flex-wrap:wrap}
@@ -269,8 +306,8 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 .mentor{display:flex;gap:14px;padding:18px 0;border-bottom:1px solid var(--line);text-align:left;width:100%}
 .mentor .ava{width:56px;height:56px;background:var(--primary-soft);color:var(--primary-ink)}
 .mentor .t{flex:1;min-width:0}
-.mentor .name{display:flex;align-items:center;gap:6px;font-weight:800;font-size:16px}
-.mentor .prog{font-size:13px;color:var(--ink-2);margin-top:2px}
+.mentor .name{display:flex;align-items:center;gap:6px;font-weight:800;font-size:16px;flex-wrap:wrap}
+.mentor .prog{display:block;font-size:13px;color:var(--ink-2);margin-top:2px}
 .mentor .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .mentor .bottom{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:13px}
 .mentor .rate{color:var(--ink-2);display:flex;align-items:center;gap:4px}
@@ -281,7 +318,7 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 /* sheet */
 .scrim{position:absolute;inset:0;background:rgba(1,20,30,.45);z-index:20;opacity:0;pointer-events:none;transition:opacity .2s}
 .scrim.on{opacity:1;pointer-events:auto}
-.sheet{position:absolute;left:0;right:0;bottom:0;z-index:21;background:var(--bg);border-radius:26px 26px 0 0;max-height:88%;display:flex;flex-direction:column;transform:translateY(102%);transition:transform .28s cubic-bezier(.2,.8,.2,1)}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:21;background:var(--bg);border-radius:28px 28px 0 0;max-height:88%;display:flex;flex-direction:column;transform:translateY(102%);transition:transform .28s cubic-bezier(.2,.8,.2,1)}
 .sheet.on{transform:none}
 .sheet .grab{width:40px;height:5px;border-radius:3px;background:var(--line);margin:10px auto 4px;flex:none}
 .sheet .scroll{padding:8px 20px 8px}
@@ -290,36 +327,38 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 .vitem .ic{color:var(--primary-ink);margin-top:2px}
 .vitem small{display:block;color:var(--ink-3);font-size:12px}
 .slots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.slots .chip{width:100%;padding:0;height:auto;padding-block:8px;border-radius:12px;display:flex;flex-direction:column;align-items:center;line-height:1.3}
-.slots .chip small{font-size:11px;font-weight:500;opacity:.8}
+.slots .chip{width:100%;height:auto;padding:8px 0;border-radius:12px;display:flex;flex-direction:column;align-items:center;line-height:1.3}
+.slots .chip small{font-size:11px;font-weight:500;opacity:.8;margin:0}
 .pay{border-radius:14px;background:var(--surface);padding:14px 16px;font-size:14px;display:flex;flex-direction:column;gap:6px}
 .pay div{display:flex;justify-content:space-between}
 .pay .tot{font-weight:800;font-size:16px;border-top:1px solid var(--line);padding-top:8px;margin-top:2px}
 .pay p{font-size:12px;color:var(--ink-3)}
 
-/* benefits */
-.cat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px}
+/* perks */
+.cat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .cat-row button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border-radius:16px;font-size:12px;font-weight:600;color:var(--ink-2)}
 .cat-row button .ico{width:46px;height:46px;border-radius:15px;background:var(--surface);display:grid;place-items:center;color:var(--ink-2)}
 .cat-row button.on{color:var(--ink)}
 .cat-row button.on .ico{background:var(--primary-soft);color:var(--primary-ink)}
-.offer{display:flex;gap:14px;padding:18px;border-radius:20px;border:1px solid var(--line);margin-top:12px;align-items:center}
-.offer .ico{width:52px;height:52px;border-radius:16px;background:var(--surface);display:grid;place-items:center;font-weight:900;color:var(--navy);font-size:13px;flex:none}
+.offer{display:flex;gap:14px;padding:16px;border-radius:20px;border:1px solid var(--line);margin-top:12px;align-items:center}
+.offer .ico{width:50px;height:50px;border-radius:16px;background:var(--surface);display:grid;place-items:center;font-weight:900;color:var(--navy);font-size:13px;flex:none}
 .offer .t{flex:1;min-width:0}
 .offer b{display:block;font-size:15px}
 .offer small{display:block;font-size:13px;color:var(--ink-2)}
-.offer .deal{font-size:13px;font-weight:800;color:var(--primary-ink);margin-top:4px}
+.offer .deal{display:block;font-size:13px;font-weight:800;color:var(--primary-ink);margin-top:4px}
 .why{margin-top:18px;font-size:12px;color:var(--ink-3);line-height:1.6}
+.sample{display:inline-flex;font-size:11px;font-weight:700;color:var(--ink-3);border:1px solid var(--line);border-radius:6px;padding:1px 6px}
 
-/* my */
+/* me */
 .me{display:flex;align-items:center;gap:14px;padding:6px 0 20px}
 .me .ava{width:60px;height:60px;font-size:20px;background:var(--primary-soft);color:var(--primary-ink)}
+.me .t{min-width:0}
 .me b{font-size:18px;font-weight:800;display:block}
 .me small{color:var(--ink-2);font-size:13px}
 .menu{border-top:8px solid var(--surface);margin:0 -20px;padding:0 20px}
 .menu button,.menu .m{display:flex;align-items:center;gap:12px;width:100%;padding:16px 0;border-bottom:1px solid var(--line);text-align:left;font-size:15px;font-weight:500}
 .menu button:last-child{border-bottom:0}
-.menu .t{flex:1}
+.menu .t{flex:1;min-width:0}
 .menu small{color:var(--ink-3);font-size:13px}
 .apply-card{display:flex;gap:14px;align-items:center;padding:18px;border-radius:20px;background:var(--navy);color:var(--bg);text-align:left;width:100%;margin-bottom:20px}
 .apply-card .t{flex:1}
@@ -339,51 +378,58 @@ select.input{appearance:none;background-image:linear-gradient(45deg,transparent 
 .vstep .act{margin-top:12px;display:flex;flex-direction:column;gap:8px}
 .vstep .act .row{display:flex;gap:8px}
 .vstep .act .input{height:46px;font-size:14px;border-radius:12px}
-.file{display:flex;align-items:center;justify-content:center;gap:8px;height:52px;border-radius:12px;border:1.5px dashed var(--primary-line);color:var(--primary-ink);font-weight:700;font-size:14px;cursor:pointer;background:var(--primary-soft)}
+.file{position:relative;display:flex;align-items:center;justify-content:center;gap:8px;height:52px;border-radius:12px;border:1.5px dashed var(--primary-line);color:var(--primary-ink);font-weight:700;font-size:14px;cursor:pointer;background:var(--primary-soft);padding:0 12px;text-align:center}
 .file input{position:absolute;width:1px;height:1px;opacity:0}
 
-/* tabbar */
-.tabbar{flex:none;display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line);background:var(--bg);padding:6px 6px 14px}
-.tabbar button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;font-size:11px;font-weight:600;color:var(--ink-3)}
+/* tab bar */
+.tabbar{flex:none;display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line);background:var(--bg);padding:6px 6px var(--sab)}
+.tabbar button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0 4px;font-size:11px;font-weight:600;color:var(--ink-3)}
 .tabbar button.on{color:var(--ink)}
 .tabbar button.on .ic{color:var(--primary-ink)}
-.tabbar button .dotw{position:relative}
-.tabbar button .dotw i{position:absolute;top:-2px;right:-4px;width:7px;height:7px;border-radius:50%;background:var(--danger)}
 
-.toast{position:absolute;left:20px;right:20px;bottom:96px;z-index:30;background:var(--ink);color:var(--bg);padding:14px 16px;border-radius:14px;font-size:14px;font-weight:500;display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(10px);pointer-events:none;transition:all .25s}
+.toast{position:absolute;left:20px;right:20px;bottom:calc(96px + var(--sab));z-index:30;background:var(--ink);color:var(--bg);padding:14px 16px;border-radius:14px;font-size:14px;font-weight:500;display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(10px);pointer-events:none;transition:all .25s}
 .toast.on{opacity:1;transform:none}
 .toast .ic{color:var(--mint)}
-.sample{display:inline-flex;font-size:11px;font-weight:700;color:var(--ink-3);border:1px solid var(--line);border-radius:6px;padding:1px 6px}
 
-@media (max-width:980px){.side{display:none}}
-@media (max-width:560px){
+@media (max-width:1000px){.side{display:none}}
+@media (max-width:500px){
+  :root{--sab:env(safe-area-inset-bottom,0px)}
   body{padding:0;display:block}
-  .phone{width:100%;height:100%;height:100dvh;min-height:0;border:0;border-radius:0;box-shadow:none;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-  .status{display:none}
+  .device{padding:0;border-radius:0;background:none;box-shadow:none;zoom:1;height:100%}
+  .phone{width:100%;height:100%;height:100dvh;border-radius:0;padding-top:env(safe-area-inset-top,0px)}
+  .status,.homebar{display:none}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
 
-<aside class="side" aria-label="화면 바로가기">
-  <div class="brand"><div class="appicon sm" id="sideIcon"></div><b>OneStep Abroad</b></div>
-  <p class="lead">교환학생·썸머스쿨 합격 후 출국까지 필요한 준비를 한 곳에서 챙기는 모바일 앱 프로토타입이에요. 오른쪽 화면을 직접 눌러 보거나 아래에서 바로 이동할 수 있어요.</p>
-  <h4>화면 바로가기</h4>
+<aside class="side" aria-label="Screen index">
+  <div class="brand"><div class="appicon sm" id="sideIcon"></div><b class="ko">교환가자</b></div>
+  <p class="lead">A clickable prototype of the app that takes exchange and summer school students from acceptance to departure. Tap through the phone, or jump to any screen below.</p>
+  <h4>Screens</h4>
   <div class="jump" id="jump"></div>
-  <p class="note">대학·멘토·제휴사·일정은 모두 예시 데이터예요. 기준일 2026.10.05 (월).</p>
+  <p class="note">University lists come from the open Hipo university-domains-list. Mentors, posts, partners and dates are sample data. Today is fixed at Oct 5, 2026.</p>
 </aside>
 
+<div class="device" id="device">
 <div class="phone" id="phone">
-  <div class="status"><span class="num">9:41</span><span class="sys">
-    <svg width="18" height="12" viewBox="0 0 18 12" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="1" fill="currentColor"/><rect x="5" y="5" width="3" height="7" rx="1" fill="currentColor"/><rect x="10" y="2.5" width="3" height="9.5" rx="1" fill="currentColor"/><rect x="15" y="0" width="3" height="12" rx="1" fill="currentColor"/></svg>
-    <svg width="26" height="12" viewBox="0 0 26 12" aria-hidden="true"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="17" height="8" rx="2" fill="currentColor"/><rect x="24" y="4" width="1.6" height="4" rx=".8" fill="currentColor" opacity=".5"/></svg>
-  </span></div>
+  <div class="status" aria-hidden="true">
+    <span class="time num">9:41</span>
+    <span class="island"></span>
+    <span class="sys">
+      <svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1" fill="currentColor"/><rect x="5" y="5" width="3" height="7" rx="1" fill="currentColor"/><rect x="10" y="2.5" width="3" height="9.5" rx="1" fill="currentColor"/><rect x="15" y="0" width="3" height="12" rx="1" fill="currentColor"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12"><path d="M8 11.5 5.6 9a3.4 3.4 0 0 1 4.8 0L8 11.5Zm-4.2-4.3L2.4 5.8a8 8 0 0 1 11.2 0l-1.4 1.4a6 6 0 0 0-8.4 0ZM.6 4 0 3.4a11.4 11.4 0 0 1 16 0l-.6.6-.8.8a10.2 10.2 0 0 0-14.4 0L.6 4Z" fill="currentColor"/></svg>
+      <svg width="27" height="13" viewBox="0 0 27 13"><rect x=".5" y=".5" width="23" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="18" height="9" rx="2" fill="currentColor"/><rect x="25" y="4.5" width="1.6" height="4" rx=".8" fill="currentColor" opacity=".5"/></svg>
+    </span>
+  </div>
   <div id="view"></div>
   <nav class="tabbar" id="tabbar" hidden></nav>
   <div class="scrim" id="scrim" data-act="closeSheet"></div>
-  <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Mentor booking"></div>
   <div class="toast" id="toast" role="status"></div>
+  <span class="homebar" aria-hidden="true"></span>
+</div>
 </div>
 
 <script>
@@ -395,7 +441,6 @@ const I={
   gift:'<rect x="3" y="8" width="18" height="5" rx="1"/><path d="M5 13v8h14v-8M12 8v13M12 8S10.5 3 8 4s-.5 4 4 4Zm0 0s1.5-5 4-4 .5 4-4 4Z"/>',
   user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>',
   back:'<path d="M15 18l-6-6 6-6"/>',
-  close:'<path d="M6 6l12 12M18 6 6 18"/>',
   bell:'<path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/>',
   check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
   ext:'<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
@@ -414,289 +459,420 @@ const I={
   sim:'<path d="M7 3h7l5 5v12a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><rect x="9" y="11" width="6" height="6" rx="1"/>',
   umbrella:'<path d="M3 12a9 9 0 0 1 18 0Z"/><path d="M12 12v7a2 2 0 0 1-4 0"/>',
   globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3Z"/>',
-  swap:'<path d="M7 4 3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/>'
+  swap:'<path d="M7 4 3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+  school:'<path d="M2 9l10-5 10 5-10 5L2 9Z"/><path d="M6 11v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/>'
 };
 const ic=(n,s=22,sw=2)=>`<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[n]}</svg>`;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rank=(name,q)=>{const n=name.toLowerCase();return n.startsWith(q)?0:new RegExp('\\b'+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).test(n)?1:2};
+const byRank=(arr,q,get)=>arr.map(x=>[rank(get(x),q),x]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+const hi=(name,q)=>{if(!q)return esc(name);const i=name.toLowerCase().indexOf(q.toLowerCase());return i<0?esc(name):esc(name.slice(0,i))+'<mark>'+esc(name.slice(i,i+q.length))+'</mark>'+esc(name.slice(i+q.length))};
 
 /* ---------------- dates ---------------- */
 const TODAY=new Date(2026,9,5);
 const D=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
 const addDays=(d,n)=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+n);
 const dd=d=>Math.round((d-TODAY)/864e5);
-const WD='일월화수목금토';
-const fmt=d=>`${d.getMonth()+1}월 ${d.getDate()}일 (${WD[d.getDay()]})`;
-const fmtShort=d=>`${d.getMonth()+1}/${d.getDate()}`;
-const dot=s=>s.replace(/-/g,'.');
+const WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const fmt=d=>`${MON[d.getMonth()]} ${d.getDate()} (${WD[d.getDay()]})`;
+const fmtY=d=>`${MON[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+const fmtShort=d=>`${MON[d.getMonth()]} ${d.getDate()}`;
 const ddLabel=n=>n===0?'D-DAY':n>0?`D-${n}`:`D+${-n}`;
 
-/* ---------------- data ---------------- */
-const REGIONS=[['asia','아시아'],['europe','유럽'],['us','미국']];
-const COUNTRY={
-  us:{name:'미국'},
-  be:{name:'벨기에',visa:[['벨기에 이민청 (Immigration Office)','https://dofi.ibz.be']],permit:'장기체류(D) 비자 → 도착 후 시청 거주 등록'},
-  nl:{name:'네덜란드',visa:[['네덜란드 이민귀화청 (IND)','https://ind.nl/en']],permit:'파견교가 IND에 거주허가 대리 신청'},
-  se:{name:'스웨덴',visa:[['스웨덴 이민청 (Migrationsverket)','https://www.migrationsverket.se/English']],permit:'학업 목적 거주허가 온라인 신청'},
-  sg:{name:'싱가포르',visa:[["싱가포르 이민국 (ICA) · Student's Pass",'https://www.ica.gov.sg']],permit:"Student's Pass (파견교 등록 후 SOLAR로 신청)"},
-  jp:{name:'일본',visa:[['일본 외무성 · 비자 안내','https://www.mofa.go.jp/j_info/visit/visa/']],permit:'재류자격인정증명서(COE) 수령 → 유학 비자 신청'},
-  hk:{name:'홍콩',visa:[['홍콩 입국사무처 (ImmD)','https://www.immd.gov.hk']],permit:'파견교 스폰서로 학생비자(entry permit) 신청'}
+/* ---------------- university data ---------------- */
+let DATA=null;
+let COUNTRIES={US:['United States','us'],CA:['Canada','ca']};
+const REGIONS=[['asia','Asia'],['us','USA'],['ca','Canada'],['europe','Europe']];
+const FEATURED={
+  us:['University of Washington','University of California, Berkeley','The University of Texas at Austin','University of North Carolina at Chapel Hill','Boston University','University of Southern California'],
+  ca:['University of Toronto','University of British Columbia','McGill University','University of Waterloo',"Queen's University",'York University'],
+  asia:['National University of Singapore','University of Tokyo','Waseda University','The University of Hong Kong','Peking University','National Taiwan University'],
+  europe:['KU Leuven','University of Amsterdam','Lund University','Bocconi University','Copenhagen Business School','University of Edinburgh']
 };
-const HOSTS=[
-  {id:'uw',region:'us',country:'us',name:'University of Washington',short:'UW',city:'미국 시애틀',url:'https://www.washington.edu'},
-  {id:'ucb',region:'us',country:'us',name:'UC Berkeley',short:'UCB',city:'미국 버클리',url:'https://www.berkeley.edu'},
-  {id:'uta',region:'us',country:'us',name:'UT Austin',short:'UT',city:'미국 오스틴',url:'https://www.utexas.edu'},
-  {id:'unc',region:'us',country:'us',name:'UNC Chapel Hill',short:'UNC',city:'미국 채플힐',url:'https://www.unc.edu'},
-  {id:'kul',region:'europe',country:'be',name:'KU Leuven',short:'KUL',city:'벨기에 루뱅',url:'https://www.kuleuven.be/english'},
-  {id:'uva',region:'europe',country:'nl',name:'University of Amsterdam',short:'UvA',city:'네덜란드 암스테르담',url:'https://www.uva.nl/en'},
-  {id:'lund',region:'europe',country:'se',name:'Lund University',short:'LU',city:'스웨덴 룬드',url:'https://www.lunduniversity.lu.se'},
-  {id:'eur',region:'europe',country:'nl',name:'Erasmus University Rotterdam',short:'EUR',city:'네덜란드 로테르담',url:'https://www.eur.nl/en'},
-  {id:'nus',region:'asia',country:'sg',name:'National University of Singapore',short:'NUS',city:'싱가포르',url:'https://www.nus.edu.sg'},
-  {id:'ntu',region:'asia',country:'sg',name:'Nanyang Technological University',short:'NTU',city:'싱가포르',url:'https://www.ntu.edu.sg'},
-  {id:'utokyo',region:'asia',country:'jp',name:'The University of Tokyo',short:'東大',city:'일본 도쿄',url:'https://www.u-tokyo.ac.jp/en/'},
-  {id:'hkust',region:'asia',country:'hk',name:'HKUST',short:'HKUST',city:'홍콩',url:'https://hkust.edu.hk'}
-];
-const programsOf=h=>[
-  {id:'ex',kind:'교환학생',term:h.id==='utokyo'?'2027 봄학기 (4월 개강)':'2027 봄학기',
-   dep:h.id==='utokyo'?'2027-03-28':{us:'2027-01-02',europe:'2027-01-30',asia:'2027-01-06'}[h.region],len:'1학기 · 약 5개월'},
-  {id:'ss',kind:'썸머스쿨',term:'2027 여름학기',dep:'2027-06-20',len:'4~6주'}
-];
+const STOP=new Set(['of','the','and','for','at','in','de','des','du','la','le','der','die','das','für','di','del','y','&','The','an','a','und','et']);
+function monoOf(n){
+  const p=n.match(/\(([A-Z]{2,5})\)/); if(p) return p[1];
+  const w=n.replace(/[(),.\-–/]/g,' ').split(/\s+/).filter(Boolean);
+  const cap=w.find(x=>/^[A-Z]{2,5}$/.test(x)); if(cap) return cap;
+  const s=w.filter(x=>!STOP.has(x)&&/^[A-Za-zÀ-ž]/.test(x)).map(x=>x[0].toUpperCase()).join('');
+  return (s||n.slice(0,2)).slice(0,4);
+}
+function makeHost([name,cc,url]){
+  const c=COUNTRIES[cc]||[cc,'asia'];
+  const head=name.split(' - ')[0];
+  return {name,cc,url:url||'',country:c[0],region:c[1],mono:monoOf(name),short:head.length<=32?head:name};
+}
+async function loadData(){
+  try{
+    const r=await fetch('data/universities.json'); DATA=await r.json(); COUNTRIES=DATA.countries;
+  }catch(e){ DATA={unis:[],kr:[],countries:COUNTRIES,error:true}; }
+  render(true);
+}
 
+/* ---------------- programs ---------------- */
+const PROGRAMS=[
+  {id:'exS',type:'Exchange',term:'Spring 2027',long:true,ex:true,season:'spring',
+    what:'Take regular semester courses alongside local students. You keep paying tuition to your home university, and approved courses transfer back as credit.',len:'1 semester (about 4–5 months)',credits:'12–18 credits',cost:'Home university tuition'},
+  {id:'exF',type:'Exchange',term:'Fall 2027',long:true,ex:true,season:'fall',
+    what:'Same as a spring exchange, starting with the host university’s fall term. Fall intakes usually come with a fuller orientation week.',len:'1 semester (about 4–5 months)',credits:'12–18 credits',cost:'Home university tuition'},
+  {id:'exY',type:'Exchange',term:'Academic Year 2027–28',long:true,ex:true,year:true,season:'fall',
+    what:'Spend two consecutive semesters as a full exchange student. Same tuition arrangement, a longer stay, and a full year of transferable credit.',len:'2 semesters (about 10 months)',credits:'24–36 credits',cost:'Home university tuition'},
+  {id:'visit',type:'Visiting student',term:'Fall 2027',long:true,ex:false,season:'fall',
+    what:'Enroll directly as a fee-paying visiting (study abroad) student. There is no exchange quota, but you pay the host university’s tuition yourself.',len:'1 semester',credits:'12–18 credits',cost:'Host tuition, self-funded'},
+  {id:'ss',type:'Summer school',term:'Summer 2027',long:false,season:'summer',
+    what:'Take an intensive 4–8 week program of academic courses during summer break, often mixed with cultural activities. Credits transfer with prior approval.',len:'4–8 weeks',credits:'3–9 credits',cost:'Program fee'},
+  {id:'ws',type:'Winter school',term:'Winter 2026–27',long:false,season:'winter',
+    what:'Join a short 2–4 week course or cultural immersion program over winter break.',len:'2–4 weeks',credits:'2–6 credits',cost:'Program fee'}
+];
+const hash=s=>{let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))>>>0;return h};
+function programsOf(h){ // not every host offers every program type
+  const x=hash(h.name);
+  return PROGRAMS.filter(p=>!(p.id==='visit'&&x%3===0)&&!(p.id==='ws'&&x%4===1));
+}
+function depOf(p,h){
+  const na=h.region==='us'||h.region==='ca', jp=h.cc==='JP';
+  if(p.season==='spring') return na?'2027-01-03':h.region==='europe'?'2027-01-30':jp?'2027-03-28':'2027-01-06';
+  if(p.season==='fall')   return na?'2027-08-18':h.region==='europe'?'2027-08-28':jp?'2027-09-15':'2027-08-01';
+  if(p.season==='summer') return na?'2027-06-19':h.region==='europe'?'2027-07-03':'2027-06-26';
+  return h.region==='asia'?'2026-12-27':'2027-01-02';
+}
+
+/* ---------------- visa rules by country ---------------- */
+const SAFE=['MOFA Overseas Safety Travel','https://www.0404.go.kr'];
+const SCHENGEN=new Set('AT BE CZ DK EE FI FR DE GR HU IS IT LV LI LT LU MT NL NO PL PT SK SI ES SE CH HR BG RO'.split(' '));
+const VISA={
+  GB:{rule:'Over 6 months: Student visa. Up to 6 months: study as a visitor with an ETA',links:[['GOV.UK · Student visa','https://www.gov.uk/student-visa'],['GOV.UK · Electronic Travel Authorisation','https://www.gov.uk/guidance/apply-for-an-electronic-travel-authorisation-eta']]},
+  IE:{rule:'Enter visa-free, then register for an IRP if staying over 90 days',links:[['Irish Immigration Service','https://www.irishimmigration.ie']]},
+  DE:{rule:'Enter visa-free, then apply for a study residence permit at the local foreigners’ office',links:[['German Federal Foreign Office','https://www.auswaertiges-amt.de/en'],['Make it in Germany','https://www.make-it-in-germany.com/en/']]},
+  FR:{rule:'Over 90 days: long-stay student visa (VLS-TS) before departure',links:[['France-Visas','https://france-visas.gouv.fr']]},
+  NL:{rule:'The host university applies to the IND for your residence permit',links:[['IND (Immigration and Naturalisation Service)','https://ind.nl/en']]},
+  BE:{rule:'Long-stay (D) visa, then register at the town hall after arrival',links:[['Belgian Immigration Office','https://dofi.ibz.be']]},
+  SE:{rule:'Apply online for a residence permit for studies',links:[['Swedish Migration Agency','https://www.migrationsverket.se/English']]},
+  DK:{rule:'Apply for a residence permit for studies (ST1)',links:[['New to Denmark (SIRI)','https://www.nyidanmark.dk/en-GB']]},
+  FI:{rule:'Apply online for a residence permit for studies',links:[['Finnish Immigration Service (Migri)','https://migri.fi/en']]},
+  NO:{rule:'Apply for a study permit',links:[['UDI','https://www.udi.no/en/']]},
+  ES:{rule:'Over 90 days: student visa before departure',links:[['Spanish Ministry of Foreign Affairs','https://www.exteriores.gob.es']]},
+  IT:{rule:'Over 90 days: study (D) visa, then a permit of stay after arrival',links:[["Visto per l'Italia",'https://vistoperitalia.esteri.it']]},
+  CH:{rule:'Residence permit through the cantonal migration office, guided by the host',links:[['State Secretariat for Migration (SEM)','https://www.sem.admin.ch/sem/en/home.html']]},
+  AT:{rule:'Over 6 months: residence permit; shorter stays: visa D or visa-free',links:[['Migration.gv.at','https://www.migration.gv.at/en/']]},
+  JP:{rule:'Certificate of Eligibility (COE) first, then a student visa. Under 90 days: visa-free',links:[['Ministry of Foreign Affairs of Japan · Visa','https://www.mofa.go.jp/j_info/visit/visa/']]},
+  CN:{rule:'JW202 form from the host, then an X2 (≤180 days) or X1 (>180 days) visa',links:[['Chinese Visa Application Service Center','https://www.visaforchina.cn']]},
+  TW:{rule:'Visa-free up to 90 days; longer study needs a resident visa',links:[['Bureau of Consular Affairs (Taiwan)','https://www.boca.gov.tw/mp-2.html']]},
+  HK:{rule:'Student visa (entry permit) sponsored by the host university',links:[['Hong Kong Immigration Department','https://www.immd.gov.hk']]},
+  SG:{rule:"Student's Pass, applied through SOLAR after the host registers you",links:[["ICA · Student's Pass",'https://www.ica.gov.sg']]},
+  MY:{rule:'Student pass approval through EMGS before entry',links:[['Education Malaysia Global Services','https://educationmalaysia.gov.my']]},
+  TH:{rule:'Non-Immigrant ED visa',links:[['Thai e-Visa','https://www.thaievisa.go.th']]}
+};
+function visaInfo(h){
+  if(VISA[h.cc]) return VISA[h.cc];
+  if(SCHENGEN.has(h.cc)) return {rule:'Korean passports get 90 days in any 180 visa-free in the Schengen area. A semester abroad needs a national long-stay visa or residence permit',links:[SAFE]};
+  return {rule:`Check the student visa or residence permit rules on the ${h.country} embassy website`,links:[SAFE]};
+}
+
+/* ---------------- checklist ---------------- */
 function buildChecklist(h,p){
-  const host=[`${h.name} 공식 홈페이지`,h.url];
-  const safe=['외교부 해외안전여행','https://www.0404.go.kr'];
-  const it=[];
-  const add=o=>it.push(Object.assign({ver:'2026-09-28',by:'운영팀'},o));
-  add({id:'app',cat:'지원',title:'파견교 지원서 제출',off:85,
-    sum:`${h.short} 온라인 지원 포털에서 지원서를 내요. 본교 국제처의 추천(nomination)이 끝나면 파견교에서 포털 안내 메일이 와요. 메일이 안 왔다면 스팸함부터 확인하세요.`,
-    rows:[['제출처',`${h.short} 온라인 지원 포털`],['필요 서류','여권 사본, 영문 성적증명서, 학업계획서'],['선행 조건','본교 추천 완료 후 지원 가능']],links:[host]});
-  add({id:'eng',cat:'지원',title:'영어 성적 제출',off:85,
-    sum:'공인 영어 성적을 지원서와 함께 올리거나 시험 기관에서 파견교로 직접 전송해요. 기준 점수는 학교와 학과마다 달라요.',
-    rows:[['인정 시험','TOEFL iBT, IELTS Academic 등 (학교별 상이)'],['전송 방식','시험 기관 → 파견교 직접 전송이 많아요'],['유효 기간','보통 시험일로부터 2년']],links:[host]});
+  const home=[`${h.short} official website`,h.url||'https://www.google.com/search?q='+encodeURIComponent(h.name)];
+  const L=p.long; const it=[];
+  const add=o=>it.push(Object.assign({ver:'2026-09-28',by:'Editorial team'},o));
+  add({id:'app',cat:'Apply',title:'Submit host university application',off:L?85:55,
+    sum:`Submit your application on the ${h.short} online portal. The portal link arrives by email once your home university’s international office has nominated you. Check your spam folder if nothing has arrived.`,
+    rows:[['Where',`${h.short} application portal`],['Documents','Passport copy, English transcript, study plan'],['Prerequisite','Home university nomination']],links:[home]});
+  add({id:'eng',cat:'Apply',title:'Send English test scores',off:L?85:55,
+    sum:'Upload your English test scores with the application, or have the testing agency send them straight to the host. Minimum scores differ by university and department.',
+    rows:[['Accepted tests','TOEFL iBT, IELTS Academic (varies)'],['Delivery','Usually sent directly by the test agency'],['Validity','Typically 2 years from the test date']],links:[home]});
 
-  if(p.id==='ss'){
-    const C=COUNTRY[h.country];
-    add({id:'visa',cat:'서류·비자',title:'비자 · 입국 요건 확인',off:60,
-      sum:h.country==='us'?'학점을 받는 썸머스쿨은 F-1 학생비자가 필요한 경우가 많고, 짧은 비학점 과정은 ESTA로 입국하기도 해요. 내 프로그램이 어느 쪽인지 파견교 안내로 먼저 확인하세요.':`${C.name}은(는) 단기 체류라면 무비자로 입국할 수 있는 경우가 많아요. 다만 프로그램 성격에 따라 요건이 달라질 수 있으니 공식 안내를 확인하세요.`,
-      rows:[['확인할 것','체류 기간, 학점 취득 여부, 파견교의 비자 안내'],['미국 단기 입국','ESTA (전자여행허가)'],['학생비자 필요 시','입학허가서 수령 후 바로 신청']],
-      links:h.country==='us'?[['U.S. Department of State · 학생비자','https://travel.state.gov/content/travel/en/us-visas/study/student-visa.html'],['ESTA 공식 신청','https://esta.cbp.dhs.gov']]:[...C.visa,host]});
-  } else if(h.region==='us'){
-    add({id:'fin',cat:'서류·비자',title:'재정 증빙 서류 제출',off:70,
-      sum:'DS-2019 발급을 위해 체류 기간 생활비를 감당할 수 있다는 증빙을 내요. 파견교가 공지한 1학기 예상 비용 이상이 잔고로 확인돼야 해요.',
-      rows:[['서류','영문 잔고증명서 (본인 또는 부모 명의)'],['기준 금액','파견교 공지 1학기 예상 비용 이상'],['발급','은행 지점 또는 은행 앱, 최근 발급분']],links:[host]});
-    add({id:'ds2019',cat:'서류·비자',title:'DS-2019 수령',off:45,
-      sum:'J-1 비자 신청에 꼭 필요한 서류예요. 파견교가 SEVIS에 등록한 뒤 PDF나 우편으로 보내 줘요. 이름·생년월일·기간이 여권과 같은지 바로 확인하세요.',
-      rows:[['발급처',`${h.short} International Student Office`],['확인할 것','영문 이름, 생년월일, 프로그램 기간'],['다음 단계','SEVIS ID로 I-901 비용 납부']],links:[host],by:'멘토 이O연'});
-    add({id:'sevis',cat:'서류·비자',title:'SEVIS 비용(I-901) 납부',off:40,
-      sum:'DS-2019 오른쪽 위의 SEVIS ID로 I-901 비용을 온라인 납부해요. 일부 학교는 교환학생 비용을 대신 내 주니 먼저 확인하세요. 영수증은 인터뷰 때 가져가요.',
-      rows:[['대상','J-1 교환학생'],['금액','$220 (학교 대납 여부 확인)'],['결제','해외 결제 가능한 카드']],
-      links:[['SEVIS I-901 공식 납부 사이트','https://www.fmjfee.com']],ver:'2026-09-21'});
-    add({id:'ds160',cat:'서류·비자',title:'DS-160 작성 · 인터뷰 예약',off:38,
-      sum:'온라인 비자 신청서(DS-160)를 작성하고 비자 신청 수수료를 낸 뒤 대사관 인터뷰를 예약해요. 방학 시즌에는 예약이 빨리 차니 DS-2019를 받는 대로 진행하세요.',
-      rows:[['신청서','DS-160 (사진 업로드 필요)'],['수수료','대사관 공지 금액 확인'],['예약','주한 미국대사관 비자 예약 시스템']],
-      links:[['DS-160 온라인 신청','https://ceac.state.gov/genniv/'],['주한 미국대사관 · 비자 안내','https://kr.usembassy.gov/visas/']]});
-    add({id:'visa',cat:'서류·비자',title:'비자 인터뷰',off:25,
-      sum:'예약한 날짜에 대사관에서 인터뷰를 봐요. 승인되면 여권은 보통 며칠 뒤 택배로 돌아와요.',
-      rows:[['준비물','여권, DS-2019, DS-160 확인 페이지, I-901 영수증, 재정 증빙'],['장소','주한 미국대사관 (서울)'],['여권 반환','택배 수령까지 며칠 소요']],
-      links:[['주한 미국대사관 · 비자 안내','https://kr.usembassy.gov/visas/'],['U.S. Department of State · J-1','https://travel.state.gov/content/travel/en/us-visas/study/exchange.html']]});
+  if(h.region==='us'){
+    if(L){
+      const j1=p.ex;
+      add({id:'fin',cat:'Visa',title:'Submit proof of funds',off:70,
+        sum:`The host needs proof that you can cover living costs before it issues your ${j1?'DS-2019':'I-20'}. Your balance must meet the host’s published cost estimate for the term.`,
+        rows:[['Document','English bank statement (yours or a parent’s)'],['Amount','At least the host’s estimated cost'],['Issued by','Your bank, recent date']],links:[home]});
+      add({id:'doc',cat:'Visa',title:j1?'Receive your DS-2019':'Receive your I-20',off:45,
+        sum:`This is the key document for your ${j1?'J-1':'F-1'} visa. The host issues it after registering you in SEVIS. Check that your name, birth date and program dates match your passport.`,
+        rows:[['Issued by',`${h.short} international student office`],['Check','Name, birth date, program dates'],['Next step','Pay the I-901 SEVIS fee with your SEVIS ID']],links:[home],by:'Mentor Yeon L.'});
+      add({id:'sevis',cat:'Visa',title:'Pay the I-901 SEVIS fee',off:40,
+        sum:`Pay online using the SEVIS ID printed on your ${j1?'DS-2019':'I-20'}. ${j1?'Some hosts pay this fee for exchange students, so check first. ':''}Keep the receipt for your interview.`,
+        rows:[['Visa type',j1?'J-1 exchange visitor':'F-1 student'],['Fee',j1?'$220 (check if your host covers it)':'$350'],['Payment','Card that works for overseas payments']],
+        links:[['Official I-901 SEVIS fee payment','https://www.fmjfee.com']],ver:'2026-09-21'});
+      add({id:'ds160',cat:'Visa',title:'Complete DS-160 and book interview',off:38,
+        sum:'Fill out the online visa application (DS-160), pay the visa application fee, then book an interview at the U.S. Embassy in Seoul. Slots fill fast before semesters start.',
+        rows:[['Form','DS-160, with photo upload'],['Fee','See the embassy’s current fee'],['Booking','U.S. Embassy Seoul appointment system']],
+        links:[['DS-160 online application','https://ceac.state.gov/genniv/'],['U.S. Embassy Seoul · Visas','https://kr.usembassy.gov/visas/']]});
+      add({id:'visa',cat:'Visa',title:'Attend visa interview',off:25,
+        sum:'Go to the embassy on your booked date. If approved, your passport with the visa comes back by courier a few days later.',
+        rows:[['Bring',`Passport, ${j1?'DS-2019':'I-20'}, DS-160 confirmation, I-901 receipt, proof of funds`],['Where','U.S. Embassy Seoul'],['Passport return','By courier, a few days']],
+        links:[['U.S. Embassy Seoul · Visas','https://kr.usembassy.gov/visas/'],['U.S. Department of State · Study','https://travel.state.gov/content/travel/en/us-visas/study.html']]});
+    } else {
+      add({id:'visa',cat:'Visa',title:'Check entry requirements (ESTA or F-1)',off:40,
+        sum:'Credit-bearing summer programs often require an F-1 student visa, while short non-credit programs may accept ESTA. Confirm which applies to your program before booking anything.',
+        rows:[['Short, non-credit','ESTA (travel authorization)'],['Credit-bearing','Usually F-1 with an I-20'],['Confirm with',`${h.short} summer/winter session office`]],
+        links:[['Official ESTA application','https://esta.cbp.dhs.gov'],['U.S. Department of State · Study','https://travel.state.gov/content/travel/en/us-visas/study.html']]});
+    }
+  } else if(h.region==='ca'){
+    add({id:'eta',cat:'Visa',title:'Apply for an eTA',off:L?45:35,
+      sum:'Korean passport holders flying to Canada need an Electronic Travel Authorization (eTA). It is linked to your passport and usually approved within minutes.',
+      rows:[['Fee','CAD $7'],['Valid','Up to 5 years or until the passport expires'],['Apply','Official IRCC website only']],
+      links:[['Government of Canada · eTA','https://www.canada.ca/en/immigration-refugees-citizenship/services/visit-canada/eta.html']]});
+    if(L) add({id:'visa',cat:'Visa',title:p.year?'Apply for a study permit':'Decide on a study permit',off:60,
+      sum:p.year?'Programs longer than six months need a study permit. Apply with your letter of acceptance as soon as you receive it.':'Programs of six months or less do not need a study permit, but some students apply anyway to keep options open. Check with your host.',
+      rows:[['Required when','Program longer than 6 months'],['Documents','Letter of acceptance, proof of funds, passport'],['Apply','IRCC online']],
+      links:[['Government of Canada · Study permit','https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada/study-permit.html']]});
   } else {
-    const C=COUNTRY[h.country];
-    add({id:'visa',cat:'서류·비자',title:h.region==='europe'?'장기체류 비자 · 거주허가':'학생비자 · 체류허가',off:h.region==='europe'?60:50,
-      sum:h.region==='europe'?'한국 여권으로 솅겐 지역에 무비자로 머물 수 있는 기간은 180일 중 90일이에요. 한 학기 이상 머문다면 국가별 장기체류 비자나 거주허가가 필요해요.':`${C.name}에서 한 학기 공부하려면 학생 신분의 체류허가가 필요해요. 파견교 합격 서류가 나오면 바로 시작하세요.`,
-      rows:[['국가',C.name],['절차',C.permit],['필요 서류','입학허가서, 여권, 재정 증빙, 보험 증명 등']],
-      links:[...C.visa,host]});
-    if(h.region==='europe') add({id:'la',cat:'학업',title:'Learning Agreement 승인',off:50,
-      sum:'파견교에서 들을 과목을 정하고 본교 학과와 파견교 양쪽의 승인을 받아요. 본교 학점 인정과 연결되니 꼭 사전 승인 받은 과목으로 채우세요.',
-      rows:[['승인','본교 학과 + 파견교 코디네이터'],['변경','도착 후 정해진 기간 안에 수정 가능'],['팁','후보 과목을 여유 있게 넣어 두세요']],links:[host]});
+    const v=visaInfo(h);
+    add({id:'visa',cat:'Visa',title:L?'Apply for student visa / residence permit':'Check visa and entry requirements',off:L?(h.region==='europe'?60:50):40,
+      sum:L?`To study in ${h.country} for a full term you need the right student status. Start as soon as your admission letter arrives, because processing can take weeks.`:`Short programs in ${h.country} are often visa-free for Korean passports, but rules depend on length and purpose. Confirm before you book flights.`,
+      rows:[['Country',h.country],['Rule',v.rule],['Documents','Admission letter, passport, proof of funds, insurance']],
+      links:[...v.links,home]});
+    if(h.region==='europe'&&p.ex) add({id:'la',cat:'Academics',title:'Get your Learning Agreement approved',off:50,
+      sum:'List the courses you plan to take and get them approved by both your home department and the host coordinator. Only approved courses transfer back as credit.',
+      rows:[['Approved by','Home department + host coordinator'],['Changes','Allowed in a set window after arrival'],['Tip','List a few backup courses']],links:[home]});
   }
 
-  add({id:'housing',cat:'생활',title:'기숙사 신청 · 숙소 확정',off:p.id==='ss'?50:60,
-    sum:'파견교 기숙사 포털에서 신청해요. 대기 순번을 받았다면 외부 숙소도 함께 알아보세요. 외부 숙소는 계약 전 실물 확인과 계약서 확인이 먼저예요.',
-    rows:[['1순위','파견교 기숙사 (Housing 포털)'],['대기 시','검증된 숙소 플랫폼, 같은 프로그램 선배 후기 참고'],['주의','보증금 송금은 계약서 확인 후']],links:[host,safe],by:'멘토 정O우'});
-  add({id:'flight',cat:'생활',title:'항공권 예약',off:30,
-    sum:'오리엔테이션 날짜를 확인한 뒤 예약해요. 기숙사 입주 가능일보다 너무 일찍 도착하지 않도록 날짜를 맞추세요.',
-    rows:[['기준','오리엔테이션 · 입주 가능일'],['팁','학생 할인 운임은 수하물 규정이 달라요'],['확인','여권 영문 이름과 예약 이름 일치']],links:[host]});
-  add({id:'ins',cat:'생활',title:'보험 가입 · 면제 신청',off:20,
-    sum:h.region==='us'&&p.id==='ex'?'J-1 교환학생은 국무부가 정한 최소 보장 이상의 보험이 필요해요. 파견교 보험에 자동 가입되는 경우가 많고, 조건을 갖춘 외부 보험으로 면제(waiver)를 신청할 수도 있어요.':'파견교가 정한 보험에 의무 가입해야 하는지 먼저 확인하세요. 별도 가입이라면 체류 기간 전체를 보장하는 유학생 보험을 고르세요.',
-    rows:h.region==='us'&&p.id==='ex'?[['의료비','사고·질병당 $100,000 이상'],['본국 송환','$25,000 이상'],['유해 송환','$50,000 이상'],['자기부담금','$500 이하']]:[['확인','파견교 의무 보험 여부'],['기간','출국일 ~ 귀국일 전체'],['보장','현지 의료비, 배상책임']],
-    links:[host,safe]});
-  add({id:'course',cat:'학업',title:p.id==='ss'?'과목 · 프로그램 등록':'수강신청',off:14,
-    sum:'파견교 수강신청 일정에 맞춰 과목을 등록해요. 인기 과목은 교환학생 자리가 적으니 대체 과목도 미리 정해 두세요.',
-    rows:[['방식',`${h.short} 학사 포털`],['학점 인정','본교 학과 사전 승인 과목'],['주의','교환학생 수강 가능 과목 목록 확인']],links:[host]});
+  add({id:'housing',cat:'Living',title:'Apply for housing',off:L?60:35,
+    sum:'Apply through the host’s housing portal first. If you are waitlisted, start looking at off-campus options in parallel. Never pay a deposit before you have seen the contract.',
+    rows:[['First choice','Host university residence (housing portal)'],['If waitlisted','Verified housing platforms, past students’ reviews'],['Watch out','Pay deposits only after checking the contract']],links:[home,SAFE],by:'Mentor Woo J.'});
+  add({id:'flight',cat:'Living',title:'Book your flight',off:L?30:28,
+    sum:'Book once you know the orientation date and the first day you can move in, so you do not arrive before you have a place to stay.',
+    rows:[['Plan around','Orientation and move-in date'],['Tip','Student fares often include extra baggage'],['Check','Name on ticket matches passport']],links:[home]});
+  add({id:'ins',cat:'Living',title:'Buy insurance or request a waiver',off:L?20:14,
+    sum:h.region==='us'&&L&&p.ex?'J-1 exchange visitors need insurance that meets State Department minimums. Many hosts enroll you in their own plan automatically; you can request a waiver with a qualifying outside plan.':'Check whether the host requires its own insurance plan. If you buy your own, make sure it covers your whole stay.',
+    rows:h.region==='us'&&L&&p.ex?[['Medical','$100,000 per accident or illness'],['Medical evacuation','$50,000'],['Repatriation','$25,000'],['Deductible','$500 or less']]:[['Check','Host’s mandatory insurance rules'],['Coverage period','Departure to return'],['Covers','Local medical costs, liability']],
+    links:[home,SAFE]});
+  add({id:'course',cat:'Academics',title:L?'Register for courses':'Register for program courses',off:L?14:21,
+    sum:'Register on the host’s course system during your enrollment window. Popular classes have few seats for exchange students, so pick backups in advance.',
+    rows:[['Where',`${h.short} student portal`],['Credit transfer','Courses pre-approved by your department'],['Check','Courses open to exchange students']],links:[home]});
   return it;
 }
 
-const MENTOR_NAMES=[['이O연','경영학과','15,000','4.9',31],['정O우','컴퓨터공학과','20,000','5.0',18],['한O서','경제학과','12,000','4.8',9]];
-const MENTOR_TOPICS=[['비자 서류','수강신청','현지 생활비'],['기숙사 · 외부 숙소','도착 첫 주','은행 · 통신'],['학점 인정','썸머스쿨 준비','영어 성적']];
+/* ---------------- sample community / mentors / perks ---------------- */
+const MENTORS=[['Yeon L.','Business Administration','15,000','4.9',31,['Visa documents','Course registration','Living costs']],
+               ['Woo J.','Computer Science','20,000','5.0',18,['Housing','First week','Banking & phone']],
+               ['Seo H.','Economics','12,000','4.8',9,['Credit transfer','Summer school','English tests']]];
+const PEERS=[['M','Minjun P.',72,'Visa docs'],['E','Eunji K.',64,'Housing set'],['S','Seoa S.',45,'Applied'],['R','Rin C.',38,'Test scores'],['J','Jiho Y.',30,'Applied'],['J','Jimin J.',18,'Just started']];
+const OFFERS={
+  'Insurance':[['GC','GlobeCare Student','Coverage matched to your stay, waiver-ready certificate','12% student discount'],['SS','StudentSafe','Direct billing at local hospitals, 24/7 Korean support','First month free']],
+  'eSIM':[['RZ','RoamZero eSIM','Activate before departure, data on landing','20% off 6-month exchange plan'],['NS','NextSIM Local','Pick up at the airport, local number included','No activation fee']],
+  'Flights':[['SK','SkyStudent Fares','Compare student fares, one extra checked bag','Up to 8% off one-way']],
+  'Housing':[['CS','CampusStay','Verified rooms near campus with video tours','First-month fee waived'],['HM','HomeMate Share','Matched with students from the same school','Split deposit payments']]
+};
+const OFFER_ICON={'Insurance':'umbrella','eSIM':'sim','Flights':'plane','Housing':'home'};
 
 /* ---------------- state ---------------- */
 const S={
-  screen:'splash', tab:'home', detail:null, filter:'전체',
-  email:'jun.lee@hanguk.ac.kr',
-  profile:{univ:'한국대학교',major:'경영학과',year:'3학년'},
-  region:'us', hostId:'uw', progId:'ex',
-  done:new Set(['app','eng']), remind:new Set(['fin','ds2019','sevis','ds160','visa','housing']),
-  ctab:'status', liked:new Set(), bcat:'전체',
+  screen:'splash', tab:'home', detail:null, filter:'All',
+  email:'you@korea.ac.kr',
+  profile:{univ:'Korea University',major:'Business Administration',year:'3rd year'},
+  homeQ:'',
+  region:'us', sq:'', scountry:'All', slimit:40,
+  pick:null,
+  host:makeHost(['University of Washington','US','http://www.washington.edu/']),
+  progId:'exS', pickProg:'exS',
+  done:new Set(), remind:new Set(['fin','doc','sevis','ds160','visa','housing','eta']),
+  ctab:'status', liked:new Set(), bcat:'All',
   booked:{}, slot:null, mentorSheet:null,
   apply:{step:0,email:'',file:''},
   posts:null
 };
-const host=()=>HOSTS.find(h=>h.id===S.hostId);
-const prog=()=>programsOf(host()).find(p=>p.id===S.progId);
-const depDate=()=>D(prog().dep);
+const host=()=>S.host;
+const prog=()=>PROGRAMS.find(p=>p.id===S.progId);
+const depDate=()=>D(depOf(prog(),host()));
 const items=()=>buildChecklist(host(),prog()).map(i=>({...i,date:addDays(depDate(),-i.off)})).sort((a,b)=>a.date-b.date);
+function resetDone(){S.done=new Set(items().filter(i=>dd(i.date)<7).map(i=>i.id))}
+resetDone();
 
 function seedPosts(){
-  const h=host();
+  const h=host(),us=h.region==='us';
   return [
-    {type:'status',who:'박O준',meta:'컴퓨터공학과 3학년',tag:h.region==='us'?'DS-2019 수령':'입학허가서 수령',text:`${h.short}에서 서류 PDF가 먼저 왔어요. 원본은 우편으로 따로 온다고 하네요.`,time:'2시간 전',likes:8},
-    {type:'q',who:'최O린',meta:'국제학부 2학년',text:h.region==='us'?'SEVIS 비용 결제할 때 해외 결제 카드가 꼭 있어야 하나요?':'거주허가 서류에 보험 증명이 필요하다는데, 한국 보험도 인정되나요?',time:'5시간 전',
-      answer:{who:'이O연',mentor:true,text:h.region==='us'?'네, 해외 결제가 되는 카드가 필요해요. 결제 후 영수증 PDF는 인터뷰 때 출력해서 가져가세요.':'국가마다 달라서 파견교 안내 메일에 적힌 보장 조건을 먼저 확인하세요. 영문 보험증서가 필요한 경우가 많아요.'}},
-    {type:'status',who:'김O은',meta:'경제학과 4학년',tag:'숙소 확정',text:'기숙사는 대기 순번이라 외부 숙소로 계약했어요. 학교 근처 쉐어하우스, 계약서 영상 통화로 같이 확인했어요.',time:'어제',likes:14},
-    {type:'q',who:'윤O호',meta:'경영학과 3학년',text:`${h.short} 오리엔테이션 전에 미리 도착하신 분 계세요? 기숙사 입주 전날 숙박이 고민이에요.`,time:'어제',answers:2},
-    {type:'status',who:'서O아',meta:'영어영문학과 3학년',tag:'지원서 제출',text:'지원 포털 메일이 스팸함에 있었어요. 아직 못 받으신 분 꼭 확인해 보세요!',time:'2일 전',likes:21}
+    {type:'status',who:'Minjun P.',meta:'Computer Science · 3rd year',tag:us?'DS-2019 received':'Admission letter in',text:`${h.short} sent the PDF first. The original is coming by mail separately.`,time:'2h ago',likes:8},
+    {type:'q',who:'Rin C.',meta:'International Studies · 2nd year',text:us?'Do I need a card that works overseas to pay the SEVIS fee?':'The permit application asks for proof of insurance. Does a Korean policy count?',time:'5h ago',
+      answer:{who:'Yeon L.',text:us?'Yes, you need a card that supports overseas payments. Print the receipt PDF and bring it to your interview.':'It depends on the country, so check the coverage rules in your host’s email first. You usually need an English certificate.'}},
+    {type:'status',who:'Eunji K.',meta:'Economics · 4th year',tag:'Housing set',text:'I was waitlisted for the dorm, so I signed for a shared house near campus. We went through the contract together on a video call.',time:'Yesterday',likes:14},
+    {type:'q',who:'Jiho Y.',meta:'Business · 3rd year',text:`Did anyone arrive in ${h.short} before orientation? I need somewhere to stay the night before move-in.`,time:'Yesterday',answers:2},
+    {type:'status',who:'Seoa S.',meta:'English Literature · 3rd year',tag:'Applied',text:'The application portal email was in my spam folder. If you haven’t got yours, check there!',time:'2d ago',likes:21}
   ];
 }
-const PEERS=[['박','박O준',72,'비자 서류'],['김','김O은',64,'숙소 확정'],['서','서O아',45,'지원 완료'],['최','최O린',38,'영어 성적'],['윤','윤O호',30,'지원 완료'],['정','정O민',18,'준비 시작']];
-
-const OFFERS={
-  '보험':[['GC','글로브케어 유학생 보험','체류 기간 맞춤 · 파견교 면제(waiver) 조건 확인서 제공','학생 전용 12% 할인'],['SB','스튜던트세이프 보험','현지 병원 직접 청구 · 한국어 상담 24시간','첫 달 보험료 무료']],
-  'eSIM':[['RZ','로밍제로 eSIM','출국 전 개통 · 도착 즉시 데이터 사용','교환학생 6개월 요금제 20% 할인'],['NS','넥스트심 현지 유심','공항 수령 · 현지 번호 제공','개통비 면제']],
-  '항공':[['SK','스카이스튜던트 항공권','학생 운임 비교 · 수하물 추가 1개','편도 학생 운임 최대 8% 할인']],
-  '숙소':[['CS','캠퍼스스테이','파견교 주변 검증 숙소 · 영상 투어 제공','첫 달 수수료 면제'],['HM','홈메이트 쉐어하우스','같은 학교 학생끼리 매칭','보증금 분할 결제']]
-};
-const OFFER_ICON={'보험':'umbrella','eSIM':'sim','항공':'plane','숙소':'home'};
 
 /* ---------------- render helpers ---------------- */
 const $=s=>document.querySelector(s);
 const view=$('#view');
 function statusPill(i){
   const n=dd(i.date);
-  if(S.done.has(i.id)) return '<span class="pill ok">완료</span>';
-  if(n<0) return '<span class="pill bad">마감 지남</span>';
-  if(n<=14) return '<span class="pill warn">임박</span>';
+  if(S.done.has(i.id)) return '<span class="pill ok">Done</span>';
+  if(n<0) return '<span class="pill bad">Overdue</span>';
+  if(n<=14) return '<span class="pill warn">Due soon</span>';
   return '';
 }
-const bar=(title,back='back',right='')=>`<div class="bar"><button class="iconbtn" data-act="${back}" aria-label="뒤로">${ic('back')}</button><h2>${title}</h2>${right}</div>`;
+const bar=(title,back='back',right='')=>`<div class="bar"><button class="iconbtn" data-act="${back}" aria-label="Back">${ic('back')}</button><h2>${title}</h2>${right}</div>`;
+const regionHosts=()=>DATA?DATA.unis.filter(u=>(COUNTRIES[u[1]]||[])[1]===S.region):[];
 
 /* ---------------- screens ---------------- */
 const SCREENS={
   splash(){return `
     <div class="splash"><div class="appicon">${ic('plane',56,1.8)}</div>
-      <div><h1>OneStep Abroad</h1><p>합격 후 출국까지, 한 걸음씩</p></div></div>
-    <div class="cta"><button class="btn" data-go="login">시작하기</button></div>`},
+      <div><h1>교환가자</h1><p>From acceptance to departure,<br>one step at a time.</p></div></div>
+    <div class="cta"><button class="btn" data-go="login">Get started</button></div>`},
 
   login(){return `${bar('','go:splash')}
     <div class="scroll pad">
-      <h2 class="ob-title">학교 이메일로<br>시작해요</h2>
-      <p class="ob-sub">같은 학교, 같은 프로그램 학생과 연결하는 데 쓰여요.</p>
-      <div class="field"><label for="email">학교 이메일</label>
+      <h2 class="ob-title">Start with your<br>university email</h2>
+      <p class="ob-sub">We use it to connect you with students from your school and program.</p>
+      <div class="field"><label for="email">University email</label>
         <input class="input" id="email" type="email" value="${esc(S.email)}" autocomplete="email"></div>
-      <div class="divider">또는</div>
-      <div class="social"><button data-go="profile">카카오로 계속하기</button><button data-go="profile">Google로 계속하기</button></div>
+      <div class="divider">or</div>
+      <div class="social"><button data-go="profile">Continue with Kakao</button><button data-go="profile">Continue with Google</button><button data-go="profile">Continue with Apple</button></div>
     </div>
-    <div class="cta"><button class="btn" data-go="profile">계속하기</button></div>`},
+    <div class="cta"><button class="btn" data-go="profile">Continue</button></div>`},
 
   profile(){const P=S.profile;return `${bar('','go:login')}
     <div class="scroll pad">
-      <div class="steps"><i class="on"></i><i></i></div>
-      <h2 class="ob-title">학교 정보를 알려주세요</h2>
-      <p class="ob-sub">같은 학교 선배 멘토와 동기를 찾는 데 쓰여요.</p>
-      <div class="field"><label for="univ">소속 대학</label>
-        <select class="input" id="univ" data-model="univ">${['한국대학교','서울미래대학교','한빛대학교','누리대학교'].map(u=>`<option${u===P.univ?' selected':''}>${u}</option>`).join('')}</select></div>
-      <div class="field"><label for="major">전공</label>
+      <div class="steps"><i class="on"></i><i></i><i></i></div>
+      <h2 class="ob-title">Tell us about<br>your home university</h2>
+      <p class="ob-sub">We use this to match you with mentors and peers from your school.</p>
+      <div class="field"><span class="lbl">Home university</span>
+        ${P.univ&&!S.homeQ?`<div class="picked">${ic('school',20)}<span class="t">${esc(P.univ)}<small>South Korea</small></span><button data-act="unpickHome">Change</button></div>`
+        :`<div class="search">${ic('search',18)}<input class="input" id="homeQ" placeholder="Search ${DATA?DATA.kr.length:''} Korean universities" value="${esc(S.homeQ)}" autocomplete="off"></div><div id="homeList"></div>`}
+      </div>
+      <div class="field"><label for="major">Major</label>
         <input class="input" id="major" data-model="major" value="${esc(P.major)}"></div>
-      <div class="field"><label>학년</label>
-        <div class="chips">${['1학년','2학년','3학년','4학년','대학원'].map(y=>`<button class="chip${y===P.year?' on':''}" data-act="year" data-v="${y}">${y}</button>`).join('')}</div></div>
+      <div class="field"><span class="lbl">Year</span>
+        <div class="chips">${['1st year','2nd year','3rd year','4th year','Graduate'].map(y=>`<button class="chip${y===P.year?' on':''}" data-act="year" data-v="${y}">${y}</button>`).join('')}</div></div>
     </div>
-    <div class="cta"><button class="btn" data-go="program">다음</button></div>`},
+    <div class="cta"><button class="btn" data-go="school" ${P.univ?'':'disabled'}>Next</button></div>`},
 
-  program(){
-    const hs=HOSTS.filter(h=>h.region===S.region);
-    const h=host(); const inRegion=h&&h.region===S.region;
+  school(){
+    const list=regionHosts();
+    const counts={}; list.forEach(u=>counts[u[1]]=(counts[u[1]]||0)+1);
+    const top=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
     return `${bar('','go:profile')}
     <div class="scroll pad">
-      <div class="steps"><i class="on"></i><i class="on"></i></div>
-      <h2 class="ob-title">합격한 프로그램을<br>선택하세요</h2>
-      <p class="ob-sub">선택한 학교와 프로그램에 맞춰 체크리스트를 만들어요.</p>
-      <div style="margin-top:22px" class="seg" role="tablist">${REGIONS.map(([k,v])=>`<button role="tab" aria-selected="${k===S.region}" class="${k===S.region?'on':''}" data-act="region" data-v="${k}">${v}</button>`).join('')}</div>
-      <div class="grid2">${hs.map(x=>`<button class="uni${inRegion&&x.id===S.hostId?' on':''}" data-act="host" data-v="${x.id}"><span class="mono">${x.short}</span><span class="t"><small>${x.city}</small><b>${x.name}</b></span></button>`).join('')}</div>
-      ${inRegion?`<p class="sect-label">${h.name} 프로그램</p>
-      <div class="prog">${programsOf(h).map(p=>`<button class="radio${p.id===S.progId?' on':''}" data-act="prog" data-v="${p.id}"><span class="dot"></span><span><b>${p.kind} · ${p.term}</b><small>${p.len} · 출국 예정 ${fmt(D(p.dep))}</small></span></button>`).join('')}</div>`:''}
+      <div class="steps"><i class="on"></i><i class="on"></i><i></i></div>
+      <h2 class="ob-title">Which university<br>accepted you?</h2>
+      <p class="ob-sub">Pick your host university. You’ll choose the exact program next.</p>
+      <div style="margin-top:20px;--n:4" class="seg" role="tablist">${REGIONS.map(([k,v])=>`<button role="tab" aria-selected="${k===S.region}" class="${k===S.region?'on':''}" data-act="region" data-v="${k}">${v}</button>`).join('')}</div>
+      <div class="search" style="margin-top:12px">${ic('search',18)}<input class="input" id="schoolQ" placeholder="Search by university or country" value="${esc(S.sq)}" autocomplete="off"></div>
+      ${top.length>1?`<div class="hscroll" style="margin-top:12px"><button class="chip sm${S.scountry==='All'?' on':''}" data-act="scountry" data-v="All">All<small class="num">${list.length.toLocaleString()}</small></button>${top.map(([cc,n])=>`<button class="chip sm${S.scountry===cc?' on':''}" data-act="scountry" data-v="${cc}">${esc(COUNTRIES[cc][0])}<small class="num">${n}</small></button>`).join('')}</div>`:''}
+      <div id="schoolList">${schoolListHTML()}</div>
     </div>
-    <div class="cta"><button class="btn" data-act="build" ${inRegion?'':'disabled'}>체크리스트 만들기</button></div>`},
+    <div class="cta"><button class="btn" data-act="toProgram" ${S.pick?'':'disabled'}>${S.pick?'Next: choose program':'Select a university'}</button></div>`},
+
+  program(){
+    const h=S.pick||host(); const ps=programsOf(h);
+    if(!ps.some(p=>p.id===S.pickProg)) S.pickProg=ps[0].id;
+    return `${bar('','go:school')}
+    <div class="scroll pad">
+      <div class="steps"><i class="on"></i><i class="on"></i><i class="on"></i></div>
+      <div class="school-card"><span class="mono">${esc(h.mono)}</span><span class="t"><b>${esc(h.name)}</b><small>${esc(h.country)}</small></span><button data-go="school">Change</button></div>
+      <h2 class="ob-title" style="margin-top:22px">Which program<br>are you going on?</h2>
+      <p class="ob-sub">${ps.length} programs at ${esc(h.short)} accept students from Korean partner universities.</p>
+      ${ps.map(p=>`<button class="popt${p.id===S.pickProg?' on':''}" data-act="pickProg" data-v="${p.id}" aria-pressed="${p.id===S.pickProg}">
+        <span class="h"><span class="t"><span class="pill ${p.ex?'ok':'cat'}">${p.type}</span><b style="margin-top:6px">${p.term}</b></span><span class="radio-dot"></span></span>
+        <p>${p.what}</p>
+        <dl><dt>Length</dt><dd>${p.len}</dd><dt>Credits</dt><dd>${p.credits}</dd><dt>Tuition</dt><dd>${p.cost}</dd><dt>Departure</dt><dd class="num">${fmtY(D(depOf(p,h)))}</dd></dl>
+      </button>`).join('')}
+    </div>
+    <div class="cta"><button class="btn" data-act="build">Build my checklist</button></div>`},
 
   building(){const h=host(),p=prog();return `
     <div class="loading"><div class="appicon">${ic('list',52,1.8)}</div>
-      <h2 class="ob-title">${h.short} ${p.kind}<br>체크리스트를 만들고 있어요</h2>
-      <p class="ob-sub">공식 출처와 선배들의 최신 정보를 모으는 중이에요</p></div>`},
+      <h2 class="ob-title">Building your ${p.type.toLowerCase()} checklist for ${esc(h.short)}</h2>
+      <p class="ob-sub">Collecting official sources and the latest notes from past students</p></div>`},
 
-  app(){return ({home:homeTab,community:communityTab,mentor:mentorTab,benefit:benefitTab,my:myTab})[S.tab]()},
+  app(){return ({home:homeTab,community:communityTab,mentor:mentorTab,perks:perksTab,me:meTab})[S.tab]()},
 
   detail(){
-    const i=items().find(x=>x.id===S.detail); const n=dd(i.date); const done=S.done.has(i.id);
-    return `${bar('','back','<button class="iconbtn" data-act="flag" aria-label="정보 변경 제보">'+ic('flag',20)+'</button>')}
+    const i=items().find(x=>x.id===S.detail)||items()[0]; const n=dd(i.date); const done=S.done.has(i.id);
+    return `${bar('','back','<button class="iconbtn" data-act="flag" aria-label="Report a change">'+ic('flag',20)+'</button>')}
     <div class="scroll pad">
       <div class="d-head">
         <div style="display:flex;gap:6px"><span class="pill cat">${i.cat}</span>${statusPill(i)}</div>
         <h1>${i.title}</h1>
-        <div class="when">${ic('clock',18)}<span>마감 <b>${fmt(i.date)}</b> · <span class="num">${ddLabel(n)}</span></span></div>
+        <div class="when">${ic('clock',18)}<span>Due <b>${fmt(i.date)}</b> · <span class="num">${ddLabel(n)}</span></span></div>
       </div>
-      <div class="d-sec"><h3>무엇을 하나요</h3><p>${i.sum}</p></div>
-      <div class="d-sec"><h3>한눈에 보기</h3><table class="tbl">${i.rows.map(r=>`<tr><th scope="row">${r[0]}</th><td>${r[1]}</td></tr>`).join('')}</table></div>
-      <div class="d-sec"><h3>공식 출처에서 확인하기</h3>${i.links.map(l=>`<a class="src" href="${l[1]}" target="_blank" rel="noopener"><span class="t"><b>${l[0]}</b><small>${l[1].replace(/^https?:\/\//,'')}</small></span>${ic('ext',18)}</a>`).join('')}
-        <div class="verified">${ic('shield',18)}<span><b>${dot(i.ver)} 확인</b> · ${i.by} 검증<br>세부 조건은 바뀔 수 있어요. 제출 전에 공식 출처를 꼭 확인하세요.</span></div></div>
+      <div class="d-sec"><h3>What to do</h3><p>${i.sum}</p></div>
+      <div class="d-sec"><h3>At a glance</h3><table class="tbl">${i.rows.map(r=>`<tr><th scope="row">${r[0]}</th><td>${r[1]}</td></tr>`).join('')}</table></div>
+      <div class="d-sec"><h3>Check the official source</h3>${i.links.map(l=>`<a class="src" href="${esc(l[1])}" target="_blank" rel="noopener"><span class="t"><b>${esc(l[0])}</b><small>${esc(l[1].replace(/^https?:\/\//,'').replace(/\/$/,''))}</small></span>${ic('ext',18)}</a>`).join('')}
+        <div class="verified">${ic('shield',18)}<span><b>Verified ${fmtY(D(i.ver))}</b> · ${i.by}<br>Details can change. Always confirm with the official source before you submit.</span></div></div>
       <div class="d-sec">
-        <div class="row-toggle"><span><b>마감 알림</b><small>3일 전, 하루 전 오전 9시</small></span><button class="switch${S.remind.has(i.id)?' on':''}" role="switch" aria-checked="${S.remind.has(i.id)}" aria-label="마감 알림" data-act="remind" data-v="${i.id}"></button></div>
-        <button class="linkbtn" data-act="tab" data-v="mentor">${ic('mentor',18)}<span>이 단계를 마친 선배에게 물어보기</span></button>
-        <button class="linkbtn" data-act="flag" style="padding-top:0">${ic('flag',18)}<span>정보가 바뀌었나요? 변경 제보하기</span></button>
+        <div class="row-toggle"><span><b>Deadline reminders</b><small>3 days and 1 day before, 9 AM</small></span><button class="switch${S.remind.has(i.id)?' on':''}" role="switch" aria-checked="${S.remind.has(i.id)}" aria-label="Deadline reminders" data-act="remind" data-v="${i.id}"></button></div>
+        <button class="linkbtn" data-act="tab" data-v="mentor">${ic('mentor',18)}<span>Ask a mentor who has done this step</span></button>
+        <button class="linkbtn" data-act="flag" style="padding-top:0">${ic('flag',18)}<span>Something changed? Report it</span></button>
       </div>
     </div>
-    <div class="cta"><button class="btn${done?' ghost':''}" data-act="toggleDone" data-v="${i.id}">${done?'완료 취소':ic('check',20)+'완료로 표시'}</button></div>`},
+    <div class="cta"><button class="btn${done?' ghost':''}" data-act="toggleDone" data-v="${i.id}">${done?'Mark as not done':ic('check',20)+'Mark as done'}</button></div>`},
 
   mentorApply(){
     const st=S.apply.step;
     const cls=k=>k<st?'done':k===st?'cur':'';
     const n=k=>k<st?ic('check',16,3):k+1;
-    return `${bar('멘토 인증','back')}
+    return `${bar('Become a mentor','back')}
     <div class="scroll pad">
-      <h2 class="ob-title" style="font-size:22px">다녀온 경험으로<br>후배를 도와주세요</h2>
-      <p class="ob-sub" style="margin-bottom:26px">유료 멘토링이라 실제 수료 여부를 꼼꼼히 확인해요. 심사를 통과하면 인증 멘토 배지가 붙어요.</p>
-      <div class="vstep ${cls(0)}"><span class="n">${n(0)}</span><div class="t"><b>학교 이메일 인증</b><small>본교 이메일로 재학·졸업 신분을 확인해요</small>
-        ${st===0?`<div class="act"><div class="row"><input class="input" id="apEmail" type="email" placeholder="name@university.ac.kr" value="${esc(S.apply.email||S.email)}"><button class="btn sm" data-act="ap0">인증</button></div></div>`:''}</div></div>
-      <div class="vstep ${cls(1)}"><span class="n">${n(1)}</span><div class="t"><b>수료 증빙 제출</b><small>파견교 성적증명서나 수료증(Certificate of Attendance)</small>
-        ${st===1?`<div class="act"><label class="file">${ic('upload',18)}<span>${S.apply.file?esc(S.apply.file):'PDF 또는 이미지 올리기'}</span><input type="file" id="apFile" accept=".pdf,image/*"></label>
-          <button class="btn sm" data-act="ap1" ${S.apply.file?'':'disabled'}>제출하기</button></div>`:''}</div></div>
-      <div class="vstep ${cls(2)}"><span class="n">${n(2)}</span><div class="t"><b>운영팀 심사</b><small>${st===2?'심사 중이에요 · 영업일 기준 3일 이내 결과 안내':'서류와 프로그램 정보를 대조해요'}</small>
-        ${st===2?`<div class="act"><button class="btn sm ghost" data-act="ap2">심사 통과 (데모)</button></div>`:''}</div></div>
-      <div class="vstep ${cls(3)}"><span class="n">${st>=3?ic('shield',16,2.4):4}</span><div class="t"><b>인증 멘토 배지 발급</b><small>${st>=3?'배지가 발급됐어요. 이제 멘토링 일정을 열 수 있어요.':'세션 가격과 가능 시간을 직접 정해요'}</small></div></div>
+      <h2 class="ob-title" style="font-size:24px">Help the next student<br>with what you learned</h2>
+      <p class="ob-sub" style="margin-bottom:26px">Mentoring is paid, so we verify that every mentor actually completed the program. Pass the review to get a verified badge.</p>
+      <div class="vstep ${cls(0)}"><span class="n">${n(0)}</span><div class="t"><b>Verify your university email</b><small>Confirms you are a current student or graduate</small>
+        ${st===0?`<div class="act"><div class="row"><input class="input" id="apEmail" type="email" placeholder="name@university.ac.kr" value="${esc(S.apply.email||S.email)}"><button class="btn sm" data-act="ap0">Verify</button></div></div>`:''}</div></div>
+      <div class="vstep ${cls(1)}"><span class="n">${n(1)}</span><div class="t"><b>Upload proof of completion</b><small>Host transcript or certificate of attendance</small>
+        ${st===1?`<div class="act"><label class="file">${ic('upload',18)}<span>${S.apply.file?esc(S.apply.file):'Upload a PDF or image'}</span><input type="file" id="apFile" accept=".pdf,image/*"></label>
+          <button class="btn sm" data-act="ap1" ${S.apply.file?'':'disabled'}>Submit</button></div>`:''}</div></div>
+      <div class="vstep ${cls(2)}"><span class="n">${n(2)}</span><div class="t"><b>Team review</b><small>${st===2?'In review · results within 3 business days':'We match your documents against the program'}</small>
+        ${st===2?`<div class="act"><button class="btn sm ghost" data-act="ap2">Approve (demo)</button></div>`:''}</div></div>
+      <div class="vstep ${cls(3)}"><span class="n">${st>=3?ic('shield',16,2.4):4}</span><div class="t"><b>Get your verified badge</b><small>${st>=3?'Your badge is live. You can now open mentoring slots.':'Set your own session price and availability'}</small></div></div>
     </div>`}
 };
+
+function schoolListHTML(){
+  if(!DATA) return '<p class="loadmsg">Loading universities…</p>';
+  if(DATA.error) return '<p class="loadmsg">Couldn’t load the university list. Check your connection and reload.</p>';
+  const q=S.sq.trim().toLowerCase();
+  let list=regionHosts();
+  if(S.scountry!=='All') list=list.filter(u=>u[1]===S.scountry);
+  const row=u=>{const h=makeHost(u);const on=S.pick&&S.pick.name===u[0]&&S.pick.cc===u[1];
+    return `<button class="srow${on?' on':''}" data-act="pick" data-v="${esc(u[0])}" data-cc="${u[1]}"><span class="mono">${esc(h.mono)}</span><span class="t"><b>${hi(u[0],S.sq.trim())}</b><small>${esc(h.country)}</small></span>${on?'<span class="ok">'+ic('check',20,2.6)+'</span>':''}</button>`};
+  if(q){
+    const m=byRank(list.filter(u=>u[0].toLowerCase().includes(q)||(COUNTRIES[u[1]][0]).toLowerCase().includes(q)),q,u=>u[0]);
+    return `<p class="sect-label">Results<span class="num">${m.length.toLocaleString()}</span></p>${m.length?m.slice(0,S.slimit).map(row).join(''):'<p class="loadmsg">No universities match. Try another spelling or region.</p>'}${m.length>S.slimit?'<button class="more" data-act="more">Show more</button>':''}`;
+  }
+  let out='';
+  if(S.scountry==='All'){
+    const f=FEATURED[S.region].map(n=>list.find(u=>u[0]===n)).filter(Boolean);
+    out+=`<p class="sect-label">Popular with Korean students</p><div class="grid2">${f.map(u=>{const h=makeHost(u);const on=S.pick&&S.pick.name===u[0];return `<button class="uni${on?' on':''}" data-act="pick" data-v="${esc(u[0])}" data-cc="${u[1]}"><span class="mono">${esc(h.mono)}</span><span class="t"><small>${esc(h.country)}</small><b>${esc(u[0])}</b></span></button>`}).join('')}</div>`;
+  }
+  out+=`<p class="sect-label">All universities<span class="num">${list.length.toLocaleString()}</span></p>${list.slice(0,S.slimit).map(row).join('')}${list.length>S.slimit?'<button class="more" data-act="more">Show more</button>':''}`;
+  return out;
+}
+function homeListHTML(){
+  if(!DATA) return '<div class="sugg"><p class="empty">Loading universities…</p></div>';
+  const q=S.homeQ.trim().toLowerCase(); if(!q) return '';
+  const m=byRank(DATA.kr.filter(u=>u[0].toLowerCase().includes(q)),q,u=>u[0]).slice(0,8);
+  return `<div class="sugg">${m.length?m.map(u=>`<button data-act="pickHome" data-v="${esc(u[0])}">${ic('school',18)}<span>${hi(u[0],S.homeQ.trim())}</span></button>`).join(''):'<p class="empty">No match. Try the English name, e.g. “Yonsei”.</p>'}</div>`;
+}
 
 function homeTab(){
   const h=host(),p=prog(),list=items();
   const doneN=list.filter(i=>S.done.has(i.id)).length;
   const pct=Math.round(doneN/list.length*100);
   const next=list.find(i=>!S.done.has(i.id));
-  const cats=['전체','지원','서류·비자','생활','학업'];
-  const shown=S.filter==='전체'?list:list.filter(i=>i.cat===S.filter);
-  return `<div class="bar main"><h2>내 준비</h2><button class="iconbtn" data-act="toast" data-v="알림 ${S.remind.size}개가 켜져 있어요" aria-label="알림">${ic('bell')}</button></div>
+  const cats=['All','Apply','Visa','Living','Academics'].filter(c=>c==='All'||list.some(i=>i.cat===c));
+  const shown=S.filter==='All'?list:list.filter(i=>i.cat===S.filter);
+  return `<div class="bar main"><h2>My prep</h2><button class="iconbtn" data-act="toast" data-v="${S.remind.size} reminders are on" aria-label="Notifications">${ic('bell')}</button></div>
   <div class="scroll pad">
     <section class="hero">
-      <div class="top"><span class="mono">${h.short}</span><span class="t"><b>${h.name}</b><small>${p.kind} · ${p.term}</small></span></div>
-      <div class="dday"><div><small>출국까지</small><span class="big num">${ddLabel(dd(depDate()))}</span></div>
-        <div class="r"><b class="num">${doneN} / ${list.length}</b>완료 · ${depDate().getMonth()+1}월 ${depDate().getDate()}일 출국</div></div>
-      <div class="meter" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pct}%"></i></div>
+      <div class="top"><span class="mono">${esc(h.mono)}</span><span class="t"><b>${esc(h.name)}</b><small>${p.type} · ${p.term}</small></span></div>
+      <div class="dday"><div><small>Departure in</small><span class="big num">${ddLabel(dd(depDate()))}</span></div>
+        <div class="r"><b class="num">${doneN} / ${list.length}</b>done · leaving ${fmtShort(depDate())}</div></div>
+      <div class="meter" role="progressbar" aria-label="Checklist progress" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pct}%"></i></div>
     </section>
-    ${next?`<button class="next" data-act="open" data-v="${next.id}"><span class="t"><span class="lbl">다음 할 일 · ${ddLabel(dd(next.date))}</span><b>${next.title}</b></span>${ic('chev',20)}</button>`:''}
-    <div class="filters">${cats.map(c=>`<button class="chip sm${c===S.filter?' on':''}" data-act="filter" data-v="${c}">${c}</button>`).join('')}</div>
-    <div class="list-head"><h3>체크리스트</h3><span>마감 순</span></div>
+    ${next?`<button class="next" data-act="open" data-v="${next.id}"><span class="t"><span class="lbl">Up next · ${ddLabel(dd(next.date))}</span><b>${next.title}</b></span>${ic('chev',20)}</button>`:''}
+    <div class="hscroll filters">${cats.map(c=>`<button class="chip sm${c===S.filter?' on':''}" data-act="filter" data-v="${c}">${c}</button>`).join('')}</div>
+    <div class="list-head"><h3>Checklist</h3><span>By deadline</span></div>
     <div>${shown.map(i=>{const d=S.done.has(i.id);return `
       <div class="task${d?' done':''}">
-        <button class="tick${d?' on':''}" data-act="toggleDone" data-v="${i.id}" aria-label="${i.title} 완료" aria-pressed="${d}">${ic('check',16,3)}</button>
+        <button class="tick${d?' on':''}" data-act="toggleDone" data-v="${i.id}" aria-label="Mark ${i.title} as done" aria-pressed="${d}">${ic('check',16,3)}</button>
         <button class="body" data-act="open" data-v="${i.id}"><span class="t"><b>${i.title}</b>
           <span class="meta"><span class="pill cat">${i.cat}</span><span class="num">${fmt(i.date)} · ${ddLabel(dd(i.date))}</span>${statusPill(i)}</span></span><span class="chev">${ic('chev',18)}</span></button>
       </div>`}).join('')}</div>
-    <button class="nudge" data-act="tab" data-v="benefit"><span class="ico">${ic('umbrella')}</span><span class="t"><b>보험은 비자 서류에도 쓰여요</b><small>학생 제휴 보험을 미리 비교해 보세요</small></span>${ic('chev',18)}</button>
+    <button class="nudge" data-act="tab" data-v="perks"><span class="ico">${ic('umbrella')}</span><span class="t"><b>Insurance shows up in visa paperwork</b><small>Compare student insurance deals early</small></span>${ic('chev',18)}</button>
   </div>`;
 }
 
@@ -704,77 +880,78 @@ function communityTab(){
   const h=host(),p=prog();
   if(!S.posts) S.posts=seedPosts();
   const ps=S.posts.filter(x=>S.ctab==='status'?x.type==='status':x.type==='q');
-  return `<div class="bar main"><h2>커뮤니티</h2></div>
+  const mine=Math.round(items().filter(i=>S.done.has(i.id)).length/items().length*100);
+  return `<div class="bar main"><h2>Community</h2></div>
   <div class="scroll pad">
-    <p style="font-size:13px;color:var(--ink-2);margin-bottom:12px">${h.short} ${p.kind} · ${p.term} · <b style="color:var(--ink)">${PEERS.length+8}명</b> 준비 중</p>
-    <div class="peers">${[['나','나',Math.round(items().filter(i=>S.done.has(i.id)).length/items().length*100),'']].concat(PEERS).map(x=>`<div class="peer"><div class="ring" style="--p:${x[2]}"><div class="ava">${x[0]}</div></div><small><b>${x[1]}</b>${x[3]||'내 진행률'}</small></div>`).join('')}</div>
-    <div style="margin-top:18px" class="seg" role="tablist"><button class="${S.ctab==='status'?'on':''}" data-act="ctab" data-v="status">준비 현황</button><button class="${S.ctab==='q'?'on':''}" data-act="ctab" data-v="q">질문 · 답변</button><button data-act="tab" data-v="mentor">1:1 멘토</button></div>
-    ${S.ctab==='status'?`<div class="compose"><p>내 준비 현황 공유하기</p>
-      <div class="chips">${['지원서 제출','비자 신청 완료','숙소 확정','항공권 예약'].map(t=>`<button class="chip sm" data-act="share" data-v="${t}">${t}</button>`).join('')}</div></div>`
-    :`<div class="compose"><p>같은 프로그램 동기에게 무료로 물어보세요</p>
-      <div class="row"><input class="input" id="qInput" placeholder="예: 기숙사 입주 전날 어디서 묵으셨어요?"><button class="btn sm" data-act="ask" aria-label="질문 올리기">${ic('send',18)}</button></div></div>`}
-    <div>${ps.map((x)=>{const idx=S.posts.indexOf(x);return `<article class="post">
-      <div class="who"><span class="ava">${x.who[0]}</span><span class="t"><b>${x.who}${x.tag?` <span class="pill ok">${x.tag}</span>`:''}</b><small>${x.meta} · ${x.time}</small></span></div>
+    <p style="font-size:13px;color:var(--ink-2);margin-bottom:12px">${esc(h.short)} · ${p.type} ${p.term} · <b style="color:var(--ink)">${PEERS.length+8} students</b> preparing</p>
+    <div class="peers">${[['Me','You',mine,'Your progress']].concat(PEERS).map(x=>`<div class="peer"><div class="ring" style="--p:${x[2]}"><div class="ava">${x[0]}</div></div><small><b>${x[1]}</b>${x[3]}</small></div>`).join('')}</div>
+    <div style="margin-top:18px" class="seg" role="tablist"><button class="${S.ctab==='status'?'on':''}" data-act="ctab" data-v="status">Progress</button><button class="${S.ctab==='q'?'on':''}" data-act="ctab" data-v="q">Q&amp;A</button><button data-act="tab" data-v="mentor">1:1 Mentors</button></div>
+    ${S.ctab==='status'?`<div class="compose"><p>Share where you are</p>
+      <div class="chips">${['Applied','Visa submitted','Housing set','Flight booked'].map(t=>`<button class="chip sm" data-act="share" data-v="${t}">${t}</button>`).join('')}</div></div>`
+    :`<div class="compose"><p>Ask students on the same program, free</p>
+      <div class="row"><input class="input" id="qInput" placeholder="e.g. Where did you stay before move-in?"><button class="btn sm" data-act="ask" aria-label="Post question">${ic('send',18)}</button></div></div>`}
+    <div>${ps.map(x=>{const idx=S.posts.indexOf(x);return `<article class="post">
+      <div class="who"><span class="ava">${x.who[0]}</span><span class="t"><b>${esc(x.who)}${x.tag?` <span class="pill ok">${x.tag}</span>`:''}</b><small>${x.meta} · ${x.time}</small></span></div>
       <p class="txt${x.type==='q'?' q':''}">${esc(x.text)}</p>
-      ${x.answer?`<div class="answer"><b>${x.answer.who} <span class="badge">${ic('shield',13,2.4)}인증 멘토</span></b>${x.answer.text}</div>`:''}
-      <div class="foot">${x.type==='status'?`<button class="${S.liked.has(idx)?'on':''}" data-act="like" data-v="${idx}">${ic('heart',15)} 응원 ${x.likes+(S.liked.has(idx)?1:0)}</button>`:`<span>답변 ${x.answer?1:(x.answers||0)}</span>`}</div>
+      ${x.answer?`<div class="answer"><b>${x.answer.who} <span class="badge">${ic('shield',13,2.4)}Verified mentor</span></b>${x.answer.text}</div>`:''}
+      <div class="foot">${x.type==='status'?`<button class="${S.liked.has(idx)?'on':''}" data-act="like" data-v="${idx}">${ic('heart',15)} Cheer ${x.likes+(S.liked.has(idx)?1:0)}</button>`:`<span>${x.answer?1:(x.answers||0)} answers</span>`}</div>
     </article>`}).join('')}</div>
   </div>`;
 }
 
 function mentorsFor(){
   const h=host(),p=prog();
-  return MENTOR_NAMES.map((m,k)=>({id:k,name:m[0],major:m[1],price:m[2],rate:m[3],reviews:m[4],
-    prog:`${h.short} ${k===2?'썸머스쿨 2025':p.kind+(k===0?' 2025 가을':' 2025 봄')} 수료`,topics:MENTOR_TOPICS[k]}));
+  return MENTORS.map((m,k)=>({id:k,name:m[0],major:m[1],price:m[2],rate:m[3],reviews:m[4],topics:m[5],
+    prog:`${h.short} · ${k===2?'Summer school 2025':p.type+(k===0?' Fall 2025':' Spring 2025')}`}));
 }
 function mentorTab(){
   const h=host();
-  return `<div class="bar main"><h2>멘토링</h2></div>
+  return `<div class="bar main"><h2>Mentors</h2></div>
   <div class="scroll pad">
-    <section class="mhero"><b>${h.short}를 직접 다녀온<br>인증 선배와 1:1로 이야기해요</b>
-      <div class="flow"><span>학교 이메일 인증</span><span>수료 증빙 확인</span><span>운영팀 심사</span></div></section>
-    <div class="list-head"><h3>${h.short} 인증 멘토</h3><span>30분 영상 · 채팅</span></div>
+    <section class="mhero"><b>Talk 1:1 with verified students who completed ${esc(h.short)}</b>
+      <div class="flow"><span>University email</span><span>Proof of completion</span><span>Team review</span></div></section>
+    <div class="list-head"><h3>Verified mentors</h3><span>30 min · video or chat</span></div>
     ${mentorsFor().map(m=>`<button class="mentor" data-act="mentor" data-v="${m.id}">
       <span class="ava">${m.name[0]}</span>
-      <span class="t"><span class="name">${m.name}<span class="badge">${ic('shield',14,2.4)}인증</span>${S.booked[m.id]?'<span class="pill ok">예약됨</span>':''}</span>
-        <span class="prog" style="display:block">${m.prog} · ${m.major}</span>
+      <span class="t"><span class="name">${m.name}<span class="badge">${ic('shield',14,2.4)}Verified</span>${S.booked[m.id]?'<span class="pill ok">Booked</span>':''}</span>
+        <span class="prog">${esc(m.prog)} · ${m.major}</span>
         <span class="tags">${m.topics.map(t=>`<span class="pill cat">${t}</span>`).join('')}</span>
-        <span class="bottom"><span class="rate">${ic('star',14)}<b>${m.rate}</b> (${m.reviews})</span><span class="price num">${m.price}원 <small>/ 30분</small></span></span></span>
+        <span class="bottom"><span class="rate">${ic('star',14)}<b>${m.rate}</b> (${m.reviews})</span><span class="price num">₩${m.price} <small>/ 30 min</small></span></span></span>
     </button>`).join('')}
-    <p class="why">멘토는 실제로 프로그램을 수료한 학생만 될 수 있어요. 결제 금액은 멘토에게 지급되고, 일부는 플랫폼 운영 수수료로 쓰여요.</p>
+    <p class="why">Only students who completed the program can become mentors. Mentors receive the session fee, minus a platform commission.</p>
   </div>`;
 }
 
-function benefitTab(){
-  const cats=['전체','보험','eSIM','항공','숙소'];
-  const show=S.bcat==='전체'?Object.keys(OFFERS):[S.bcat];
-  return `<div class="bar main"><h2>출국 준비 혜택</h2></div>
+function perksTab(){
+  const cats=Object.keys(OFFERS);
+  const show=S.bcat==='All'?cats:[S.bcat];
+  return `<div class="bar main"><h2>Perks</h2></div>
   <div class="scroll pad">
-    <p style="color:var(--ink-2);font-size:14px">출국 전에 꼭 필요한 것만 학생 가격으로 모았어요.</p>
-    <div class="cat-row" style="margin-top:14px">${cats.slice(1).map(c=>`<button class="${S.bcat===c?'on':''}" data-act="bcat" data-v="${c}"><span class="ico">${ic(OFFER_ICON[c])}</span>${c}</button>`).join('')}</div>
-    ${show.map(c=>`<div class="list-head"><h3>${c}</h3><span class="sample">제휴 예시</span></div>
-      ${OFFERS[c].map(o=>`<div class="offer"><span class="ico">${o[0]}</span><span class="t"><b>${o[1]}</b><small>${o[2]}</small><span class="deal" style="display:block">${o[3]}</span></span><button class="btn sm ghost" data-act="toast" data-v="${o[1]} 혜택 페이지로 이동해요">보기</button></div>`).join('')}`).join('')}
-    <p class="why">제휴사를 통해 구매하면 OneStep Abroad가 소개 수수료를 받아요. 체크리스트와 커뮤니티를 무료로 운영하는 데 쓰여요.</p>
+    <p style="color:var(--ink-2);font-size:14px">What you need before departure, at student prices.</p>
+    <div class="cat-row" style="margin-top:14px">${cats.map(c=>`<button class="${S.bcat===c?'on':''}" data-act="bcat" data-v="${c}" aria-pressed="${S.bcat===c}"><span class="ico">${ic(OFFER_ICON[c])}</span>${c}</button>`).join('')}</div>
+    ${show.map(c=>`<div class="list-head"><h3>${c}</h3><span class="sample">Sample partner</span></div>
+      ${OFFERS[c].map(o=>`<div class="offer"><span class="ico">${o[0]}</span><span class="t"><b>${o[1]}</b><small>${o[2]}</small><span class="deal">${o[3]}</span></span><button class="btn sm ghost" data-act="toast" data-v="Opening ${o[1]}">View</button></div>`).join('')}`).join('')}
+    <p class="why">교환가자 earns a referral commission when you buy through a partner. It keeps the checklist and community free.</p>
   </div>`;
 }
 
-function myTab(){
+function meTab(){
   const h=host(),p=prog(),P=S.profile;
-  return `<div class="bar main"><h2>마이</h2></div>
+  return `<div class="bar main"><h2>Me</h2></div>
   <div class="scroll pad">
-    <div class="me"><span class="ava">${P.major[0]}</span><span><b>이O민</b><small>${P.univ} · ${P.major} · ${P.year}</small></span></div>
-    <button class="apply-card" data-go="mentorApply"><span class="t"><b>${S.apply.step>=3?'인증 멘토예요':'다녀온 뒤 멘토로 활동하기'}</b><small>${S.apply.step>=3?'멘토링 일정을 관리해 보세요':'학교 이메일 + 수료 증빙으로 인증해요'}</small></span>${ic(S.apply.step>=3?'shield':'chev',22)}</button>
+    <div class="me"><span class="ava">J</span><span class="t"><b>Junmin L.</b><small>${esc(P.univ||'Home university not set')} · ${esc(P.major)} · ${P.year}</small></span></div>
+    <button class="apply-card" data-go="mentorApply"><span class="t"><b>${S.apply.step>=3?'You’re a verified mentor':'Become a mentor after you return'}</b><small>${S.apply.step>=3?'Manage your mentoring slots':'Verify with your university email and proof of completion'}</small></span>${ic(S.apply.step>=3?'shield':'chev',22)}</button>
     <div class="menu">
-      <div class="m">${ic('globe',20)}<span class="t">내 프로그램<br><small>${h.name} · ${p.kind} ${p.term}</small></span></div>
-      <button data-act="changeProg">${ic('swap',20)}<span class="t">프로그램 변경</span>${ic('chev',18)}</button>
-      <button data-act="toast" data-v="알림 ${S.remind.size}개가 켜져 있어요">${ic('bell',20)}<span class="t">마감 알림<br><small>${S.remind.size}개 켜짐</small></span>${ic('chev',18)}</button>
-      <button data-act="toast" data-v="예약한 멘토링이 ${Object.keys(S.booked).length}건 있어요">${ic('mentor',20)}<span class="t">멘토링 예약 내역</span><small>${Object.keys(S.booked).length}건</small></button>
-      <button data-go="splash">${ic('back',20)}<span class="t">처음 화면으로 (데모)</span></button>
+      <div class="m">${ic('globe',20)}<span class="t">My program<br><small>${esc(h.name)} · ${p.type} ${p.term}</small></span></div>
+      <button data-act="changeProg">${ic('swap',20)}<span class="t">Change program</span>${ic('chev',18)}</button>
+      <button data-act="toast" data-v="${S.remind.size} reminders are on">${ic('bell',20)}<span class="t">Deadline reminders<br><small>${S.remind.size} on</small></span>${ic('chev',18)}</button>
+      <button data-act="toast" data-v="You have ${Object.keys(S.booked).length} mentoring bookings">${ic('mentor',20)}<span class="t">Mentoring bookings</span><small>${Object.keys(S.booked).length}</small></button>
+      <button data-go="splash">${ic('back',20)}<span class="t">Back to start (demo)</span></button>
     </div>
   </div>`;
 }
 
-/* ---------------- sheet ---------------- */
+/* ---------------- mentor booking sheet ---------------- */
 function openMentorSheet(id){
   const m=mentorsFor()[id]; S.mentorSheet=id; S.slot=null;
   const slots=[];
@@ -782,16 +959,16 @@ function openMentorSheet(id){
   const sheet=$('#sheet');
   const draw=()=>{sheet.innerHTML=`<div class="grab"></div>
     <div class="scroll">
-      <div class="mentor" style="border:0;padding-top:6px"><span class="ava">${m.name[0]}</span><span class="t"><span class="name">${m.name}<span class="badge">${ic('shield',14,2.4)}인증 멘토</span></span><span class="prog" style="display:block">${m.prog} · ${m.major}</span>
-        <span class="bottom"><span class="rate">${ic('star',14)}<b>${m.rate}</b> · 리뷰 ${m.reviews}개</span></span></span></div>
-      <div class="d-sec" style="padding-top:4px"><h3>인증 내역</h3><div class="vlist">
-        <div class="vitem">${ic('mail',18)}<span>학교 이메일 인증<small>본교 재학 확인</small></span></div>
-        <div class="vitem">${ic('doc',18)}<span>${host().short} 성적증명서 확인<small>운영팀 대조 완료</small></span></div>
-        <div class="vitem">${ic('shield',18)}<span>운영팀 심사 통과<small>2025.12 승인</small></span></div></div></div>
-      <div class="d-sec"><h3>시간 선택</h3><div class="slots">${slots.map((s,k)=>`<button class="chip${S.slot===k?' on':''}" data-act="slot" data-v="${k}"><span class="num">${fmtShort(s.d)} (${WD[s.d.getDay()]})</span><small class="num">${s.hh}:00</small></button>`).join('')}</div></div>
-      <div class="d-sec" style="padding-bottom:8px"><div class="pay"><div><span>1:1 멘토링 30분</span><span class="num">${m.price}원</span></div><div class="tot"><span>결제 금액</span><span class="num">${m.price}원</span></div><p>세션 24시간 전까지 무료 취소할 수 있어요.</p></div></div>
+      <div class="mentor" style="border:0;padding-top:6px"><span class="ava">${m.name[0]}</span><span class="t"><span class="name">${m.name}<span class="badge">${ic('shield',14,2.4)}Verified mentor</span></span><span class="prog">${esc(m.prog)} · ${m.major}</span>
+        <span class="bottom"><span class="rate">${ic('star',14)}<b>${m.rate}</b> · ${m.reviews} reviews</span></span></span></div>
+      <div class="d-sec" style="padding-top:4px"><h3>How we verified</h3><div class="vlist">
+        <div class="vitem">${ic('mail',18)}<span>University email verified<small>Enrollment confirmed</small></span></div>
+        <div class="vitem">${ic('doc',18)}<span>${esc(host().short)} transcript checked<small>Matched by our team</small></span></div>
+        <div class="vitem">${ic('shield',18)}<span>Team review passed<small>Approved Dec 2025</small></span></div></div></div>
+      <div class="d-sec"><h3>Pick a time (KST)</h3><div class="slots">${slots.map((s,k)=>`<button class="chip${S.slot===k?' on':''}" data-act="slot" data-v="${k}"><span class="num">${WD[s.d.getDay()]} ${fmtShort(s.d)}</span><small class="num">${s.hh}:00</small></button>`).join('')}</div></div>
+      <div class="d-sec" style="padding-bottom:8px"><div class="pay"><div><span>1:1 mentoring, 30 min</span><span class="num">₩${m.price}</span></div><div class="tot"><span>Total</span><span class="num">₩${m.price}</span></div><p>Free cancellation up to 24 hours before the session.</p></div></div>
     </div>
-    <div class="cta"><button class="btn" data-act="book" ${S.slot===null?'disabled':''}>${S.slot===null?'시간을 선택하세요':`${fmtShort(slots[S.slot].d)} ${slots[S.slot].hh}:00 예약하기`}</button></div>`;};
+    <div class="cta"><button class="btn" data-act="book" ${S.slot===null?'disabled':''}>${S.slot===null?'Pick a time':`Book ${fmtShort(slots[S.slot].d)}, ${slots[S.slot].hh}:00`}</button></div>`;};
   sheet._draw=draw; sheet._slots=slots; draw();
   sheet.classList.add('on'); $('#scrim').classList.add('on');
 }
@@ -802,23 +979,25 @@ let tt;
 function toast(msg){const t=$('#toast');t.innerHTML=ic('check',18,2.6)+'<span>'+esc(msg)+'</span>';t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2200)}
 
 /* ---------------- render ---------------- */
-const TABS=[['home','list','홈'],['community','chat','커뮤니티'],['mentor','mentor','멘토링'],['benefit','gift','혜택'],['my','user','마이']];
+const TABS=[['home','list','Home'],['community','chat','Community'],['mentor','mentor','Mentors'],['perks','gift','Perks'],['me','user','Me']];
 let lastKey='';
 function render(keepScroll){
   const key=S.screen+S.tab+S.detail;
   const sc=view.querySelector('.scroll'); const top=sc&&keepScroll&&key===lastKey?sc.scrollTop:0;
+  const focusId=document.activeElement&&view.contains(document.activeElement)?document.activeElement.id:null;
   view.innerHTML=SCREENS[S.screen]();
   const ns=view.querySelector('.scroll'); if(ns) ns.scrollTop=top;
+  if(S.screen==='profile'&&$('#homeList')) $('#homeList').innerHTML=homeListHTML();
+  if(focusId&&document.getElementById(focusId)){const el=document.getElementById(focusId);el.focus();if(el.setSelectionRange&&el.type!=='email')el.setSelectionRange(el.value.length,el.value.length)}
   lastKey=key;
   const tb=$('#tabbar'); const showTabs=S.screen==='app';
   tb.hidden=!showTabs;
   if(showTabs) tb.innerHTML=TABS.map(([k,i,l])=>`<button class="${S.tab===k?'on':''}" data-act="tab" data-v="${k}" aria-current="${S.tab===k?'page':'false'}">${ic(i,24)}${l}</button>`).join('');
   renderJump();
 }
-const JUMPS=[['시작 화면',{screen:'splash'}],['학교 정보 입력',{screen:'profile'}],['프로그램 선택',{screen:'program'}],['홈 · 맞춤 체크리스트',{screen:'app',tab:'home'}],['항목 상세 · 공식 출처',{screen:'detail',detail:'visa'}],['커뮤니티',{screen:'app',tab:'community'}],['인증 멘토링',{screen:'app',tab:'mentor'}],['출국 준비 혜택',{screen:'app',tab:'benefit'}],['멘토 인증 절차',{screen:'mentorApply'}]];
-function curJump(){return JUMPS.findIndex(([,j])=>j.screen===S.screen&&(!j.tab||j.tab===S.tab))}
+const JUMPS=[['Splash',{screen:'splash'}],['Home university',{screen:'profile'}],['Host university',{screen:'school'}],['Program',{screen:'program'}],['Checklist',{screen:'app',tab:'home'}],['Checklist item',{screen:'detail'}],['Community',{screen:'app',tab:'community'}],['Verified mentors',{screen:'app',tab:'mentor'}],['Perks',{screen:'app',tab:'perks'}],['Mentor verification',{screen:'mentorApply'}]];
 function renderJump(){
-  const c=curJump();
+  const c=JUMPS.findIndex(([,j])=>j.screen===S.screen&&(!j.tab||j.tab===S.tab));
   $('#jump').innerHTML=JUMPS.map(([l],k)=>`<button class="${k===c?'on':''}" data-jump="${k}"><span class="n">${k+1}</span>${l}</button>`).join('');
 }
 function go(screen){S.screen=screen; if(screen!=='detail')S.detail=null; closeSheet(); render()}
@@ -826,51 +1005,71 @@ function go(screen){S.screen=screen; if(screen!=='detail')S.detail=null; closeSh
 /* ---------------- events ---------------- */
 document.addEventListener('click',e=>{
   const j=e.target.closest('[data-jump]');
-  if(j){const t=JUMPS[+j.dataset.jump][1]; Object.assign(S,t); if(t.screen==='detail'&&!items().some(i=>i.id===t.detail)) S.detail=items()[2].id; if(t.screen!=='detail')S.detail=null; closeSheet(); render(); return}
+  if(j){const t=JUMPS[+j.dataset.jump][1]; Object.assign(S,t);
+    if(t.screen==='detail'){const v=items().find(i=>i.cat==='Visa'&&!S.done.has(i.id))||items()[2]; S.detail=v.id} else S.detail=null;
+    if(t.screen==='program'&&!S.pick) S.pick=host();
+    closeSheet(); render(); return}
   const g=e.target.closest('[data-go]');
-  if(g){ if(S.screen==='login'){const v=$('#email');if(v)S.email=v.value} go(g.dataset.go); return}
+  if(g){ go(g.dataset.go); return}
   const a=e.target.closest('[data-act]'); if(!a) return;
   const v=a.dataset.v, act=a.dataset.act;
   if(act.startsWith('go:')) return go(act.slice(3));
   switch(act){
     case 'back': go('app'); break;
     case 'year': S.profile.year=v; render(true); break;
-    case 'region': S.region=v; if(host().region!==v){S.hostId=HOSTS.find(h=>h.region===v).id;} render(true); break;
-    case 'host': S.hostId=v; render(true); break;
-    case 'prog': S.progId=v; render(true); break;
-    case 'build': S.posts=null; S.done=new Set(['app','eng']); S.screen='building'; render(); setTimeout(()=>{S.screen='app';S.tab='home';render()},1100); break;
+    case 'pickHome': S.profile.univ=v; S.homeQ=''; render(true); break;
+    case 'unpickHome': S.profile.univ=''; S.homeQ=''; render(true); setTimeout(()=>$('#homeQ')&&$('#homeQ').focus()); break;
+    case 'region': S.region=v; S.scountry='All'; S.slimit=40; render(); break;
+    case 'scountry': S.scountry=v; S.slimit=40; render(true); break;
+    case 'more': S.slimit+=60; $('#schoolList').innerHTML=schoolListHTML(); break;
+    case 'pick': {const u=DATA.unis.find(x=>x[0]===v&&x[1]===a.dataset.cc); S.pick=makeHost(u); $('#schoolList').innerHTML=schoolListHTML(); const b=view.querySelector('[data-act="toProgram"]'); b.disabled=false; b.textContent='Next: choose program'; break}
+    case 'toProgram': if(S.pick){S.pickProg=(S.pick.name===host().name?S.progId:'exS'); go('program')} break;
+    case 'pickProg': S.pickProg=v; render(true); break;
+    case 'build': S.host=S.pick||S.host; S.progId=S.pickProg; S.posts=null; S.filter='All'; resetDone(); S.screen='building'; render(); setTimeout(()=>{S.screen='app';S.tab='home';render()},1100); break;
     case 'tab': S.tab=v; S.screen='app'; S.detail=null; closeSheet(); render(); break;
     case 'filter': S.filter=v; render(true); break;
     case 'open': S.detail=v; go('detail'); break;
-    case 'toggleDone': {const was=S.done.has(v); was?S.done.delete(v):S.done.add(v); render(true); if(!was) toast('완료로 표시했어요'); break}
-    case 'remind': S.remind.has(v)?S.remind.delete(v):S.remind.add(v); render(true); toast(S.remind.has(v)?'마감 알림을 켰어요':'마감 알림을 껐어요'); break;
-    case 'flag': toast('변경 제보를 받았어요. 운영팀이 확인 후 반영해요'); break;
+    case 'toggleDone': {const was=S.done.has(v); was?S.done.delete(v):S.done.add(v); render(true); if(!was) toast('Marked as done'); break}
+    case 'remind': S.remind.has(v)?S.remind.delete(v):S.remind.add(v); render(true); toast(S.remind.has(v)?'Reminders on':'Reminders off'); break;
+    case 'flag': toast('Thanks! Our team will check and update it'); break;
     case 'toast': toast(v); break;
     case 'ctab': S.ctab=v; render(true); break;
-    case 'share': {const P=S.profile; S.posts.unshift({type:'status',who:'나',meta:`${P.major} ${P.year}`,tag:v,text:`${v}! 같이 준비하는 분들 화이팅이에요.`,time:'방금',likes:0}); render(); toast('준비 현황을 공유했어요'); break}
-    case 'ask': {const q=$('#qInput'); const t=q&&q.value.trim(); if(!t){q&&q.focus();return} const P=S.profile; S.posts.unshift({type:'q',who:'나',meta:`${P.major} ${P.year}`,text:t,time:'방금',answers:0}); render(); toast('질문을 올렸어요'); break}
+    case 'share': {const P=S.profile; S.posts.unshift({type:'status',who:'You',meta:`${P.major} · ${P.year}`,tag:v,text:`${v}! Good luck to everyone else getting ready.`,time:'Just now',likes:0}); render(); toast('Shared with your program'); break}
+    case 'ask': {const q=$('#qInput'); const t=q&&q.value.trim(); if(!t){q&&q.focus();return} const P=S.profile; S.posts.unshift({type:'q',who:'You',meta:`${P.major} · ${P.year}`,text:t,time:'Just now',answers:0}); render(); toast('Question posted'); break}
     case 'like': {const k=+v; S.liked.has(k)?S.liked.delete(k):S.liked.add(k); render(true); break}
     case 'mentor': openMentorSheet(+v); break;
     case 'closeSheet': closeSheet(); break;
     case 'slot': S.slot=+v; $('#sheet')._draw(); break;
-    case 'book': {const sl=$('#sheet')._slots[S.slot]; S.booked[S.mentorSheet]=sl; const m=mentorsFor()[S.mentorSheet]; closeSheet(); render(true); toast(`${m.name} 멘토와 ${fmtShort(sl.d)} ${sl.hh}:00 예약했어요`); break}
-    case 'bcat': S.bcat=S.bcat===v?'전체':v; render(true); break;
-    case 'changeProg': S.region=host().region; go('program'); break;
-    case 'ap0': {const em=$('#apEmail').value.trim(); if(!/^[^@\s]+@[^@\s]+\.ac\.kr$/.test(em)){toast('ac.kr로 끝나는 학교 이메일을 입력하세요');return} S.apply.email=em; S.apply.step=1; render(true); toast('학교 이메일을 인증했어요'); break}
-    case 'ap1': S.apply.step=2; render(true); toast('수료 증빙을 제출했어요'); break;
-    case 'ap2': S.apply.step=3; render(true); toast('인증 멘토 배지가 발급됐어요'); break;
+    case 'book': {const sl=$('#sheet')._slots[S.slot]; S.booked[S.mentorSheet]=sl; const m=mentorsFor()[S.mentorSheet]; closeSheet(); render(true); toast(`Booked with ${m.name}, ${fmtShort(sl.d)} ${sl.hh}:00`); break}
+    case 'bcat': S.bcat=S.bcat===v?'All':v; render(true); break;
+    case 'changeProg': S.pick=host(); S.region=host().region; go('school'); break;
+    case 'ap0': {const em=$('#apEmail').value.trim(); if(!/^[^@\s]+@[^@\s]+\.ac\.kr$/.test(em)){toast('Enter a university email ending in .ac.kr');return} S.apply.email=em; S.apply.step=1; render(true); toast('University email verified'); break}
+    case 'ap1': S.apply.step=2; render(true); toast('Proof of completion submitted'); break;
+    case 'ap2': S.apply.step=3; render(true); toast('Your verified badge is live'); break;
   }
 });
+document.addEventListener('input',e=>{
+  const t=e.target;
+  if(t.dataset.model) S.profile[t.dataset.model]=t.value;
+  if(t.id==='email') S.email=t.value;
+  if(t.id==='homeQ'){S.homeQ=t.value; $('#homeList').innerHTML=homeListHTML()}
+  if(t.id==='schoolQ'){S.sq=t.value; S.slimit=40; $('#schoolList').innerHTML=schoolListHTML()}
+});
 document.addEventListener('change',e=>{
-  const m=e.target.dataset.model; if(m){S.profile[m]=e.target.value}
   if(e.target.id==='apFile'&&e.target.files[0]){S.apply.file=e.target.files[0].name; render(true)}
 });
-document.addEventListener('input',e=>{const m=e.target.dataset.model; if(m) S.profile[m]=e.target.value; if(e.target.id==='email') S.email=e.target.value});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet(); if(e.key==='Enter'&&e.target.id==='qInput') document.querySelector('[data-act="ask"]').click()});
+
+/* fit the true-size phone into short browser windows */
+function fit(){
+  const z=innerWidth<=500?1:Math.min(1,(innerHeight-32)/876,(innerWidth-32)/417);
+  document.documentElement.style.setProperty('--z',z.toFixed(3));
+}
+addEventListener('resize',fit); fit();
 
 $('#sideIcon').innerHTML=ic('plane',20,2);
 render();
+loadData();
 </script>
-
 </body>
 </html>
