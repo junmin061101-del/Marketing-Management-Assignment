@@ -257,6 +257,18 @@ p{margin:0}
 .src b{display:block;font-size:14px;font-weight:700}
 .src small{display:block;color:var(--ink-3);font-size:12px;overflow-wrap:anywhere}
 .src .ic{color:var(--primary-ink)}
+.eng{border:1.5px solid var(--primary);border-radius:16px;padding:14px;background:var(--bg)}
+.eng.est{border-style:dashed;border-color:var(--line)}
+.eng-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.eng-top b{font-size:14px}
+.eng-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin-top:12px}
+.eng-grid div{background:var(--primary-soft);border-radius:12px;padding:10px;display:flex;flex-direction:column;min-width:0}
+.eng.est .eng-grid div{background:var(--surface)}
+.eng-grid small{font-size:11px;font-weight:700;color:var(--ink-2);letter-spacing:.02em}
+.eng-grid b{font-size:24px;font-weight:900;line-height:1.15;color:var(--primary-ink);letter-spacing:-.02em}
+.eng.est .eng-grid b{color:var(--ink);font-size:18px}
+.eng-grid em{font-style:normal;font-size:11px;color:var(--ink-3);line-height:1.3;margin-top:2px}
+.eng>p{font-size:13px;color:var(--ink-2);margin-top:10px;line-height:1.5}
 .guide{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .guide>li{display:flex;gap:12px;position:relative;padding-bottom:18px}
 .guide>li:not(:last-child)::before{content:"";position:absolute;left:13px;top:30px;bottom:2px;width:2px;background:var(--primary-line)}
@@ -678,6 +690,44 @@ function visaGuide(h,p){
 }
 
 
+
+/* ---------------- English requirements (checked against each source page, Oct 2026) ---------------- */
+// t: [test, minimum, detail]; scope: who it applies to
+const T=(test,min,detail='')=>[test,min,detail];
+const ENGLISH={
+  'Harvard University':{ss:{t:[T('TOEFL iBT','100','or 5.0 on the new 1–6 scale'),T('IELTS','7.0','Academic'),T('DET','125','Duolingo English Test')],scope:'Harvard Summer School (Harvard DCE rule)',note:'Scores must be no more than 2 years old.',src:L('Harvard DCE · English proficiency requirement','https://extension.harvard.edu/registration-admissions/course-registration/english-proficiency-requirement/')}},
+  'University of California, Berkeley':{
+    ss:{t:[T('TOEFL iBT','80'),T('IELTS','6.5'),T('DET','115')],scope:'Berkeley Summer Sessions, visiting international students',note:'Tests from the last 3 years are accepted. MyBest scores accepted.',src:L('Berkeley Summer Sessions · English Proficiency Requirement','https://summer.berkeley.edu/international/english-proficiency-requirement')},
+    ex:{t:[T('TOEFL iBT','80'),T('IELTS','6.5','Academic')],scope:'Berkeley International Office standard',note:'Host departments can ask for higher scores.',src:L('Berkeley International Office · English proficiency','https://internationaloffice.berkeley.edu/elp-documentation')}},
+  'University of California, Los Angeles':{ss:{t:[T('TOEFL iBT','80','or 4.0 on the new scale'),T('IELTS','6.5'),T('DET','105')],scope:'UCLA Summer Sessions',note:'Scores must be from the past 2 years.',src:L('UCLA Summer Sessions · International student info','https://summer.ucla.edu/international-student-info/')}},
+  'University of Washington':{ex:{t:[T('TOEFL iBT','76'),T('IELTS','6.5'),T('DET','105')],scope:'UW undergraduate minimum',note:'Your exchange coordinator may set a higher bar.',src:L('UW Admissions · English proficiency','https://admit.washington.edu/apply/transfer/how-to-apply/english-proficiency/')}},
+  'The University of Texas at Austin':{ex:{t:[T('TOEFL iBT','79','or 4 on the new scale'),T('IELTS','6.5')],scope:'Incoming exchange students',note:'Your home university can instead attest to CEFR B2 or higher.',src:L('UT Austin ISSS · Exchange partner fact sheet','https://global.utexas.edu/isss/advising-services/student-exchange-program/exchange-partner-fact-sheet')}},
+  'University of North Carolina at Chapel Hill':{ex:{t:[T('TOEFL iBT','100','or 5 on the new scale'),T('IELTS','6.0'),T('DET','130')],scope:'Incoming exchange students',note:'A home-university letter can also certify your English level.',src:L('UNC Study Abroad · Incoming exchange: how to apply','https://studyabroad.unc.edu/incoming-exchange/how-to-apply/')}},
+  'Boston University':{ss:{t:[T('TOEFL iBT','84','or 4.5 on the new scale'),T('IELTS','7.0'),T('DET','115')],scope:'BU Summer Term, visiting international students',note:'Submit before Summer Term registration.',src:L('BU Summer Term · English proficiency requirements','https://www.bu.edu/summer/international-college-students/toefl/')}},
+  'University of Toronto':{ex:{t:[T('TOEFL iBT','89','22+ in Speaking and Writing; or 4.5 on the new scale'),T('IELTS','6.5','no band below 6.0')],scope:'Undergraduate inbound exchange',note:'Duolingo is also accepted. Law and graduate exchanges need higher scores.',src:L('U of T Learning Abroad · English requirements','https://learningabroad.utoronto.ca/inbound-visiting/inbound-exchange/english-requirements/')}},
+  'University of British Columbia':{ex:{t:[T('TOEFL iBT','90','or 4.5 on the new scale'),T('IELTS','6.5','no part below 6.0'),T('DET','125')],scope:'Exchange students coming to UBC',note:'Section minimums apply. Scores must come from a single sitting.',src:L('UBC Go Global · English requirements for exchange','https://goglobal.ubc.ca/go-global/coming-ubc/coming-ubc-exchange/english-language-requirements-coming-ubc-exchange')}},
+  'University of Tokyo':{ex:{t:[T('TOEFL iBT','90'),T('IELTS','6.5'),T('DET','120')],scope:'USTEP exchange, English-taught courses',note:'JLPT N1 is accepted instead. MyBest scores are not accepted.',src:L('UTokyo · Overview of USTEP','https://www.u-tokyo.ac.jp/en/academics/ustep-overview.html')}},
+  'Waseda University':{ex:{t:[T('TOEFL iBT','80'),T('IELTS','6.0')],scope:'School of International Liberal Studies (varies by school)',note:'Some schools accept lower scores. TOEFL Home Edition is not accepted.',src:L('Waseda CIE · Application guidelines for exchange','https://www.waseda.jp/inst/cie/assets/uploads/2025/10/ce1d2cb793005d8e7d5cf9f84d634c16-1.pdf')}},
+  'The University of Hong Kong':{ex:{t:[T('TOEFL iBT','97'),T('IELTS','7.0','no subtest below 6.5')],scope:'Incoming exchange, 2026–27',note:'Your home university uploads the proof. Expired scores are rejected.',src:L('HKU · Exchange information sheet 2026–27 (PDF)','https://intlaffairs.hku.hk/backend/wp-content/uploads/2026/07/HKU-Information-Sheet-2026-27-Updated-July-2026.pdf')}},
+  'National Taiwan University':{ex:{t:[T('TOEFL iBT','72','or Level 4+ on the new scale'),T('IELTS','5.5')],scope:'Incoming exchange (CEFR B2)',note:'Chinese at CEFR B1 (TOCFL B3 or HSK 5) works instead.',src:L('NTU OIA · Exchange student overview','https://isss.ntu.edu.tw/exchange-visiting-students/overview/')}},
+  'National University of Singapore':{ex:{none:true,t:[T('Test','Not required','except Law: TOEFL 100 / IELTS 6.5')],scope:'Non-graduating exchange',note:'Only Law courses need TOEFL or IELTS for students from non-English-medium universities.',src:L('NUS GRO · Incoming exchange students','https://nus.edu.sg/gro/global-programmes/student-exchange/incoming-exchangers')}},
+  'University of Amsterdam':{ex:{t:[T('TOEFL iBT','92','or 4.5 on the new scale'),T('IELTS','6.5'),T('Cambridge','C','CAE')],scope:"Bachelor's level: Humanities, Social Sciences, Economics & Business",note:"Master's-level exchange needs TOEFL 100 / IELTS 7.0 in some faculties.",src:L('UvA · Exchange entry requirements','https://www.uva.nl/en/education/exchange/global-exchange-programme/entry-requirements-and-course-selection/entry-requirements-and-course-selection.html')}},
+  'Lund University':{ex:{t:[T('TOEFL iBT','90'),T('IELTS','6.5')],scope:'Recommended level for exchange',note:'Your home university may set its own nomination level.',src:L('Lund University · Admission requirements for exchange','https://www.lunduniversity.lu.se/study/study-opportunities-lund-university/exchange-and-study-abroad/exchange-studies/admission-requirements-exchange-courses')}},
+  'Copenhagen Business School':{ex:{t:[T('TOEFL iBT','94','spring 2027; 95 from autumn 2027'),T('IELTS','7.0'),T('DET','130')],scope:'Exchange students',note:'MyBest scores are not accepted.',src:L('CBS · Nomination and application','https://www.cbs.dk/en/study/internationals/exchange-students/nomination-and-application')}},
+  'University of Edinburgh':{ex:{t:[T('IELTS','6.5','6.5 in each component'),T('TOEFL iBT','92','23 in each; or 4.5 on the new scale')],scope:'Visiting and exchange students',note:'Scores must be no more than 2 years old when you start.',src:L('Edinburgh · Visiting student eligibility','https://cahss.ed.ac.uk/international-and-study-abroad/visiting-student-office/your-studies-in-edinburgh/enrol-on-courses/eligibility-enrolment')}}
+};
+function englishOf(h,p){
+  const E=ENGLISH[h.name]; const key=p.long?'ex':'ss';
+  if(E&&E[key]) return {...E[key],verified:true};
+  const dom=domainOf(h.url);
+  return {verified:false,t:[T('TOEFL iBT','80–100','typical'),T('IELTS','6.0–7.0','typical'),T('DET','105–130','typical')],scope:'Typical range at partner universities',note:`We have not verified ${h.short}’s exact scores yet. Check the official page before you book a test.`,
+    src:{label:`Search ${dom||h.short} for English requirements`,url:'https://www.google.com/search?q='+encodeURIComponent((dom?'site:'+dom+' ':h.name+' ')+'English language requirements '+(p.long?'exchange':'summer')),verified:false}};
+}
+const engLine=e=>e.none?'English test not required':e.t.filter(x=>x[0]!=='Cambridge').map(x=>`${x[0].replace(' iBT','')} ${x[1]}`).join(' · ');
+function engCard(e){return `<div class="eng${e.verified?'':' est'}"><div class="eng-top"><b>${e.verified?'Minimum scores':'Typical scores'}</b><span class="pill ${e.verified?'ok':'cat'}">${e.verified?'Verified Oct 2026':'Not verified'}</span></div>
+  <div class="eng-grid">${e.t.map(x=>`<div><small>${x[0]}</small><b class="num">${x[1]}</b>${x[2]?`<em>${x[2]}</em>`:''}</div>`).join('')}</div>
+  <p>${esc(e.scope)}. ${esc(e.note)}</p>${linkHTML(lk(e.src),true)}</div>`}
+
 /* ---------------- immunizations ---------------- */
 const KDCA=L('KDCA Immunization Helper · English certificate (예방접종도우미)','https://nip.kdca.go.kr/irhp/mngm/goVcntMngm.do?menuLv=3&menuCd=341');
 const GOV24=L('Gov24 · Vaccination certificate (정부24)','https://www.gov.kr/mw/AA020InfoCappView.do?CappBizCD=14600000398');
@@ -744,11 +794,15 @@ function buildChecklist(h,p){
       {t:'Complete the application',d:'Fill out the online form and choose your semester.',need:['Passport bio page','English transcript','Study plan or course list','English test score']},
       {t:'Wait for the acceptance letter',d:'You need the acceptance letter for your visa and housing.'}],
     links:[lk(appPage),lk(pg.intl)]});
-  add({id:'eng',cat:'Apply',title:'Send English test scores',off:long?85:55,
-    sum:'Upload your English scores with the application, or have the testing agency send them directly. Minimum scores differ by university and department.',
-    rows:[['Accepted tests','TOEFL iBT, IELTS Academic (varies)'],['Delivery','Usually sent directly by the test agency'],['Validity','Typically 2 years from the test date']],
-    steps:[{t:'Check the minimum score',d:'Find the requirement on the host’s incoming student page.',link:appPage},{t:'Send official scores',d:'Request score delivery from ETS (TOEFL) or upload your IELTS Test Report Form, as the host asks.'}],
-    links:[lk(appPage)]});
+  const en=englishOf(h,p);
+  add({id:'eng',cat:'Apply',title:en.none?'Confirm English proficiency':en.verified?`Meet English minimum (${engLine(en)})`:'Check English score requirement',off:long?85:55,eng:en,
+    sum:en.none?`${h.short} does not ask most exchange students for a test score. ${en.note}`:`${en.verified?h.short+' asks for':'Partner universities usually ask for'} one of these scores. You only need one test. Upload it with your application, or have the test agency send it directly.`,
+    rows:[['Applies to',en.scope],['Validity','Usually 2 years from the test date'],['New TOEFL scale','Since Jan 21, 2026 TOEFL also reports a 1–6 band score']],
+    steps:[
+      {t:'Confirm the exact minimum',d:'Open the official page. Some faculties and programs ask for more, including section minimums.',link:en.src},
+      {t:'Pick one test',d:'Choose TOEFL iBT, IELTS Academic or Duolingo (if accepted). Book early, because results take 2–13 days.',need:['TOEFL iBT: results in about 4–8 days','IELTS Academic: results in about 3–13 days','DET: results in about 2 days']},
+      {t:'Send official scores',d:'Have ETS send TOEFL scores to the host, upload your IELTS Test Report Form, or share DET results from your Duolingo account, as the host asks.'}],
+    links:[lk(en.src),lk(appPage)]});
 
   if(h.region==='us'){
     const o=long?{fin:70,i20:50,sevis:42,ds160:40,appt:38,visa:25}:{fin:50,i20:40,sevis:35,ds160:33,appt:32,visa:21};
@@ -1001,7 +1055,7 @@ const SCREENS={
       ${ps.map(p=>`<button class="popt${p.id===S.pickProg?' on':''}" data-act="pickProg" data-v="${p.id}" aria-pressed="${p.id===S.pickProg}">
         <span class="h"><span class="t"><span class="pill ${p.ex?'ok':'cat'}">${p.type}</span><b style="margin-top:6px">${p.term}</b></span><span class="radio-dot"></span></span>
         <p>${p.what}</p>
-        <dl><dt>Length</dt><dd>${p.len}</dd><dt>Credits</dt><dd>${p.credits}</dd><dt>Tuition</dt><dd>${p.cost}</dd><dt>Visa</dt><dd>${h.region==='us'?'F-1 student visa':h.region==='ca'?(p.year?'eTA + study permit':'eTA'):visaGuide(h,p).title.replace(/^(Apply for|Get|Check) (a |an |your )?/,'').replace(/^./,c=>c.toUpperCase())}</dd><dt>Departure</dt><dd class="num">${fmtY(D(depOf(p,h)))}</dd></dl>
+        <dl><dt>Length</dt><dd>${p.len}</dd><dt>Credits</dt><dd>${p.credits}</dd><dt>Tuition</dt><dd>${p.cost}</dd><dt>English</dt><dd>${engLine(englishOf(h,p))}${englishOf(h,p).verified?'':' (typical)'}</dd><dt>Visa</dt><dd>${h.region==='us'?'F-1 student visa':h.region==='ca'?(p.year?'eTA + study permit':'eTA'):visaGuide(h,p).title.replace(/^(Apply for|Get|Check) (a |an |your )?/,'').replace(/^./,c=>c.toUpperCase())}</dd><dt>Departure</dt><dd class="num">${fmtY(D(depOf(p,h)))}</dd></dl>
       </button>${p.id===S.pickProg?`<div class="plink">${linkHTML(lk(p.long?pagesOf(h).exch:pagesOf(h).summer),true)}</div>`:''}`).join('')}
     </div>
     <div class="cta"><button class="btn" data-act="build">Build my checklist</button></div>`},
@@ -1023,6 +1077,7 @@ const SCREENS={
         <div class="when">${ic('clock',18)}<span>Due <b>${fmt(i.date)}</b> · <span class="num">${ddLabel(n)}</span></span></div>
       </div>
       <div class="d-sec"><h3>What to do</h3><p>${i.sum}</p></div>
+      ${i.eng?`<div class="d-sec"><h3>English requirement</h3>${engCard(i.eng)}</div>`:''}
       ${i.steps?`<div class="d-sec"><h3>Step by step</h3><ol class="guide">${i.steps.map((st,k)=>`<li><span class="gn">${k+1}</span><div class="gt"><b>${st.t}</b><p>${st.d}</p>
         ${st.need?`<ul class="need">${st.need.map(n=>`<li>${ic('check',14,2.6)}${n}</li>`).join('')}</ul>`:''}
         ${st.link?linkHTML([st.link.label,st.link.url,st.link.verified],true):''}</div></li>`).join('')}</ol></div>`:''}
