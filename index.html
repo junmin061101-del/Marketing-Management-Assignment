@@ -284,6 +284,16 @@ p{margin:0}
 .src.guess{border-style:dashed}
 .src.guess .ic{color:var(--ink-3)}
 .plink{margin:-2px 2px 0}
+.depfield{margin-top:10px;padding:14px;border-radius:14px;background:var(--surface);display:flex;flex-direction:column;gap:8px}
+.depfield label{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700}
+.depfield label .ic{color:var(--primary-ink)}
+.depfield .input{height:48px;font-size:15px}
+.depfield small{font-size:12px;color:var(--ink-2);line-height:1.5}
+.depbtn{display:flex;align-items:center;gap:8px;width:100%;padding:10px 12px;border-radius:12px;background:var(--bg);font-size:13px;color:var(--ink-2);text-align:left}
+.depbtn .ic{color:var(--primary-ink)}
+.depbtn span:first-of-type{flex:1}
+.depbtn b{color:var(--ink)}
+.depbtn .edit{font-weight:700;color:var(--primary-ink)}
 .verified{display:flex;gap:10px;align-items:flex-start;padding:14px 16px;border-radius:14px;background:var(--primary-soft);font-size:13px;color:var(--ink-2)}
 .verified b{color:var(--ink)}
 .verified .ic{color:var(--primary-ink);margin-top:1px}
@@ -951,7 +961,7 @@ const S={
   region:'us', sq:'', scountry:'All', slimit:40,
   pick:null,
   host:makeHost(['University of Washington','US','http://www.washington.edu/']),
-  progId:'exS', pickProg:'exS',
+  progId:'exS', pickProg:'exS', depOverride:null, pickDep:null,
   done:new Set(), remind:new Set(['health','fin','i20','sevis','ds160','appt','visa','housing','eta','permit']),
   ctab:'status', liked:new Set(), bcat:'All',
   booked:{}, slot:null, mentorSheet:null,
@@ -960,7 +970,9 @@ const S={
 };
 const host=()=>S.host;
 const prog=()=>PROGRAMS.find(p=>p.id===S.progId);
-const depDate=()=>D(depOf(prog(),host()));
+const depDate=()=>D(S.depOverride||depOf(prog(),host()));
+const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const MIN_DEP=iso(addDays(TODAY,14));
 const items=()=>buildChecklist(host(),prog()).map(i=>({...i,date:addDays(depDate(),-i.off)})).sort((a,b)=>a.date-b.date);
 function resetDone(){S.done=new Set(items().filter(i=>dd(i.date)<7).map(i=>i.id))}
 resetDone();
@@ -1056,7 +1068,10 @@ const SCREENS={
         <span class="h"><span class="t"><span class="pill ${p.ex?'ok':'cat'}">${p.type}</span><b style="margin-top:6px">${p.term}</b></span><span class="radio-dot"></span></span>
         <p>${p.what}</p>
         <dl><dt>Length</dt><dd>${p.len}</dd><dt>Credits</dt><dd>${p.credits}</dd><dt>Tuition</dt><dd>${p.cost}</dd><dt>English</dt><dd>${engLine(englishOf(h,p))}${englishOf(h,p).verified?'':' (typical)'}</dd><dt>Visa</dt><dd>${h.region==='us'?'F-1 student visa':h.region==='ca'?(p.year?'eTA + study permit':'eTA'):visaGuide(h,p).title.replace(/^(Apply for|Get|Check) (a |an |your )?/,'').replace(/^./,c=>c.toUpperCase())}</dd><dt>Departure</dt><dd class="num">${fmtY(D(depOf(p,h)))}</dd></dl>
-      </button>${p.id===S.pickProg?`<div class="plink">${linkHTML(lk(p.long?pagesOf(h).exch:pagesOf(h).summer),true)}</div>`:''}`).join('')}
+      </button>${p.id===S.pickProg?`<div class="plink">${linkHTML(lk(p.long?pagesOf(h).exch:pagesOf(h).summer),true)}
+        <div class="depfield"><label for="depInput">${ic('plane',18)}<span>Your departure date</span></label>
+          <input class="input" type="date" id="depInput" min="${MIN_DEP}" value="${S.pickDep||depOf(p,h)}">
+          <small>Suggested ${fmtY(D(depOf(p,h)))} for this term. Set your own if your flight or orientation differs. You can change it later.</small></div></div>`:''}`).join('')}
     </div>
     <div class="cta"><button class="btn" data-act="build">Build my checklist</button></div>`},
 
@@ -1150,7 +1165,8 @@ function homeTab(){
     <section class="hero">
       <div class="top"><span class="mono">${esc(h.mono)}</span><span class="t"><b>${esc(h.name)}</b><small>${p.type} · ${p.term}</small></span></div>
       <div class="dday"><div><small>Departure in</small><span class="big num">${ddLabel(dd(depDate()))}</span></div>
-        <div class="r"><b class="num">${doneN} / ${list.length}</b>done · leaving ${fmtShort(depDate())}</div></div>
+        <div class="r"><b class="num">${doneN} / ${list.length}</b>done</div></div>
+      <button class="depbtn" data-act="editDep">${ic('plane',16)}<span>Leaving <b>${fmtY(depDate())}</b>${S.depOverride?'':' (suggested)'}</span><span class="edit">Edit</span></button>
       <div class="meter" role="progressbar" aria-label="Checklist progress" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pct}%"></i></div>
     </section>
     ${next?`<button class="next" data-act="open" data-v="${next.id}"><span class="t"><span class="lbl">Up next · ${ddLabel(dd(next.date))}</span><b>${next.title}</b></span>${ic('chev',20)}</button>`:''}
@@ -1234,6 +1250,7 @@ function meTab(){
     <div class="menu">
       <div class="m">${ic('globe',20)}<span class="t">My program<br><small>${esc(h.name)} · ${p.type} ${p.term}</small></span></div>
       <button data-act="changeProg">${ic('swap',20)}<span class="t">Change program</span>${ic('chev',18)}</button>
+      <button data-act="editDep">${ic('plane',20)}<span class="t">Departure date<br><small>${fmtY(depDate())}${S.depOverride?'':' · suggested'}</small></span>${ic('chev',18)}</button>
       <button data-act="toast" data-v="${S.remind.size} reminders are on">${ic('bell',20)}<span class="t">Deadline reminders<br><small>${S.remind.size} on</small></span>${ic('chev',18)}</button>
       <button data-act="toast" data-v="You have ${Object.keys(S.booked).length} mentoring bookings">${ic('mentor',20)}<span class="t">Mentoring bookings</span><small>${Object.keys(S.booked).length}</small></button>
       <button data-go="splash">${ic('back',20)}<span class="t">Back to start (demo)</span></button>
@@ -1260,6 +1277,20 @@ function openMentorSheet(id){
     </div>
     <div class="cta"><button class="btn" data-act="book" ${S.slot===null?'disabled':''}>${S.slot===null?'Pick a time':`Book ${fmtShort(slots[S.slot].d)}, ${slots[S.slot].hh}:00`}</button></div>`;};
   sheet._draw=draw; sheet._slots=slots; draw();
+  sheet.classList.add('on'); $('#scrim').classList.add('on');
+}
+function openDepSheet(){
+  const sug=depOf(prog(),host()); const sheet=$('#sheet');
+  sheet.innerHTML=`<div class="grab"></div>
+    <div class="scroll">
+      <h2 class="ob-title" style="font-size:22px;margin-top:6px">When do you leave?</h2>
+      <p class="ob-sub">Your checklist deadlines move with this date. Pick the day your flight leaves Korea.</p>
+      <div class="field"><label for="depSheetInput">Departure date</label>
+        <input class="input" type="date" id="depSheetInput" min="${MIN_DEP}" value="${iso(depDate())}"></div>
+      <p class="ob-sub" id="depHint" style="font-size:13px">Suggested for ${esc(prog().type)} ${esc(prog().term)}: ${fmtY(D(sug))}${host().region==='us'?'. F-1 students can enter the U.S. up to 30 days before the program start date.':'.'}</p>
+      ${S.depOverride?`<button class="linkbtn" data-act="resetDep">${ic('swap',18)}<span>Use the suggested date (${fmtShort(D(sug))})</span></button>`:''}
+    </div>
+    <div class="cta"><button class="btn" data-act="saveDep">Save departure date</button></div>`;
   sheet.classList.add('on'); $('#scrim').classList.add('on');
 }
 function closeSheet(){ $('#sheet').classList.remove('on'); $('#scrim').classList.remove('on'); S.mentorSheet=null; }
@@ -1314,8 +1345,8 @@ document.addEventListener('click',e=>{
     case 'more': S.slimit+=60; $('#schoolList').innerHTML=schoolListHTML(); break;
     case 'pick': {const u=DATA.unis.find(x=>x[0]===v&&x[1]===a.dataset.cc); S.pick=makeHost(u); $('#schoolList').innerHTML=schoolListHTML(); const b=view.querySelector('[data-act="toProgram"]'); b.disabled=false; b.textContent='Next: choose program'; break}
     case 'toProgram': if(S.pick){S.pickProg=(S.pick.name===host().name?S.progId:'exS'); go('program')} break;
-    case 'pickProg': S.pickProg=v; render(true); break;
-    case 'build': S.host=S.pick||S.host; S.progId=S.pickProg; S.posts=null; S.filter='All'; resetDone(); S.screen='building'; render(); setTimeout(()=>{S.screen='app';S.tab='home';render()},1100); break;
+    case 'pickProg': if(S.pickProg!==v){S.pickProg=v; S.pickDep=null} render(true); break;
+    case 'build': S.host=S.pick||S.host; S.progId=S.pickProg; S.depOverride=(S.pickDep&&S.pickDep!==depOf(prog(),S.host))?S.pickDep:null; S.posts=null; S.filter='All'; resetDone(); S.screen='building'; render(); setTimeout(()=>{S.screen='app';S.tab='home';render()},1100); break;
     case 'tab': S.tab=v; S.screen='app'; S.detail=null; closeSheet(); render(); break;
     case 'filter': S.filter=v; render(true); break;
     case 'open': S.detail=v; go('detail'); break;
@@ -1330,6 +1361,10 @@ document.addEventListener('click',e=>{
     case 'mentor': openMentorSheet(+v); break;
     case 'closeSheet': closeSheet(); break;
     case 'slot': S.slot=+v; $('#sheet')._draw(); break;
+    case 'editDep': openDepSheet(); break;
+    case 'saveDep': {const v2=$('#depSheetInput').value; if(!v2||v2<MIN_DEP){toast('Pick a date at least 2 weeks from today');return}
+      S.depOverride=v2===depOf(prog(),host())?null:v2; closeSheet(); render(true); toast(`Departure set to ${fmtY(D(v2))}. Deadlines updated`); break}
+    case 'resetDep': S.depOverride=null; closeSheet(); render(true); toast('Using the suggested departure date'); break;
     case 'book': {const sl=$('#sheet')._slots[S.slot]; S.booked[S.mentorSheet]=sl; const m=mentorsFor()[S.mentorSheet]; closeSheet(); render(true); toast(`Booked with ${m.name}, ${fmtShort(sl.d)} ${sl.hh}:00`); break}
     case 'bcat': S.bcat=S.bcat===v?'All':v; render(true); break;
     case 'changeProg': S.pick=host(); S.region=host().region; go('school'); break;
@@ -1346,6 +1381,7 @@ document.addEventListener('input',e=>{
   if(t.id==='schoolQ'){S.sq=t.value; S.slimit=40; $('#schoolList').innerHTML=schoolListHTML()}
 });
 document.addEventListener('change',e=>{
+  if(e.target.id==='depInput'&&e.target.value) S.pickDep=e.target.value;
   if(e.target.id==='apFile'&&e.target.files[0]){S.apply.file=e.target.files[0].name; render(true)}
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet(); if(e.key==='Enter'&&e.target.id==='qInput') document.querySelector('[data-act="ask"]').click()});
