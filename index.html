@@ -257,6 +257,21 @@ p{margin:0}
 .src b{display:block;font-size:14px;font-weight:700}
 .src small{display:block;color:var(--ink-3);font-size:12px;overflow-wrap:anywhere}
 .src .ic{color:var(--primary-ink)}
+.guide{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.guide>li{display:flex;gap:12px;position:relative;padding-bottom:18px}
+.guide>li:not(:last-child)::before{content:"";position:absolute;left:13px;top:30px;bottom:2px;width:2px;background:var(--primary-line)}
+.guide .gn{width:28px;height:28px;border-radius:50%;background:var(--primary-soft);color:var(--primary-ink);display:grid;place-items:center;font-weight:800;font-size:13px;flex:none;z-index:1}
+.guide .gt{flex:1;min-width:0;padding-top:3px}
+.guide .gt b{display:block;font-size:15px;line-height:1.35}
+.guide .gt p{font-size:14px;color:var(--ink-2);line-height:1.55;margin-top:4px}
+.need{list-style:none;margin:8px 0 0;padding:10px 12px;border-radius:12px;background:var(--surface);display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:500}
+.need li{display:flex;gap:7px;align-items:flex-start}
+.need .ic{color:var(--primary-ink);margin-top:2px}
+.src.mini{padding:10px 12px;margin:8px 0 0;border-radius:12px;gap:10px}
+.src.mini b{font-size:13px}
+.src.guess{border-style:dashed}
+.src.guess .ic{color:var(--ink-3)}
+.plink{margin:-2px 2px 0}
 .verified{display:flex;gap:10px;align-items:flex-start;padding:14px 16px;border-radius:14px;background:var(--primary-soft);font-size:13px;color:var(--ink-2)}
 .verified b{color:var(--ink)}
 .verified .ic{color:var(--primary-ink);margin-top:1px}
@@ -486,7 +501,7 @@ let DATA=null;
 let COUNTRIES={US:['United States','us'],CA:['Canada','ca']};
 const REGIONS=[['asia','Asia'],['us','USA'],['ca','Canada'],['europe','Europe']];
 const FEATURED={
-  us:['University of Washington','University of California, Berkeley','The University of Texas at Austin','University of North Carolina at Chapel Hill','Boston University','University of Southern California'],
+  us:['Harvard University','University of California, Berkeley','University of Washington','University of California, Los Angeles','The University of Texas at Austin','University of North Carolina at Chapel Hill','Boston University','University of Southern California'],
   ca:['University of Toronto','University of British Columbia','McGill University','University of Waterloo',"Queen's University",'York University'],
   asia:['National University of Singapore','University of Tokyo','Waseda University','The University of Hong Kong','Peking University','National Taiwan University'],
   europe:['KU Leuven','University of Amsterdam','Lund University','Bocconi University','Copenhagen Business School','University of Edinburgh']
@@ -539,110 +554,276 @@ function depOf(p,h){
   return h.region==='asia'?'2026-12-27':'2027-01-02';
 }
 
-/* ---------------- visa rules by country ---------------- */
-const SAFE=['MOFA Overseas Safety Travel','https://www.0404.go.kr'];
-const SCHENGEN=new Set('AT BE CZ DK EE FI FR DE GR HU IS IT LV LI LT LU MT NL NO PL PT SK SI ES SE CH HR BG RO'.split(' '));
-const VISA={
-  GB:{rule:'Over 6 months: Student visa. Up to 6 months: study as a visitor with an ETA',links:[['GOV.UK · Student visa','https://www.gov.uk/student-visa'],['GOV.UK · Electronic Travel Authorisation','https://www.gov.uk/guidance/apply-for-an-electronic-travel-authorisation-eta']]},
-  IE:{rule:'Enter visa-free, then register for an IRP if staying over 90 days',links:[['Irish Immigration Service','https://www.irishimmigration.ie']]},
-  DE:{rule:'Enter visa-free, then apply for a study residence permit at the local foreigners’ office',links:[['German Federal Foreign Office','https://www.auswaertiges-amt.de/en'],['Make it in Germany','https://www.make-it-in-germany.com/en/']]},
-  FR:{rule:'Over 90 days: long-stay student visa (VLS-TS) before departure',links:[['France-Visas','https://france-visas.gouv.fr']]},
-  NL:{rule:'The host university applies to the IND for your residence permit',links:[['IND (Immigration and Naturalisation Service)','https://ind.nl/en']]},
-  BE:{rule:'Long-stay (D) visa, then register at the town hall after arrival',links:[['Belgian Immigration Office','https://dofi.ibz.be']]},
-  SE:{rule:'Apply online for a residence permit for studies',links:[['Swedish Migration Agency','https://www.migrationsverket.se/English']]},
-  DK:{rule:'Apply for a residence permit for studies (ST1)',links:[['New to Denmark (SIRI)','https://www.nyidanmark.dk/en-GB']]},
-  FI:{rule:'Apply online for a residence permit for studies',links:[['Finnish Immigration Service (Migri)','https://migri.fi/en']]},
-  NO:{rule:'Apply for a study permit',links:[['UDI','https://www.udi.no/en/']]},
-  ES:{rule:'Over 90 days: student visa before departure',links:[['Spanish Ministry of Foreign Affairs','https://www.exteriores.gob.es']]},
-  IT:{rule:'Over 90 days: study (D) visa, then a permit of stay after arrival',links:[["Visto per l'Italia",'https://vistoperitalia.esteri.it']]},
-  CH:{rule:'Residence permit through the cantonal migration office, guided by the host',links:[['State Secretariat for Migration (SEM)','https://www.sem.admin.ch/sem/en/home.html']]},
-  AT:{rule:'Over 6 months: residence permit; shorter stays: visa D or visa-free',links:[['Migration.gv.at','https://www.migration.gv.at/en/']]},
-  JP:{rule:'Certificate of Eligibility (COE) first, then a student visa. Under 90 days: visa-free',links:[['Ministry of Foreign Affairs of Japan · Visa','https://www.mofa.go.jp/j_info/visit/visa/']]},
-  CN:{rule:'JW202 form from the host, then an X2 (≤180 days) or X1 (>180 days) visa',links:[['Chinese Visa Application Service Center','https://www.visaforchina.cn']]},
-  TW:{rule:'Visa-free up to 90 days; longer study needs a resident visa',links:[['Bureau of Consular Affairs (Taiwan)','https://www.boca.gov.tw/mp-2.html']]},
-  HK:{rule:'Student visa (entry permit) sponsored by the host university',links:[['Hong Kong Immigration Department','https://www.immd.gov.hk']]},
-  SG:{rule:"Student's Pass, applied through SOLAR after the host registers you",links:[["ICA · Student's Pass",'https://www.ica.gov.sg']]},
-  MY:{rule:'Student pass approval through EMGS before entry',links:[['Education Malaysia Global Services','https://educationmalaysia.gov.my']]},
-  TH:{rule:'Non-Immigrant ED visa',links:[['Thai e-Visa','https://www.thaievisa.go.th']]}
+/* ---------------- host university pages (verified links; others fall back to a site search) ---------------- */
+const HOST_PAGES={"Harvard University":{"summer":"https://summer.harvard.edu/","housing":"https://summer.harvard.edu/student-life/housing/","intl":"https://www.hio.harvard.edu/"},"Stanford University":{"intl":"https://bechtel.stanford.edu/","summer":"https://summer.stanford.edu/","housing":"https://rde.stanford.edu/"},"University of California, Berkeley":{"intl":"https://internationaloffice.berkeley.edu/","summer":"https://summer.berkeley.edu/","exch":"https://internationaloffice.berkeley.edu/students/exchange","housing":"https://housing.berkeley.edu/"},"University of California, Los Angeles":{"intl":"https://internationalcenter.ucla.edu/","summer":"https://summer.ucla.edu/","housing":"https://reslife.ucla.edu/"},"University of California, San Diego":{"intl":"https://ispo.ucsd.edu/","summer":"https://summersession.ucsd.edu/","housing":"https://hdh.ucsd.edu/"},"University of Pennsylvania":{"summer":"https://summer.sas.upenn.edu/","intl":"https://global.upenn.edu/isss"},"Yale University":{"intl":"https://oiss.yale.edu/","summer":"https://summer.yale.edu/"},"Cornell University":{"intl":"https://international.cornell.edu/","summer":"https://sce.cornell.edu/"},"Massachusetts Institute of Technology":{"intl":"https://iso.mit.edu/"},"University of Chicago":{"intl":"https://internationalaffairs.uchicago.edu/","summer":"https://summer.uchicago.edu/"},"Duke University":{"summer":"https://summersession.duke.edu/"},"Georgetown University":{"intl":"https://internationalservices.georgetown.edu/","summer":"https://summer.georgetown.edu/"},"University of Washington":{"intl":"https://iss.washington.edu/","exch":"https://iss.washington.edu/","housing":"https://hfs.uw.edu/","summer":"https://summer.uw.edu/"},"The University of Texas at Austin":{"intl":"https://global.utexas.edu/isss","summer":"https://summer.utexas.edu/","exch":"https://global.utexas.edu/","housing":"https://housing.utexas.edu/"},"University of North Carolina at Chapel Hill":{"intl":"https://isss.unc.edu/","summer":"https://summer.unc.edu/","exch":"https://studyabroad.unc.edu/","housing":"https://housing.unc.edu/"},"Boston University":{"intl":"https://www.bu.edu/isso/","summer":"https://www.bu.edu/summer/","housing":"https://www.bu.edu/housing/"},"University of Southern California":{"intl":"https://ois.usc.edu/","summer":"https://summer.usc.edu/","housing":"https://housing.usc.edu/"},"University of Illinois Urbana-Champaign":{"intl":"https://isss.illinois.edu/"},"University of Wisconsin - Madison":{"summer":"https://summer.wisc.edu/","intl":"https://iss.wisc.edu/"},"Purdue University":{"intl":"https://www.purdue.edu/ippu/iss/"},"Pennsylvania State University":{"intl":"https://global.psu.edu/category/international-students","summer":"https://summer.psu.edu/"},"Arizona State University":{"intl":"https://issc.asu.edu/","summer":"https://summer.asu.edu/"},"Emory University":{"intl":"https://isss.emory.edu/"},"Georgia Institute of Technology":{"intl":"https://oie.gatech.edu/"},"University of Toronto":{"intl":"https://studentlife.utoronto.ca/department/centre-for-international-experience/","summer":"https://summerabroad.utoronto.ca/","exch":"https://learningabroad.utoronto.ca/","housing":"https://housing.utoronto.ca/"},"University of British Columbia":{"summer":"https://extendedlearning.ubc.ca/","intl":"https://students.ubc.ca/international-student-guide"},"McGill University":{"intl":"https://www.mcgill.ca/internationalstudents/","summer":"https://www.mcgill.ca/summer/","exch":"https://www.mcgill.ca/students/international/"},"Queen's University":{"intl":"https://quic.queensu.ca/","exch":"https://quic.queensu.ca/"},"Simon Fraser University":{"intl":"https://www.sfu.ca/students/isap.html"},"University of Ottawa":{"intl":"https://www.uottawa.ca/study/international-students"},"National University of Singapore":{"intl":"https://www.nus.edu.sg/gro/","summer":"https://nus.edu.sg/gro/global-programmes","exch":"https://nus.edu.sg/gro/global-programmes/student-exchange/incoming-exchangers"},"Waseda University":{"intl":"https://www.waseda.jp/inst/cie/en/","exch":"https://www.waseda.jp/inst/cie/en/","summer":"https://www.waseda.jp/inst/cie/en/to-waseda/short"},"Keio University":{"intl":"https://www.keio.ac.jp/en/admissions/","exch":"https://www.ic.keio.ac.jp/en/study/exchange/"},"Kyoto University":{"exch":"https://www.oc.kyoto-u.ac.jp/en/"},"The University of Hong Kong":{"intl":"https://intlaffairs.hku.hk/","exch":"https://intlaffairs.hku.hk/exchange"},"The Hong Kong University of Science and Technology":{"intl":"https://ugadmin.hkust.edu.hk/","exch":"https://studyabroad.hkust.edu.hk/"},"Peking University":{"intl":"https://www.isd.pku.edu.cn/"},"Tsinghua University":{"intl":"https://www.tsinghua.edu.cn/en/Admissions.htm"},"Fudan University":{"intl":"https://iso.fudan.edu.cn/"},"Shanghai Jiao Tong University":{"intl":"https://isc.sjtu.edu.cn/"},"Zhejiang University":{"intl":"https://iczu.zju.edu.cn/"},"National Taiwan University":{"intl":"https://oia.ntu.edu.tw/","exch":"https://oia.ntu.edu.tw/en/incoming-students/","summer":"https://oia.ntu.edu.tw/en/summer-programs/"},"KU Leuven":{"exch":"https://www.kuleuven.be/english/apply/application-instructions/instructions-exchange","summer":"https://www.kuleuven.be/english/summer-schools","intl":"https://www.kuleuven.be/global/going-abroad/incomingstudentmobility"},"University of Amsterdam":{"exch":"https://www.uva.nl/en/education/exchange/global-exchange-programme/global-exchange-programme.html","summer":"https://summerschool.uva.nl/"},"Lund University":{"intl":"https://www.lunduniversity.lu.se/admissions","exch":"https://www.lunduniversity.lu.se/study/exchange-and-study-abroad/exchange-studies/exchange-application-and-acceptance/application-guide-incoming-exchange-students"},"Bocconi University":{"intl":"https://www.unibocconi.it/en/programs","exch":"https://www.unibocconi.it/en/international-students","summer":"https://www.unibocconi.it/en/programs/summer-school"},"Copenhagen Business School":{"intl":"https://www.cbs.dk/en/study/internationals","summer":"https://www.cbs.dk/en/study/cbs-summer-university","exch":"https://www.cbs.dk/en/study-programmes/international-students/exchange-students"},"Erasmus University Rotterdam":{"intl":"https://www.eur.nl/en"},"University of Edinburgh":{"intl":"https://www.ed.ac.uk/studying/international","housing":"https://www.accom.ed.ac.uk/","summer":"https://study.ed.ac.uk/summer-school"},"University of Oxford":{"summer":"https://www.conted.ox.ac.uk/about/summer-schools","intl":"https://www.ox.ac.uk/students/visa"},"University of Cambridge":{"intl":"https://www.internationalstudents.cam.ac.uk/","summer":"https://www.ice.cam.ac.uk/intensive-study/international-summer-programmes"},"Imperial College London":{"intl":"https://www.imperial.ac.uk/study/international-students/"},"King's College London, University of London":{"intl":"https://www.kcl.ac.uk/international"},"University of Warwick":{"intl":"https://warwick.ac.uk/services/international/","summer":"https://warwick.ac.uk/study/summer-with-warwick/"},"University of Manchester":{"intl":"https://www.manchester.ac.uk/study/international/","exch":"https://www.manchester.ac.uk/study/international/study-abroad-programmes/"},"University College Dublin":{"intl":"https://www.ucd.ie/global/"},"ETHZ - ETH Zurich":{"intl":"https://ethz.ch/en/studies.html"},"Universität Mannheim":{"exch":"https://www.uni-mannheim.de/en/academics/coming-to-mannheim/"},"Ludwig-Maximilians-Universität München":{"intl":"https://www.lmu.de/en/study/"},"Technische Universität München":{"intl":"https://www.tum.de/en/studies/international-students"},"Freie Universität Berlin":{"intl":"https://www.fu-berlin.de/en/studium/international/","summer":"https://www.fubis.org/"},"Maastricht University":{"intl":"https://www.maastrichtuniversity.nl/support","exch":"https://www.maastrichtuniversity.nl/education/exchange"},"Universiteit Leiden":{"intl":"https://www.universiteitleiden.nl/en/education/admission-and-application/international-students","exch":"https://www.universiteitleiden.nl/en/education/study-programmes/exchange","summer":"https://www.universiteitleiden.nl/en/education/summer-schools"},"Utrecht University":{"intl":"https://www.uu.nl/en","exch":"https://www.uu.nl/en/education/exchange-students","summer":"https://www.utrechtsummerschool.nl/"},"University of Copenhagen":{"intl":"https://studies.ku.dk/","exch":"https://studies.ku.dk/","summer":"https://studies.ku.dk/summer-school/"},"Aalto University":{"intl":"https://www.aalto.fi/en/study-at-aalto"},"University of Helsinki":{"intl":"https://www.helsinki.fi/en/admissions-and-education/international-students","exch":"https://www.helsinki.fi/en/admissions-and-education/apply-exchange-studies","summer":"https://www.helsinki.fi/en/summer-school"},"Universidad Complutense de Madrid":{"intl":"https://www.ucm.es/english"},"Wirtschaftsuniversität Wien":{"intl":"https://www.wu.ac.at/en/","exch":"https://www.wu.ac.at/en/programs/incoming-students"},"Columbia University":{"intl":"https://isso.columbia.edu/"},"New York University":{"intl":"https://www.nyu.edu/students/student-information-and-resources/student-visa-and-immigration.html","summer":"https://www.nyu.edu/admissions/summer-sessions.html"},"University of Michigan - Ann Arbor":{"intl":"https://internationalcenter.umich.edu/"},"University of Minnesota":{"intl":"https://isss.umn.edu/"},"Nanyang Technological University":{"exch":"https://www.ntu.edu.sg/education/student-exchanges/exchange-programmes/inbound-programmes"},"University of Tokyo":{"intl":"https://www.u-tokyo.ac.jp/en/prospective-students/prospective_students.html","exch":"https://www.u-tokyo.ac.jp/en/academics/ustep.html"},"Uppsala University":{"exch":"https://www.uu.se/en/study/exchange-studies"},"The Chinese University of Hong Kong":{"intl":"https://www.oal.cuhk.edu.hk/"},"York University":{"intl":"https://yorkinternational.yorku.ca/"},"University of Dublin, Trinity College":{"intl":"https://www.tcd.ie/study/international/","exch":"https://www.tcd.ie/study/visiting/"}};
+const SUMMER_NAME={'Harvard University':'Harvard Summer School','University of California, Berkeley':'Berkeley Summer Sessions','University of California, Los Angeles':'UCLA Summer Sessions','University of Washington':'UW Summer Quarter','Stanford University':'Stanford Summer Session','Yale University':'Yale Summer Session','University of Chicago':'UChicago Summer Session','University of Pennsylvania':'Penn Summer','Georgetown University':'Georgetown Summer Sessions','Boston University':'BU Summer Term','University of Southern California':'USC Summer Programs','University of North Carolina at Chapel Hill':'UNC Summer School','The University of Texas at Austin':'UT Austin Summer Session','Cornell University':'Cornell Summer Session','Duke University':'Duke Summer Session','University of California, San Diego':'UC San Diego Summer Session','Copenhagen Business School':'CBS Summer University','University of Edinburgh':'Edinburgh Summer School','Waseda University':'Waseda Short-Term Programs','McGill University':'McGill Summer Studies','University of Toronto':'U of T Summer Abroad','University of Cambridge':'Cambridge International Summer Programmes','University of Oxford':'Oxford Summer Schools',"King's College London, University of London":'King’s Summer School','University of Warwick':'Summer with Warwick','Bocconi University':'Bocconi Summer School','University of Amsterdam':'UvA Summer Programmes','KU Leuven':'KU Leuven Summer Schools','Peking University':'PKU Summer School','National Taiwan University':'NTU Summer Programs','National University of Singapore':'NUS Summer Programmes','Utrecht University':'Utrecht Summer School','University of Helsinki':'Helsinki Summer School','University of Copenhagen':'UCPH Summer School','Freie Universität Berlin':'FUBiS','ETHZ - ETH Zurich':'ETH Summer Schools'};
+const domainOf=u=>{try{return new URL(u).hostname.replace(/^www\./,'')}catch(e){return ''}};
+function pagesOf(h){
+  const P=HOST_PAGES[h.name]||{}, dom=domainOf(h.url);
+  const find=(key,label,term)=>P[key]?{label,url:P[key],verified:true}
+    :{label:`Search ${dom||h.short} for “${term}”`,url:'https://www.google.com/search?q='+encodeURIComponent((dom?'site:'+dom+' ':h.name+' ')+term),verified:false};
+  return {
+    intl:find('intl',`${h.short} · International students office`,'international students'),
+    exch:find('exch',`${h.short} · Incoming exchange students`,'incoming exchange students'),
+    summer:find('summer',SUMMER_NAME[h.name]||`${h.short} · Summer & short-term programs`,'summer school international students'),
+    housing:find('housing',`${h.short} · Student housing`,'student housing'),
+    home:{label:`${h.short} · Official website`,url:h.url||'https://www.google.com/search?q='+encodeURIComponent(h.name),verified:true}
+  };
+}
+const L=(label,url)=>({label,url,verified:true});
+const lk=p=>[p.label,p.url,p.verified];
+function shortName(h,p){return SUMMER_NAME[h.name]&&p.season==='summer'?SUMMER_NAME[h.name]:`${h.short} ${p.type}`}
+
+/* ---------------- official links ---------------- */
+const SAFE=L('MOFA Overseas Safety Travel (0404.go.kr)','https://www.0404.go.kr');
+const US={
+  fmj:L('I-901 SEVIS fee payment (official)','https://www.fmjfee.com/i901fee/index.html'),
+  ceac:L('DS-160 online application (CEAC)','https://ceac.state.gov/genniv/'),
+  photo:L('U.S. visa photo requirements','https://travel.state.gov/content/travel/en/us-visas/visa-information-resources/photos.html'),
+  appt:L('U.S. visa appointment service · Korea','https://www.ustraveldocs.com/kr/'),
+  emb:L('U.S. Embassy Seoul · Visas','https://kr.usembassy.gov/visas/'),
+  f1:L('U.S. Department of State · Student visa','https://travel.state.gov/content/travel/en/us-visas/study/student-visa.html'),
+  sits:L('Study in the States (DHS)','https://studyinthestates.dhs.gov/'),
+  i94:L('I-94 official website (CBP)','https://i94.cbp.dhs.gov/')
 };
-function visaInfo(h){
-  if(VISA[h.cc]) return VISA[h.cc];
-  if(SCHENGEN.has(h.cc)) return {rule:'Korean passports get 90 days in any 180 visa-free in the Schengen area. A semester abroad needs a national long-stay visa or residence permit',links:[SAFE]};
-  return {rule:`Check the student visa or residence permit rules on the ${h.country} embassy website`,links:[SAFE]};
+const SCHENGEN=new Set('AT BE CZ DK EE FI FR DE GR HU IS IT LV LI LT LU MT NL NO PL PT SK SI ES SE CH HR BG RO'.split(' '));
+const EU_TRAVEL=[L('EU Entry/Exit System (EES)','https://travel-europe.europa.eu/ees_en'),L('ETIAS (EU travel authorisation)','https://travel-europe.europa.eu/etias_en')];
+const RULES={
+  IE:{rule:'Enter visa-free, then register for an Irish Residence Permit (IRP) if staying over 90 days',links:[L('Irish Immigration Service','https://www.irishimmigration.ie')]},
+  BE:{rule:'Long-stay (D) visa for studies before departure, then register at the town hall after arrival',links:[L('Belgian Immigration Office','https://dofi.ibz.be')]},
+  SE:{rule:'Residence permit for studies, applied online before departure',links:[L('Swedish Migration Agency','https://www.migrationsverket.se/English')]},
+  DK:{rule:'Residence permit for studies (ST1), applied online through SIRI',links:[L('New to Denmark (SIRI)','https://www.nyidanmark.dk/en-GB')]},
+  FI:{rule:'Residence permit for studies, applied online through Enter Finland',links:[L('Finnish Immigration Service (Migri)','https://migri.fi/en')]},
+  NO:{rule:'Study permit, applied online through UDI',links:[L('UDI (Norwegian Directorate of Immigration)','https://www.udi.no/en/')]},
+  ES:{rule:'Student visa from the Spanish consulate for stays over 90 days, then a TIE card after arrival',links:[L('Spanish Ministry of Foreign Affairs','https://www.exteriores.gob.es')]},
+  IT:{rule:'Study (D) visa before departure, then a permesso di soggiorno within 8 days of arrival',links:[L("Visto per l'Italia",'https://vistoperitalia.esteri.it')]},
+  CH:{rule:'Residence permit through the cantonal migration office, guided by the host',links:[L('State Secretariat for Migration (SEM)','https://www.sem.admin.ch/sem/en/home.html')]},
+  AT:{rule:'Visa D for shorter stays, residence permit for students for longer ones',links:[L('Migration.gv.at','https://www.migration.gv.at/en/')]},
+  MY:{rule:'Student pass approval through EMGS before entry',links:[L('Education Malaysia Global Services','https://educationmalaysia.gov.my')]},
+  TH:{rule:'Non-Immigrant ED visa through Thai e-Visa',links:[L('Thai e-Visa (official)','https://www.thaievisa.go.th')]}
+};
+
+/* Step guides: each step = {t: title, d: detail, need: [checklist], link, tip} */
+function visaGuide(h,p){
+  const pg=pagesOf(h), long=p.long, cc=h.cc;
+  if(cc==='GB'){
+    if(p.year) return {title:'Apply for a UK Student visa',rule:'Courses over 6 months need a Student visa',links:[L('GOV.UK · Student visa','https://www.gov.uk/student-visa'),L('GOV.UK · Immigration Health Surcharge','https://www.gov.uk/healthcare-immigration-application'),L('GOV.UK · eVisa (UKVI account)','https://www.gov.uk/evisa')],steps:[
+      {t:'Get your CAS number',d:'After you accept your offer, the host issues a Confirmation of Acceptance for Studies (CAS). You need this reference number for the application.',link:pg.intl},
+      {t:'Apply online on GOV.UK',d:'You can apply up to 6 months before your course starts. Pay the visa fee and the Immigration Health Surcharge (IHS) shown during the application.',need:['Passport','CAS number','Proof of funds (if required)','TB test result (if required)'],link:L('GOV.UK · Student visa','https://www.gov.uk/student-visa')},
+      {t:'Prove your identity',d:'Either scan your passport with the UK Immigration: ID Check app or give biometrics at a visa application centre. The application tells you which.'},
+      {t:'Get your eVisa',d:'Decisions usually take about 3 weeks. Your visa is digital: create a UKVI account to view and share your eVisa.',link:L('GOV.UK · eVisa','https://www.gov.uk/evisa')}]};
+    return {title:long?'Get a UK ETA (Standard Visitor)':'Get a UK ETA',rule:'Study of up to 6 months is allowed as a Standard Visitor. Korean citizens need an ETA instead of a visa',links:[L('GOV.UK · Electronic Travel Authorisation','https://www.gov.uk/guidance/apply-for-an-electronic-travel-authorisation-eta'),L('GOV.UK · Standard Visitor','https://www.gov.uk/standard-visitor')],steps:[
+      {t:'Confirm you can study as a visitor',d:'Courses of up to 6 months at an accredited institution are allowed as a Standard Visitor. You cannot work during your stay.',link:L('GOV.UK · Standard Visitor','https://www.gov.uk/standard-visitor')},
+      {t:'Apply for an ETA',d:'Apply through the UK ETA app or on GOV.UK with your passport and a photo, and pay the fee shown. Most decisions arrive within 3 working days.',link:L('GOV.UK · ETA','https://www.gov.uk/guidance/apply-for-an-electronic-travel-authorisation-eta')},
+      {t:'Pack your border documents',d:'Carry these in your hand luggage in case the officer asks.',need:['Acceptance letter','Proof of funds','Return or onward ticket','Accommodation address']}]};
+  }
+  if(cc==='FR'&&long) return {title:'Apply for a French student visa (VLS-TS)',rule:'Stays over 90 days need a long-stay student visa, validated online after arrival',links:[L('France-Visas (official)','https://france-visas.gouv.fr/'),L('Campus France Korea','https://www.coree.campusfrance.org/'),L('ANEF · VLS-TS validation','https://administration-etrangers-en-france.interieur.gouv.fr/')],steps:[
+    {t:'Check the Campus France step',d:'Korea is an “Études en France” country. Ask your host whether your exchange needs a Campus France file; if so, create an account and submit it first.',link:L('Campus France Korea','https://www.coree.campusfrance.org/')},
+    {t:'Apply on France-Visas',d:'Fill out the long-stay student visa application online and book an appointment at the visa application centre in Seoul.',need:['Passport','Acceptance letter','Proof of funds','Proof of accommodation','Health insurance','ID photos'],link:L('France-Visas','https://france-visas.gouv.fr/')},
+    {t:'Attend the appointment',d:'Submit your documents and fingerprints. The visa is printed in your passport.'},
+    {t:'Validate your visa after arrival',d:'Within 3 months of arrival, validate your VLS-TS online on the ANEF website and pay the tax stamp. Without this you are not legally resident.',link:L('ANEF · VLS-TS validation','https://administration-etrangers-en-france.interieur.gouv.fr/')}]};
+  if(cc==='DE'&&long) return {title:'Get your German residence permit',rule:'Korean citizens can enter visa-free and apply for a residence permit for study in Germany',links:[L('German Embassy Seoul','https://seoul.diplo.de/'),L('Make it in Germany','https://www.make-it-in-germany.com/en/')],steps:[
+    {t:'Choose your route',d:'Korean citizens can enter visa-free and apply in Germany within 90 days, or apply for a national visa at the German Embassy in Seoul before leaving. Your host will say which it recommends.',link:L('German Embassy Seoul','https://seoul.diplo.de/')},
+    {t:'Register your address (Anmeldung)',d:'Within 2 weeks of moving in, register at the local Bürgeramt and keep the registration certificate.',need:['Passport','Landlord confirmation (Wohnungsgeberbestätigung)']},
+    {t:'Book the foreigners’ office (Ausländerbehörde)',d:'Book early, because appointments fill up. Bring everything on this list.',need:['Passport','Admission letter','Health insurance','Proof of funds (blocked account or scholarship letter)','Biometric photo','Registration certificate']},
+    {t:'Collect your residence card',d:'Your electronic residence permit (eAT) is ready a few weeks later.'}]};
+  if(cc==='NL'&&long) return {title:'Get your Dutch residence permit',rule:'The host applies to the IND for your residence permit; Korean citizens do not need an MVV entry visa',links:[L('IND · Residence permit for study','https://ind.nl/en/residence-permits/study')],steps:[
+    {t:'Start the application in the host portal',d:'Your host is a recognised sponsor and applies to the IND for you. Upload your documents and pay the fee through the host.',need:['Passport copy','Proof of funds','Signed antecedents certificate'],link:pg.intl},
+    {t:'Wait for IND approval',d:'You get an approval letter by email. Korean citizens travel with their passport. No MVV entry visa is needed.',link:L('IND · Study','https://ind.nl/en/residence-permits/study')},
+    {t:'Collect your residence card',d:'After arrival, pick up your residence permit card at an IND desk by appointment.'},
+    {t:'Register with the municipality',d:'Register your address to get a BSN (citizen service number). You need it for banking and healthcare.'}]};
+  if(cc==='JP'){
+    if(!long) return {title:'Check Japan entry requirements',rule:'Stays up to 90 days are visa-free for Korean citizens as a temporary visitor',links:[L('Ministry of Foreign Affairs of Japan · Visa','https://www.mofa.go.jp/j_info/visit/visa/')],steps:[
+      {t:'Confirm visa-free entry',d:'Short programs under 90 days are visa-free for Korean passports. Check with your host if the program includes paid work or a long internship.'},
+      {t:'Carry your documents',d:'Keep these in your hand luggage.',need:['Passport','Acceptance letter','Return ticket','Accommodation address']}]};
+    return {title:'Get your COE and student visa',rule:'A Certificate of Eligibility (COE) comes first, then a College Student visa',links:[L('Immigration Services Agency of Japan','https://www.moj.go.jp/isa/'),L('Embassy of Japan in Korea','https://www.kr.emb-japan.go.jp/')],steps:[
+      {t:'Send COE documents to the host',d:'Your host applies for your COE at the Immigration Services Agency in Japan. It takes about 1–3 months.',need:['Passport copy','Photo','Proof of funds'],link:pg.intl},
+      {t:'Receive your COE',d:'Most hosts now send an electronic COE by email. Check that your name and dates are correct.'},
+      {t:'Apply for the visa in Korea',d:'Apply at the Embassy of Japan in Seoul or a consulate (Busan, Jeju). It is usually issued in about 5 working days.',need:['Passport','Visa application form','Photo','COE'],link:L('Embassy of Japan in Korea','https://www.kr.emb-japan.go.jp/')},
+      {t:'Get your residence card at the airport',d:'You receive your residence card on arrival at major airports such as Narita, Haneda and Kansai.'},
+      {t:'Register your address',d:'Within 14 days of moving in, register at your city or ward office and join National Health Insurance.'}]};
+  }
+  if(cc==='CN') return {title:long?'Apply for a Chinese student visa (X1/X2)':'Apply for a Chinese X2 visa',rule:'Study needs an X1 visa (over 180 days) or X2 visa (180 days or less)',links:[L('Chinese Visa Application Service Center','https://www.visaforchina.cn/')],steps:[
+    {t:'Get your admission documents',d:'The host sends your Admission Notice and the JW202 form (Visa Application for Study in China).',link:pg.intl},
+    {t:'Apply at the visa centre in Seoul',d:`Apply for an ${p.year?'X1':'X2'} visa at the Chinese Visa Application Service Center.`,need:['Passport','Application form','Photo','Admission Notice','JW202 form'],link:L('Chinese Visa Application Service Center','https://www.visaforchina.cn/')},
+    {t:'Register your accommodation',d:'Register with the local police within 24 hours of arrival. Dorms usually do this for you.'},
+    ...(p.year?[{t:'Get a residence permit',d:'X1 holders must apply at the local Public Security Bureau exit-entry office within 30 days of arrival.'}]:[])]};
+  if(cc==='SG') return {title:"Apply for a Student's Pass",rule:"International students need a Student's Pass, applied through ICA's SOLAR system",links:[L("ICA · Student's Pass",'https://www.ica.gov.sg/reside/STP'),L("ICA · Apply for a Student's Pass",'https://www.ica.gov.sg/reside/STP/apply')],steps:[
+    {t:'Get your SOLAR application number',d:'The host registers you in SOLAR and emails you the application number.',link:pg.exch},
+    {t:'Submit eForm 16',d:"Fill out the Student's Pass application online and pay the processing fee.",link:L("ICA · Apply for a Student's Pass",'https://www.ica.gov.sg/reside/STP/apply')},
+    {t:'Receive your In-Principle Approval (IPA)',d:'Print the IPA letter. You show it when you enter Singapore.'},
+    {t:'Complete formalities at ICA',d:"After arrival, attend your ICA appointment to collect your Student's Pass card.",need:['Passport','IPA letter','Photo','Medical report (if requested)']}]};
+  if(cc==='HK') return {title:'Apply for a Hong Kong student visa',rule:'Your host acts as sponsor for a student visa (entry permit)',links:[L('Immigration Department · Study in Hong Kong','https://www.immd.gov.hk/eng/services/visas/study.html')],steps:[
+    {t:'Fill out the forms',d:'Complete form ID995A (applicant). The host completes ID995B (sponsor) and submits both.',link:L('Immigration Department · Study','https://www.immd.gov.hk/eng/services/visas/study.html')},
+    {t:'Pay and receive your e-Visa',d:'Pay the fee once approved, then download your e-Visa and keep it for travel.'},
+    ...(p.year?[{t:'Apply for a Hong Kong ID card',d:'If you stay over 180 days, apply for an HKID within 30 days of arrival.'}]:[])]};
+  if(cc==='TW') return {title:long?'Apply for a Taiwan resident visa':'Check Taiwan entry requirements',rule:'Visa-free up to 90 days; longer study needs a visa from the Taipei Mission in Korea',links:[L('Taipei Mission in Korea','https://www.roc-taiwan.org/kr_en/'),L('Bureau of Consular Affairs','https://www.boca.gov.tw/mp-2.html')],steps:long?[
+    {t:'Apply at the Taipei Mission in Korea',d:'Apply for a resident or visitor visa for study, depending on your program length.',need:['Passport','Application form','Photo','Admission letter','Health certificate (if requested)'],link:L('Taipei Mission in Korea','https://www.roc-taiwan.org/kr_en/')},
+    {t:'Get your ARC',d:'Resident visa holders apply for an Alien Resident Certificate (ARC) within 15 days of arrival.'}]:[
+    {t:'Confirm visa-free entry',d:'Programs under 90 days are visa-free for Korean passports.'},
+    {t:'Carry your documents',d:'Keep these in your hand luggage.',need:['Passport','Acceptance letter','Return ticket']}]};
+  if(SCHENGEN.has(cc)&&!long) return {title:'Check Schengen entry requirements',rule:'Korean passports get 90 days in any 180 visa-free in the Schengen area',links:EU_TRAVEL,steps:[
+    {t:'Count your days',d:'Short programs fit within 90 days in any 180-day period. Earlier trips to Europe in the same window count too.'},
+    {t:'Expect EES registration',d:'The Entry/Exit System records your fingerprints and photo at your first entry.',link:EU_TRAVEL[0]},
+    {t:'Check ETIAS before you fly',d:'ETIAS travel authorisation is due to start in late 2026. Check whether it applies on your travel date.',link:EU_TRAVEL[1]},
+    {t:'Carry your documents',d:'Keep these in your hand luggage.',need:['Passport','Acceptance letter','Proof of funds','Return ticket','Travel insurance']}]};
+  const R=RULES[cc]||(SCHENGEN.has(cc)?{rule:'Stays over 90 days need a national long-stay visa or residence permit',links:[SAFE]}:{rule:`Check the student visa rules on the ${h.country} embassy website`,links:[SAFE]});
+  return {title:long?'Apply for a student visa or residence permit':'Check visa and entry requirements',rule:R.rule,links:R.links,steps:[
+    {t:'Read the host’s visa guidance',d:'International offices usually publish step-by-step visa instructions for their incoming students.',link:pg.intl},
+    {t:'Check the official rules',d:R.rule+'.',link:R.links[0]},
+    {t:'Gather your documents',d:'Most student visa applications ask for the same core set.',need:['Passport (valid beyond your stay)','Admission letter','Proof of funds','Health insurance','ID photos','Proof of accommodation']},
+    {t:'Apply and book any appointment',d:'Submit online or at the embassy in Seoul. Processing can take several weeks, so apply as soon as your admission letter arrives.'},
+    {t:'Register after arrival',d:'Many countries ask you to register your address or collect a residence card within days of arriving. Check the deadline.'}]};
 }
 
 /* ---------------- checklist ---------------- */
 function buildChecklist(h,p){
-  const home=[`${h.short} official website`,h.url||'https://www.google.com/search?q='+encodeURIComponent(h.name)];
-  const L=p.long; const it=[];
+  const pg=pagesOf(h), long=p.long, short=!long;
+  const it=[];
   const add=o=>it.push(Object.assign({ver:'2026-09-28',by:'Editorial team'},o));
-  add({id:'app',cat:'Apply',title:'Submit host university application',off:L?85:55,
-    sum:`Submit your application on the ${h.short} online portal. The portal link arrives by email once your home university’s international office has nominated you. Check your spam folder if nothing has arrived.`,
-    rows:[['Where',`${h.short} application portal`],['Documents','Passport copy, English transcript, study plan'],['Prerequisite','Home university nomination']],links:[home]});
-  add({id:'eng',cat:'Apply',title:'Send English test scores',off:L?85:55,
-    sum:'Upload your English test scores with the application, or have the testing agency send them straight to the host. Minimum scores differ by university and department.',
-    rows:[['Accepted tests','TOEFL iBT, IELTS Academic (varies)'],['Delivery','Usually sent directly by the test agency'],['Validity','Typically 2 years from the test date']],links:[home]});
+  const appPage=short?pg.summer:pg.exch;
+  add({id:'app',cat:'Apply',title:short?`Apply to ${shortName(h,p)}`:`Submit ${h.short} application`,off:long?85:55,
+    sum:short?`Apply directly on the ${shortName(h,p)} website. International applicants usually register as visiting or non-degree students and pay the program fee to the host.`
+      :`Once your home university has nominated you, ${h.short} emails you a link to its online application for incoming students. Check your spam folder if nothing has arrived.`,
+    rows:short?[['Where',shortName(h,p)+' website'],['Who applies','You, directly'],['Usually needed','Passport, transcript, English scores, fee']]
+      :[['Where',`${h.short} incoming student portal`],['Prerequisite','Home university nomination'],['Documents','Passport copy, English transcript, study plan']],
+    steps:short?[
+      {t:'Open the program page',d:'Check course dates, eligibility for international students and the application deadline.',link:appPage},
+      {t:'Create an applicant account',d:'Register as a visiting or international student. Use your name exactly as it appears in your passport.'},
+      {t:'Pick your courses',d:'Choose courses and check with your home department which ones transfer as credit.'},
+      {t:'Upload documents and pay',d:'Most programs ask for the same core set.',need:['Passport bio page','English transcript','English test score','Application fee']}]
+    :[
+      {t:'Confirm your nomination',d:'Your home international office sends your nomination to the host. Ask them for the date it was sent.'},
+      {t:'Watch for the application email',d:`${h.short} emails you a link to its incoming exchange application, sometimes within days, sometimes weeks.`,link:appPage},
+      {t:'Complete the application',d:'Fill out the online form and choose your semester.',need:['Passport bio page','English transcript','Study plan or course list','English test score']},
+      {t:'Wait for the acceptance letter',d:'You need the acceptance letter for your visa and housing.'}],
+    links:[lk(appPage),lk(pg.intl)]});
+  add({id:'eng',cat:'Apply',title:'Send English test scores',off:long?85:55,
+    sum:'Upload your English scores with the application, or have the testing agency send them directly. Minimum scores differ by university and department.',
+    rows:[['Accepted tests','TOEFL iBT, IELTS Academic (varies)'],['Delivery','Usually sent directly by the test agency'],['Validity','Typically 2 years from the test date']],
+    steps:[{t:'Check the minimum score',d:'Find the requirement on the host’s incoming student page.',link:appPage},{t:'Send official scores',d:'Request score delivery from ETS (TOEFL) or upload your IELTS Test Report Form, as the host asks.'}],
+    links:[lk(appPage)]});
 
   if(h.region==='us'){
-    if(L){
-      const j1=p.ex;
-      add({id:'fin',cat:'Visa',title:'Submit proof of funds',off:70,
-        sum:`The host needs proof that you can cover living costs before it issues your ${j1?'DS-2019':'I-20'}. Your balance must meet the host’s published cost estimate for the term.`,
-        rows:[['Document','English bank statement (yours or a parent’s)'],['Amount','At least the host’s estimated cost'],['Issued by','Your bank, recent date']],links:[home]});
-      add({id:'doc',cat:'Visa',title:j1?'Receive your DS-2019':'Receive your I-20',off:45,
-        sum:`This is the key document for your ${j1?'J-1':'F-1'} visa. The host issues it after registering you in SEVIS. Check that your name, birth date and program dates match your passport.`,
-        rows:[['Issued by',`${h.short} international student office`],['Check','Name, birth date, program dates'],['Next step','Pay the I-901 SEVIS fee with your SEVIS ID']],links:[home],by:'Mentor Yeon L.'});
-      add({id:'sevis',cat:'Visa',title:'Pay the I-901 SEVIS fee',off:40,
-        sum:`Pay online using the SEVIS ID printed on your ${j1?'DS-2019':'I-20'}. ${j1?'Some hosts pay this fee for exchange students, so check first. ':''}Keep the receipt for your interview.`,
-        rows:[['Visa type',j1?'J-1 exchange visitor':'F-1 student'],['Fee',j1?'$220 (check if your host covers it)':'$350'],['Payment','Card that works for overseas payments']],
-        links:[['Official I-901 SEVIS fee payment','https://www.fmjfee.com']],ver:'2026-09-21'});
-      add({id:'ds160',cat:'Visa',title:'Complete DS-160 and book interview',off:38,
-        sum:'Fill out the online visa application (DS-160), pay the visa application fee, then book an interview at the U.S. Embassy in Seoul. Slots fill fast before semesters start.',
-        rows:[['Form','DS-160, with photo upload'],['Fee','See the embassy’s current fee'],['Booking','U.S. Embassy Seoul appointment system']],
-        links:[['DS-160 online application','https://ceac.state.gov/genniv/'],['U.S. Embassy Seoul · Visas','https://kr.usembassy.gov/visas/']]});
-      add({id:'visa',cat:'Visa',title:'Attend visa interview',off:25,
-        sum:'Go to the embassy on your booked date. If approved, your passport with the visa comes back by courier a few days later.',
-        rows:[['Bring',`Passport, ${j1?'DS-2019':'I-20'}, DS-160 confirmation, I-901 receipt, proof of funds`],['Where','U.S. Embassy Seoul'],['Passport return','By courier, a few days']],
-        links:[['U.S. Embassy Seoul · Visas','https://kr.usembassy.gov/visas/'],['U.S. Department of State · Study','https://travel.state.gov/content/travel/en/us-visas/study.html']]});
-    } else {
-      add({id:'visa',cat:'Visa',title:'Check entry requirements (ESTA or F-1)',off:40,
-        sum:'Credit-bearing summer programs often require an F-1 student visa, while short non-credit programs may accept ESTA. Confirm which applies to your program before booking anything.',
-        rows:[['Short, non-credit','ESTA (travel authorization)'],['Credit-bearing','Usually F-1 with an I-20'],['Confirm with',`${h.short} summer/winter session office`]],
-        links:[['Official ESTA application','https://esta.cbp.dhs.gov'],['U.S. Department of State · Study','https://travel.state.gov/content/travel/en/us-visas/study.html']]});
-    }
+    const o=long?{fin:70,i20:50,sevis:42,ds160:40,appt:38,visa:25}:{fin:50,i20:40,sevis:35,ds160:33,appt:32,visa:21};
+    add({id:'fin',cat:'Visa',title:'Request your I-20',off:o.fin,
+      sum:'Your F-1 visa starts with the I-20, which the host issues after checking that you can pay for your stay. Submit the I-20 request with proof of funds in the host portal.',
+      rows:[['Visa type','F-1 student'],['Issued by',`${h.short} international student office`],['Key document','English bank statement']],
+      steps:[
+        {t:'Find the I-20 request form',d:'After admission, the international student office opens an I-20 request in your applicant portal.',link:pg.intl},
+        {t:'Prepare proof of funds',d:'Get an English bank statement covering at least the host’s estimated cost for your program. A parent can sponsor you with a signed sponsor letter.',need:['English bank statement (recent)','Sponsor letter (if a parent pays)']},
+        {t:'Upload and submit',d:'Upload your passport bio page and funding documents. Your name must match your passport exactly.',need:['Passport bio page','Proof of funds']},
+        {t:'Wait for the I-20',d:'Most hosts email the I-20 as a PDF within 1–3 weeks.'}],
+      links:[lk(pg.intl),lk(US.sits)]});
+    add({id:'i20',cat:'Visa',title:'Check and sign your I-20',off:o.i20,
+      sum:'The I-20 is the document your whole F-1 visa is built on. Check every detail before you pay any fees, and sign it.',
+      rows:[['SEVIS ID','N00 + 8 digits, top right'],['Check','Name, birth date, program dates'],['Sign','Page 1, student attestation']],
+      steps:[
+        {t:'Download the I-20',d:'Save the PDF from the email or portal and print it.'},
+        {t:'Check every detail',d:'Mistakes cause problems at the interview and the border. Ask the host to reissue if anything is wrong.',need:['Name exactly as in passport','Date of birth','SEVIS ID (N00…)','School code','Program start and end dates']},
+        {t:'Sign page 1',d:'Sign and date the student attestation on page 1.'},
+        {t:'Keep it with your passport',d:'You need the I-20 at the interview, at the border, and when you travel in and out of the U.S.'}],
+      links:[lk(pg.intl),lk(US.sits)],by:'Mentor Yeon L.'});
+    add({id:'sevis',cat:'Visa',title:'Pay the I-901 SEVIS fee ($350)',off:o.sevis,
+      sum:'Every F-1 student pays the I-901 SEVIS fee before the visa interview. It takes about 10 minutes online.',
+      rows:[['Fee','$350 (F-1)'],['You need','SEVIS ID and school code from the I-20'],['When','At least 3 business days before your interview']],
+      steps:[
+        {t:'Open the official payment site',d:'Go to fmjfee.com and choose “I-901 Form and Payment”. Only use this official site.',link:US.fmj},
+        {t:'Enter your I-20 details',d:'Select the I-20 (F-1) form and type the information exactly as printed on your I-20.',need:['SEVIS ID','School code','Name as on I-20','Date of birth']},
+        {t:'Pay $350 by card',d:'Use a credit card that works for overseas payments.'},
+        {t:'Save the receipt',d:'Print the payment confirmation and bring it to your interview. Pay at least 3 business days before the interview so it shows up in the system.'}],
+      links:[lk(US.fmj),lk(US.sits)],ver:'2026-09-21'});
+    add({id:'ds160',cat:'Visa',title:'Fill out the DS-160',off:o.ds160,
+      sum:'The DS-160 is the online visa application. It is long, so set aside an hour. The page times out after about 20 minutes of inactivity, so save as you go.',
+      rows:[['Where','CEAC (ceac.state.gov)'],['Location','KOREA, SOUTH, SEOUL'],['Visa','Student (F1)'],['Output','Confirmation page with barcode']],
+      steps:[
+        {t:'Start the application',d:'Open CEAC, select “KOREA, SOUTH, SEOUL” and click “Start an Application”. Write down your Application ID and security answer so you can return.',link:US.ceac},
+        {t:'Prepare your photo',d:'Use a square digital photo from the last 6 months on a white background, without glasses.',need:['600×600 to 1200×1200 px','White background','Taken in the last 6 months'],link:US.photo},
+        {t:'Fill in travel details',d:'For purpose of trip, choose “Student/Exchange Visa (F)” then “Student (F1)”. Use the host’s address as your U.S. address.'},
+        {t:'Add your SEVIS information',d:'Enter your SEVIS ID and the school name and address from your I-20.'},
+        {t:'Sign and submit',d:'Review every page, sign electronically and submit. Print the confirmation page with the barcode.'}],
+      links:[lk(US.ceac),lk(US.photo)]});
+    add({id:'appt',cat:'Visa',title:'Pay the visa fee and book an interview',off:o.appt,
+      sum:'Create an account on the official U.S. visa appointment site for Korea, pay the visa application (MRV) fee and pick an interview date at the U.S. Embassy in Seoul.',
+      rows:[['Where','Official appointment site for Korea'],['Fee','MRV fee, $185 for F-1 (check for any additional fees)'],['Earliest visa','Up to 365 days before program start']],
+      steps:[
+        {t:'Create your account',d:'Sign up on the official appointment site with your passport and DS-160 confirmation number.',link:US.appt},
+        {t:'Pay the MRV fee',d:'Pay the visa application fee using one of the payment options shown, and keep the receipt number. Fees can change, so confirm the amount on the site.'},
+        {t:'Check if you must interview',d:'Most first-time student visa applicants interview in person. The site tells you if you qualify for an interview waiver.'},
+        {t:'Book your interview slot',d:'Pick the earliest slot at the U.S. Embassy Seoul. Slots fill fast in May–July and November–December.'},
+        {t:'Choose passport delivery',d:'Select where your passport should be couriered after approval.'}],
+      links:[lk(US.appt),lk(US.emb)]});
+    add({id:'visa',cat:'Visa',title:'Attend your visa interview',off:o.visa,
+      sum:'The interview at the U.S. Embassy in Seoul is short, usually a few minutes. Be ready to explain your study plan, funding and plans to return to Korea.',
+      rows:[['Where','U.S. Embassy Seoul, 188 Sejong-daero, Jongno-gu'],['Length','A few minutes'],['Passport back','By courier, usually within a week']],
+      steps:[
+        {t:'Pack your documents',d:'Bring originals in a clear folder.',need:['Passport (valid 6+ months)','Signed I-20','DS-160 confirmation','Appointment confirmation','I-901 SEVIS receipt','MRV fee receipt','Proof of funds','Acceptance letter','Transcript or enrollment certificate']},
+        {t:'Arrive early',d:'Arrive 15–30 minutes early (Gwanghwamun Station). Large bags and electronics are restricted, so check the embassy security rules first.',link:US.emb},
+        {t:'Answer briefly and honestly',d:'Expect questions like: Why this university? What will you study? Who pays? What will you do after you return?'},
+        {t:'Give fingerprints',d:'If approved, the officer keeps your passport. If you get a 221(g) sheet, follow its instructions for extra documents.'},
+        {t:'Check your visa',d:'When the passport arrives, check that the visa says F-1 and your name and SEVIS ID are correct.'}],
+      links:[lk(US.emb),lk(US.f1)]});
+    add({id:'arrive',cat:'Arrival',title:'Enter the U.S. and check in',off:0,
+      sum:'You can enter the U.S. up to 30 days before the program start date on your I-20. After landing, check your I-94 record and complete check-in with the international office.',
+      rows:[['Earliest entry','30 days before I-20 start date'],['Admitted as','F-1, D/S (duration of status)'],['Required','International student check-in']],
+      steps:[
+        {t:'Keep documents in your hand luggage',d:'Do not check these in.',need:['Passport with F-1 visa','Signed I-20','Acceptance letter','Proof of funds','SEVIS receipt']},
+        {t:'Pass immigration',d:'The CBP officer admits you as F-1 “D/S”.'},
+        {t:'Download your I-94',d:'A few days after arrival, check your I-94 record shows F-1 and D/S. Report errors right away.',link:US.i94},
+        {t:'Complete international student check-in',d:'Check in with the international office, usually online plus an orientation. This activates your SEVIS record.',link:pg.intl}],
+      links:[lk(US.i94),lk(pg.intl)]});
   } else if(h.region==='ca'){
-    add({id:'eta',cat:'Visa',title:'Apply for an eTA',off:L?45:35,
+    const eta=L('Government of Canada · eTA','https://www.canada.ca/en/immigration-refugees-citizenship/services/visit-canada/eta.html');
+    const sp=L('Government of Canada · Study permit','https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada/study-permit.html');
+    const vfs=L('VFS Global · Canada visa centre in Korea','https://visa.vfsglobal.com/kor/en/can');
+    add({id:'eta',cat:'Visa',title:'Apply for an eTA',off:long?45:35,
       sum:'Korean passport holders flying to Canada need an Electronic Travel Authorization (eTA). It is linked to your passport and usually approved within minutes.',
-      rows:[['Fee','CAD $7'],['Valid','Up to 5 years or until the passport expires'],['Apply','Official IRCC website only']],
-      links:[['Government of Canada · eTA','https://www.canada.ca/en/immigration-refugees-citizenship/services/visit-canada/eta.html']]});
-    if(L) add({id:'visa',cat:'Visa',title:p.year?'Apply for a study permit':'Decide on a study permit',off:60,
-      sum:p.year?'Programs longer than six months need a study permit. Apply with your letter of acceptance as soon as you receive it.':'Programs of six months or less do not need a study permit, but some students apply anyway to keep options open. Check with your host.',
-      rows:[['Required when','Program longer than 6 months'],['Documents','Letter of acceptance, proof of funds, passport'],['Apply','IRCC online']],
-      links:[['Government of Canada · Study permit','https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada/study-permit.html']]});
+      rows:[['Fee','CAD $7'],['Valid','Up to 5 years or until passport expiry'],['Apply','Official Government of Canada site only']],
+      steps:[
+        {t:'Use the official site',d:'Apply only on canada.ca. Unofficial sites charge extra fees.',link:eta},
+        {t:'Have these ready',d:'The form takes about 10 minutes.',need:['Passport','Credit or debit card','Email address']},
+        {t:'Wait for approval',d:'Most eTAs are approved within minutes. Some take a few days if more documents are needed.'},
+        {t:'Fly on the same passport',d:'The eTA is linked electronically to the passport you used to apply.'}],
+      links:[lk(eta)]});
+    if(long) add({id:'permit',cat:'Visa',title:p.year?'Apply for a study permit':'Decide on a study permit',off:60,
+      sum:p.year?'Programs longer than six months need a study permit. Apply as soon as you have your letter of acceptance.':'Programs of six months or less do not need a study permit. Some students apply anyway so they can extend or work on campus. Check with your host.',
+      rows:[['Required when','Program longer than 6 months'],['Fees','CAD $150 + biometrics CAD $85'],['Issued','At the airport, with your POE letter']],
+      steps:[
+        {t:'Check whether you need one',d:'One-semester exchanges (6 months or less) can study without a study permit.',link:sp},
+        {t:'Gather your documents',d:'Check with the host whether a Provincial Attestation Letter (PAL) is needed; exchange students are generally exempt.',need:['Letter of acceptance','Passport','Proof of funds','Photo']},
+        {t:'Apply online in your IRCC account',d:'Create an IRCC account, upload documents and pay the fees.',link:sp},
+        {t:'Give biometrics in Seoul',d:'Book a VFS Global appointment within 30 days of receiving your biometrics letter.',link:vfs},
+        {t:'Get your study permit at the airport',d:'Approval comes as a Port of Entry (POE) letter. Show it at the border, and the officer prints your study permit. Check it before you leave the counter.'}],
+      links:[lk(sp),lk(vfs)]});
   } else {
-    const v=visaInfo(h);
-    add({id:'visa',cat:'Visa',title:L?'Apply for student visa / residence permit':'Check visa and entry requirements',off:L?(h.region==='europe'?60:50):40,
-      sum:L?`To study in ${h.country} for a full term you need the right student status. Start as soon as your admission letter arrives, because processing can take weeks.`:`Short programs in ${h.country} are often visa-free for Korean passports, but rules depend on length and purpose. Confirm before you book flights.`,
-      rows:[['Country',h.country],['Rule',v.rule],['Documents','Admission letter, passport, proof of funds, insurance']],
-      links:[...v.links,home]});
+    const g=visaGuide(h,p);
+    add({id:'visa',cat:'Visa',title:g.title,off:long?(h.region==='europe'?60:50):40,
+      sum:long?`To study in ${h.country} for a full term you need the right student status. Start as soon as your acceptance letter arrives, because processing can take weeks.`:`Short programs in ${h.country} are often possible without a student visa, but the rules depend on length and purpose. Confirm before you book flights.`,
+      rows:[['Country',h.country],['Rule',g.rule]],steps:g.steps,links:[...g.links.map(lk),lk(pg.intl)]});
     if(h.region==='europe'&&p.ex) add({id:'la',cat:'Academics',title:'Get your Learning Agreement approved',off:50,
       sum:'List the courses you plan to take and get them approved by both your home department and the host coordinator. Only approved courses transfer back as credit.',
-      rows:[['Approved by','Home department + host coordinator'],['Changes','Allowed in a set window after arrival'],['Tip','List a few backup courses']],links:[home]});
+      rows:[['Approved by','Home department + host coordinator'],['Changes','Allowed in a set window after arrival']],
+      steps:[{t:'Find courses open to exchange students',d:'Hosts publish a course catalogue for incoming students.',link:pg.exch},{t:'Get home approval',d:'Ask your home department to sign off on each course.'},{t:'Submit to the host',d:'Upload the signed agreement in the host portal.'}],
+      links:[lk(pg.exch)]});
   }
 
-  add({id:'housing',cat:'Living',title:'Apply for housing',off:L?60:35,
-    sum:'Apply through the host’s housing portal first. If you are waitlisted, start looking at off-campus options in parallel. Never pay a deposit before you have seen the contract.',
-    rows:[['First choice','Host university residence (housing portal)'],['If waitlisted','Verified housing platforms, past students’ reviews'],['Watch out','Pay deposits only after checking the contract']],links:[home,SAFE],by:'Mentor Woo J.'});
-  add({id:'flight',cat:'Living',title:'Book your flight',off:L?30:28,
-    sum:'Book once you know the orientation date and the first day you can move in, so you do not arrive before you have a place to stay.',
-    rows:[['Plan around','Orientation and move-in date'],['Tip','Student fares often include extra baggage'],['Check','Name on ticket matches passport']],links:[home]});
-  add({id:'ins',cat:'Living',title:'Buy insurance or request a waiver',off:L?20:14,
-    sum:h.region==='us'&&L&&p.ex?'J-1 exchange visitors need insurance that meets State Department minimums. Many hosts enroll you in their own plan automatically; you can request a waiver with a qualifying outside plan.':'Check whether the host requires its own insurance plan. If you buy your own, make sure it covers your whole stay.',
-    rows:h.region==='us'&&L&&p.ex?[['Medical','$100,000 per accident or illness'],['Medical evacuation','$50,000'],['Repatriation','$25,000'],['Deductible','$500 or less']]:[['Check','Host’s mandatory insurance rules'],['Coverage period','Departure to return'],['Covers','Local medical costs, liability']],
-    links:[home,SAFE]});
-  add({id:'course',cat:'Academics',title:L?'Register for courses':'Register for program courses',off:L?14:21,
-    sum:'Register on the host’s course system during your enrollment window. Popular classes have few seats for exchange students, so pick backups in advance.',
-    rows:[['Where',`${h.short} student portal`],['Credit transfer','Courses pre-approved by your department'],['Check','Courses open to exchange students']],links:[home]});
+  add({id:'housing',cat:'Living',title:'Apply for housing',off:long?60:35,
+    sum:'Apply through the host’s housing portal first. If you are waitlisted, look at off-campus options in parallel. Never pay a deposit before you have seen the contract.',
+    rows:[['First choice','Host university housing'],['If waitlisted','Verified platforms, past students’ reviews'],['Watch out','Pay deposits only after checking the contract']],
+    steps:[{t:'Apply on the housing site',d:'Housing applications often open at the same time as your acceptance.',link:pg.housing},{t:'Ask past students',d:'Use the Community tab to ask which areas are safe and how far they are from campus.'},{t:'Check before paying',d:'Video-call the landlord and read the contract before sending money.'}],
+    links:[lk(pg.housing),lk(SAFE)],by:'Mentor Woo J.'});
+  add({id:'flight',cat:'Living',title:'Book your flight',off:long?30:28,
+    sum:'Book once you know the orientation date and the first day you can move in.',
+    rows:[['Plan around','Orientation and move-in date'],['Check','Name on ticket matches passport']].concat(h.region==='us'?[['F-1 rule','Arrive no earlier than 30 days before start']]:[]),
+    links:[lk(appPage)]});
+  add({id:'ins',cat:'Living',title:'Buy insurance or request a waiver',off:long?20:14,
+    sum:'Most hosts require international students to have health insurance, and many enroll you in their own plan automatically. Check whether you can waive it with an outside plan.',
+    rows:[['Check','Host’s insurance requirement'],['Coverage period','Departure to return'],['Covers','Medical costs, liability']],
+    links:[lk(pg.intl),lk(SAFE)]});
+  add({id:'course',cat:'Academics',title:long?'Register for courses':'Confirm your program courses',off:long?14:21,
+    sum:'Register during your enrollment window. Popular classes have few seats for visiting students, so pick backups.',
+    rows:[['Where',`${h.short} student portal`],['Credit transfer','Courses pre-approved by your department']],
+    links:[lk(appPage)]});
   return it;
 }
 
@@ -669,7 +850,7 @@ const S={
   pick:null,
   host:makeHost(['University of Washington','US','http://www.washington.edu/']),
   progId:'exS', pickProg:'exS',
-  done:new Set(), remind:new Set(['fin','doc','sevis','ds160','visa','housing','eta']),
+  done:new Set(), remind:new Set(['fin','i20','sevis','ds160','appt','visa','housing','eta','permit']),
   ctab:'status', liked:new Set(), bcat:'All',
   booked:{}, slot:null, mentorSheet:null,
   apply:{step:0,email:'',file:''},
@@ -704,6 +885,8 @@ function statusPill(i){
   if(n<=14) return '<span class="pill warn">Due soon</span>';
   return '';
 }
+const prettyUrl=u=>u.startsWith('https://www.google.com/search')?'Google site search':u.replace(/^https?:\/\//,'').replace(/^www\./,'').replace(/\/$/,'');
+function linkHTML(l,mini){const [label,url,ver]=l;return `<a class="src${mini?' mini':''}${ver===false?' guess':''}" href="${esc(url)}" target="_blank" rel="noopener"><span class="t"><b>${esc(label)}</b><small>${esc(prettyUrl(url))}</small></span>${ic(ver===false?'search':'ext',mini?16:18)}</a>`}
 const bar=(title,back='back',right='')=>`<div class="bar"><button class="iconbtn" data-act="${back}" aria-label="Back">${ic('back')}</button><h2>${title}</h2>${right}</div>`;
 const regionHosts=()=>DATA?DATA.unis.filter(u=>(COUNTRIES[u[1]]||[])[1]===S.region):[];
 
@@ -764,13 +947,14 @@ const SCREENS={
     <div class="scroll pad">
       <div class="steps"><i class="on"></i><i class="on"></i><i class="on"></i></div>
       <div class="school-card"><span class="mono">${esc(h.mono)}</span><span class="t"><b>${esc(h.name)}</b><small>${esc(h.country)}</small></span><button data-go="school">Change</button></div>
+      <div style="margin-top:10px">${linkHTML(lk(pagesOf(h).intl),true)}</div>
       <h2 class="ob-title" style="margin-top:22px">Which program<br>are you going on?</h2>
       <p class="ob-sub">${ps.length} programs at ${esc(h.short)} accept students from Korean partner universities.</p>
       ${ps.map(p=>`<button class="popt${p.id===S.pickProg?' on':''}" data-act="pickProg" data-v="${p.id}" aria-pressed="${p.id===S.pickProg}">
         <span class="h"><span class="t"><span class="pill ${p.ex?'ok':'cat'}">${p.type}</span><b style="margin-top:6px">${p.term}</b></span><span class="radio-dot"></span></span>
         <p>${p.what}</p>
-        <dl><dt>Length</dt><dd>${p.len}</dd><dt>Credits</dt><dd>${p.credits}</dd><dt>Tuition</dt><dd>${p.cost}</dd><dt>Departure</dt><dd class="num">${fmtY(D(depOf(p,h)))}</dd></dl>
-      </button>`).join('')}
+        <dl><dt>Length</dt><dd>${p.len}</dd><dt>Credits</dt><dd>${p.credits}</dd><dt>Tuition</dt><dd>${p.cost}</dd><dt>Visa</dt><dd>${h.region==='us'?'F-1 student visa':h.region==='ca'?(p.year?'eTA + study permit':'eTA'):visaGuide(h,p).title.replace(/^(Apply for|Get|Check) (a |an |your )?/,'').replace(/^./,c=>c.toUpperCase())}</dd><dt>Departure</dt><dd class="num">${fmtY(D(depOf(p,h)))}</dd></dl>
+      </button>${p.id===S.pickProg?`<div class="plink">${linkHTML(lk(p.long?pagesOf(h).exch:pagesOf(h).summer),true)}</div>`:''}`).join('')}
     </div>
     <div class="cta"><button class="btn" data-act="build">Build my checklist</button></div>`},
 
@@ -791,8 +975,11 @@ const SCREENS={
         <div class="when">${ic('clock',18)}<span>Due <b>${fmt(i.date)}</b> · <span class="num">${ddLabel(n)}</span></span></div>
       </div>
       <div class="d-sec"><h3>What to do</h3><p>${i.sum}</p></div>
+      ${i.steps?`<div class="d-sec"><h3>Step by step</h3><ol class="guide">${i.steps.map((st,k)=>`<li><span class="gn">${k+1}</span><div class="gt"><b>${st.t}</b><p>${st.d}</p>
+        ${st.need?`<ul class="need">${st.need.map(n=>`<li>${ic('check',14,2.6)}${n}</li>`).join('')}</ul>`:''}
+        ${st.link?linkHTML([st.link.label,st.link.url,st.link.verified],true):''}</div></li>`).join('')}</ol></div>`:''}
       <div class="d-sec"><h3>At a glance</h3><table class="tbl">${i.rows.map(r=>`<tr><th scope="row">${r[0]}</th><td>${r[1]}</td></tr>`).join('')}</table></div>
-      <div class="d-sec"><h3>Check the official source</h3>${i.links.map(l=>`<a class="src" href="${esc(l[1])}" target="_blank" rel="noopener"><span class="t"><b>${esc(l[0])}</b><small>${esc(l[1].replace(/^https?:\/\//,'').replace(/\/$/,''))}</small></span>${ic('ext',18)}</a>`).join('')}
+      <div class="d-sec"><h3>Official links</h3>${i.links.map(l=>linkHTML(l)).join('')}
         <div class="verified">${ic('shield',18)}<span><b>Verified ${fmtY(D(i.ver))}</b> · ${i.by}<br>Details can change. Always confirm with the official source before you submit.</span></div></div>
       <div class="d-sec">
         <div class="row-toggle"><span><b>Deadline reminders</b><small>3 days and 1 day before, 9 AM</small></span><button class="switch${S.remind.has(i.id)?' on':''}" role="switch" aria-checked="${S.remind.has(i.id)}" aria-label="Deadline reminders" data-act="remind" data-v="${i.id}"></button></div>
@@ -853,7 +1040,7 @@ function homeTab(){
   const doneN=list.filter(i=>S.done.has(i.id)).length;
   const pct=Math.round(doneN/list.length*100);
   const next=list.find(i=>!S.done.has(i.id));
-  const cats=['All','Apply','Visa','Living','Academics'].filter(c=>c==='All'||list.some(i=>i.cat===c));
+  const cats=['All','Apply','Visa','Living','Academics','Arrival'].filter(c=>c==='All'||list.some(i=>i.cat===c));
   const shown=S.filter==='All'?list:list.filter(i=>i.cat===S.filter);
   return `<div class="bar main"><h2>My prep</h2><button class="iconbtn" data-act="toast" data-v="${S.remind.size} reminders are on" aria-label="Notifications">${ic('bell')}</button></div>
   <div class="scroll pad">
