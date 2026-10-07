@@ -377,6 +377,26 @@ p{margin:0}
 
 /* perks */
 .cat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cat-row.five{grid-template-columns:repeat(5,1fr);gap:4px}
+.cat-row.five button{padding:10px 2px;font-size:11px}
+.cat-row.five button .ico{width:42px;height:42px;border-radius:14px}
+.tripcard{display:flex;align-items:center;gap:12px;width:100%;padding:14px 16px;border-radius:18px;background:var(--primary-soft);text-align:left}
+.tripcard .ico{width:42px;height:42px;border-radius:13px;background:var(--bg);display:grid;place-items:center;color:var(--primary-ink);flex:none}
+.tripcard .t{flex:1;min-width:0;display:flex;flex-direction:column}
+.tripcard small{font-size:12px;color:var(--ink-2)}
+.tripcard b{font-size:16px}
+.tripcard .num{font-size:13px;color:var(--ink-2)}
+.tripcard .edit{font-size:13px;font-weight:700;color:var(--primary-ink)}
+.perk-intro{font-size:13px;color:var(--ink-2);margin-top:4px;line-height:1.5}
+.perk{display:flex;gap:12px;padding:14px;border:1px solid var(--line);border-radius:16px;margin-top:10px;text-decoration:none;color:var(--ink);align-items:flex-start}
+.perk:hover{border-color:var(--primary)}
+.perk.guess{border-style:dashed}
+.perk .pm{width:44px;height:44px;border-radius:13px;background:var(--surface);color:var(--navy);display:grid;place-items:center;font-weight:900;font-size:13px;flex:none;letter-spacing:-.02em}
+.perk .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.perk b{font-size:15px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.perk small{font-size:13px;color:var(--ink-2);line-height:1.45}
+.perk .go{display:flex;align-items:center;gap:4px;font-size:13px;font-weight:700;color:var(--primary-ink);margin-top:4px}
+.perk .go em{font-style:normal;font-weight:500;color:var(--ink-3);margin-left:4px}
 .cat-row button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border-radius:16px;font-size:12px;font-weight:600;color:var(--ink-2)}
 .cat-row button .ico{width:46px;height:46px;border-radius:15px;background:var(--surface);display:grid;place-items:center;color:var(--ink-2)}
 .cat-row button.on{color:var(--ink)}
@@ -500,6 +520,7 @@ const I={
   sim:'<path d="M7 3h7l5 5v12a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><rect x="9" y="11" width="6" height="6" rx="1"/>',
   umbrella:'<path d="M3 12a9 9 0 0 1 18 0Z"/><path d="M12 12v7a2 2 0 0 1-4 0"/>',
   globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3Z"/>',
+  card:'<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/>',
   swap:'<path d="M7 4 3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/>',
   search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
   school:'<path d="M2 9l10-5 10 5-10 5L2 9Z"/><path d="M6 11v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/>'
@@ -942,11 +963,11 @@ function buildChecklist(h,p,stay=STAY[p.id],dep=D(depOf(p,h)),ret=addDays(dep,st
     sum:'Apply through the host’s housing portal first. If you are waitlisted, look at off-campus options in parallel. Never pay a deposit before you have seen the contract.',
     rows:[['First choice','Host university housing'],['If waitlisted','Verified platforms, past students’ reviews'],['Watch out','Pay deposits only after checking the contract']],
     steps:[{t:'Apply on the housing site',d:'Housing applications often open at the same time as your acceptance.',link:pg.housing},{t:'Ask past students',d:'Use the Community tab to ask which areas are safe and how far they are from campus.'},{t:'Check before paying',d:'Video-call the landlord and read the contract before sending money.'}],
-    links:[lk(pg.housing),lk(SAFE)],by:'Mentor Woo J.'});
+    links:[lk(pg.housing),lk(L(`Airbnb · stays near ${h.short}, your dates`,`https://www.airbnb.co.kr/s/${encodeURIComponent(h.name)}/homes?checkin=${iso(dep)}&checkout=${iso(ret)}`)),lk(SAFE)],by:'Mentor Woo J.'});
   add({id:'flight',cat:'Living',title:'Book your flight',off:long?30:28,
     sum:'Book once you know the orientation date and the first day you can move in.',
     rows:[['Plan around','Orientation and move-in date'],['Check','Name on ticket matches passport']].concat(h.region==='us'?[['F-1 rule','Arrive no earlier than 30 days before start']]:[]),
-    links:[lk(appPage)]});
+    links:[lk(L(`Google Flights · Seoul → ${CITY[h.name]?CITY[h.name][0]:h.country}, your dates`,'https://www.google.com/travel/flights?hl=en&q='+encodeURIComponent(`Flights from Seoul to ${CITY[h.name]?CITY[h.name][0]:h.country} on ${iso(dep)} through ${iso(ret)}`))),lk(appPage)]});
   add({id:'ins',cat:'Living',title:'Buy insurance or request a waiver',off:long?20:14,
     sum:'Most hosts require international students to have health insurance, and many enroll you in their own plan automatically. Check whether you can waive it with an outside plan.',
     rows:[['Check','Host’s insurance requirement'],['Coverage period',`${fmtShort(dep)} – ${fmtY(ret)} (${stay} days)`],['Covers','Medical costs, liability']],
@@ -963,14 +984,82 @@ const MENTORS=[['Yeon L.','Business Administration','15,000','4.9',31,['Visa doc
                ['Woo J.','Computer Science','20,000','5.0',18,['Housing','First week','Banking & phone']],
                ['Seo H.','Economics','12,000','4.8',9,['Credit transfer','Summer school','English tests']]];
 const PEERS=[['M','Minjun P.',72,'Visa docs'],['E','Eunji K.',64,'Housing set'],['S','Seoa S.',45,'Applied'],['R','Rin C.',38,'Test scores'],['J','Jiho Y.',30,'Applied'],['J','Jimin J.',18,'Just started']];
-const OFFERS={
-  'Insurance':[['GC','GlobeCare Student','Coverage matched to your stay, waiver-ready certificate','12% student discount'],['SS','StudentSafe','Direct billing at local hospitals, 24/7 Korean support','First month free']],
-  'eSIM':[['RZ','RoamZero eSIM','Activate before departure, data on landing','20% off 6-month exchange plan'],['NS','NextSIM Local','Pick up at the airport, local number included','No activation fee']],
-  'Flights':[['SK','SkyStudent Fares','Compare student fares, one extra checked bag','Up to 8% off one-way']],
-  'Housing':[['CS','CampusStay','Verified rooms near campus with video tours','First-month fee waived'],['HM','HomeMate Share','Matched with students from the same school','Split deposit payments']]
+/* ---------------- real booking services (deep links prefilled with the student's city and dates) ---------------- */
+// university → [city, airport code (Skyscanner), city code (Trip.com)]
+const CITY={
+  'Harvard University':['Boston','bos','bos'],'Massachusetts Institute of Technology':['Boston','bos','bos'],'Boston University':['Boston','bos','bos'],
+  'Stanford University':['San Francisco','sfo','sfo'],'University of California, Berkeley':['San Francisco','sfo','sfo'],
+  'University of California, Los Angeles':['Los Angeles','lax','lax'],'University of Southern California':['Los Angeles','lax','lax'],'University of California, San Diego':['San Diego','san','san'],
+  'Columbia University':['New York','jfk','nyc'],'New York University':['New York','jfk','nyc'],'Yale University':['New York','jfk','nyc'],'Cornell University':['New York','jfk','nyc'],
+  'University of Pennsylvania':['Philadelphia','phl','phl'],'University of Michigan - Ann Arbor':['Detroit','dtw','dtt'],'University of Chicago':['Chicago','ord','chi'],
+  'University of Illinois Urbana-Champaign':['Chicago','ord','chi'],'Duke University':['Raleigh','rdu','rdu'],'University of North Carolina at Chapel Hill':['Raleigh','rdu','rdu'],
+  'Georgetown University':['Washington, D.C.','iad','was'],'University of Washington':['Seattle','sea','sea'],'The University of Texas at Austin':['Austin','aus','aus'],
+  'University of Wisconsin - Madison':['Madison','msn','msn'],'Purdue University':['Indianapolis','ind','ind'],'University of Minnesota':['Minneapolis','msp','msp'],
+  'Arizona State University':['Phoenix','phx','phx'],'Emory University':['Atlanta','atl','atl'],'Georgia Institute of Technology':['Atlanta','atl','atl'],
+  'University of Toronto':['Toronto','yyz','yto'],'York University':['Toronto','yyz','yto'],'University of Waterloo':['Toronto','yyz','yto'],"Queen's University":['Toronto','yyz','yto'],
+  'University of British Columbia':['Vancouver','yvr','yvr'],'Simon Fraser University':['Vancouver','yvr','yvr'],'McGill University':['Montreal','yul','ymq'],
+  'University of Alberta':['Edmonton','yeg','yea'],'University of Ottawa':['Ottawa','yow','yow'],
+  'National University of Singapore':['Singapore','sin','sin'],'Nanyang Technological University':['Singapore','sin','sin'],'Singapore Management University':['Singapore','sin','sin'],
+  'University of Tokyo':['Tokyo','hnd','tyo'],'Waseda University':['Tokyo','hnd','tyo'],'Keio University':['Tokyo','hnd','tyo'],'Kyoto University':['Osaka','kix','osa'],
+  'The University of Hong Kong':['Hong Kong','hkg','hkg'],'The Hong Kong University of Science and Technology':['Hong Kong','hkg','hkg'],'The Chinese University of Hong Kong':['Hong Kong','hkg','hkg'],
+  'Peking University':['Beijing','pek','bjs'],'Tsinghua University':['Beijing','pek','bjs'],'Fudan University':['Shanghai','pvg','sha'],'Shanghai Jiao Tong University':['Shanghai','pvg','sha'],
+  'Zhejiang University':['Hangzhou','hgh','hgh'],'National Taiwan University':['Taipei','tpe','tpe'],
+  'KU Leuven':['Brussels','bru','bru'],'University of Amsterdam':['Amsterdam','ams','ams'],'Erasmus University Rotterdam':['Amsterdam','ams','ams'],'Maastricht University':['Amsterdam','ams','ams'],
+  'Universiteit Leiden':['Amsterdam','ams','ams'],'Utrecht University':['Amsterdam','ams','ams'],'Lund University':['Copenhagen','cph','cph'],'Copenhagen Business School':['Copenhagen','cph','cph'],
+  'University of Copenhagen':['Copenhagen','cph','cph'],'Bocconi University':['Milan','mxp','mil'],'University of Edinburgh':['Edinburgh','edi','edi'],
+  'University of Oxford':['London','lhr','lon'],'University of Cambridge':['London','lhr','lon'],'Imperial College London':['London','lhr','lon'],"King's College London, University of London":['London','lhr','lon'],
+  'University of Warwick':['Birmingham','bhx','bhx'],'University of Manchester':['Manchester','man','man'],'University of Dublin, Trinity College':['Dublin','dub','dub'],'University College Dublin':['Dublin','dub','dub'],
+  'ETHZ - ETH Zurich':['Zurich','zrh','zrh'],'Universität Mannheim':['Frankfurt','fra','fra'],'Ludwig-Maximilians-Universität München':['Munich','muc','muc'],'Technische Universität München':['Munich','muc','muc'],
+  'Freie Universität Berlin':['Berlin','ber','ber'],'Stockholm University':['Stockholm','arn','sto'],'Uppsala University':['Stockholm','arn','sto'],
+  'Aalto University':['Helsinki','hel','hel'],'University of Helsinki':['Helsinki','hel','hel'],'Universitat Pompeu Fabra':['Barcelona','bcn','bcn'],
+  'Universidad Complutense de Madrid':['Madrid','mad','mad'],'Wirtschaftsuniversität Wien':['Vienna','vie','vie']
 };
-const OFFER_ICON={'Insurance':'umbrella','eSIM':'sim','Flights':'plane','Housing':'home'};
-
+const AIRALO_SLUG={'Czechia':'czech-republic','Türkiye':'turkey'};
+const ymd=d=>iso(d).slice(2).replace(/-/g,'');
+function trip(){
+  const h=host(), c=CITY[h.name], dep=depDate(), ret=retDate();
+  return {h,c,dep,ret,dest:c?c[0]:h.country,known:!!c};
+}
+function perkGroups(){
+  const {h,c,dep,ret,dest,known}=trip(), pg=pagesOf(h);
+  const gq=encodeURIComponent(`Flights from Seoul to ${dest} on ${iso(dep)} through ${iso(ret)}`);
+  const sky=`https://www.skyscanner.co.kr/transport/flights/icn/${known?c[1]:h.cc.toLowerCase()}/${ymd(dep)}/${ymd(ret)}/`;
+  const tripcom=known?`https://kr.trip.com/flights/showfarefirst?dcity=sel&acity=${c[2]}&ddate=${iso(dep)}&rdate=${iso(ret)}&triptype=rt&class=y&quantity=1&locale=ko-KR`:'https://kr.trip.com/flights/';
+  const near=encodeURIComponent(h.name);
+  const eu=h.region==='europe', uk=h.cc==='GB';
+  const slug=(AIRALO_SLUG[h.country]||h.country).toLowerCase().replace(/[^a-z]+/g,'-').replace(/^-|-$/g,'');
+  return [
+    {key:'Flights',icon:'plane',intro:`Round trip Seoul → ${dest}, ${fmtShort(dep)} – ${fmtShort(ret)}. Searches open with your dates filled in.`,items:[
+      {mono:'G',name:'Google Flights',what:'Compare every airline at once and track price changes.',cta:'Search flights',url:'https://www.google.com/travel/flights?hl=en&q='+gq,pre:true},
+      {mono:'S',name:'Skyscanner',what:'Shows the cheapest dates in a calendar view. Korean site, prices in KRW.',cta:'Search flights',url:sky,pre:true},
+      {mono:'T',name:'Trip.com',what:'Good for Asia routes and one-way tickets. Korean customer service.',cta:known?'Search flights':'Open Trip.com',url:tripcom,pre:known},
+      {mono:'SU',name:'StudentUniverse',what:'Student fares, often with flexible changes. Needs student verification.',cta:'See student fares',url:'https://www.studentuniverse.com/'}]},
+    {key:'Housing',icon:'home',intro:`Short stays for your first nights near ${h.short}, and longer rentals if you missed the dorm.`,items:[
+      {mono:h.mono,name:`${h.short} housing`,what:'Apply here first. University housing is usually the safest and simplest option.',cta:'Open housing page',url:pg.housing.url,guess:!pg.housing.verified},
+      {mono:'A',name:'Airbnb',what:`Monthly stays near campus, filtered to ${fmtShort(dep)} – ${fmtShort(ret)}.`,cta:'Search stays',url:`https://www.airbnb.co.kr/s/${near}/homes?checkin=${iso(dep)}&checkout=${iso(ret)}`,pre:true},
+      {mono:'B',name:'Booking.com',what:'Hotels and hostels for the first week while you look for a room.',cta:'Search hotels',url:`https://www.booking.com/searchresults.ko.html?ss=${near}&checkin=${iso(dep)}&checkout=${iso(addDays(dep,7))}`,pre:true},
+      ...(eu?[{mono:'HA',name:'HousingAnywhere',what:'Mid-term rooms for students across Europe, with tenant protection.',cta:'Find a room',url:'https://www.housinganywhere.com/'},
+              {mono:'U',name:'Uniplaces',what:'Student rooms in major European university cities.',cta:'Find a room',url:'https://www.uniplaces.com/'}]:[]),
+      ...(uk?[{mono:'SR',name:'SpareRoom',what:'The UK’s largest flatshare site.',cta:'Find a flatshare',url:'https://www.spareroom.co.uk/'}]:[]),
+      {mono:'HW',name:'Hostelworld',what:'Cheap beds for your first nights or weekend trips.',cta:'Search hostels',url:'https://www.hostelworld.com/'}]},
+    {key:'Phone',icon:'sim',intro:`Stay connected in ${/^(United|Netherlands|Czech|Philippines)/.test(h.country)?'the ':''}${h.country}. eSIMs are cheapest for long stays; carrier roaming is easiest for a few days.`,items:[
+      {mono:'AI',name:'Airalo',what:`${h.country} eSIM data plans. Install before you fly, switch on when you land.`,cta:`See ${h.country} plans`,url:`https://www.airalo.com/${slug}-esim`,tag:'Your country'},
+      {mono:'유',name:'유심사 (Usimsa)',what:'Korean eSIM/USIM store with Korean support and fast delivery.',cta:'Open Usimsa',url:'https://www.usimsa.com/'},
+      {mono:'말',name:'말톡 (Maaltalk)',what:'eSIM and USIM plans, plus a Korean call app for staying in touch.',cta:'Open Maaltalk',url:'https://www.maaltalk.com/'},
+      {mono:'SK',name:'SK텔레콤 T로밍',what:'Keep your Korean number. Good for the first days and verification texts.',cta:'See roaming',url:'https://troaming.tworld.co.kr/'},
+      {mono:'KT',name:'KT 로밍',what:'Daily and long-term roaming passes on your current KT number.',cta:'See roaming',url:'https://roaming.kt.com/'},
+      {mono:'U+',name:'LG U+ 로밍',what:'Roaming passes for LG U+ subscribers.',cta:'See roaming',url:'https://www.lguplus.com/mobile/roaming'}]},
+    {key:'Insurance',icon:'umbrella',intro:`Your host may enroll you in its own plan. Check the waiver rules before buying anything.`,items:[
+      {mono:h.mono,name:`${h.short} insurance rules`,what:'Find out if you are auto-enrolled and whether you can waive with an outside plan.',cta:'Check the rules',url:pg.intl.url,guess:!pg.intl.verified},
+      ...(h.region==='us'?[{mono:'ISO',name:'ISO Student Health Insurance',what:'U.S. plans built to meet university waiver requirements.',cta:'Compare plans',url:'https://www.isoa.org/'}]:[]),
+      {mono:'삼',name:'삼성화재 다이렉트',what:'Travel and long-stay study abroad insurance from Korea, bought online.',cta:'Get a quote',url:'https://direct.samsungfire.com/'},
+      {mono:'DB',name:'DB손해보험 다이렉트',what:'Online overseas travel and study insurance with English certificates.',cta:'Get a quote',url:'https://www.directdb.co.kr/'}]},
+    {key:'Money',icon:'card',intro:'Pay tuition deposits, rent and daily spending without heavy bank fees.',items:[
+      {mono:'W',name:'Wise',what:'Send money abroad at the real exchange rate, e.g. housing deposits.',cta:'Open Wise',url:'https://wise.com/kr/'},
+      {mono:'하',name:'하나카드 트래블로그',what:'Popular Korean travel card with low foreign transaction fees.',cta:'See the card',url:'https://www.hanacard.co.kr/'},
+      {mono:'IS',name:'ISIC student card',what:'International student ID with discounts on transport, museums and software.',cta:'Get ISIC',url:'https://www.isic.org/'}]}
+  ];
+}
 /* ---------------- state ---------------- */
 const S={
   screen:'splash', tab:'home', detail:null, filter:'All',
@@ -1258,15 +1347,18 @@ function mentorTab(){
 }
 
 function perksTab(){
-  const cats=Object.keys(OFFERS);
-  const show=S.bcat==='All'?cats:[S.bcat];
+  const G=perkGroups(), {dep,ret,dest}=trip();
+  const show=S.bcat==='All'?G:G.filter(g=>g.key===S.bcat);
   return `<div class="bar main"><h2>Perks</h2></div>
   <div class="scroll pad">
-    <p style="color:var(--ink-2);font-size:14px">What you need before departure, at student prices.</p>
-    <div class="cat-row" style="margin-top:14px">${cats.map(c=>`<button class="${S.bcat===c?'on':''}" data-act="bcat" data-v="${c}" aria-pressed="${S.bcat===c}"><span class="ico">${ic(OFFER_ICON[c])}</span>${c}</button>`).join('')}</div>
-    ${show.map(c=>`<div class="list-head"><h3>${c}</h3><span class="sample">Sample partner</span></div>
-      ${OFFERS[c].map(o=>`<div class="offer"><span class="ico">${o[0]}</span><span class="t"><b>${o[1]}</b><small>${o[2]}</small><span class="deal">${o[3]}</span></span><button class="btn sm ghost" data-act="toast" data-v="Opening ${o[1]}">View</button></div>`).join('')}`).join('')}
-    <p class="why">교환가자 earns a referral commission when you buy through a partner. It keeps the checklist and community free.</p>
+    <button class="tripcard" data-act="editDep"><span class="ico">${ic('plane',20)}</span><span class="t"><small>Your trip</small><b>Seoul → ${esc(dest)}</b><span class="num">${fmtShort(dep)} – ${fmtY(ret)} · ${stayShort(stayDays())}</span></span><span class="edit">Edit</span></button>
+    <div class="cat-row five" style="margin-top:14px">${G.map(g=>`<button class="${S.bcat===g.key?'on':''}" data-act="bcat" data-v="${g.key}" aria-pressed="${S.bcat===g.key}"><span class="ico">${ic(g.icon)}</span>${g.key}</button>`).join('')}</div>
+    ${show.map(g=>`<div class="list-head"><h3>${g.key}</h3></div><p class="perk-intro">${g.intro}</p>
+      ${g.items.map(o=>`<a class="perk${o.guess?' guess':''}" href="${esc(o.url)}" target="_blank" rel="noopener">
+        <span class="pm">${esc(o.mono)}</span>
+        <span class="t"><b>${esc(o.name)}${o.pre?'<span class="pill ok">Your dates</span>':o.tag?`<span class="pill ok">${o.tag}</span>`:''}</b><small>${esc(o.what)}</small><span class="go">${esc(o.cta)} ${ic('ext',14)}<em>${esc(prettyUrl(o.url).split('/')[0])}</em></span></span>
+      </a>`).join('')}`).join('')}
+    <p class="why">Links open each provider’s official site. Prices and availability are set by the provider. 교환가자 plans to earn a referral fee from partner bookings, which keeps the checklist and community free.</p>
   </div>`;
 }
 
