@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -293,6 +293,13 @@ p{margin:0}
 .stayinfo b{font-size:14px;color:var(--ink)}
 .stayinfo span{color:var(--ink-2)}
 .stayinfo .warn{color:var(--danger)}
+.langs{display:flex;flex-direction:column;gap:10px;width:100%;max-width:300px}
+.langopt{display:flex;align-items:center;gap:10px;padding:16px 18px;border:1.5px solid var(--line);border-radius:16px;text-align:left}
+.langopt b{font-size:17px}
+.langopt small{flex:1;color:var(--ink-3);font-size:13px}
+.langopt.on{border-color:var(--primary);background:var(--primary-soft)}
+.langopt.on .radio-dot{border-color:var(--primary);background:var(--primary)}
+.langopt.on .radio-dot::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--on-primary)}
 .depbtn{display:flex;align-items:center;gap:8px;width:100%;padding:10px 12px;border-radius:12px;background:var(--bg);font-size:13px;color:var(--ink-2);text-align:left}
 .depbtn .ic{color:var(--primary-ink)}
 .depbtn span:first-of-type{flex:1}
@@ -465,7 +472,7 @@ p{margin:0}
 </head>
 <body>
 
-<aside class="side" aria-label="Screen index">
+<aside class="side" id="side" aria-label="Screen index">
   <div class="brand"><div class="appicon sm" id="sideIcon"></div><b class="ko">교환가자</b></div>
   <p class="lead">A clickable prototype of the app that takes exchange and summer school students from acceptance to departure. Tap through the phone, or jump to any screen below.</p>
   <h4>Screens</h4>
@@ -494,6 +501,463 @@ p{margin:0}
 </div>
 
 <script>
+/* ---------------- i18n: Korean is applied to rendered text through KO (exact phrases) and KO_RE (templates) ---------------- */
+/* ---- i18n engine: exact phrases (KO), templates (KO_T), names (countries, cities) ---- */
+const KO={}, KO_RE=[];
+const CO_KO={US:'미국',CA:'캐나다',JP:'일본',CN:'중국',TW:'대만',HK:'홍콩',MO:'마카오',MN:'몽골',SG:'싱가포르',MY:'말레이시아',TH:'태국',VN:'베트남',ID:'인도네시아',PH:'필리핀',KH:'캄보디아',LA:'라오스',MM:'미얀마',BN:'브루나이',TL:'동티모르',IN:'인도',PK:'파키스탄',BD:'방글라데시',LK:'스리랑카',NP:'네팔',BT:'부탄',MV:'몰디브',AF:'아프가니스탄',KZ:'카자흐스탄',UZ:'우즈베키스탄',KG:'키르기스스탄',TJ:'타지키스탄',TM:'투르크메니스탄',AE:'아랍에미리트',SA:'사우디아라비아',QA:'카타르',KW:'쿠웨이트',BH:'바레인',OM:'오만',YE:'예멘',IL:'이스라엘',JO:'요르단',LB:'레바논',SY:'시리아',IQ:'이라크',IR:'이란',PS:'팔레스타인',GE:'조지아',AM:'아르메니아',AZ:'아제르바이잔',GB:'영국',IE:'아일랜드',FR:'프랑스',DE:'독일',NL:'네덜란드',BE:'벨기에',LU:'룩셈부르크',CH:'스위스',AT:'오스트리아',LI:'리히텐슈타인',MC:'모나코',IT:'이탈리아',ES:'스페인',PT:'포르투갈',AD:'안도라',SM:'산마리노',VA:'바티칸',MT:'몰타',GR:'그리스',CY:'키프로스',SE:'스웨덴',NO:'노르웨이',DK:'덴마크',FI:'핀란드',IS:'아이슬란드',EE:'에스토니아',LV:'라트비아',LT:'리투아니아',PL:'폴란드',CZ:'체코',SK:'슬로바키아',HU:'헝가리',SI:'슬로베니아',HR:'크로아티아',BA:'보스니아 헤르체고비나',RS:'세르비아',ME:'몬테네그로',MK:'북마케도니아',AL:'알바니아',XK:'코소보',RO:'루마니아',BG:'불가리아',MD:'몰도바',UA:'우크라이나',BY:'벨라루스',RU:'러시아',TR:'튀르키예',KR:'대한민국'};
+const CITY_KO={'Seattle':'시애틀','Boston':'보스턴','San Francisco':'샌프란시스코','Los Angeles':'로스앤젤레스','San Diego':'샌디에이고','New York':'뉴욕','Philadelphia':'필라델피아','Detroit':'디트로이트','Chicago':'시카고','Raleigh':'롤리','Washington, D.C.':'워싱턴 D.C.','Austin':'오스틴','Madison':'매디슨','Indianapolis':'인디애나폴리스','Minneapolis':'미니애폴리스','Phoenix':'피닉스','Atlanta':'애틀랜타','Toronto':'토론토','Vancouver':'밴쿠버','Montreal':'몬트리올','Edmonton':'에드먼턴','Ottawa':'오타와','Singapore':'싱가포르','Tokyo':'도쿄','Osaka':'오사카','Hong Kong':'홍콩','Beijing':'베이징','Shanghai':'상하이','Hangzhou':'항저우','Taipei':'타이베이','Brussels':'브뤼셀','Amsterdam':'암스테르담','Copenhagen':'코펜하겐','Milan':'밀라노','Edinburgh':'에든버러','London':'런던','Birmingham':'버밍엄','Manchester':'맨체스터','Dublin':'더블린','Zurich':'취리히','Frankfurt':'프랑크푸르트','Munich':'뮌헨','Berlin':'베를린','Stockholm':'스톡홀름','Helsinki':'헬싱키','Barcelona':'바르셀로나','Madrid':'마드리드','Vienna':'빈','Seoul':'서울'};
+let NAME_KO={'United States':'미국','Canada':'캐나다','South Korea':'대한민국'};
+function buildNameKo(countries){ for(const [cc,v] of Object.entries(countries)) if(CO_KO[cc]) NAME_KO[v[0]]=CO_KO[cc]; Object.assign(NAME_KO,CITY_KO) }
+buildNameKo({});
+const place=x=>NAME_KO[x]||NAME_KO[x.replace(/^the /,'')]||x;
+const MON_I={Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
+const WD_I={Sun:'일',Mon:'월',Tue:'화',Wed:'수',Thu:'목',Fri:'금',Sat:'토'};
+function koDate(s){
+  let m=s.match(/^(\w{3}) (\d{1,2}), (\d{4})$/); if(m&&MON_I[m[1]]) return `${m[3]}년 ${MON_I[m[1]]}월 ${m[2]}일`;
+  m=s.match(/^(\w{3}) (\d{1,2}) \((\w{3})\)$/); if(m&&MON_I[m[1]]) return `${MON_I[m[1]]}월 ${m[2]}일 (${WD_I[m[3]]})`;
+  m=s.match(/^(\w{3}) (\d{1,2})$/); if(m&&MON_I[m[1]]) return `${MON_I[m[1]]}월 ${m[2]}일`;
+  return s;
+}
+const koStay=s=>s.replace(/([\d.]+) months?/,'$1개월').replace(/(\d+) weeks?/,'$1주').replace(/(\d+) days/,'$1일');
+const MONRE='(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)';
+const TOK={
+  X:['(.+?)',x=>trText(x)], P:['(.+?)',x=>place(x)], N:['(\\d+)',x=>x], T:['(\\d{1,2}:\\d{2})',x=>x],
+  D:[`((?:\\d{4}년 )?\\d{1,2}월 \\d{1,2}일(?: \\([일월화수목금토]\\))?|${MONRE} \\d{1,2}(?:, \\d{4}| \\(\\w{3}\\))?)`,koDate],
+  S:['([\\d.]+ ?(?:개월|주|months?|weeks?)(?: \\(\\d+ ?(?:일|days)\\))?)',koStay]
+};
+// en template uses {X} {P} {N} {T} {D} {S}; ko template references the same tokens in any order
+function T_(en,ko){
+  const order=[]; const re=new RegExp('^'+en.replace(/[.*+?^$()|[\]\\]/g,'\\$&').replace(/\{([XPNTDS])\}/g,(_,k)=>{order.push(k);return TOK[k][0]})+'$');
+  KO_RE.push([re,(...m)=>{const vals={};order.forEach((k,i)=>(vals[k]=vals[k]||[]).push(TOK[k][1](m[i+1])));const used={};return ko.replace(/\{([XPNTDS])\}/g,(_,k)=>{used[k]=(used[k]||0);return vals[k][used[k]++]})},en.replace(/\{[A-Z]\}/g,'').length]);
+}
+function setLang(l){LANG=l; document.documentElement.lang=l;
+  if(l==='ko'&&S.profile.major==='Business Administration') S.profile.major='경영학과';
+  if(l==='en'&&S.profile.major==='경영학과') S.profile.major='Business Administration';
+}
+function trText(s){
+  if(LANG!=='ko'||!s) return s;
+  const k=s.trim(); if(!k||!/[A-Za-z]/.test(k)) return s;
+  const r=trCore(k);
+  return r===undefined?s:s.replace(k,r);
+}
+function trCore(k){
+  if(KO[k]!==undefined) return KO[k];
+  if(NAME_KO[k]) return NAME_KO[k];
+  if(k.endsWith(' ·')){ const r=trCore(k.slice(0,-2)); return r===undefined?undefined:r+' ·' }
+  if(k.startsWith('· ')){ const r=trCore(k.slice(2)); if(r!==undefined) return '· '+r }
+  if(/ · /.test(k)){ const parts=k.split(' · '); let ch=false; const out=parts.map(p=>{const r=p?trCore(p):undefined; if(r!==undefined){ch=true;return r} return p}); if(ch) return out.join(' · ') }
+  for(const [re,f] of KO_RE){ const m=k.match(re); if(m) return f(...m) }
+  if(/\.$/.test(k)&&!/\.\.$/.test(k)){ const r=trCore1(k.slice(0,-1)); if(r!==undefined) return r+(/[.!?]$/.test(r)?'':'.') }
+  const sents=k.split(/(?<=[.!?])\s+(?=[A-Z0-9“"(])/); if(sents.length>1){ let ch=false; const out=sents.map(p=>{const r=trCore(p); if(r!==undefined){ch=true;return r} return p}); if(ch) return out.join(' ') }
+  return undefined;
+}
+function trCore1(k){ if(KO[k]!==undefined) return KO[k]; for(const [re,f] of KO_RE){ const m=k.match(re); if(m) return f(...m) } return undefined }
+function translate(root){
+  if(LANG!=='ko'||!root) return;
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentElement.closest('[data-notr],script,style,mark')?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT});
+  const nodes=[]; while(w.nextNode()) nodes.push(w.currentNode);
+  nodes.forEach(n=>{ if(n.parentElement.querySelector('mark')||n.parentElement.closest('.srow b,.sugg button span')) return; const t=trText(n.nodeValue); if(t!==n.nodeValue) n.nodeValue=t});
+  root.querySelectorAll('[placeholder],[aria-label]').forEach(el=>{['placeholder','aria-label'].forEach(a=>{const v=el.getAttribute(a); if(v){const t=trText(v); if(t!==v) el.setAttribute(a,t)}})});
+}
+Object.assign(KO,{
+// side panel & navigation
+"A clickable prototype of the app that takes exchange and summer school students from acceptance to departure. Tap through the phone, or jump to any screen below.":"교환학생·서머스쿨 합격 후 출국까지의 준비를 돕는 앱의 클릭형 프로토타입이에요. 휴대폰 화면을 직접 눌러 보거나 아래에서 원하는 화면으로 바로 이동하세요.",
+"Screens":"화면","Language":"언어","Splash":"시작 화면","Home university":"본교","Host university":"파견교","Program":"프로그램","Checklist":"체크리스트","Checklist item":"체크리스트 상세","Community":"커뮤니티","Verified mentors":"인증 멘토","Perks":"혜택","Mentor verification":"멘토 인증",
+"Home":"홈","Mentors":"멘토링","Me":"마이","Back":"뒤로","Notifications":"알림","Report a change":"변경 제보하기",
+// splash, login, profile
+"From acceptance to departure,":"합격부터 출국까지,","one step at a time.":"한 걸음씩.","Get started":"시작하기",
+"Start with your":"학교 이메일로","university email":"시작해요","We use it to connect you with students from your school and program.":"같은 학교, 같은 프로그램 학생들과 연결하는 데 쓰여요.",
+"University email":"학교 이메일","or":"또는","Continue with Kakao":"카카오로 계속하기","Continue with Google":"Google로 계속하기","Continue with Apple":"Apple로 계속하기","Continue":"계속하기",
+"Tell us about":"본교 정보를","your home university":"알려주세요","We use this to match you with mentors and peers from your school.":"같은 학교 멘토와 동기를 찾는 데 쓰여요.",
+"Change":"변경","Major":"전공","Year":"학년","1st year":"1학년","2nd year":"2학년","3rd year":"3학년","4th year":"4학년","Graduate":"대학원","Next":"다음",
+"No match. Try the English name, e.g. “Yonsei”.":"일치하는 학교가 없어요. 영어 이름으로 검색해 보세요. 예: “Yonsei”","Loading universities…":"대학 목록을 불러오는 중…",
+// school & program
+"Which university":"어느 대학에","accepted you?":"합격했나요?","Pick your host university. You’ll choose the exact program next.":"파견교를 고르세요. 다음 화면에서 세부 프로그램을 선택해요.",
+"Asia":"아시아","USA":"미국","Canada":"캐나다","Europe":"유럽","Search by university or country":"대학 또는 나라 이름으로 검색","All":"전체",
+"Popular with Korean students":"한국 학생들이 많이 가는 학교","All universities":"전체 대학","Results":"검색 결과","Show more":"더 보기",
+"No universities match. Try another spelling or region.":"일치하는 대학이 없어요. 다른 철자나 지역으로 검색해 보세요.","Select a university":"대학을 선택하세요","Next: choose program":"다음: 프로그램 선택",
+"Couldn’t load the university list. Check your connection and reload.":"대학 목록을 불러오지 못했어요. 인터넷 연결을 확인하고 새로고침하세요.",
+"Which program":"어떤 프로그램에","are you going on?":"합격했나요?",
+"Exchange":"교환학생","Visiting student":"방문학생","Summer school":"서머스쿨","Winter school":"윈터스쿨",
+"exchange":"교환학생","visiting student":"방문학생","summer school":"서머스쿨","winter school":"윈터스쿨",
+"Spring 2027":"2027 봄학기","Fall 2027":"2027 가을학기","Academic Year 2027–28":"2027–28 학년도","Summer 2027":"2027 여름학기","Winter 2026–27":"2026–27 겨울학기",
+"Take regular semester courses alongside local students. You keep paying tuition to your home university, and approved courses transfer back as credit.":"현지 학생들과 함께 정규 학기 수업을 들어요. 등록금은 본교에 계속 내고, 승인된 과목은 본교 학점으로 인정돼요.",
+"Same as a spring exchange, starting with the host university’s fall term. Fall intakes usually come with a fuller orientation week.":"봄학기 교환과 같고, 파견교 가을학기에 시작해요. 가을 입학은 보통 오리엔테이션 주간이 더 알차요.",
+"Spend two consecutive semesters as a full exchange student. Same tuition arrangement, a longer stay, and a full year of transferable credit.":"두 학기 연속으로 교환학생 생활을 해요. 등록금 방식은 같고, 더 오래 머물며 1년치 학점을 인정받아요.",
+"Enroll directly as a fee-paying visiting (study abroad) student. There is no exchange quota, but you pay the host university’s tuition yourself.":"등록금을 내는 방문학생(Study Abroad)으로 직접 등록해요. 교환 정원 제한은 없지만 파견교 등록금을 본인이 내야 해요.",
+"Take an intensive 4–8 week program of academic courses during summer break, often mixed with cultural activities. Credits transfer with prior approval.":"방학 동안 4–8주 집중 과정을 들어요. 문화 활동이 함께 있는 경우가 많고, 사전 승인받으면 학점으로 인정돼요.",
+"Join a short 2–4 week course or cultural immersion program over winter break.":"겨울방학 동안 2–4주 단기 과정이나 문화 체험 프로그램에 참여해요.",
+"1 semester (about 4–5 months)":"1학기 (약 4–5개월)","2 semesters (about 10 months)":"2학기 (약 10개월)","1 semester":"1학기","4–8 weeks":"4–8주","2–4 weeks":"2–4주",
+"12–18 credits":"12–18학점","24–36 credits":"24–36학점","3–9 credits":"3–9학점","2–6 credits":"2–6학점",
+"Home university tuition":"본교 등록금","Host tuition, self-funded":"파견교 등록금 (자비)","Program fee":"프로그램 비용",
+"Length":"기간","Credits":"학점","Tuition":"등록금","English":"어학","Visa":"비자","Departure":"출발일",
+"Your departure date":"출발 날짜","Expected return date":"귀국 예정일","Build my checklist":"체크리스트 만들기",
+"Return date must be after departure":"귀국일은 출발일 이후여야 해요",
+"Collecting official sources and the latest notes from past students":"공식 출처와 선배들의 최신 정보를 모으는 중이에요",
+"International students office":"국제학생 오피스","Incoming exchange students":"교환학생 안내","Summer & short-term programs":"서머·단기 프로그램","Student housing":"학생 기숙사","Immunization requirements":"예방접종 요건","Official website":"공식 웹사이트",
+"immunization requirements international students":"예방접종 요건","incoming exchange students":"교환학생","international students":"국제학생","student housing":"학생 기숙사","summer school international students":"서머스쿨",
+// home
+"My prep":"내 준비","Departure in":"출국까지","done":"완료","Edit":"수정","Up next":"다음 할 일","Apply":"지원","Health":"건강","Living":"생활","Academics":"학업","Arrival":"입국",
+"By deadline":"마감순","Done":"완료","Overdue":"마감 지남","Due soon":"임박","Checklist progress":"체크리스트 진행률",
+"Insurance shows up in visa paperwork":"보험은 비자 서류에도 필요해요","Compare student insurance deals early":"학생 보험을 미리 비교해 보세요",
+// detail
+"Due":"마감","What to do":"무엇을 하나요","English requirement":"어학 요건","Step by step":"단계별 안내","At a glance":"한눈에 보기","Official links":"공식 링크",
+"Details can change. Always confirm with the official source before you submit.":"세부 내용은 바뀔 수 있어요. 제출 전에 항상 공식 출처에서 확인하세요.",
+"Deadline reminders":"마감 알림","3 days and 1 day before, 9 AM":"3일 전, 1일 전 오전 9시","Ask a mentor who has done this step":"이 단계를 마친 멘토에게 물어보기","Something changed? Report it":"바뀐 내용이 있나요? 제보하기",
+"Mark as done":"완료로 표시","Mark as not done":"완료 취소","Editorial team":"운영팀",
+// english card
+"Minimum scores":"최소 점수","Verified Oct 2026":"2026년 10월 확인","Typical scores":"일반적 점수","Not verified":"미확인","typical":"일반적 범위","Test":"시험","Not required":"불필요",
+"Academic":"아카데믹","Duolingo English Test":"듀오링고 영어 시험",
+"or 5.0 on the new 1–6 scale":"또는 새 1–6 점수 체계 5.0","or 4.0 on the new scale":"또는 새 점수 체계 4.0","or 4 on the new scale":"또는 새 점수 체계 4","or 5 on the new scale":"또는 새 점수 체계 5","or 4.5 on the new scale":"또는 새 점수 체계 4.5","or Level 4+ on the new scale":"또는 새 점수 체계 Level 4 이상",
+"22+ in Speaking and Writing; or 4.5 on the new scale":"말하기·쓰기 22점 이상, 또는 새 점수 체계 4.5","no band below 6.0":"모든 영역 6.0 이상","no part below 6.0":"모든 영역 6.0 이상","no subtest below 6.5":"모든 영역 6.5 이상","6.5 in each component":"모든 영역 6.5 이상",
+"23 in each; or 4.5 on the new scale":"영역별 23점 이상, 또는 새 점수 체계 4.5","spring 2027; 95 from autumn 2027":"2027 봄학기 기준, 2027 가을부터 95","except Law: TOEFL 100 / IELTS 6.5":"법학 제외: TOEFL 100 / IELTS 6.5",
+"Harvard Summer School (Harvard DCE rule)":"Harvard Summer School (Harvard DCE 기준)","Berkeley Summer Sessions, visiting international students":"Berkeley Summer Sessions 방문 국제학생","Berkeley International Office standard":"Berkeley 국제처 기준",
+"UW undergraduate minimum":"UW 학부 최소 기준","Incoming exchange students.":"교환학생.","BU Summer Term, visiting international students":"BU Summer Term 방문 국제학생","Undergraduate inbound exchange":"학부 교환학생","Exchange students coming to UBC":"UBC 교환학생",
+"USTEP exchange, English-taught courses":"USTEP 교환, 영어 강의","School of International Liberal Studies (varies by school)":"국제교양학부 (학부마다 다름)","Incoming exchange, 2026–27":"교환학생, 2026–27","Incoming exchange (CEFR B2)":"교환학생 (CEFR B2)",
+"Non-graduating exchange":"비학위 교환학생","Bachelor's level: Humanities, Social Sciences, Economics & Business":"학부 과정: 인문, 사회과학, 경제·경영","Recommended level for exchange":"교환학생 권장 수준","Exchange students":"교환학생","Visiting and exchange students":"방문·교환학생","Typical range at partner universities":"협정 대학의 일반적 범위",
+"Scores must be no more than 2 years old.":"성적은 2년 이내여야 해요.","Tests from the last 3 years are accepted.":"최근 3년 이내 성적을 인정해요.","MyBest scores accepted.":"MyBest 점수도 인정돼요.","Host departments can ask for higher scores.":"학과에 따라 더 높은 점수를 요구할 수 있어요.",
+"Scores must be from the past 2 years.":"최근 2년 이내 성적이어야 해요.","Your exchange coordinator may set a higher bar.":"교환 담당자가 더 높은 기준을 둘 수 있어요.","Your home university can instead attest to CEFR B2 or higher.":"본교가 CEFR B2 이상임을 대신 증명할 수도 있어요.",
+"A home-university letter can also certify your English level.":"본교 레터로 영어 수준을 증명할 수도 있어요.","Submit before Summer Term registration.":"Summer Term 등록 전에 제출하세요.","Duolingo is also accepted.":"듀오링고도 인정돼요.","Law and graduate exchanges need higher scores.":"법학과 대학원 교환은 더 높은 점수가 필요해요.",
+"Section minimums apply.":"영역별 최저 점수가 있어요.","Scores must come from a single sitting.":"한 번의 시험에서 받은 점수여야 해요.","JLPT N1 is accepted instead.":"대신 JLPT N1도 인정돼요.","MyBest scores are not accepted.":"MyBest 점수는 인정되지 않아요.",
+"Some schools accept lower scores.":"더 낮은 점수를 인정하는 학부도 있어요.","TOEFL Home Edition is not accepted.":"TOEFL Home Edition은 인정되지 않아요.","Your home university uploads the proof.":"본교가 증빙을 올려요.","Expired scores are rejected.":"유효기간이 지난 성적은 인정되지 않아요.",
+"Chinese at CEFR B1 (TOCFL B3 or HSK 5) works instead.":"중국어 CEFR B1(TOCFL B3 또는 HSK 5)로 대신할 수 있어요.","Only Law courses need TOEFL or IELTS for students from non-English-medium universities.":"영어로 수업하지 않는 대학 출신은 법학 과목을 들을 때만 TOEFL이나 IELTS가 필요해요.",
+"Master's-level exchange needs TOEFL 100 / IELTS 7.0 in some faculties.":"일부 단과대학의 석사 과정 교환은 TOEFL 100 / IELTS 7.0이 필요해요.","Your home university may set its own nomination level.":"본교가 자체 추천 기준을 둘 수 있어요.","Scores must be no more than 2 years old when you start.":"학업 시작 시점에 성적이 2년 이내여야 해요.",
+"Check English score requirement":"어학 점수 기준 확인하기","Confirm English proficiency":"영어 능력 확인하기","English test not required":"어학 시험 불필요",
+"Partner universities usually ask for one of these scores. You only need one test. Upload it with your application, or have the test agency send it directly.":"협정 대학은 보통 이 중 하나의 점수를 요구해요. 시험은 하나만 보면 돼요. 지원서와 함께 올리거나 시험 기관에서 직접 보내게 하세요.",
+"Applies to":"적용 대상","Validity":"유효기간","Usually 2 years from the test date":"보통 시험일로부터 2년","New TOEFL scale":"새 TOEFL 점수 체계",
+"Confirm the exact minimum":"정확한 최소 점수 확인하기","Open the official page. Some faculties and programs ask for more, including section minimums.":"공식 페이지를 열어 보세요. 일부 단과대학과 프로그램은 영역별 최저 점수 등 더 높은 기준을 요구해요.",
+"Pick one test":"시험 하나 고르기","Send official scores":"공식 성적 보내기",
+"Have ETS send TOEFL scores to the host, upload your IELTS Test Report Form, or share DET results from your Duolingo account, as the host asks.":"파견교 안내에 따라 ETS에서 TOEFL 성적을 보내거나, IELTS 성적표를 올리거나, 듀오링고 계정에서 DET 결과를 공유하세요."
+});
+Object.assign(KO,{
+// application items
+"Who applies":"지원 주체","You, directly":"본인이 직접","Usually needed":"보통 필요한 것","Passport, transcript, English scores, fee":"여권, 성적증명서, 어학 성적, 지원비",
+"Prerequisite":"선행 조건","Home university nomination":"본교 추천","Documents":"필요 서류","Passport copy, English transcript, study plan":"여권 사본, 영문 성적증명서, 학업계획서","Where":"신청처",
+"Open the program page":"프로그램 페이지 열기","Check course dates, eligibility for international students and the application deadline.":"수업 기간, 국제학생 지원 자격, 지원 마감일을 확인하세요.",
+"Create an applicant account":"지원자 계정 만들기","Register as a visiting or international student. Use your name exactly as it appears in your passport.":"방문학생 또는 국제학생으로 등록하세요. 이름은 여권과 똑같이 적으세요.",
+"Pick your courses":"과목 고르기","Choose courses and check with your home department which ones transfer as credit.":"과목을 고르고 어떤 과목이 학점으로 인정되는지 본교 학과에 확인하세요.",
+"Upload documents and pay":"서류 올리고 결제하기","Most programs ask for the same core set.":"대부분의 프로그램이 같은 기본 서류를 요구해요.",
+"Passport bio page":"여권 사진면","English transcript":"영문 성적증명서","English test score":"어학 성적","Application fee":"지원 수수료",
+"Confirm your nomination":"추천 여부 확인하기","Your home international office sends your nomination to the host. Ask them for the date it was sent.":"본교 국제처가 파견교에 추천서를 보내요. 보낸 날짜를 국제처에 물어보세요.",
+"Watch for the application email":"지원서 이메일 확인하기","Complete the application":"지원서 작성하기","Fill out the online form and choose your semester.":"온라인 양식을 작성하고 학기를 선택하세요.",
+"Study plan or course list":"학업계획서 또는 수강 계획","Wait for the acceptance letter":"합격 통지서 기다리기","You need the acceptance letter for your visa and housing.":"비자와 숙소 신청에 합격 통지서가 필요해요.",
+// US F-1
+"Request your I-20":"I-20 요청하기","Visa type":"비자 종류","F-1 student":"F-1 학생","Issued by":"발급처","Key document":"핵심 서류","English bank statement":"영문 잔고증명서",
+"Your F-1 visa starts with the I-20, which the host issues after checking that you can pay for your stay. Submit the I-20 request with proof of funds in the host portal.":"F-1 비자는 I-20에서 시작해요. 파견교가 체류 비용을 감당할 수 있는지 확인한 뒤 발급해 주니, 파견교 포털에서 재정 증빙과 함께 I-20을 요청하세요.",
+"Find the I-20 request form":"I-20 신청서 찾기","After admission, the international student office opens an I-20 request in your applicant portal.":"합격 후 국제학생 오피스가 지원자 포털에 I-20 신청서를 열어 줘요.",
+"Prepare proof of funds":"재정 증빙 준비하기","Get an English bank statement covering at least the host’s estimated cost for your program. A parent can sponsor you with a signed sponsor letter.":"파견교가 안내한 예상 비용 이상이 확인되는 영문 잔고증명서를 준비하세요. 부모님이 서명한 후원 레터로 후원받을 수도 있어요.",
+"English bank statement (recent)":"영문 잔고증명서 (최근 발급)","Sponsor letter (if a parent pays)":"후원 레터 (부모님이 지원하는 경우)",
+"Upload and submit":"업로드 후 제출하기","Upload your passport bio page and funding documents. Your name must match your passport exactly.":"여권 사진면과 재정 서류를 올리세요. 이름은 여권과 정확히 같아야 해요.","Proof of funds":"재정 증빙",
+"Wait for the I-20":"I-20 기다리기",
+"Check and sign your I-20":"I-20 확인 후 서명하기","The I-20 is the document your whole F-1 visa is built on. Check every detail before you pay any fees, and sign it.":"I-20은 F-1 비자 전체의 기반이 되는 서류예요. 수수료를 내기 전에 모든 내용을 확인하고 서명하세요.",
+"N00 + 8 digits, top right":"N00 + 숫자 8자리, 오른쪽 위","Check":"확인","Name, birth date, program dates":"이름, 생년월일, 프로그램 기간","Sign":"서명","Page 1, student attestation":"1페이지 학생 서명란",
+"Download the I-20":"I-20 내려받기","Save the PDF from the email or portal and print it.":"이메일이나 포털에서 PDF를 저장하고 출력하세요.",
+"Check every detail":"모든 내용 확인하기","Mistakes cause problems at the interview and the border. Ask the host to reissue if anything is wrong.":"오류가 있으면 인터뷰와 입국 심사에서 문제가 생겨요. 잘못된 내용이 있으면 파견교에 재발급을 요청하세요.",
+"Name exactly as in passport":"여권과 같은 이름","Date of birth":"생년월일","School code":"학교 코드","Program start and end dates":"프로그램 시작·종료일",
+"Sign page 1":"1페이지 서명하기","Sign and date the student attestation on page 1.":"1페이지 학생 서명란에 서명하고 날짜를 적으세요.",
+"Keep it with your passport":"여권과 함께 보관하기","You need the I-20 at the interview, at the border, and when you travel in and out of the U.S.":"I-20은 인터뷰, 입국 심사, 미국 출입국 때마다 필요해요.",
+"Pay the I-901 SEVIS fee ($350)":"I-901 SEVIS 비용 납부하기 ($350)","Every F-1 student pays the I-901 SEVIS fee before the visa interview. It takes about 10 minutes online.":"모든 F-1 학생은 비자 인터뷰 전에 I-901 SEVIS 비용을 내야 해요. 온라인으로 10분 정도 걸려요.",
+"Fee":"비용","You need":"필요한 것","SEVIS ID and school code from the I-20":"I-20의 SEVIS ID와 학교 코드","When":"시기","At least 3 business days before your interview":"인터뷰 최소 3영업일 전",
+"Open the official payment site":"공식 납부 사이트 열기","Go to fmjfee.com and choose “I-901 Form and Payment”. Only use this official site.":"fmjfee.com에서 “I-901 Form and Payment”를 선택하세요. 반드시 이 공식 사이트만 이용하세요.",
+"Enter your I-20 details":"I-20 정보 입력하기","Select the I-20 (F-1) form and type the information exactly as printed on your I-20.":"I-20 (F-1) 양식을 선택하고 I-20에 적힌 그대로 입력하세요.","Name as on I-20":"I-20에 적힌 이름",
+"Pay $350 by card":"카드로 $350 결제하기","Use a credit card that works for overseas payments.":"해외 결제가 되는 신용카드를 쓰세요.",
+"Save the receipt":"영수증 저장하기","Print the payment confirmation and bring it to your interview. Pay at least 3 business days before the interview so it shows up in the system.":"결제 확인서를 출력해 인터뷰에 가져가세요. 시스템에 반영되도록 인터뷰 최소 3영업일 전에 납부하세요.",
+"I-901 SEVIS fee payment (official)":"I-901 SEVIS 비용 납부 (공식)",
+"Fill out the DS-160":"DS-160 작성하기","The DS-160 is the online visa application. It is long, so set aside an hour. The page times out after about 20 minutes of inactivity, so save as you go.":"DS-160은 온라인 비자 신청서예요. 분량이 많으니 1시간 정도 잡으세요. 20분 동안 입력이 없으면 세션이 끊기니 중간중간 저장하세요.",
+"Location":"신청 지역","Output":"결과물","Confirmation page with barcode":"바코드가 있는 확인 페이지",
+"Start the application":"신청서 작성 시작하기","Open CEAC, select “KOREA, SOUTH, SEOUL” and click “Start an Application”. Write down your Application ID and security answer so you can return.":"CEAC에서 “KOREA, SOUTH, SEOUL”을 선택하고 “Start an Application”을 누르세요. 나중에 이어서 작성할 수 있게 신청 번호(Application ID)와 보안 질문 답을 적어 두세요.",
+"Prepare your photo":"사진 준비하기","600×600 to 1200×1200 px":"600×600 ~ 1200×1200 픽셀","White background":"흰 배경",
+"Fill in travel details":"여행 정보 입력하기","For purpose of trip, choose “Student/Exchange Visa (F)” then “Student (F1)”. Use the host’s address as your U.S. address.":"방문 목적에서 “Student/Exchange Visa (F)”와 “Student (F1)”를 선택하세요. 미국 주소에는 파견교 주소를 적으세요.",
+"Add your SEVIS information":"SEVIS 정보 입력하기","Enter your SEVIS ID and the school name and address from your I-20.":"I-20에 적힌 SEVIS ID와 학교 이름·주소를 입력하세요.",
+"Sign and submit":"서명 후 제출하기","Review every page, sign electronically and submit. Print the confirmation page with the barcode.":"모든 페이지를 검토하고 전자 서명 후 제출하세요. 바코드가 있는 확인 페이지를 출력하세요.",
+"DS-160 online application (CEAC)":"DS-160 온라인 신청 (CEAC)","U.S. visa photo requirements":"미국 비자 사진 규정",
+"Pay the visa fee and book an interview":"비자 수수료 내고 인터뷰 예약하기","Create an account on the official U.S. visa appointment site for Korea, pay the visa application (MRV) fee and pick an interview date at the U.S. Embassy in Seoul.":"한국용 미국 비자 공식 예약 사이트에 계정을 만들고, 비자 신청 수수료(MRV)를 낸 뒤 주한 미국대사관 인터뷰 날짜를 고르세요.",
+"Official appointment site for Korea":"한국용 공식 예약 사이트","MRV fee, $185 for F-1 (check for any additional fees)":"MRV 수수료, F-1은 $185 (추가 수수료 확인)","Earliest visa":"비자 발급 가능 시점",
+"Create your account":"계정 만들기","Sign up on the official appointment site with your passport and DS-160 confirmation number.":"여권과 DS-160 확인 번호로 공식 예약 사이트에 가입하세요.",
+"Pay the MRV fee":"MRV 수수료 내기","Pay the visa application fee using one of the payment options shown, and keep the receipt number. Fees can change, so confirm the amount on the site.":"안내된 결제 방법으로 비자 신청 수수료를 내고 영수증 번호를 보관하세요. 수수료는 바뀔 수 있으니 사이트에서 금액을 확인하세요.",
+"Check if you must interview":"인터뷰 필요 여부 확인하기","Most first-time student visa applicants interview in person. The site tells you if you qualify for an interview waiver.":"처음 학생비자를 신청하면 대부분 직접 인터뷰를 봐요. 인터뷰 면제 대상인지는 사이트에서 알려줘요.",
+"Book your interview slot":"인터뷰 날짜 예약하기","Pick the earliest slot at the U.S. Embassy Seoul. Slots fill fast in May–July and November–December.":"주한 미국대사관의 가장 빠른 날짜를 고르세요. 5–7월과 11–12월에는 예약이 빨리 차요.",
+"Choose passport delivery":"여권 수령 방법 선택하기","Select where your passport should be couriered after approval.":"승인 후 여권을 받을 택배 주소를 선택하세요.",
+"U.S. visa appointment service":"미국 비자 예약 서비스","Korea":"한국","U.S. Embassy Seoul":"주한 미국대사관","Visas":"비자","U.S. Department of State":"미 국무부","Student visa":"학생비자",
+"Attend your visa interview":"비자 인터뷰 보기","The interview at the U.S. Embassy in Seoul is short, usually a few minutes. Be ready to explain your study plan, funding and plans to return to Korea.":"주한 미국대사관 인터뷰는 보통 몇 분 정도로 짧아요. 학업 계획, 재정, 귀국 계획을 설명할 준비를 하세요.",
+"U.S. Embassy Seoul, 188 Sejong-daero, Jongno-gu":"주한 미국대사관 (서울 종로구 세종대로 188)","A few minutes":"몇 분","Passport back":"여권 반환","By courier, usually within a week":"택배로, 보통 일주일 이내",
+"Pack your documents":"서류 챙기기","Bring originals in a clear folder.":"원본을 투명 파일에 넣어 가져가세요.",
+"Passport (valid 6+ months)":"여권 (유효기간 6개월 이상)","Signed I-20":"서명한 I-20","DS-160 confirmation":"DS-160 확인 페이지","Appointment confirmation":"예약 확인서","I-901 SEVIS receipt":"I-901 SEVIS 영수증","MRV fee receipt":"MRV 수수료 영수증","Acceptance letter":"합격 통지서","Transcript or enrollment certificate":"성적증명서 또는 재학증명서",
+"Arrive early":"일찍 도착하기","Arrive 15–30 minutes early (Gwanghwamun Station). Large bags and electronics are restricted, so check the embassy security rules first.":"15–30분 일찍 도착하세요(광화문역). 큰 가방과 전자기기 반입이 제한되니 대사관 보안 규정을 먼저 확인하세요.",
+"Answer briefly and honestly":"짧고 솔직하게 답하기","Expect questions like: Why this university? What will you study? Who pays? What will you do after you return?":"이런 질문이 나와요: 왜 이 학교인가요? 무엇을 공부하나요? 비용은 누가 내나요? 귀국 후에는 무엇을 하나요?",
+"Give fingerprints":"지문 등록하기","If approved, the officer keeps your passport. If you get a 221(g) sheet, follow its instructions for extra documents.":"승인되면 영사가 여권을 보관해요. 221(g) 안내지를 받았다면 적힌 대로 추가 서류를 내세요.",
+"Check your visa":"비자 확인하기","When the passport arrives, check that the visa says F-1 and your name and SEVIS ID are correct.":"여권을 받으면 비자에 F-1이라고 적혀 있는지, 이름과 SEVIS ID가 맞는지 확인하세요.",
+"Enter the U.S. and check in":"미국 입국 후 체크인하기","Earliest entry":"최초 입국 가능일","Admitted as":"입국 신분","F-1, D/S (duration of status)":"F-1, D/S (신분 유지 기간)","Required":"필수","International student check-in":"국제학생 체크인",
+"Keep documents in your hand luggage":"서류는 기내 가방에 보관하기","Do not check these in.":"위탁 수하물에 넣지 마세요.","Passport with F-1 visa":"F-1 비자가 붙은 여권","SEVIS receipt":"SEVIS 영수증",
+"Pass immigration":"입국 심사 통과하기","The CBP officer admits you as F-1 “D/S”.":"CBP 심사관이 F-1 “D/S” 신분으로 입국을 허가해요.",
+"Download your I-94":"I-94 기록 확인하기","A few days after arrival, check your I-94 record shows F-1 and D/S. Report errors right away.":"도착 후 며칠 뒤 I-94 기록에 F-1과 D/S가 표시되는지 확인하세요. 오류가 있으면 바로 정정을 요청하세요.",
+"Complete international student check-in":"국제학생 체크인 완료하기","Check in with the international office, usually online plus an orientation. This activates your SEVIS record.":"국제학생 오피스에 체크인하세요. 보통 온라인 등록과 오리엔테이션으로 진행되고, 이걸 해야 SEVIS 기록이 활성화돼요.",
+"I-94 official website (CBP)":"I-94 공식 웹사이트 (CBP)","F-1 students can enter the U.S. up to 30 days before the program start date.":"F-1 학생은 프로그램 시작 30일 전부터 미국에 입국할 수 있어요.","F-1 rule":"F-1 규정",
+"F-1 student visa":"F-1 학생비자","Your F-1 status covers the program dates on your I-20.":"F-1 신분은 I-20에 적힌 프로그램 기간 동안 유효해요.",
+// Canada
+"Apply for an eTA":"eTA 신청하기","Korean passport holders flying to Canada need an Electronic Travel Authorization (eTA). It is linked to your passport and usually approved within minutes.":"캐나다로 가는 한국 여권 소지자는 전자여행허가(eTA)가 필요해요. 여권에 연결되고 보통 몇 분 안에 승인돼요.",
+"Valid":"유효기간","Up to 5 years or until passport expiry":"최대 5년 또는 여권 만료일까지","Official Government of Canada site only":"캐나다 정부 공식 사이트에서만",
+"Use the official site":"공식 사이트 이용하기","Apply only on canada.ca. Unofficial sites charge extra fees.":"canada.ca에서만 신청하세요. 비공식 사이트는 추가 수수료를 받아요.",
+"Have these ready":"이것들을 준비하세요","The form takes about 10 minutes.":"작성에 10분 정도 걸려요.","Passport":"여권","Credit or debit card":"신용카드 또는 체크카드","Email address":"이메일 주소",
+"Wait for approval":"승인 기다리기","Most eTAs are approved within minutes. Some take a few days if more documents are needed.":"대부분 몇 분 안에 승인돼요. 추가 서류가 필요하면 며칠 걸리기도 해요.",
+"Fly on the same passport":"같은 여권으로 출국하기","The eTA is linked electronically to the passport you used to apply.":"eTA는 신청할 때 쓴 여권에 전자적으로 연결돼요.",
+"Apply for a study permit":"학업허가(Study permit) 신청하기","Decide on a study permit":"학업허가 신청 여부 정하기",
+"Programs longer than six months need a study permit. Apply as soon as you have your letter of acceptance.":"6개월을 넘는 프로그램은 학업허가가 필요해요. 입학허가서를 받는 대로 신청하세요.",
+"Programs of six months or less do not need a study permit. Some students apply anyway so they can extend or work on campus. Check with your host.":"6개월 이하 프로그램은 학업허가가 필요 없어요. 기간 연장이나 교내 근로를 위해 신청하는 학생도 있으니 파견교에 확인하세요.",
+"Required when":"필요한 경우","Fees":"비용","CAD $150 + biometrics CAD $85":"CAD $150 + 지문 등록 CAD $85","Issued":"발급","At the airport, with your POE letter":"공항에서 POE 레터로 발급",
+"Check whether you need one":"필요 여부 확인하기","Gather your documents":"서류 준비하기","Check with the host whether a Provincial Attestation Letter (PAL) is needed; exchange students are generally exempt.":"주정부 확인서(PAL)가 필요한지 파견교에 확인하세요. 교환학생은 보통 면제예요.",
+"Letter of acceptance":"입학허가서","Photo":"사진","Apply online in your IRCC account":"IRCC 계정에서 온라인 신청하기","Create an IRCC account, upload documents and pay the fees.":"IRCC 계정을 만들고 서류를 올린 뒤 수수료를 내세요.",
+"Give biometrics in Seoul":"서울에서 지문 등록하기","Get your study permit at the airport":"공항에서 학업허가 받기",
+"Approval comes as a Port of Entry (POE) letter. Show it at the border, and the officer prints your study permit. Check it before you leave the counter.":"승인되면 입국 허가 레터(POE letter)를 받아요. 입국 심사 때 보여 주면 심사관이 학업허가를 출력해 줘요. 창구를 떠나기 전에 내용을 확인하세요.",
+"Government of Canada · Study permit":"캐나다 정부 · 학업허가","Government of Canada · eTA":"캐나다 정부 · eTA","VFS Global · Canada visa centre in Korea":"VFS Global · 주한 캐나다 비자센터","eTA + study permit":"eTA + 학업허가",
+// UK
+"Apply for a UK Student visa":"영국 Student visa 신청하기","Get a UK ETA (Standard Visitor)":"영국 ETA 받기 (단기 방문자)","Get a UK ETA":"영국 ETA 받기","UK Student visa":"영국 Student visa","UK ETA (Standard Visitor)":"영국 ETA (단기 방문자)","UK ETA":"영국 ETA",
+"Get your CAS number":"CAS 번호 받기","After you accept your offer, the host issues a Confirmation of Acceptance for Studies (CAS). You need this reference number for the application.":"합격을 수락하면 파견교가 CAS(입학 확인서)를 발급해요. 비자 신청에 이 번호가 필요해요.",
+"Apply online on GOV.UK":"GOV.UK에서 온라인 신청하기","CAS number":"CAS 번호","Proof of funds (if required)":"재정 증빙 (필요 시)","TB test result (if required)":"결핵 검사 결과 (필요 시)",
+"Prove your identity":"신원 확인하기","Either scan your passport with the UK Immigration: ID Check app or give biometrics at a visa application centre. The application tells you which.":"UK Immigration: ID Check 앱으로 여권을 스캔하거나 비자 신청 센터에서 생체 정보를 등록해요. 어느 쪽인지는 신청 과정에서 안내돼요.",
+"Get your eVisa":"eVisa 받기","Confirm you can study as a visitor":"방문자 신분으로 공부할 수 있는지 확인하기","Apply for an ETA":"ETA 신청하기",
+"Apply through the UK ETA app or on GOV.UK with your passport and a photo, and pay the fee shown. Most decisions arrive within 3 working days.":"UK ETA 앱이나 GOV.UK에서 여권과 사진으로 신청하고 안내된 수수료를 내요. 대부분 3영업일 안에 결과가 나와요.",
+"Pack your border documents":"입국 심사 서류 챙기기","Carry these in your hand luggage in case the officer asks.":"심사관이 요청할 수 있으니 기내 가방에 넣어 두세요.","Return or onward ticket":"귀국 또는 다음 행선지 항공권","Accommodation address":"숙소 주소",
+"Electronic Travel Authorisation":"전자여행허가","Immigration Health Surcharge":"이민 건강 부담금","Standard Visitor":"단기 방문자","eVisa (UKVI account)":"eVisa (UKVI 계정)",
+// France / Germany / Netherlands
+"Apply for a French student visa (VLS-TS)":"프랑스 학생비자(VLS-TS) 신청하기","French student visa (VLS-TS)":"프랑스 학생비자 (VLS-TS)","Check the Campus France step":"캠퍼스프랑스 절차 확인하기",
+"Korea is an “Études en France” country. Ask your host whether your exchange needs a Campus France file; if so, create an account and submit it first.":"한국은 “Études en France” 절차 국가예요. 교환학생도 캠퍼스프랑스 서류가 필요한지 파견교에 확인하고, 필요하면 계정을 만들어 먼저 제출하세요.",
+"Apply on France-Visas":"France-Visas에서 신청하기","Fill out the long-stay student visa application online and book an appointment at the visa application centre in Seoul.":"장기 학생비자 신청서를 온라인으로 작성하고 서울의 비자 신청 센터에 예약하세요.",
+"Proof of accommodation":"숙소 증빙","Health insurance":"건강보험","ID photos":"증명사진","Attend the appointment":"예약일에 방문하기","Submit your documents and fingerprints. The visa is printed in your passport.":"서류를 내고 지문을 등록해요. 비자는 여권에 부착돼요.",
+"Validate your visa after arrival":"도착 후 비자 활성화하기","Campus France Korea":"캠퍼스프랑스 코리아","France-Visas (official)":"France-Visas (공식)","VLS-TS validation":"VLS-TS 비자 활성화",
+"Get your German residence permit":"독일 체류허가 받기","German residence permit":"독일 체류허가","Korean citizens can enter visa-free and apply for a residence permit for study in Germany":"한국 국적자는 무비자로 입국한 뒤 독일에서 학업 체류허가를 신청할 수 있어요",
+"Choose your route":"신청 경로 정하기","Korean citizens can enter visa-free and apply in Germany within 90 days, or apply for a national visa at the German Embassy in Seoul before leaving. Your host will say which it recommends.":"한국 국적자는 무비자로 입국해 90일 안에 독일에서 신청하거나, 출국 전 주한 독일대사관에서 국가 비자를 받을 수 있어요. 어떤 방법을 권하는지 파견교가 알려줘요.",
+"Register your address (Anmeldung)":"주소 등록하기 (Anmeldung)","Landlord confirmation (Wohnungsgeberbestätigung)":"집주인 확인서 (Wohnungsgeberbestätigung)",
+"Book the foreigners’ office (Ausländerbehörde)":"외국인청(Ausländerbehörde) 예약하기","Book early, because appointments fill up. Bring everything on this list.":"예약이 빨리 차니 일찍 잡으세요. 아래 서류를 모두 챙기세요.",
+"Admission letter":"입학허가서","Proof of funds (blocked account or scholarship letter)":"재정 증빙 (슈페르콘토 또는 장학금 증명)","Biometric photo":"생체 정보용 사진","Registration certificate":"주소 등록 증명서",
+"Collect your residence card":"체류증 수령하기","Your electronic residence permit (eAT) is ready a few weeks later.":"전자 체류허가증(eAT)은 몇 주 뒤에 나와요.","German Embassy Seoul":"주한 독일대사관",
+"Get your Dutch residence permit":"네덜란드 체류허가 받기","Dutch residence permit":"네덜란드 체류허가","The host applies to the IND for your residence permit; Korean citizens do not need an MVV entry visa":"파견교가 IND에 체류허가를 대신 신청해요. 한국 국적자는 MVV 입국비자가 필요 없어요",
+"Start the application in the host portal":"파견교 포털에서 신청 시작하기","Your host is a recognised sponsor and applies to the IND for you. Upload your documents and pay the fee through the host.":"파견교는 공인 보증 기관이라 IND에 대신 신청해 줘요. 파견교를 통해 서류를 올리고 수수료를 내세요.",
+"Passport copy":"여권 사본","Signed antecedents certificate":"서명한 전과 확인서(antecedents certificate)","Wait for IND approval":"IND 승인 기다리기",
+"You get an approval letter by email. Korean citizens travel with their passport. No MVV entry visa is needed.":"승인 레터를 이메일로 받아요. 한국 국적자는 여권만으로 입국하고 MVV 입국비자는 필요 없어요.",
+"After arrival, pick up your residence permit card at an IND desk by appointment.":"도착 후 예약을 잡고 IND 창구에서 체류증 카드를 받으세요.","Register with the municipality":"시청에 주민 등록하기",
+"Register your address to get a BSN (citizen service number). You need it for banking and healthcare.":"주소를 등록하면 BSN(시민서비스번호)을 받아요. 은행과 병원 이용에 필요해요.","IND · Residence permit for study":"IND · 학업 체류허가","IND · Study":"IND · 학업",
+// Japan / China / Singapore / HK / Taiwan
+"Get your COE and student visa":"COE와 학생비자 받기","COE and student visa":"COE와 학생비자","A Certificate of Eligibility (COE) comes first, then a College Student visa":"재류자격인정증명서(COE)를 먼저 받은 뒤 유학 비자를 신청해요",
+"Send COE documents to the host":"파견교에 COE 서류 보내기","Receive your COE":"COE 받기","Most hosts now send an electronic COE by email. Check that your name and dates are correct.":"요즘은 대부분 전자 COE를 이메일로 보내요. 이름과 날짜가 맞는지 확인하세요.",
+"Apply for the visa in Korea":"한국에서 비자 신청하기","Apply at the Embassy of Japan in Seoul or a consulate (Busan, Jeju). It is usually issued in about 5 working days.":"주한 일본대사관(서울)이나 총영사관(부산, 제주)에서 신청해요. 보통 5영업일 정도 걸려요.",
+"Visa application form":"비자 신청서","Get your residence card at the airport":"공항에서 재류카드 받기","You receive your residence card on arrival at major airports such as Narita, Haneda and Kansai.":"나리타, 하네다, 간사이 등 주요 공항에 도착하면 재류카드를 받아요.",
+"Register your address":"주소 등록하기","Confirm visa-free entry":"무비자 입국 확인하기","Carry your documents":"서류 챙기기","Keep these in your hand luggage.":"기내 가방에 넣어 두세요.","Return ticket":"귀국 항공권",
+"Embassy of Japan in Korea":"주한 일본대사관","Immigration Services Agency of Japan":"일본 출입국재류관리청","Ministry of Foreign Affairs of Japan":"일본 외무성",
+"Apply for a Chinese X1 student visa":"중국 X1 학생비자 신청하기","Apply for a Chinese X2 visa":"중국 X2 비자 신청하기","Chinese X1 student visa":"중국 X1 학생비자","Chinese X2 visa":"중국 X2 비자",
+"Get your admission documents":"입학 서류 받기","Apply at the visa centre in Seoul":"서울 비자센터에서 신청하기","Application form":"신청서","Admission Notice":"입학통지서","JW202 form":"JW202 양식",
+"Apply for an X1 visa at the Chinese Visa Application Service Center.":"중국 비자신청서비스센터에서 X1 비자를 신청해요.","Apply for an X2 visa at the Chinese Visa Application Service Center.":"중국 비자신청서비스센터에서 X2 비자를 신청해요.",
+"Register your accommodation":"숙소 신고하기","Register with the local police within 24 hours of arrival. Dorms usually do this for you.":"도착 후 24시간 안에 현지 경찰에 숙소를 신고하세요. 보통 기숙사가 대신 해 줘요.",
+"Get a residence permit":"거류허가 받기","Chinese Visa Application Service Center":"중국 비자신청서비스센터",
+"The host sends your Admission Notice and the JW202 form (Visa Application for Study in China).":"파견교가 입학통지서와 JW202 양식(중국 유학 비자 신청서)을 보내 줘요.",
+"Apply for a Student's Pass":"싱가포르 학생비자(Student's Pass) 신청하기","Student's Pass":"학생비자(Student's Pass)","International students need a Student's Pass, applied through ICA's SOLAR system":"국제학생은 ICA의 SOLAR 시스템으로 학생비자(Student's Pass)를 신청해야 해요",
+"Get your SOLAR application number":"SOLAR 신청 번호 받기","The host registers you in SOLAR and emails you the application number.":"파견교가 SOLAR에 등록하고 신청 번호를 이메일로 보내 줘요.",
+"Submit eForm 16":"eForm 16 제출하기","Fill out the Student's Pass application online and pay the processing fee.":"학생비자(Student's Pass) 신청서를 온라인으로 작성하고 처리 수수료를 내세요.",
+"Receive your In-Principle Approval (IPA)":"사전승인서(IPA) 받기","Complete formalities at ICA":"ICA에서 절차 마무리하기","After arrival, attend your ICA appointment to collect your Student's Pass card.":"도착 후 ICA 예약에 방문해 학생비자(Student's Pass) 카드를 받으세요.",
+"IPA letter":"IPA 레터","Medical report (if requested)":"건강검진서 (요청 시)","ICA · Student's Pass":"ICA · 학생비자(Student's Pass)","ICA · Apply for a Student's Pass":"ICA · 학생비자 신청",
+"Student's Pass needed for study, whatever the length.":"기간과 상관없이 학업에는 학생비자(Student's Pass)가 필요해요.",
+"Your host acts as sponsor for a student visa (entry permit)":"파견교가 보증인이 되어 학생비자(entry permit)를 받아요","Fill out the forms":"양식 작성하기",
+"Complete form ID995A (applicant). The host completes ID995B (sponsor) and submits both.":"ID995A(신청자) 양식을 작성하세요. 파견교가 ID995B(보증인)를 작성해 함께 제출해요.",
+"Pay and receive your e-Visa":"수수료 내고 e-Visa 받기","Pay the fee once approved, then download your e-Visa and keep it for travel.":"승인되면 수수료를 내고 e-Visa를 내려받아 여행 때 챙기세요.",
+"Apply for a Hong Kong ID card":"홍콩 신분증(HKID) 신청하기","Apply for a Hong Kong student visa":"홍콩 학생비자 신청하기","Hong Kong student visa":"홍콩 학생비자","Immigration Department":"홍콩 입경사무처","Study":"학업","Study in Hong Kong":"홍콩 유학",
+"Student visa (entry permit) through your host.":"파견교를 통해 학생비자(entry permit)를 받아요.",
+"Apply for a Taiwan resident visa":"대만 거류비자 신청하기","Taiwan resident visa":"대만 거류비자","Check Taiwan entry requirements":"대만 입국 요건 확인하기","Check Japan entry requirements":"일본 입국 요건 확인하기",
+"Visa-free up to 90 days; longer study needs a visa from the Taipei Mission in Korea":"90일까지 무비자이고, 더 길게 공부하려면 주한 타이베이 대표부에서 비자를 받아야 해요",
+"Apply at the Taipei Mission in Korea":"주한 타이베이 대표부에서 신청하기","Apply for a resident or visitor visa for study, depending on your program length.":"프로그램 기간에 따라 학업용 거류비자 또는 방문비자를 신청해요.",
+"Health certificate (if requested)":"건강진단서 (요청 시)","Get your ARC":"거류증(ARC) 받기","Taipei Mission in Korea":"주한 타이베이 대표부","Bureau of Consular Affairs":"대만 외교부 영사사무국",
+// Schengen & generic
+"Check Schengen entry requirements":"솅겐 입국 요건 확인하기","Schengen entry requirements":"솅겐 입국 요건","Korean passports get 90 days in any 180 visa-free in the Schengen area":"한국 여권은 솅겐 지역에서 180일 중 90일까지 무비자로 머물 수 있어요",
+"Count your days":"체류 일수 계산하기","Expect EES registration":"EES 등록 예상하기","The Entry/Exit System records your fingerprints and photo at your first entry.":"출입국 시스템(EES)은 첫 입국 때 지문과 얼굴 사진을 등록해요.",
+"Check ETIAS before you fly":"출국 전 ETIAS 확인하기","ETIAS travel authorisation is due to start in late 2026. Check whether it applies on your travel date.":"ETIAS 여행 허가는 2026년 말 시행 예정이에요. 출국일 기준으로 적용되는지 확인하세요.",
+"Travel insurance":"여행자 보험","EU Entry/Exit System (EES)":"EU 출입국 시스템 (EES)","ETIAS (EU travel authorisation)":"ETIAS (EU 여행 허가)",
+"Apply for a student visa or residence permit":"학생비자 또는 체류허가 신청하기","Check visa and entry requirements":"비자·입국 요건 확인하기","Student visa or residence permit":"학생비자 또는 체류허가","Visa and entry requirements":"비자·입국 요건",
+"Read the host’s visa guidance":"파견교 비자 안내 읽기","International offices usually publish step-by-step visa instructions for their incoming students.":"국제처는 보통 교환학생을 위한 단계별 비자 안내를 공개해요.",
+"Check the official rules":"공식 규정 확인하기","Most student visa applications ask for the same core set.":"대부분의 학생비자 신청에 같은 기본 서류가 필요해요.","Passport (valid beyond your stay)":"여권 (체류 기간 이후까지 유효)",
+"Apply and book any appointment":"신청하고 필요한 예약 잡기","Submit online or at the embassy in Seoul. Processing can take several weeks, so apply as soon as your admission letter arrives.":"온라인이나 서울의 대사관에서 신청해요. 처리에 몇 주 걸릴 수 있으니 입학허가서를 받는 대로 신청하세요.",
+"Register after arrival":"도착 후 등록하기","Many countries ask you to register your address or collect a residence card within days of arriving. Check the deadline.":"많은 나라에서 도착 후 며칠 안에 주소 등록이나 체류증 수령을 요구해요. 기한을 확인하세요.",
+"Country":"국가","Your stay":"체류 기간","Rule":"규정",
+"Residence permit for studies, applied online before departure":"출국 전 온라인으로 신청하는 학업 체류허가","Enter visa-free, then register for an Irish Residence Permit (IRP) if staying over 90 days":"무비자로 입국한 뒤, 90일 넘게 머물면 아일랜드 체류허가(IRP)를 등록해요",
+"Long-stay (D) visa for studies before departure, then register at the town hall after arrival":"출국 전 학업용 장기(D) 비자를 받고, 도착 후 시청에 등록해요","Residence permit for studies (ST1), applied online through SIRI":"SIRI를 통해 온라인으로 신청하는 학업 체류허가(ST1)",
+"Residence permit for studies, applied online through Enter Finland":"Enter Finland로 온라인 신청하는 학업 체류허가","Study permit, applied online through UDI":"UDI로 온라인 신청하는 학업 허가",
+"Student visa from the Spanish consulate for stays over 90 days, then a TIE card after arrival":"90일 넘게 머물면 스페인 영사관에서 학생비자를 받고, 도착 후 TIE 카드를 받아요","Residence permit through the cantonal migration office, guided by the host":"파견교 안내에 따라 주(칸톤) 이민청에서 체류허가를 받아요",
+"Visa D for shorter stays, residence permit for students for longer ones":"짧은 체류는 D 비자, 긴 체류는 학생 체류허가가 필요해요","Student pass approval through EMGS before entry":"입국 전 EMGS를 통해 학생비자 승인을 받아요","Non-Immigrant ED visa through Thai e-Visa":"태국 e-Visa로 Non-Immigrant ED 비자 신청",
+"Swedish Migration Agency":"스웨덴 이민청","Irish Immigration Service":"아일랜드 이민청","Belgian Immigration Office":"벨기에 이민청","Finnish Immigration Service (Migri)":"핀란드 이민청 (Migri)","UDI (Norwegian Directorate of Immigration)":"노르웨이 이민국 (UDI)","Spanish Ministry of Foreign Affairs":"스페인 외교부","State Secretariat for Migration (SEM)":"스위스 이민청 (SEM)","Thai e-Visa (official)":"태국 e-Visa (공식)","MOFA Overseas Safety Travel (0404.go.kr)":"외교부 해외안전여행 (0404.go.kr)",
+"Get your Learning Agreement approved":"Learning Agreement(수강 계획) 승인받기","List the courses you plan to take and get them approved by both your home department and the host coordinator. Only approved courses transfer back as credit.":"들을 과목을 정리해 본교 학과와 파견교 담당자 양쪽의 승인을 받으세요. 승인된 과목만 학점으로 인정돼요.",
+"Approved by":"승인 주체","Home department + host coordinator":"본교 학과 + 파견교 담당자","Changes":"변경","Allowed in a set window after arrival":"도착 후 정해진 기간 안에 변경 가능",
+"Find courses open to exchange students":"교환학생이 들을 수 있는 과목 찾기","Hosts publish a course catalogue for incoming students.":"파견교는 교환학생용 과목 목록을 공개해요.","Get home approval":"본교 승인 받기","Ask your home department to sign off on each course.":"본교 학과에 과목별 승인을 받으세요.","Submit to the host":"파견교에 제출하기","Upload the signed agreement in the host portal.":"서명한 계획서를 파견교 포털에 올리세요."
+});
+Object.assign(KO,{
+// health
+"Submit immunization records":"예방접종 기록 제출하기","Check immunization requirements":"예방접종 요건 확인하기","Get recommended vaccinations":"권장 예방접종 맞기","Complete your physical examination":"신체검사 받기","Get a health certificate":"건강진단서 받기","Prepare a medical report if asked":"요청 시 건강검진서 준비하기",
+"Most U.S. universities require proof of vaccinations before you can register, and many ask international students for a TB screening. Missing records usually put a hold on your registration.":"대부분의 미국 대학은 등록 전에 예방접종 증명을 요구하고, 많은 학교가 국제학생에게 결핵 검사를 요구해요. 기록이 없으면 보통 수강신청이 막혀요.",
+"Most U.S. universities require proof of vaccinations before you can register, and many ask international students for a TB screening. Missing records usually put a hold on your registration or program check-in.":"대부분의 미국 대학은 등록 전에 예방접종 증명을 요구하고, 많은 학교가 국제학생에게 결핵 검사를 요구해요. 기록이 없으면 보통 수강신청이나 프로그램 체크인이 막혀요.",
+"2 doses (measles, mumps, rubella)":"2회 (홍역·볼거리·풍진)","Meningococcal":"수막구균","MenACWY, often required for students in housing":"MenACWY, 기숙사 입주 학생에게 자주 요구","Within the last 10 years":"최근 10년 이내","Screening form; blood test (IGRA) if required":"문진표, 필요 시 혈액검사(IGRA)","Sometimes":"일부 학교","Varicella, Hepatitis B, COVID-19":"수두, B형간염, 코로나19",
+"Check what your host asks for":"파견교 요구 사항 확인하기","The student health center lists required vaccines, deadlines and any form you must use.":"학생 건강센터 페이지에 필수 백신, 마감일, 사용할 양식이 나와 있어요.",
+"Get your English vaccination certificate":"영문 예방접종증명서 발급받기","Print it free online from KDCA’s Immunization Helper or Gov24. It lists every shot recorded in Korea’s national registry. Childhood records from before the 2000s can be incomplete, so check it carefully.":"질병관리청 예방접종도우미나 정부24에서 무료로 온라인 발급할 수 있어요. 국가 예방접종 기록에 등록된 모든 접종이 나와요. 2000년대 이전 어린 시절 기록은 빠져 있을 수 있으니 꼼꼼히 확인하세요.",
+"Fill any gaps at a clinic":"병원에서 부족한 접종 보완하기","Visit a hospital international clinic (국제진료센터) or travel clinic for missing doses, or a blood titer test that proves immunity. Some vaccines need doses 4+ weeks apart, so start early.":"병원 국제진료센터나 여행자 클리닉에서 부족한 접종을 맞거나, 면역을 증명하는 항체 검사를 받으세요. 일부 백신은 4주 이상 간격이 필요하니 일찍 시작하세요.",
+"MMR ×2":"MMR 2회","Varicella (if no history)":"수두 (앓은 적 없으면)","Hepatitis B (some schools)":"B형간염 (일부 학교)",
+"Take a TB test if required":"필요하면 결핵 검사 받기","Many schools ask students from Korea for an IGRA blood test (or skin test). A positive result needs a chest X-ray. Results usually must be recent, so check the time window.":"많은 학교가 한국 학생에게 결핵 혈액검사(IGRA)나 피부반응검사를 요구해요. 양성이면 흉부 X-ray가 필요해요. 최근 결과만 인정되니 유효 기간을 확인하세요.",
+"Have a doctor sign the host’s form":"파견교 양식에 의사 서명 받기","Many schools use their own immunization form, completed and signed by a doctor in English.":"많은 학교가 자체 예방접종 양식을 쓰고, 의사가 영어로 작성·서명해야 해요.",
+"Upload to the student health portal":"학생 건강 포털에 올리기","Upload everything before the deadline to avoid a registration hold.":"수강신청이 막히지 않도록 마감 전에 모두 올리세요.",
+"Pack a copy":"사본 챙기기","Keep the English certificate in your carry-on and a scan on your phone. Dorms and clinics abroad sometimes ask for it.":"영문 증명서는 기내 가방에, 스캔본은 휴대폰에 보관하세요. 현지 기숙사나 병원에서 요구할 수 있어요.",
+"Entry":"입국","No vaccine requirement":"요구 백신 없음","Often asked":"자주 요구","MMR, MenACWY (residence), Tdap":"MMR, MenACWY(기숙사), Tdap","Health programs":"보건 계열 전공","Hepatitis B, TB test":"B형간염, 결핵 검사",
+"Recommended":"권장","MenACWY, MMR ×2":"MenACWY, MMR 2회","Check the NHS recommendations":"NHS 권고 확인하기","Read why students are advised to have MenACWY and MMR.":"학생에게 MenACWY와 MMR 접종을 권하는 이유를 확인하세요.",
+"The NHS recommends MenACWY and MMR vaccines before starting university, because meningitis and measles spread easily in student housing.":"영국 NHS는 대학 입학 전 MenACWY와 MMR 접종을 권해요. 기숙사에서는 수막염과 홍역이 쉽게 퍼지기 때문이에요.","NHS · MenACWY vaccine":"NHS · MenACWY 백신","NHS · MMR vaccine":"NHS · MMR 백신",
+"X1 visa holders need a Foreigner Physical Examination Record for the residence permit. Many students do the check at the local International Travel Healthcare Center after arrival.":"X1 비자 소지자는 거류허가를 받으려면 외국인 신체검사 기록이 필요해요. 많은 학생이 도착 후 현지 국제여행보건센터에서 검사를 받아요.",
+"Who":"대상","Includes":"검사 항목","Blood test, chest X-ray, ECG":"혈액검사, 흉부 X-ray, 심전도","Before applying for the residence permit":"거류허가 신청 전",
+"Ask the host which option to use":"파견교에 어떤 방법을 쓸지 확인하기","Some hosts accept an exam done in Korea on the official form; others send you to a local center after arrival.":"한국에서 공식 양식으로 받은 검진을 인정하는 학교도 있고, 도착 후 현지 센터로 안내하는 학교도 있어요.",
+"Resident visa applicants":"거류비자 신청자","Chest X-ray, measles & rubella immunity":"흉부 X-ray, 홍역·풍진 면역","Approved hospital in Korea":"한국의 지정 병원",
+"Resident visa applicants for Taiwan submit a health certificate from an approved hospital, including a chest X-ray and proof of measles and rubella immunity.":"대만 거류비자 신청자는 지정 병원에서 받은 건강진단서를 내야 해요. 흉부 X-ray와 홍역·풍진 면역 증명이 포함돼요.",
+"Check the form with the Taipei Mission":"주한 타이베이 대표부에서 양식 확인하기","Download the current health certificate form and list of approved hospitals.":"최신 건강진단서 양식과 지정 병원 목록을 내려받으세요.",
+"ICA may ask Student's Pass applicants for a medical examination report. Your IPA letter says whether you need one.":"ICA가 학생비자 신청자에게 건강검진 결과를 요구할 수 있어요. 필요한지는 IPA 레터에 적혀 있어요.",
+"Only if stated in your IPA letter":"IPA 레터에 적혀 있을 때만","Chest X-ray, HIV test (if requested)":"흉부 X-ray, HIV 검사 (요청 시)","Read your IPA letter":"IPA 레터 확인하기","It lists any medical report you must bring to ICA.":"ICA에 가져가야 할 건강검진 서류가 적혀 있어요.",
+"Sometimes asked":"가끔 요구","MMR, Hepatitis B, TB screening":"MMR, B형간염, 결핵 검사","TB test (IND)":"결핵 검사 (IND)","Exempt for Korean citizens":"한국 국적자는 면제","Korean citizens are exempt from the Dutch TB test.":"한국 국적자는 네덜란드 결핵 검사가 면제예요.",
+"KDCA Immunization Helper · English certificate (예방접종도우미)":"질병관리청 예방접종도우미 · 영문 증명서","Gov24 · Vaccination certificate (정부24)":"정부24 · 예방접종증명서",
+// housing, flight, insurance, courses
+"Apply for housing":"숙소 신청하기","Apply through the host’s housing portal first. If you are waitlisted, look at off-campus options in parallel. Never pay a deposit before you have seen the contract.":"먼저 파견교 기숙사 포털에서 신청하세요. 대기 순번을 받았다면 학교 밖 숙소도 함께 알아보세요. 계약서를 보기 전에는 절대 보증금을 보내지 마세요.",
+"First choice":"1순위","Host university housing":"파견교 기숙사","If waitlisted":"대기 시","Verified platforms, past students’ reviews":"검증된 플랫폼, 선배 후기","Watch out":"주의","Pay deposits only after checking the contract":"계약서 확인 후에만 보증금 송금",
+"Apply on the housing site":"기숙사 사이트에서 신청하기","Housing applications often open at the same time as your acceptance.":"기숙사 신청은 보통 합격과 동시에 열려요.","Ask past students":"선배들에게 물어보기","Use the Community tab to ask which areas are safe and how far they are from campus.":"커뮤니티 탭에서 어느 동네가 안전한지, 학교까지 얼마나 걸리는지 물어보세요.",
+"Check before paying":"송금 전에 확인하기","Video-call the landlord and read the contract before sending money.":"송금 전에 집주인과 영상 통화하고 계약서를 읽어 보세요.",
+"Book your flight":"항공권 예약하기","Book once you know the orientation date and the first day you can move in.":"오리엔테이션 날짜와 입주 가능일을 확인한 뒤 예약하세요.","Plan around":"기준 일정","Orientation and move-in date":"오리엔테이션과 입주일","Name on ticket matches passport":"항공권 이름과 여권 이름 일치",
+"Buy insurance or request a waiver":"보험 가입 또는 면제 신청하기","Most hosts require international students to have health insurance, and many enroll you in their own plan automatically. Check whether you can waive it with an outside plan.":"대부분의 파견교는 국제학생에게 건강보험을 요구하고, 자체 보험에 자동 가입시키는 경우가 많아요. 외부 보험으로 면제받을 수 있는지 확인하세요.",
+"Host’s insurance requirement":"파견교 보험 요건","Coverage period":"보장 기간","Covers":"보장 내용","Medical costs, liability":"의료비, 배상책임",
+"Register for courses":"수강신청하기","Confirm your program courses":"프로그램 과목 확정하기","Register during your enrollment window. Popular classes have few seats for visiting students, so pick backups.":"수강신청 기간에 등록하세요. 인기 과목은 방문학생 자리가 적으니 대체 과목도 골라 두세요.",
+"Credit transfer":"학점 인정","Courses pre-approved by your department":"본교 학과가 사전 승인한 과목",
+// community
+"students":"명","preparing":"준비 중","Your progress":"내 진행률","You":"나","Progress":"준비 현황","Q&A":"질문·답변","1:1 Mentors":"1:1 멘토","Share where you are":"내 준비 현황 공유하기",
+"Ask students on the same program, free":"같은 프로그램 학생들에게 무료로 질문하세요","e.g. Where did you stay before move-in?":"예: 입주 전날 어디서 묵으셨어요?","Post question":"질문 올리기",
+"Applied":"지원 완료","Visa submitted":"비자 신청 완료","Housing set":"숙소 확정","Flight booked":"항공권 예약 완료","Visa docs":"비자 서류","Test scores":"어학 성적","Just started":"막 시작",
+"DS-2019 received":"DS-2019 수령","Admission letter in":"입학허가서 수령","Verified mentor":"인증 멘토",
+"Business":"경영학과","Business Administration":"경영학과","Computer Science":"컴퓨터공학과","Economics":"경제학과","International Studies":"국제학부","English Literature":"영어영문학과",
+"2h ago":"2시간 전","5h ago":"5시간 전","Yesterday":"어제","2d ago":"2일 전","Just now":"방금",
+"Do I need a card that works overseas to pay the SEVIS fee?":"SEVIS 비용 낼 때 해외 결제 카드가 꼭 있어야 하나요?","The permit application asks for proof of insurance. Does a Korean policy count?":"체류허가 신청에 보험 증명이 필요하던데, 한국 보험도 인정되나요?",
+"Yes, you need a card that supports overseas payments. Print the receipt PDF and bring it to your interview.":"네, 해외 결제가 되는 카드가 필요해요. 영수증 PDF를 출력해서 인터뷰에 가져가세요.",
+"It depends on the country, so check the coverage rules in your host’s email first. You usually need an English certificate.":"나라마다 달라서 파견교 메일의 보장 조건부터 확인하세요. 보통 영문 증명서가 필요해요.",
+"I was waitlisted for the dorm, so I signed for a shared house near campus. We went through the contract together on a video call.":"기숙사 대기 순번이라 학교 근처 셰어하우스로 계약했어요. 영상 통화로 계약서를 같이 확인했어요.",
+"The application portal email was in my spam folder. If you haven’t got yours, check there!":"지원 포털 메일이 스팸함에 있었어요. 아직 못 받으셨다면 꼭 확인해 보세요!",
+// mentors
+"Verified":"인증","Booked":"예약됨","30 min":"30분","video or chat":"영상 또는 채팅","/ 30 min":"/ 30분",
+"University email":"학교 이메일","Proof of completion":"수료 증빙","Team review":"운영팀 심사",
+"Visa documents":"비자 서류","Course registration":"수강신청","Living costs":"생활비","Housing":"숙소","First week":"첫 주","Banking & phone":"은행·휴대폰","English tests":"어학 시험",
+"Only students who completed the program can become mentors. Mentors receive the session fee, minus a platform commission.":"프로그램을 수료한 학생만 멘토가 될 수 있어요. 멘토는 플랫폼 수수료를 뺀 세션 비용을 받아요.",
+"How we verified":"인증 방법","University email verified":"학교 이메일 인증 완료","Enrollment confirmed":"재학 확인 완료","Matched by our team":"운영팀 대조 완료","Team review passed":"운영팀 심사 통과","Approved Dec 2025":"2025년 12월 승인",
+"Pick a time (KST)":"시간 선택 (한국 시간)","1:1 mentoring, 30 min":"1:1 멘토링 30분","Total":"결제 금액","Free cancellation up to 24 hours before the session.":"세션 24시간 전까지 무료로 취소할 수 있어요.","Pick a time":"시간을 선택하세요",
+"Become a mentor":"멘토 되기","Help the next student":"다녀온 경험으로","with what you learned":"후배를 도와주세요",
+"Mentoring is paid, so we verify that every mentor actually completed the program. Pass the review to get a verified badge.":"유료 멘토링이라 모든 멘토가 실제로 프로그램을 수료했는지 확인해요. 심사를 통과하면 인증 배지가 붙어요.",
+"Verify your university email":"학교 이메일 인증하기","Confirms you are a current student or graduate":"재학생 또는 졸업생임을 확인해요","Verify":"인증",
+"Upload proof of completion":"수료 증빙 올리기","Host transcript or certificate of attendance":"파견교 성적증명서 또는 수료증","Upload a PDF or image":"PDF 또는 이미지 올리기","Submit":"제출하기",
+"We match your documents against the program":"서류를 프로그램 정보와 대조해요","In review":"심사 중","results within 3 business days":"영업일 기준 3일 이내 결과 안내","Approve (demo)":"심사 통과 (데모)",
+"Get your verified badge":"인증 배지 받기","Set your own session price and availability":"세션 가격과 가능 시간을 직접 정해요","Your badge is live. You can now open mentoring slots.":"배지가 발급됐어요. 이제 멘토링 일정을 열 수 있어요.",
+// me
+"Home university not set":"본교 미입력","Become a mentor after you return":"귀국 후 멘토로 활동하기","Verify with your university email and proof of completion":"학교 이메일과 수료 증빙으로 인증해요","You’re a verified mentor":"인증 멘토예요","Manage your mentoring slots":"멘토링 일정을 관리하세요",
+"My program":"내 프로그램","Change program":"프로그램 변경","Travel dates":"여행 날짜","Mentoring bookings":"멘토링 예약 내역","Back to start (demo)":"처음으로 (데모)",
+// travel sheet
+"Your travel dates":"여행 날짜","Deadlines move with your departure date. Your length of stay decides which visa you need.":"마감일은 출발일에 맞춰 바뀌어요. 필요한 비자는 체류 기간에 따라 달라져요.","Departure date":"출발 날짜","Save travel dates":"여행 날짜 저장",
+// perks
+"Your trip":"내 여행","Flights":"항공권","Phone":"통신","Insurance":"보험","Money":"금융","Your dates":"내 일정","Your country":"내 나라",
+"Compare every airline at once and track price changes.":"모든 항공사를 한 번에 비교하고 가격 변동을 추적해요.","Search flights":"항공권 검색",
+"Shows the cheapest dates in a calendar view. Korean site, prices in KRW.":"가장 싼 날짜를 달력으로 보여줘요. 한국 사이트라 원화로 표시돼요.",
+"Good for Asia routes and one-way tickets. Korean customer service.":"아시아 노선과 편도 항공권에 좋아요. 한국어 고객센터가 있어요.","Open Trip.com":"Trip.com 열기",
+"Student fares, often with flexible changes. Needs student verification.":"변경이 유연한 학생 전용 요금이에요. 학생 인증이 필요해요.","See student fares":"학생 요금 보기",
+"Apply here first. University housing is usually the safest and simplest option.":"여기부터 신청하세요. 학교 기숙사가 보통 가장 안전하고 간단해요.","Open housing page":"기숙사 페이지 열기","Search stays":"숙소 검색",
+"Hotels and hostels for the first week while you look for a room.":"방을 구하는 첫 주 동안 묵을 호텔과 호스텔이에요.","Search hotels":"호텔 검색",
+"Mid-term rooms for students across Europe, with tenant protection.":"세입자 보호가 되는 유럽 전역의 학생용 중기 숙소예요.","Find a room":"방 찾기","Student rooms in major European university cities.":"유럽 주요 대학 도시의 학생용 방이에요.",
+"The UK’s largest flatshare site.":"영국 최대의 셰어하우스 사이트예요.","Find a flatshare":"셰어하우스 찾기","Cheap beds for your first nights or weekend trips.":"도착 첫날이나 주말여행용 저렴한 숙소예요.","Search hostels":"호스텔 검색",
+"Korean eSIM/USIM store with Korean support and fast delivery.":"한국어 상담과 빠른 배송을 제공하는 eSIM·유심 스토어예요.","Open Usimsa":"유심사 열기","eSIM and USIM plans, plus a Korean call app for staying in touch.":"eSIM·유심 요금제와 한국으로 전화하는 앱을 함께 제공해요.","Open Maaltalk":"말톡 열기",
+"Keep your Korean number. Good for the first days and verification texts.":"한국 번호를 그대로 써요. 도착 첫날과 인증 문자 받을 때 좋아요.","See roaming":"로밍 보기","Daily and long-term roaming passes on your current KT number.":"지금 쓰는 KT 번호로 쓰는 일일·장기 로밍 요금제예요.","Roaming passes for LG U+ subscribers.":"LG U+ 가입자용 로밍 요금제예요.",
+"Your host may enroll you in its own plan. Check the waiver rules before buying anything.":"파견교 자체 보험에 자동 가입될 수 있어요. 보험을 사기 전에 면제 규정을 확인하세요.",
+"Find out if you are auto-enrolled and whether you can waive with an outside plan.":"자동 가입되는지, 외부 보험으로 면제받을 수 있는지 확인하세요.","Check the rules":"규정 확인하기",
+"ISO Student Health Insurance":"ISO 학생 건강보험","U.S. plans built to meet university waiver requirements.":"대학의 보험 면제 조건을 충족하도록 설계된 미국 학생보험이에요.","Compare plans":"플랜 비교하기",
+"Travel and long-stay study abroad insurance from Korea, bought online.":"한국에서 온라인으로 가입하는 해외여행·장기 유학생 보험이에요.","Get a quote":"견적 보기","Online overseas travel and study insurance with English certificates.":"영문 증명서를 발급해 주는 온라인 해외여행·유학생 보험이에요.",
+"Pay tuition deposits, rent and daily spending without heavy bank fees.":"등록금 보증금, 월세, 생활비를 은행 수수료 부담 없이 내세요.","Send money abroad at the real exchange rate, e.g. housing deposits.":"숙소 보증금 같은 해외 송금을 실제 환율로 보내요.","Open Wise":"Wise 열기",
+"Popular Korean travel card with low foreign transaction fees.":"해외 결제 수수료가 낮아 인기 있는 여행 카드예요.","See the card":"카드 보기","ISIC student card":"ISIC 국제학생증","International student ID with discounts on transport, museums and software.":"교통, 박물관, 소프트웨어 할인을 받는 국제학생증이에요.","Get ISIC":"ISIC 발급받기",
+"Links open each provider’s official site. Prices and availability are set by the provider. 교환가자 plans to earn a referral fee from partner bookings, which keeps the checklist and community free.":"링크는 각 업체의 공식 사이트로 열려요. 가격과 예약 가능 여부는 업체가 정해요. 교환가자는 제휴 예약에서 소개 수수료를 받아 체크리스트와 커뮤니티를 무료로 운영할 계획이에요.",
+// english src label tails
+"English Proficiency Requirement":"영어 능력 요건","English proficiency requirement":"영어 능력 요건","English proficiency":"영어 능력","International student info":"국제학생 안내","Exchange partner fact sheet":"교환 협정 안내","Incoming exchange: how to apply":"교환학생 지원 방법","English proficiency requirements":"영어 능력 요건","English requirements":"어학 요건","English requirements for exchange":"교환학생 어학 요건","Overview of USTEP":"USTEP 개요","Application guidelines for exchange":"교환학생 지원 안내","Exchange information sheet 2026–27 (PDF)":"교환학생 안내서 2026–27 (PDF)","Exchange student overview":"교환학생 안내","Incoming exchange students.":"교환학생.","Exchange entry requirements":"교환학생 지원 요건","Admission requirements for exchange":"교환학생 지원 요건","Nomination and application":"추천 및 지원","Visiting student eligibility":"방문학생 지원 자격",
+// toasts
+"Marked as done":"완료로 표시했어요","Google site search":"Google 사이트 검색","Reminders on":"알림을 켰어요","Reminders off":"알림을 껐어요","Thanks! Our team will check and update it":"고마워요! 운영팀이 확인 후 반영할게요","Shared with your program":"같은 프로그램에 공유했어요","Question posted":"질문을 올렸어요",
+"Enter a university email ending in .ac.kr":"ac.kr로 끝나는 학교 이메일을 입력하세요","Proof of completion submitted":"수료 증빙을 제출했어요","Your verified badge is live":"인증 배지가 발급됐어요","Pick a departure at least 2 weeks from today":"오늘부터 2주 이후의 출발일을 고르세요","Using the suggested travel dates":"추천 날짜로 되돌렸어요"
+});
+// ---- sentence templates ----
+[
+["Apply directly on the {X} website. International applicants usually register as visiting or non-degree students and pay the program fee to the host.","{X} 웹사이트에서 직접 지원해요. 해외 지원자는 보통 방문 또는 비학위 학생으로 등록하고 프로그램 비용을 파견교에 내요."],
+["Once your home university has nominated you, {X} emails you a link to its online application for incoming students. Check your spam folder if nothing has arrived.","본교 추천이 끝나면 {X}에서 교환학생 온라인 지원서 링크를 이메일로 보내요. 메일이 안 왔다면 스팸함을 확인하세요."],
+["{X} emails you a link to its incoming exchange application, sometimes within days, sometimes weeks.","{X}에서 교환학생 지원서 링크를 이메일로 보내요. 며칠 만에 오기도 하고 몇 주 걸리기도 해요."],
+["{X} asks for one of these scores. You only need one test. Upload it with your application, or have the test agency send it directly.","{X}는 이 중 하나의 점수를 요구해요. 시험은 하나만 보면 돼요. 지원서와 함께 올리거나 시험 기관에서 직접 보내게 하세요."],
+["{X} does not ask most exchange students for a test score.","{X}는 대부분의 교환학생에게 어학 성적을 요구하지 않아요."],
+["We have not verified {X}’s exact scores yet.","{X}의 정확한 점수는 아직 확인하지 못했어요."],["Check the official page before you book a test.","시험 예약 전에 공식 페이지를 확인하세요."],
+["Apply to {X}","{X} 지원하기"],["{X} Summer school","{X} 서머스쿨"],["{X} Winter school","{X} 윈터스쿨"],["stays near {X}, your dates","{X} 근처 숙소, 내 일정"],["Submit {X} application","{X} 지원서 제출하기"],["Mark {X} as done","{X} 완료로 표시"],["Meet English minimum ({X})","어학 최소 점수 충족 ({X})"],["{X} (typical)","{X} (일반적 범위)"],
+["{X} website","{X} 웹사이트"],["{X} housing","{X} 기숙사"],["{X} incoming student portal","{X} 교환학생 포털"],["{X} insurance rules","{X} 보험 규정"],["{X} student portal","{X} 학생 포털"],["{X} international student office","{X} 국제학생 오피스"],["{X} transcript checked","{X} 성적증명서 확인"],
+["{X} sent the PDF first. The original is coming by mail separately.","{X}에서 PDF를 먼저 보내 줬어요. 원본은 우편으로 따로 온대요."],
+["Did anyone arrive in {X} before orientation? I need somewhere to stay the night before move-in.","오리엔테이션 전에 {X}에 먼저 도착하신 분 있나요? 입주 전날 묵을 곳이 필요해요."],
+["Talk 1:1 with verified students who completed {X}","{X}를 수료한 인증 선배와 1:1로 이야기해요"],
+["Short stays for your first nights near {X}, and longer rentals if you missed the dorm.","{X} 근처에서 첫 며칠 묵을 숙소와, 기숙사에 떨어졌을 때 구할 장기 숙소예요."],
+["{N} programs at {X} accept students from Korean partner universities.","{X}에는 한국 협정 대학 학생을 받는 프로그램이 {N}개 있어요."],
+["Building your {X} checklist for {P}","{P} {X} 체크리스트를 만들고 있어요"],
+["Search {N} Korean universities","국내 대학 {N}곳 검색"],["Search {X} for English requirements","{X}에서 어학 요건 검색"],["Search {X} for “{X}”","{X}에서 “{X}” 검색"],
+["Seoul → {P}, your dates","서울 → {P}, 내 일정"],["Seoul → {P}","서울 → {P}"],
+["Round trip Seoul → {P}, {D} – {D}. Searches open with your dates filled in.","서울 → {P} 왕복, {D} – {D}. 내 일정이 입력된 검색 결과가 열려요."],
+["Monthly stays near campus, filtered to {D} – {D}.","{D} – {D} 일정으로 학교 근처 장기 숙소를 보여줘요."],
+["Stay connected in the {P}. eSIMs are cheapest for long stays; carrier roaming is easiest for a few days.","{P}에서도 연결을 유지하세요. 장기 체류는 eSIM이 가장 저렴하고, 며칠은 통신사 로밍이 가장 편해요."],
+["Stay connected in {P}. eSIMs are cheapest for long stays; carrier roaming is easiest for a few days.","{P}에서도 연결을 유지하세요. 장기 체류는 eSIM이 가장 저렴하고, 며칠은 통신사 로밍이 가장 편해요."],
+["{P} eSIM data plans. Install before you fly, switch on when you land.","{P} eSIM 데이터 요금제예요. 출국 전에 설치하고 도착하면 켜세요."],["See {P} plans","{P} 요금제 보기"],
+["Check {P} entry requirements","{P} 입국 요건 확인하기"],["{P} entry requirements","{P} 입국 요건"],["Check the student visa rules on the {P} embassy website","{P} 대사관 웹사이트에서 학생비자 규정을 확인하세요"],
+["To study in {P} for a full term you need the right student status. Start as soon as your acceptance letter arrives, because processing can take weeks.","{P}에서 한 학기 이상 공부하려면 맞는 학생 신분이 필요해요. 처리에 몇 주 걸릴 수 있으니 입학허가서가 오는 대로 시작하세요."],
+["Short programs in {P} are often possible without a student visa, but the rules depend on length and purpose. Confirm before you book flights.","{P}의 단기 프로그램은 학생비자 없이 가능한 경우가 많지만, 기간과 목적에 따라 달라요. 항공권 예약 전에 확인하세요."],
+["{P} does not require vaccines for entry, but some universities and residences ask for immunization records, especially for health-related programs.","{P}에서는 입국 시 백신을 요구하지 않지만, 일부 학교와 기숙사는 예방접종 기록을 요구해요. 특히 보건 계열 전공이 그래요."],
+["{P} has no vaccine requirement for Korean students entering the country, but some universities and dorms ask for records, especially for lab or health courses.","{P} 입국 시 한국 학생에게 요구하는 백신은 없지만, 일부 학교와 기숙사는 실험·보건 수업 등에서 기록을 요구해요."],
+["Print the IPA letter. You show it when you enter {P}.","IPA 레터를 출력하세요. {P} 입국 때 보여 줘야 해요."],
+["Your host applies for your COE at the Immigration Services Agency in {P}. It takes about 1–{S}.","파견교가 {P} 출입국재류관리청에 COE를 신청해요. 1–{S} 정도 걸려요."],
+["Over {N} days: X1 visa, then a residence permit.","{N}일 초과: X1 비자 후 거류허가."],["{N} days or less: X2 visa.","{N}일 이하: X2 비자."],
+["Over {N} days: a student visa is likely needed.","{N}일 초과: 학생비자가 필요할 가능성이 커요."],["Over {N} days: national long-stay visa or residence permit.","{N}일 초과: 국가별 장기비자 또는 체류허가가 필요해요."],
+["Over {N} days: student visa needed.","{N}일 초과: 학생비자가 필요해요."],["Over {N} days: student visa, plus a Hong Kong ID card.","{N}일 초과: 학생비자와 홍콩 신분증(HKID)이 필요해요."],
+["Over {S}: you need a UK Student visa.","{S} 초과: 영국 Student visa가 필요해요."],["Over {S}: you need a study permit, plus an eTA.","{S} 초과: eTA와 함께 학업허가가 필요해요."],
+["{S} or less: an eTA is enough. No study permit needed.","{S} 이하: eTA만 있으면 돼요. 학업허가는 필요 없어요."],["Up to {S}: study as a Standard Visitor with an ETA.","{S} 이하: ETA로 단기 방문자 신분 학업이 가능해요."],
+["Up to {N} days: often visa-free. Check the embassy rules.","{N}일 이하: 무비자인 경우가 많아요. 대사관 규정을 확인하세요."],["Up to {N} days: visa-free for Korean passports.","{N}일 이하: 한국 여권으로 무비자예요."],["Up to {N} days: visa-free in the Schengen area.","{N}일 이하: 솅겐 지역 무비자예요."],
+["Stays over {N} days need a long-stay student visa, validated online after arrival","{N}일을 넘게 머물면 장기 학생비자가 필요하고, 도착 후 온라인으로 활성화해야 해요"],
+["Stays over {N} days need a national long-stay visa or residence permit","{N}일을 넘게 머물면 국가별 장기비자나 체류허가가 필요해요"],
+["Stays up to {N} days are visa-free for Korean citizens as a temporary visitor","{N}일 이하 체류는 한국 국적자에게 단기 방문 무비자예요"],
+["Study needs an X1 visa (over {N} days) or X2 visa ({N} days or less)","학업에는 X1 비자({N}일 초과) 또는 X2 비자({N}일 이하)가 필요해요"],
+["Study (D) visa before departure, then a permesso di soggiorno within {N} days of arrival","출국 전 학업(D) 비자를 받고, 도착 후 {N}일 안에 체류허가(permesso di soggiorno)를 신청해요"],
+["Study of up to {S} is allowed as a Standard Visitor. Korean citizens need an ETA instead of a visa","{S} 이하 학업은 단기 방문자(Standard Visitor) 신분으로 가능해요. 한국 국적자는 비자 대신 ETA가 필요해요"],
+["Courses of up to {S} at an accredited institution are allowed as a Standard Visitor. You cannot work during your stay.","인가된 기관에서 {S} 이하 과정은 단기 방문자(Standard Visitor) 신분으로 들을 수 있어요. 체류 중 취업은 할 수 없어요."],
+["Courses over {S} need a Student visa","{S} 초과 과정은 Student visa가 필요해요"],
+["You can apply up to {S} before your course starts. Pay the visa fee and the Immigration Health Surcharge (IHS) shown during the application.","과정 시작 {S} 전부터 신청할 수 있어요. 신청 중 안내되는 비자 수수료와 이민 건강 부담금(IHS)을 내요."],
+["Decisions usually take about {S}. Your visa is digital: create a UKVI account to view and share your eVisa.","결과는 보통 {S} 정도 걸려요. 비자는 전자 방식이라 UKVI 계정을 만들어 eVisa를 확인·공유해요."],
+["Within {S} of arrival, validate your VLS-TS online on the ANEF website and pay the tax stamp. Without this you are not legally resident.","도착 후 {S} 안에 ANEF 웹사이트에서 VLS-TS를 온라인으로 활성화하고 인지세를 내세요. 하지 않으면 합법 체류가 인정되지 않아요."],
+["Within {S} of moving in, register at the local Bürgeramt and keep the registration certificate.","입주 후 {S} 안에 관할 시민청(Bürgeramt)에 주소를 등록하고 등록 증명서를 보관하세요."],
+["Within {N} days of moving in, register at your city or ward office and join National Health Insurance.","입주 후 {N}일 안에 시청이나 구청에 주소를 등록하고 국민건강보험에 가입하세요."],
+["X1 holders must apply at the local Public Security Bureau exit-entry office within {N} days of arrival.","X1 비자 소지자는 도착 후 {N}일 안에 현지 공안국 출입국 사무소에서 거류허가를 신청해야 해요."],["X1 visa (over {N} days)","X1 비자 ({N}일 초과)"],
+["If you stay over {N} days, apply for an HKID within {N} days of arrival.","{N}일 넘게 머문다면 도착 후 {N}일 안에 HKID를 신청하세요."],
+["Resident visa holders apply for an Alien Resident Certificate (ARC) within {N} days of arrival.","거류비자 소지자는 도착 후 {N}일 안에 거류증(ARC)을 신청해요."],
+["Programs under {N} days are visa-free for Korean passports.","{N}일 미만 프로그램은 한국 여권으로 무비자 입국할 수 있어요."],
+["Short programs under {N} days are visa-free for Korean passports. Check with your host if the program includes paid work or a long internship.","{N}일 미만 단기 프로그램은 한국 여권으로 무비자예요. 유급 근무나 긴 인턴십이 포함되면 파견교에 확인하세요."],
+["Short programs fit within {N} days in any 180-day period. Earlier trips to Europe in the same window count too.","단기 프로그램은 180일 중 {N}일 안에 들어가요. 같은 기간의 이전 유럽 여행 일수도 포함돼요."],
+["One-semester exchanges ({S} or less) can study without a study permit.","한 학기 교환({S} 이하)은 학업허가 없이 공부할 수 있어요."],["Program longer than {S}","{S} 초과 프로그램"],
+["Book a VFS Global appointment within {N} days of receiving your biometrics letter.","지문 등록 안내 레터를 받은 뒤 {N}일 안에 VFS Global 예약을 잡으세요."],
+["Most hosts email the I-20 as a PDF within 1–{S}.","대부분의 파견교가 1–{S} 안에 I-20을 PDF로 보내요."],
+["Use a square digital photo from the last {S} on a white background, without glasses.","최근 {S} 안에 찍은 흰 배경의 정사각형 디지털 사진을 쓰세요. 안경은 벗어야 해요."],["Taken in the last {S}","최근 {S} 이내 촬영"],
+["Up to {N} days before program start","프로그램 시작 {N}일 전부터"],["{N} days before I-20 start date","I-20 시작일 {N}일 전"],["Arrive no earlier than {N} days before start","시작 {N}일 전부터 입국 가능"],
+["You can enter the U.S. up to {N} days before the program start date on your I-20. After landing, check your I-94 record and complete check-in with the international office.","I-20에 적힌 프로그램 시작일 {N}일 전부터 미국에 입국할 수 있어요. 도착 후 I-94 기록을 확인하고 국제학생 오피스 체크인을 마치세요."],
+["Choose TOEFL iBT, IELTS Academic or Duolingo (if accepted). Book early, because results take 2–{N} days.","TOEFL iBT, IELTS Academic, 듀오링고(인정되는 경우) 중 하나를 고르세요. 결과가 나오기까지 2–{N}일 걸리니 일찍 예약하세요."],
+["TOEFL iBT: results in about 4–{N} days","TOEFL iBT: 약 4–{N}일 후 결과"],["IELTS Academic: results in about 3–{N} days","IELTS Academic: 약 3–{N}일 후 결과"],["DET: results in about {N} days","DET: 약 {N}일 후 결과"],
+["Since {D} TOEFL also reports a 1–6 band score","{D}부터 TOEFL은 1–6 등급 점수도 함께 표시해요"],
+["Stay: {S}. Visa steps updated","체류 기간: {S}. 비자 안내가 바뀌었어요"],["Stay: {S}. Deadlines updated","체류 기간: {S}. 마감일을 업데이트했어요"],["Stay: {S}","체류 기간: {S}"],
+["Suggested: leave {D} and stay about {S}. Set your own dates if your plans differ. You can change them later.","추천: {D} 출발, 약 {S} 체류. 계획이 다르면 직접 날짜를 정하세요. 나중에 바꿀 수 있어요."],
+["Suggested for {X}: {D}","{X} 추천 출발일: {D}"],["Use the suggested dates ({D}, about {S})","추천 날짜 사용 ({D}, 약 {S})"],
+["Verified {D}","{D} 확인"],["Book {D}, {T}","{D} {T} 예약하기"],["Booked with {X}, {D} {T}","{X} 멘토와 {D} {T} 예약했어요"],
+["University lists come from the open Hipo university-domains-list. Mentors, posts, partners and dates are sample data. Today is fixed at {D}.","대학 목록은 공개 데이터 Hipo university-domains-list를 사용해요. 멘토, 게시글, 제휴사, 일정은 예시 데이터이고, 오늘 날짜는 {D}로 고정돼 있어요."],
+["{X}! Good luck to everyone else getting ready.","{X}! 다들 준비 화이팅이에요."],
+["{N} reminders are on","알림 {N}개가 켜져 있어요"],["You have {N} mentoring bookings","멘토링 예약이 {N}건 있어요"],["{N} students","{N}명"],["{N} answers","답변 {N}개"],["{N} on","{N}개 켜짐"],["Cheer {N}","응원 {N}"],["{N} reviews","리뷰 {N}개"],
+["{X} ({N} days)","{X} ({N}일)"],["{X} (suggested)","{X} (추천)"],["{X}(suggested)","{X}(추천)"],["Mentor {X}","멘토 {X}"],
+].forEach(([en,ko])=>T_(en,ko));
+KO_RE.sort((a,b)=>(b[2]||30)-(a[2]||30));   // most specific template first
+// program type + term, e.g. "Exchange Spring 2027", "Summer school Fall 2025", "Summer school 2025"
+const TERM_KO={Spring:'봄학기',Fall:'가을학기',Summer:'여름학기',Winter:'겨울학기'};
+KO_RE.push([/^(Exchange|Visiting student|Summer school|Winter school) (?:(Spring|Fall|Summer|Winter) )?(\d{4}(?:–\d\d)?)$/,(m,t,s,y)=>`${KO[t]} ${y}${s?' '+TERM_KO[s]:''}`]);
+KO_RE.push([/^(Spring|Fall|Summer|Winter) (\d{4}(?:–\d\d)?)$/,(m,s,y)=>`${y} ${TERM_KO[s]}`]);
+KO_RE.push([/^(Exchange|Visiting student|Summer school|Winter school) (Academic Year .+)$/,(m,t,y)=>`${KO[t]} ${y.replace('Academic Year ','')} 학년도`]);
+
 /* ---------------- icons ---------------- */
 const I={
   list:'<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/>',
@@ -538,9 +1002,11 @@ const addDays=(d,n)=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+n);
 const dd=d=>Math.round((d-TODAY)/864e5);
 const WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const fmt=d=>`${MON[d.getMonth()]} ${d.getDate()} (${WD[d.getDay()]})`;
-const fmtY=d=>`${MON[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
-const fmtShort=d=>`${MON[d.getMonth()]} ${d.getDate()}`;
+let LANG='ko';
+const WD_KO='일월화수목금토';
+const fmt=d=>LANG==='ko'?`${d.getMonth()+1}월 ${d.getDate()}일 (${WD_KO[d.getDay()]})`:`${MON[d.getMonth()]} ${d.getDate()} (${WD[d.getDay()]})`;
+const fmtY=d=>LANG==='ko'?`${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`:`${MON[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+const fmtShort=d=>LANG==='ko'?`${d.getMonth()+1}월 ${d.getDate()}일`:`${MON[d.getMonth()]} ${d.getDate()}`;
 const ddLabel=n=>n===0?'D-DAY':n>0?`D-${n}`:`D+${-n}`;
 
 /* ---------------- university data ---------------- */
@@ -568,7 +1034,7 @@ function makeHost([name,cc,url]){
 }
 async function loadData(){
   try{
-    const r=await fetch('data/universities.json'); DATA=await r.json(); COUNTRIES=DATA.countries;
+    const r=await fetch('data/universities.json'); DATA=await r.json(); COUNTRIES=DATA.countries; buildNameKo(COUNTRIES);
   }catch(e){ DATA={unis:[],kr:[],countries:COUNTRIES,error:true}; }
   render(true);
 }
@@ -602,7 +1068,7 @@ function depOf(p,h){
 }
 
 const STAY={exS:140,exF:120,exY:300,visit:120,ss:42,ws:24};   // default stay in days per program
-const stayLabel=d=>(d<60?`${Math.round(d/7)} weeks`:`${(d/30.44).toFixed(1).replace(/\.0$/,'')} months`)+` (${d} days)`;
+const stayLabel=d=>LANG==='ko'?(d<60?`${Math.round(d/7)}주`:`${(d/30.44).toFixed(1).replace(/\.0$/,'')}개월`)+` (${d}일)`:(d<60?`${Math.round(d/7)} weeks`:`${(d/30.44).toFixed(1).replace(/\.0$/,'')} months`)+` (${d} days)`;
 const stayShort=d=>stayLabel(d).replace(/ \(.*/,'');
 function stayImpact(h,d){
   const cc=h.cc;
@@ -1062,7 +1528,7 @@ function perkGroups(){
 }
 /* ---------------- state ---------------- */
 const S={
-  screen:'splash', tab:'home', detail:null, filter:'All',
+  screen:'lang', tab:'home', detail:null, filter:'All',
   email:'you@korea.ac.kr',
   profile:{univ:'Korea University',major:'Business Administration',year:'3rd year'},
   homeQ:'',
@@ -1121,6 +1587,14 @@ const regionHosts=()=>DATA?DATA.unis.filter(u=>(COUNTRIES[u[1]]||[])[1]===S.regi
 
 /* ---------------- screens ---------------- */
 const SCREENS={
+  lang(){return `
+    <div class="splash"><div class="appicon">${ic('globe',56,1.8)}</div>
+      <div data-notr><h1 style="font-size:28px">언어를 선택하세요</h1><p>Choose your language</p></div>
+      <div class="langs" data-notr>
+        <button class="langopt${LANG==='ko'?' on':''}" data-act="setLang" data-v="ko"><b>한국어</b><small>Korean</small><span class="radio-dot"></span></button>
+        <button class="langopt${LANG==='en'?' on':''}" data-act="setLang" data-v="en"><b>English</b><small>영어</small><span class="radio-dot"></span></button>
+      </div></div>
+    <div class="cta" data-notr><button class="btn" data-go="splash">${LANG==='ko'?'계속하기':'Continue'}</button></div>`},
   splash(){return `
     <div class="splash"><div class="appicon">${ic('plane',56,1.8)}</div>
       <div><h1>교환가자</h1><p>From acceptance to departure,<br>one step at a time.</p></div></div>
@@ -1374,6 +1848,7 @@ function meTab(){
       <button data-act="editDep">${ic('plane',20)}<span class="t">Travel dates<br><small>${fmtShort(depDate())} → ${fmtY(retDate())} · ${stayShort(stayDays())}</small></span>${ic('chev',18)}</button>
       <button data-act="toast" data-v="${S.remind.size} reminders are on">${ic('bell',20)}<span class="t">Deadline reminders<br><small>${S.remind.size} on</small></span>${ic('chev',18)}</button>
       <button data-act="toast" data-v="You have ${Object.keys(S.booked).length} mentoring bookings">${ic('mentor',20)}<span class="t">Mentoring bookings</span><small>${Object.keys(S.booked).length}</small></button>
+      <button data-act="openLang">${ic('globe',20)}<span class="t">Language<br><small>${LANG==='ko'?'한국어':'English'}</small></span>${ic('chev',18)}</button>
       <button data-go="splash">${ic('back',20)}<span class="t">Back to start (demo)</span></button>
     </div>
   </div>`;
@@ -1393,12 +1868,12 @@ function openMentorSheet(id){
         <div class="vitem">${ic('mail',18)}<span>University email verified<small>Enrollment confirmed</small></span></div>
         <div class="vitem">${ic('doc',18)}<span>${esc(host().short)} transcript checked<small>Matched by our team</small></span></div>
         <div class="vitem">${ic('shield',18)}<span>Team review passed<small>Approved Dec 2025</small></span></div></div></div>
-      <div class="d-sec"><h3>Pick a time (KST)</h3><div class="slots">${slots.map((s,k)=>`<button class="chip${S.slot===k?' on':''}" data-act="slot" data-v="${k}"><span class="num">${WD[s.d.getDay()]} ${fmtShort(s.d)}</span><small class="num">${s.hh}:00</small></button>`).join('')}</div></div>
+      <div class="d-sec"><h3>Pick a time (KST)</h3><div class="slots">${slots.map((s,k)=>`<button class="chip${S.slot===k?' on':''}" data-act="slot" data-v="${k}"><span class="num">${LANG==='ko'?fmt(s.d):WD[s.d.getDay()]+' '+fmtShort(s.d)}</span><small class="num">${s.hh}:00</small></button>`).join('')}</div></div>
       <div class="d-sec" style="padding-bottom:8px"><div class="pay"><div><span>1:1 mentoring, 30 min</span><span class="num">₩${m.price}</span></div><div class="tot"><span>Total</span><span class="num">₩${m.price}</span></div><p>Free cancellation up to 24 hours before the session.</p></div></div>
     </div>
     <div class="cta"><button class="btn" data-act="book" ${S.slot===null?'disabled':''}>${S.slot===null?'Pick a time':`Book ${fmtShort(slots[S.slot].d)}, ${slots[S.slot].hh}:00`}</button></div>`;};
-  sheet._draw=draw; sheet._slots=slots; draw();
-  sheet.classList.add('on'); $('#scrim').classList.add('on');
+  sheet._draw=()=>{draw();translate(sheet)}; sheet._slots=slots; draw();
+  translate(sheet); sheet.classList.add('on'); $('#scrim').classList.add('on');
 }
 function openDepSheet(){
   const sug=depOf(prog(),host()); const sheet=$('#sheet');
@@ -1415,13 +1890,13 @@ function openDepSheet(){
       ${S.depOverride||S.retOverride?`<button class="linkbtn" data-act="resetDep">${ic('swap',18)}<span>Use the suggested dates (${fmtShort(D(sug))}, about ${stayShort(STAY[S.progId])})</span></button>`:''}
     </div>
     <div class="cta"><button class="btn" data-act="saveDep">Save travel dates</button></div>`;
-  sheet.classList.add('on'); $('#scrim').classList.add('on');
+  translate(sheet); sheet.classList.add('on'); $('#scrim').classList.add('on');
 }
 function closeSheet(){ $('#sheet').classList.remove('on'); $('#scrim').classList.remove('on'); S.mentorSheet=null; }
 
 /* ---------------- toast ---------------- */
 let tt;
-function toast(msg){const t=$('#toast');t.innerHTML=ic('check',18,2.6)+'<span>'+esc(msg)+'</span>';t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2200)}
+function toast(msg){const t=$('#toast');t.innerHTML=ic('check',18,2.6)+'<span>'+esc(trText(msg))+'</span>';t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2200)}
 
 /* ---------------- render ---------------- */
 const TABS=[['home','list','Home'],['community','chat','Community'],['mentor','mentor','Mentors'],['perks','gift','Perks'],['me','user','Me']];
@@ -1432,15 +1907,17 @@ function render(keepScroll){
   const focusId=document.activeElement&&view.contains(document.activeElement)?document.activeElement.id:null;
   view.innerHTML=SCREENS[S.screen]();
   const ns=view.querySelector('.scroll'); if(ns) ns.scrollTop=top;
-  if(S.screen==='profile'&&$('#homeList')) $('#homeList').innerHTML=homeListHTML();
+  if(S.screen==='profile'&&$('#homeList')) ($('#homeList').innerHTML=homeListHTML(),translate($('#homeList')));
   if(focusId&&document.getElementById(focusId)){const el=document.getElementById(focusId);el.focus();if(el.setSelectionRange&&el.type!=='email')el.setSelectionRange(el.value.length,el.value.length)}
   lastKey=key;
   const tb=$('#tabbar'); const showTabs=S.screen==='app';
   tb.hidden=!showTabs;
   if(showTabs) tb.innerHTML=TABS.map(([k,i,l])=>`<button class="${S.tab===k?'on':''}" data-act="tab" data-v="${k}" aria-current="${S.tab===k?'page':'false'}">${ic(i,24)}${l}</button>`).join('');
+  if(SIDE_LANG!==LANG){ $('#side').innerHTML=SIDE0; $('#sideIcon').innerHTML=ic('plane',20,2); SIDE_LANG=LANG }
   renderJump();
+  translate(view); translate($('#tabbar')); translate($('#side'));
 }
-const JUMPS=[['Splash',{screen:'splash'}],['Home university',{screen:'profile'}],['Host university',{screen:'school'}],['Program',{screen:'program'}],['Checklist',{screen:'app',tab:'home'}],['Checklist item',{screen:'detail'}],['Community',{screen:'app',tab:'community'}],['Verified mentors',{screen:'app',tab:'mentor'}],['Perks',{screen:'app',tab:'perks'}],['Mentor verification',{screen:'mentorApply'}]];
+const JUMPS=[['Language',{screen:'lang'}],['Splash',{screen:'splash'}],['Home university',{screen:'profile'}],['Host university',{screen:'school'}],['Program',{screen:'program'}],['Checklist',{screen:'app',tab:'home'}],['Checklist item',{screen:'detail'}],['Community',{screen:'app',tab:'community'}],['Verified mentors',{screen:'app',tab:'mentor'}],['Perks',{screen:'app',tab:'perks'}],['Mentor verification',{screen:'mentorApply'}]];
 function renderJump(){
   const c=JUMPS.findIndex(([,j])=>j.screen===S.screen&&(!j.tab||j.tab===S.tab));
   $('#jump').innerHTML=JUMPS.map(([l],k)=>`<button class="${k===c?'on':''}" data-jump="${k}"><span class="n">${k+1}</span>${l}</button>`).join('');
@@ -1466,8 +1943,8 @@ document.addEventListener('click',e=>{
     case 'unpickHome': S.profile.univ=''; S.homeQ=''; render(true); setTimeout(()=>$('#homeQ')&&$('#homeQ').focus()); break;
     case 'region': S.region=v; S.scountry='All'; S.slimit=40; render(); break;
     case 'scountry': S.scountry=v; S.slimit=40; render(true); break;
-    case 'more': S.slimit+=60; $('#schoolList').innerHTML=schoolListHTML(); break;
-    case 'pick': {const u=DATA.unis.find(x=>x[0]===v&&x[1]===a.dataset.cc); S.pick=makeHost(u); S.pickDep=null; S.pickRet=null; $('#schoolList').innerHTML=schoolListHTML(); const b=view.querySelector('[data-act="toProgram"]'); b.disabled=false; b.textContent='Next: choose program'; break}
+    case 'more': S.slimit+=60; ($('#schoolList').innerHTML=schoolListHTML(),translate($('#schoolList'))); break;
+    case 'pick': {const u=DATA.unis.find(x=>x[0]===v&&x[1]===a.dataset.cc); S.pick=makeHost(u); S.pickDep=null; S.pickRet=null; ($('#schoolList').innerHTML=schoolListHTML(),translate($('#schoolList'))); const b=view.querySelector('[data-act="toProgram"]'); b.disabled=false; b.textContent='Next: choose program'; break}
     case 'toProgram': if(S.pick){S.pickProg=(S.pick.name===host().name?S.progId:'exS'); go('program')} break;
     case 'pickProg': if(S.pickProg!==v){S.pickProg=v; S.pickDep=null; S.pickRet=null} render(true); break;
     case 'build': S.host=S.pick||S.host; S.progId=S.pickProg; S.depOverride=(S.pickDep&&S.pickDep!==depOf(prog(),S.host))?S.pickDep:null; S.retOverride=(S.pickRet&&S.pickRet>iso(depDate()))?S.pickRet:null; S.posts=null; S.filter='All'; resetDone(); S.screen='building'; render(); setTimeout(()=>{S.screen='app';S.tab='home';render()},1100); break;
@@ -1486,6 +1963,8 @@ document.addEventListener('click',e=>{
     case 'closeSheet': closeSheet(); break;
     case 'slot': S.slot=+v; $('#sheet')._draw(); break;
     case 'editDep': openDepSheet(); break;
+    case 'setLang': setLang(v); render(true); break;
+    case 'openLang': setLang(LANG==='ko'?'en':'ko'); render(true); toast(LANG==='ko'?'언어를 한국어로 바꿨어요':'Language changed to English'); break;
     case 'saveDep': {const v2=$('#depSheetInput').value, r2=$('#retSheetInput').value;
       if(!v2||v2<MIN_DEP){toast('Pick a departure at least 2 weeks from today');return}
       if(!r2||r2<=v2){toast('Return date must be after departure');return}
@@ -1506,10 +1985,10 @@ document.addEventListener('input',e=>{
   const t=e.target;
   if(t.dataset.model) S.profile[t.dataset.model]=t.value;
   if(t.id==='email') S.email=t.value;
-  if(t.id==='homeQ'){S.homeQ=t.value; $('#homeList').innerHTML=homeListHTML()}
-  if(t.id==='schoolQ'){S.sq=t.value; S.slimit=40; $('#schoolList').innerHTML=schoolListHTML()}
+  if(t.id==='homeQ'){S.homeQ=t.value; ($('#homeList').innerHTML=homeListHTML(),translate($('#homeList')))}
+  if(t.id==='schoolQ'){S.sq=t.value; S.slimit=40; ($('#schoolList').innerHTML=schoolListHTML(),translate($('#schoolList')))}
 });
-function updStay(a,b,c,h){const x=$('#'+a),y=$('#'+b),z=$('#'+c); if(x&&y&&z&&x.value&&y.value) z.innerHTML=stayInfoHTML(h,D(x.value),D(y.value))}
+function updStay(a,b,c,h){const x=$('#'+a),y=$('#'+b),z=$('#'+c); if(x&&y&&z&&x.value&&y.value){z.innerHTML=stayInfoHTML(h,D(x.value),D(y.value)); translate(z)}}
 document.addEventListener('change',e=>{
   if(e.target.id==='depInput'&&e.target.value){S.pickDep=e.target.value; if(!S.pickRet){const r=$('#retInput'); if(r) r.value=iso(addDays(D(S.pickDep),STAY[S.pickProg]))} updStay('depInput','retInput','stayInfo',S.pick||host())}
   if(e.target.id==='retInput'&&e.target.value){S.pickRet=e.target.value; updStay('depInput','retInput','stayInfo',S.pick||host())}
@@ -1526,6 +2005,7 @@ function fit(){
 addEventListener('resize',fit); fit();
 
 $('#sideIcon').innerHTML=ic('plane',20,2);
+const SIDE0=$('#side').innerHTML; let SIDE_LANG=null;
 render();
 loadData();
 </script>
