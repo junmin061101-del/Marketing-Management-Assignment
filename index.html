@@ -488,7 +488,7 @@ p{margin:0}
   <p class="lead">A clickable prototype of the app that takes exchange and summer school students from acceptance to departure. Tap through the phone, or jump to any screen below.</p>
   <h4>Screens</h4>
   <div class="jump" id="jump"></div>
-  <p class="note">University lists come from the open Hipo university-domains-list. Mentors, posts, partners and dates are sample data. Today is fixed at Oct 5, 2026.</p>
+  <p class="note">University lists come from the open Hipo university-domains-list. Mentors, posts and partners are sample data. D-days and deadlines are counted from today’s date.</p>
 </aside>
 
 <div class="device" id="device">
@@ -957,7 +957,7 @@ Object.assign(KO,{
 ["Suggested: leave {D} and stay about {S}. Set your own dates if your plans differ. You can change them later.","추천: {D} 출발, 약 {S} 체류. 계획이 다르면 직접 날짜를 정하세요. 나중에 바꿀 수 있어요."],
 ["Suggested for {X}: {D}","{X} 추천 출발일: {D}"],["Use the suggested dates ({D}, about {S})","추천 날짜 사용 ({D}, 약 {S})"],
 ["Verified {D}","{D} 확인"],["Book {D}, {T}","{D} {T} 예약하기"],["Booked with {X}, {D} {T}","{X} 멘토와 {D} {T} 예약했어요"],
-["University lists come from the open Hipo university-domains-list. Mentors, posts, partners and dates are sample data. Today is fixed at {D}.","대학 목록은 공개 데이터 Hipo university-domains-list를 사용해요. 멘토, 게시글, 제휴사, 일정은 예시 데이터이고, 오늘 날짜는 {D}로 고정돼 있어요."],
+["University lists come from the open Hipo university-domains-list. Mentors, posts and partners are sample data. D-days and deadlines are counted from today’s date.","대학 목록은 공개 데이터 Hipo university-domains-list를 사용해요. 멘토, 게시글, 제휴사는 예시 데이터이고, D-day와 마감일은 오늘 날짜 기준으로 계산돼요."],
 ["{X}! Good luck to everyone else getting ready.","{X}! 다들 준비 화이팅이에요."],
 ["{N} reminders are on","알림 {N}개가 켜져 있어요"],["You have {N} mentoring bookings","멘토링 예약이 {N}건 있어요"],["{N} students","{N}명"],["{N} answers","답변 {N}개"],["{N} on","{N}개 켜짐"],["Cheer {N}","응원 {N}"],["{N} reviews","리뷰 {N}개"],
 ["{X} ({N} days)","{X} ({N}일)"],["{X} (suggested)","{X} (추천)"],["{X}(suggested)","{X}(추천)"],["Mentor {X}","멘토 {X}"],
@@ -1011,11 +1011,11 @@ const squash=s=>(s||'').toLowerCase().replace(/[\s.,'’-]+/g,'');
 const uniHit=(name,ko,q)=>{const qs=squash(q); return !!qs&&(squash(name).includes(qs)||squash(ko).includes(qs)||squash(ALIAS[name]).includes(qs))};
 const uniRank=(name,ko,q)=>{const qs=squash(q); return squash(name).startsWith(qs)||squash(ko).startsWith(qs)||(ALIAS[name]||'').toLowerCase().split(' ').some(a=>squash(a)===qs)?0:new RegExp('\\b'+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'i').test(name)?1:2};
 const krKo=name=>DATA&&DATA.kr?((DATA.kr.find(u=>u[0]===name)||[])[2]||''):(name==='Sungkyunkwan University'?'성균관대학교':'');
-const uniLabel=(name,ko)=>LANG==='ko'&&ko?ko:name;
+const uniLabel=name=>name;   // names are always shown in English; Korean names are search-only
 const hi=(name,q)=>{if(!q)return esc(name);const i=name.toLowerCase().indexOf(q.toLowerCase());return i<0?esc(name):esc(name.slice(0,i))+'<mark>'+esc(name.slice(i,i+q.length))+'</mark>'+esc(name.slice(i+q.length))};
 
 /* ---------------- dates ---------------- */
-const TODAY=new Date(2026,9,5);
+const TODAY=(()=>{const n=new Date(); return new Date(n.getFullYear(),n.getMonth(),n.getDate())})();   // the viewer's real date
 const D=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
 const addDays=(d,n)=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+n);
 const dd=d=>Math.round((d-TODAY)/864e5);
@@ -1637,7 +1637,7 @@ const SCREENS={
       <h2 class="ob-title">Tell us about<br>your home university</h2>
       <p class="ob-sub">We use this to match you with mentors and peers from your school.</p>
       <div class="field"><span class="lbl">Home university</span>
-        ${P.univ&&!S.homeQ?`<div class="picked">${ic('school',20)}<span class="t" data-notr>${esc(uniLabel(P.univ,krKo(P.univ)))}<small>${esc(LANG==='ko'?P.univ:(krKo(P.univ)||'South Korea'))}</small></span><button data-act="unpickHome">Change</button></div>`
+        ${P.univ&&!S.homeQ?`<div class="picked">${ic('school',20)}<span class="t"><span data-notr>${esc(P.univ)}</span><small>South Korea</small></span><button data-act="unpickHome">Change</button></div>`
         :`<div class="search">${ic('search',18)}<input class="input" id="homeQ" placeholder="Search ${DATA?DATA.kr.length:''} Korean universities" value="${esc(S.homeQ)}" autocomplete="off"></div><div id="homeList"></div>`}
       </div>
       <div class="field"><label for="major">Major</label>
@@ -1669,7 +1669,7 @@ const SCREENS={
     return `${bar('','go:school')}
     <div class="scroll pad">
       <div class="steps"><i class="on"></i><i class="on"></i><i class="on"></i></div>
-      <div class="school-card"><span class="mono">${esc(h.mono)}</span><span class="t"><b>${esc(h.name)}</b><small>${LANG==='ko'&&h.ko?esc(h.ko)+' · ':''}${esc(h.country)}</small></span><button data-go="school">Change</button></div>
+      <div class="school-card"><span class="mono">${esc(h.mono)}</span><span class="t"><b>${esc(h.name)}</b><small>${esc(h.country)}</small></span><button data-go="school">Change</button></div>
       <div style="margin-top:10px">${linkHTML(lk(pagesOf(h).intl),true)}</div>
       <h2 class="ob-title" style="margin-top:22px">Which program<br>are you going on?</h2>
       <p class="ob-sub">${ps.length} programs at ${esc(h.short)} accept students from Korean partner universities.</p>
@@ -1742,8 +1742,8 @@ function schoolListHTML(){
   const q=S.sq.trim().toLowerCase();
   let list=regionHosts();
   if(S.scountry!=='All') list=list.filter(u=>u[1]===S.scountry);
-  const row=u=>{const h=makeHost(u);const on=S.pick&&S.pick.name===u[0]&&S.pick.cc===u[1]; const kr=LANG==='ko'&&u[3];
-    return `<button class="srow${on?' on':''}" data-act="pick" data-v="${esc(u[0])}" data-cc="${u[1]}"><span class="mono">${esc(h.mono)}</span><span class="t"><b>${kr?esc(u[3]):hi(u[0],S.sq.trim())}</b><small>${kr?esc(u[0])+' · ':''}${esc(h.country)}</small></span>${on?'<span class="ok">'+ic('check',20,2.6)+'</span>':''}</button>`};
+  const row=u=>{const h=makeHost(u);const on=S.pick&&S.pick.name===u[0]&&S.pick.cc===u[1];
+    return `<button class="srow${on?' on':''}" data-act="pick" data-v="${esc(u[0])}" data-cc="${u[1]}"><span class="mono">${esc(h.mono)}</span><span class="t"><b>${hi(u[0],S.sq.trim())}</b><small>${esc(h.country)}</small></span>${on?'<span class="ok">'+ic('check',20,2.6)+'</span>':''}</button>`};
   if(q){
     const pool=S.scountry==='All'?DATA.unis:list;   // a typed search covers every region
     const cq=squash(q);
@@ -1762,8 +1762,8 @@ function homeListHTML(){
   if(!DATA) return '<div class="sugg"><p class="empty">Loading universities…</p></div>';
   const q=S.homeQ.trim().toLowerCase(); if(!q) return '';
   const seen=new Set();
-  const m=DATA.kr.filter(u=>uniHit(u[0],u[2],q)).map(u=>[uniRank(u[0],u[2],q),u]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]).filter(u=>{const k=u[2]||u[0]; if(seen.has(k)) return false; seen.add(k); return true}).slice(0,8);
-  return `<div class="sugg">${m.length?m.map(u=>`<button data-act="pickHome" data-v="${esc(u[0])}">${ic('school',18)}<span class="hn" data-notr><b>${esc(uniLabel(u[0],u[2]))}</b><small>${esc(LANG==='ko'?u[0]:u[2])}</small></span></button>`).join(''):'<p class="empty">No match. Try the Korean or English name.</p>'}</div>`;
+  const m=DATA.kr.filter(u=>uniHit(u[0],u[2],q)).map(u=>[uniRank(u[0],u[2],q),u]).sort((a,b)=>a[0]-b[0]||(a[1][0].split(' ').length-b[1][0].split(' ').length)).map(x=>x[1]).filter(u=>{const k=u[2]||u[0]; if(seen.has(k)) return false; seen.add(k); return true}).slice(0,8);
+  return `<div class="sugg">${m.length?m.map(u=>`<button data-act="pickHome" data-v="${esc(u[0])}">${ic('school',18)}<span class="hn" data-notr><b>${esc(u[0])}</b></span></button>`).join(''):'<p class="empty">No match. Try the Korean or English name.</p>'}</div>`;
 }
 
 function homeTab(){
@@ -1861,7 +1861,7 @@ function meTab(){
   const h=host(),p=prog(),P=S.profile;
   return `<div class="bar main"><h2>Me</h2></div>
   <div class="scroll pad">
-    <div class="me"><span class="ava">J</span><span class="t"><b>Junmin L.</b><small>${esc(P.univ?uniLabel(P.univ,krKo(P.univ)):'Home university not set')} · ${esc(P.major)} · ${P.year}</small></span></div>
+    <div class="me"><span class="ava">J</span><span class="t"><b>Junmin L.</b><small>${esc(P.univ||'Home university not set')} · ${esc(P.major)} · ${P.year}</small></span></div>
     <button class="apply-card" data-go="mentorApply"><span class="t"><b>${S.apply.step>=3?'You’re a verified mentor':'Become a mentor after you return'}</b><small>${S.apply.step>=3?'Manage your mentoring slots':'Verify with your university email and proof of completion'}</small></span>${ic(S.apply.step>=3?'shield':'chev',22)}</button>
     <div class="menu">
       <div class="m">${ic('globe',20)}<span class="t">My program<br><small>${esc(h.name)} · ${p.type} ${p.term}</small></span></div>
