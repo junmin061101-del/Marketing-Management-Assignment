@@ -146,6 +146,9 @@ p{margin:0}
 .sugg button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);font-size:14px}
 .sugg button:last-child{border-bottom:0}
 .sugg button:hover{background:var(--surface)}
+.sugg .hn{display:flex;flex-direction:column;min-width:0}
+.sugg .hn b{font-weight:600}
+.sugg .hn small{font-size:12px;color:var(--ink-3)}
 .sugg .empty{padding:14px;color:var(--ink-3);font-size:13px}
 .sugg mark,.srow mark{background:none;color:var(--primary-ink);font-weight:800}
 
@@ -284,7 +287,15 @@ p{margin:0}
 .src.guess{border-style:dashed}
 .src.guess .ic{color:var(--ink-3)}
 .plink{margin:-2px 2px 0}
-.depfield{margin-top:10px;padding:14px;border-radius:14px;background:var(--surface);display:flex;flex-direction:column;gap:8px}
+.depfield{margin-top:10px;padding:14px;border-radius:14px;background:var(--surface);display:flex;flex-direction:column;gap:10px}
+.dhead{font-size:14px;font-weight:700}
+.dates{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+.datebox,.depfield .datebox{position:relative;display:flex;flex-direction:column;align-items:stretch;gap:3px;padding:10px 12px;border:1px solid var(--line);border-radius:14px;background:var(--bg);min-width:0;cursor:pointer}
+.datebox small{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--ink-2)}
+.datebox small .ic{color:var(--primary-ink)}
+.datebox .dv{font-size:15px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink)}
+.datebox input{position:absolute;inset:0;width:100%;height:100%;min-width:0;margin:0;padding:0;border:0;opacity:0;cursor:pointer;-webkit-appearance:none;appearance:none;font-size:16px}
+.datebox:focus-within{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
 .depfield label{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700}
 .depfield label .ic{color:var(--primary-ink)}
 .depfield .input{height:48px;font-size:15px}
@@ -875,7 +886,7 @@ Object.assign(KO,{
 // english src label tails
 "English Proficiency Requirement":"영어 능력 요건","English proficiency requirement":"영어 능력 요건","English proficiency":"영어 능력","International student info":"국제학생 안내","Exchange partner fact sheet":"교환 협정 안내","Incoming exchange: how to apply":"교환학생 지원 방법","English proficiency requirements":"영어 능력 요건","English requirements":"어학 요건","English requirements for exchange":"교환학생 어학 요건","Overview of USTEP":"USTEP 개요","Application guidelines for exchange":"교환학생 지원 안내","Exchange information sheet 2026–27 (PDF)":"교환학생 안내서 2026–27 (PDF)","Exchange student overview":"교환학생 안내","Incoming exchange students.":"교환학생.","Exchange entry requirements":"교환학생 지원 요건","Admission requirements for exchange":"교환학생 지원 요건","Nomination and application":"추천 및 지원","Visiting student eligibility":"방문학생 지원 자격",
 // toasts
-"Marked as done":"완료로 표시했어요","Google site search":"Google 사이트 검색","Reminders on":"알림을 켰어요","Reminders off":"알림을 껐어요","Thanks! Our team will check and update it":"고마워요! 운영팀이 확인 후 반영할게요","Shared with your program":"같은 프로그램에 공유했어요","Question posted":"질문을 올렸어요",
+"Marked as done":"완료로 표시했어요","Your travel dates":"여행 날짜","Return":"귀국","Leave":"출발","Search in Korean or English, or by country":"한글·영문 학교 이름 또는 나라로 검색","No match. Try the Korean or English name.":"일치하는 학교가 없어요. 한글이나 영문 이름으로 검색해 보세요.","Enter a university email ending in .ac.kr or .edu":".ac.kr 또는 .edu로 끝나는 학교 이메일을 입력하세요","Google site search":"Google 사이트 검색","Reminders on":"알림을 켰어요","Reminders off":"알림을 껐어요","Thanks! Our team will check and update it":"고마워요! 운영팀이 확인 후 반영할게요","Shared with your program":"같은 프로그램에 공유했어요","Question posted":"질문을 올렸어요",
 "Enter a university email ending in .ac.kr":"ac.kr로 끝나는 학교 이메일을 입력하세요","Proof of completion submitted":"수료 증빙을 제출했어요","Your verified badge is live":"인증 배지가 발급됐어요","Pick a departure at least 2 weeks from today":"오늘부터 2주 이후의 출발일을 고르세요","Using the suggested travel dates":"추천 날짜로 되돌렸어요"
 });
 // ---- sentence templates ----
@@ -894,7 +905,7 @@ Object.assign(KO,{
 ["Short stays for your first nights near {X}, and longer rentals if you missed the dorm.","{X} 근처에서 첫 며칠 묵을 숙소와, 기숙사에 떨어졌을 때 구할 장기 숙소예요."],
 ["{N} programs at {X} accept students from Korean partner universities.","{X}에는 한국 협정 대학 학생을 받는 프로그램이 {N}개 있어요."],
 ["Building your {X} checklist for {P}","{P} {X} 체크리스트를 만들고 있어요"],
-["Search {N} Korean universities","국내 대학 {N}곳 검색"],["Search {X} for English requirements","{X}에서 어학 요건 검색"],["Search {X} for “{X}”","{X}에서 “{X}” 검색"],
+["Search {N} Korean universities","국내 대학 {N}곳 검색 (한글·영문)"],["Search {X} for English requirements","{X}에서 어학 요건 검색"],["Search {X} for “{X}”","{X}에서 “{X}” 검색"],
 ["Seoul → {P}, your dates","서울 → {P}, 내 일정"],["Seoul → {P}","서울 → {P}"],
 ["Round trip Seoul → {P}, {D} – {D}. Searches open with your dates filled in.","서울 → {P} 왕복, {D} – {D}. 내 일정이 입력된 검색 결과가 열려요."],
 ["Monthly stays near campus, filtered to {D} – {D}.","{D} – {D} 일정으로 학교 근처 장기 숙소를 보여줘요."],
@@ -993,6 +1004,14 @@ const ic=(n,s=22,sw=2)=>`<svg class="ic" width="${s}" height="${s}" viewBox="0 0
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const rank=(name,q)=>{const n=name.toLowerCase();return n.startsWith(q)?0:new RegExp('\\b'+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).test(n)?1:2};
 const byRank=(arr,q,get)=>arr.map(x=>[rank(get(x),q),x]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+const ALIAS={'Sungkyunkwan University':'SKKU 성대','Korea Advanced Institute of Science & Technology':'KAIST 카이스트','Pohang University of Science and Technology':'POSTECH 포스텍','Hankuk University of Foreign Studies':'HUFS 외대','Seoul National University':'SNU 서울대','Korea University':'KU 고대','Yonsei University':'연대',
+  'Massachusetts Institute of Technology':'MIT','University of California, Berkeley':'UC Berkeley UCB 버클리','University of California, Los Angeles':'UCLA','University of California, San Diego':'UCSD','University of Southern California':'USC','University of Washington':'UW','The University of Texas at Austin':'UT Austin','University of North Carolina at Chapel Hill':'UNC','Boston University':'BU','New York University':'NYU',
+  'National University of Singapore':'NUS','Nanyang Technological University':'NTU','Singapore Management University':'SMU','The Hong Kong University of Science and Technology':'HKUST 홍콩과기대','The University of Hong Kong':'HKU 홍콩대','The Chinese University of Hong Kong':'CUHK 홍콩중문대','National Taiwan University':'NTU 대만대','University of Tokyo':'UTokyo 도쿄대','University of British Columbia':'UBC','Copenhagen Business School':'CBS','ETHZ - ETH Zurich':'ETH 취리히','KU Leuven':'루벤 루뱅'};
+const squash=s=>(s||'').toLowerCase().replace(/[\s.,'’-]+/g,'');
+const uniHit=(name,ko,q)=>{const qs=squash(q); return !!qs&&(squash(name).includes(qs)||squash(ko).includes(qs)||squash(ALIAS[name]).includes(qs))};
+const uniRank=(name,ko,q)=>{const qs=squash(q); return squash(name).startsWith(qs)||squash(ko).startsWith(qs)||(ALIAS[name]||'').toLowerCase().split(' ').some(a=>squash(a)===qs)?0:new RegExp('\\b'+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'i').test(name)?1:2};
+const krKo=name=>DATA&&DATA.kr?((DATA.kr.find(u=>u[0]===name)||[])[2]||''):(name==='Sungkyunkwan University'?'성균관대학교':'');
+const uniLabel=(name,ko)=>LANG==='ko'&&ko?ko:name;
 const hi=(name,q)=>{if(!q)return esc(name);const i=name.toLowerCase().indexOf(q.toLowerCase());return i<0?esc(name):esc(name.slice(0,i))+'<mark>'+esc(name.slice(i,i+q.length))+'</mark>'+esc(name.slice(i+q.length))};
 
 /* ---------------- dates ---------------- */
@@ -1030,7 +1049,7 @@ function monoOf(n){
 function makeHost([name,cc,url]){
   const c=COUNTRIES[cc]||[cc,'asia'];
   const head=name.split(' - ')[0];
-  return {name,cc,url:url||'',country:c[0],region:c[1],mono:monoOf(name),short:head.length<=32?head:name};
+  return {name,cc,url:url||'',ko:arguments[0][3]||'',country:c[0],region:c[1],mono:monoOf(name),short:head.length<=32?head:name};
 }
 async function loadData(){
   try{
@@ -1529,8 +1548,8 @@ function perkGroups(){
 /* ---------------- state ---------------- */
 const S={
   screen:'lang', tab:'home', detail:null, filter:'All',
-  email:'you@korea.ac.kr',
-  profile:{univ:'Korea University',major:'Business Administration',year:'3rd year'},
+  email:'sungkyunkwan@g.skku.edu',
+  profile:{univ:'Sungkyunkwan University',major:'Business Administration',year:'3rd year'},
   homeQ:'',
   region:'us', sq:'', scountry:'All', slimit:40,
   pick:null,
@@ -1576,6 +1595,7 @@ function statusPill(i){
   return '';
 }
 const prettyUrl=u=>u.startsWith('https://www.google.com/search')?'Google site search':u.replace(/^https?:\/\//,'').replace(/^www\./,'').replace(/\/$/,'');
+const dateBox=(id,label,icon,val)=>`<label class="datebox" for="${id}"><small>${ic(icon,14)}<span>${label}</span></small><b class="dv num" data-notr>${fmtY(D(val))}</b><input type="date" id="${id}" min="${MIN_DEP}" value="${val}" aria-label="${label}"></label>`;
 function stayInfoHTML(h,dep,ret){
   const d=Math.round((ret-dep)/864e5);
   if(!(d>0)) return `<b class="warn">Return date must be after departure</b>`;
@@ -1617,7 +1637,7 @@ const SCREENS={
       <h2 class="ob-title">Tell us about<br>your home university</h2>
       <p class="ob-sub">We use this to match you with mentors and peers from your school.</p>
       <div class="field"><span class="lbl">Home university</span>
-        ${P.univ&&!S.homeQ?`<div class="picked">${ic('school',20)}<span class="t">${esc(P.univ)}<small>South Korea</small></span><button data-act="unpickHome">Change</button></div>`
+        ${P.univ&&!S.homeQ?`<div class="picked">${ic('school',20)}<span class="t" data-notr>${esc(uniLabel(P.univ,krKo(P.univ)))}<small>${esc(LANG==='ko'?P.univ:(krKo(P.univ)||'South Korea'))}</small></span><button data-act="unpickHome">Change</button></div>`
         :`<div class="search">${ic('search',18)}<input class="input" id="homeQ" placeholder="Search ${DATA?DATA.kr.length:''} Korean universities" value="${esc(S.homeQ)}" autocomplete="off"></div><div id="homeList"></div>`}
       </div>
       <div class="field"><label for="major">Major</label>
@@ -1637,7 +1657,7 @@ const SCREENS={
       <h2 class="ob-title">Which university<br>accepted you?</h2>
       <p class="ob-sub">Pick your host university. You’ll choose the exact program next.</p>
       <div style="margin-top:20px;--n:4" class="seg" role="tablist">${REGIONS.map(([k,v])=>`<button role="tab" aria-selected="${k===S.region}" class="${k===S.region?'on':''}" data-act="region" data-v="${k}">${v}</button>`).join('')}</div>
-      <div class="search" style="margin-top:12px">${ic('search',18)}<input class="input" id="schoolQ" placeholder="Search by university or country" value="${esc(S.sq)}" autocomplete="off"></div>
+      <div class="search" style="margin-top:12px">${ic('search',18)}<input class="input" id="schoolQ" placeholder="Search in Korean or English, or by country" value="${esc(S.sq)}" autocomplete="off"></div>
       ${top.length>1?`<div class="hscroll" style="margin-top:12px"><button class="chip sm${S.scountry==='All'?' on':''}" data-act="scountry" data-v="All">All<small class="num">${list.length.toLocaleString()}</small></button>${top.map(([cc,n])=>`<button class="chip sm${S.scountry===cc?' on':''}" data-act="scountry" data-v="${cc}">${esc(COUNTRIES[cc][0])}<small class="num">${n}</small></button>`).join('')}</div>`:''}
       <div id="schoolList">${schoolListHTML()}</div>
     </div>
@@ -1649,7 +1669,7 @@ const SCREENS={
     return `${bar('','go:school')}
     <div class="scroll pad">
       <div class="steps"><i class="on"></i><i class="on"></i><i class="on"></i></div>
-      <div class="school-card"><span class="mono">${esc(h.mono)}</span><span class="t"><b>${esc(h.name)}</b><small>${esc(h.country)}</small></span><button data-go="school">Change</button></div>
+      <div class="school-card"><span class="mono">${esc(h.mono)}</span><span class="t"><b>${esc(h.name)}</b><small>${LANG==='ko'&&h.ko?esc(h.ko)+' · ':''}${esc(h.country)}</small></span><button data-go="school">Change</button></div>
       <div style="margin-top:10px">${linkHTML(lk(pagesOf(h).intl),true)}</div>
       <h2 class="ob-title" style="margin-top:22px">Which program<br>are you going on?</h2>
       <p class="ob-sub">${ps.length} programs at ${esc(h.short)} accept students from Korean partner universities.</p>
@@ -1658,10 +1678,8 @@ const SCREENS={
         <p>${p.what}</p>
         <dl><dt>Length</dt><dd>${p.len}</dd><dt>Credits</dt><dd>${p.credits}</dd><dt>Tuition</dt><dd>${p.cost}</dd><dt>English</dt><dd>${engLine(englishOf(h,p))}${englishOf(h,p).verified?'':' (typical)'}</dd><dt>Visa</dt><dd>${h.region==='us'?'F-1 student visa':h.region==='ca'?(STAY[p.id]>183?'eTA + study permit':'eTA'):visaGuide(h,p).title.replace(/^(Apply for|Get|Check) (a |an |your )?/,'').replace(/^./,c=>c.toUpperCase())}</dd><dt>Departure</dt><dd class="num">${fmtY(D(depOf(p,h)))}</dd></dl>
       </button>${p.id===S.pickProg?`<div class="plink">${linkHTML(lk(p.long?pagesOf(h).exch:pagesOf(h).summer),true)}
-        <div class="depfield"><label for="depInput">${ic('plane',18)}<span>Your departure date</span></label>
-          <input class="input" type="date" id="depInput" min="${MIN_DEP}" value="${S.pickDep||depOf(p,h)}">
-          <label for="retInput" style="margin-top:6px">${ic('home',18)}<span>Expected return date</span></label>
-          <input class="input" type="date" id="retInput" min="${MIN_DEP}" value="${S.pickRet||iso(addDays(D(S.pickDep||depOf(p,h)),STAY[p.id]))}">
+        <div class="depfield"><span class="dhead">Your travel dates</span>
+          <div class="dates">${dateBox('depInput','Leave','plane',S.pickDep||depOf(p,h))}${dateBox('retInput','Return','home',S.pickRet||iso(addDays(D(S.pickDep||depOf(p,h)),STAY[p.id])))}</div>
           <div class="stayinfo" id="stayInfo">${stayInfoHTML(h,D(S.pickDep||depOf(p,h)),D(S.pickRet||iso(addDays(D(S.pickDep||depOf(p,h)),STAY[p.id]))))}</div>
           <small>Suggested: leave ${fmtY(D(depOf(p,h)))} and stay about ${stayShort(STAY[p.id])}. Set your own dates if your plans differ. You can change them later.</small></div></div>`:''}`).join('')}
     </div>
@@ -1724,16 +1742,18 @@ function schoolListHTML(){
   const q=S.sq.trim().toLowerCase();
   let list=regionHosts();
   if(S.scountry!=='All') list=list.filter(u=>u[1]===S.scountry);
-  const row=u=>{const h=makeHost(u);const on=S.pick&&S.pick.name===u[0]&&S.pick.cc===u[1];
-    return `<button class="srow${on?' on':''}" data-act="pick" data-v="${esc(u[0])}" data-cc="${u[1]}"><span class="mono">${esc(h.mono)}</span><span class="t"><b>${hi(u[0],S.sq.trim())}</b><small>${esc(h.country)}</small></span>${on?'<span class="ok">'+ic('check',20,2.6)+'</span>':''}</button>`};
+  const row=u=>{const h=makeHost(u);const on=S.pick&&S.pick.name===u[0]&&S.pick.cc===u[1]; const kr=LANG==='ko'&&u[3];
+    return `<button class="srow${on?' on':''}" data-act="pick" data-v="${esc(u[0])}" data-cc="${u[1]}"><span class="mono">${esc(h.mono)}</span><span class="t"><b>${kr?esc(u[3]):hi(u[0],S.sq.trim())}</b><small>${kr?esc(u[0])+' · ':''}${esc(h.country)}</small></span>${on?'<span class="ok">'+ic('check',20,2.6)+'</span>':''}</button>`};
   if(q){
-    const m=byRank(list.filter(u=>u[0].toLowerCase().includes(q)||(COUNTRIES[u[1]][0]).toLowerCase().includes(q)),q,u=>u[0]);
+    const pool=S.scountry==='All'?DATA.unis:list;   // a typed search covers every region
+    const cq=squash(q);
+    const m=pool.filter(u=>uniHit(u[0],u[3],q)||squash(COUNTRIES[u[1]][0]).includes(cq)||squash(NAME_KO[COUNTRIES[u[1]][0]]).includes(cq)).map(u=>[uniRank(u[0],u[3],q),u]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
     return `<p class="sect-label">Results<span class="num">${m.length.toLocaleString()}</span></p>${m.length?m.slice(0,S.slimit).map(row).join(''):'<p class="loadmsg">No universities match. Try another spelling or region.</p>'}${m.length>S.slimit?'<button class="more" data-act="more">Show more</button>':''}`;
   }
   let out='';
   if(S.scountry==='All'){
     const f=FEATURED[S.region].map(n=>list.find(u=>u[0]===n)).filter(Boolean);
-    out+=`<p class="sect-label">Popular with Korean students</p><div class="grid2">${f.map(u=>{const h=makeHost(u);const on=S.pick&&S.pick.name===u[0];return `<button class="uni${on?' on':''}" data-act="pick" data-v="${esc(u[0])}" data-cc="${u[1]}"><span class="mono">${esc(h.mono)}</span><span class="t"><small>${esc(h.country)}</small><b>${esc(u[0])}</b></span></button>`}).join('')}</div>`;
+    out+=`<p class="sect-label">Popular with Korean students</p><div class="grid2">${f.map(u=>{const h=makeHost(u);const on=S.pick&&S.pick.name===u[0];return `<button class="uni${on?' on':''}" data-act="pick" data-v="${esc(u[0])}" data-cc="${u[1]}"><span class="mono">${esc(h.mono)}</span><span class="t"><small>${esc(h.country)}</small><b>${esc(uniLabel(u[0],u[3]))}</b></span></button>`}).join('')}</div>`;
   }
   out+=`<p class="sect-label">All universities<span class="num">${list.length.toLocaleString()}</span></p>${list.slice(0,S.slimit).map(row).join('')}${list.length>S.slimit?'<button class="more" data-act="more">Show more</button>':''}`;
   return out;
@@ -1741,8 +1761,9 @@ function schoolListHTML(){
 function homeListHTML(){
   if(!DATA) return '<div class="sugg"><p class="empty">Loading universities…</p></div>';
   const q=S.homeQ.trim().toLowerCase(); if(!q) return '';
-  const m=byRank(DATA.kr.filter(u=>u[0].toLowerCase().includes(q)),q,u=>u[0]).slice(0,8);
-  return `<div class="sugg">${m.length?m.map(u=>`<button data-act="pickHome" data-v="${esc(u[0])}">${ic('school',18)}<span>${hi(u[0],S.homeQ.trim())}</span></button>`).join(''):'<p class="empty">No match. Try the English name, e.g. “Yonsei”.</p>'}</div>`;
+  const seen=new Set();
+  const m=DATA.kr.filter(u=>uniHit(u[0],u[2],q)).map(u=>[uniRank(u[0],u[2],q),u]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]).filter(u=>{const k=u[2]||u[0]; if(seen.has(k)) return false; seen.add(k); return true}).slice(0,8);
+  return `<div class="sugg">${m.length?m.map(u=>`<button data-act="pickHome" data-v="${esc(u[0])}">${ic('school',18)}<span class="hn" data-notr><b>${esc(uniLabel(u[0],u[2]))}</b><small>${esc(LANG==='ko'?u[0]:u[2])}</small></span></button>`).join(''):'<p class="empty">No match. Try the Korean or English name.</p>'}</div>`;
 }
 
 function homeTab(){
@@ -1840,7 +1861,7 @@ function meTab(){
   const h=host(),p=prog(),P=S.profile;
   return `<div class="bar main"><h2>Me</h2></div>
   <div class="scroll pad">
-    <div class="me"><span class="ava">J</span><span class="t"><b>Junmin L.</b><small>${esc(P.univ||'Home university not set')} · ${esc(P.major)} · ${P.year}</small></span></div>
+    <div class="me"><span class="ava">J</span><span class="t"><b>Junmin L.</b><small>${esc(P.univ?uniLabel(P.univ,krKo(P.univ)):'Home university not set')} · ${esc(P.major)} · ${P.year}</small></span></div>
     <button class="apply-card" data-go="mentorApply"><span class="t"><b>${S.apply.step>=3?'You’re a verified mentor':'Become a mentor after you return'}</b><small>${S.apply.step>=3?'Manage your mentoring slots':'Verify with your university email and proof of completion'}</small></span>${ic(S.apply.step>=3?'shield':'chev',22)}</button>
     <div class="menu">
       <div class="m">${ic('globe',20)}<span class="t">My program<br><small>${esc(h.name)} · ${p.type} ${p.term}</small></span></div>
@@ -1881,10 +1902,7 @@ function openDepSheet(){
     <div class="scroll">
       <h2 class="ob-title" style="font-size:22px;margin-top:6px">Your travel dates</h2>
       <p class="ob-sub">Deadlines move with your departure date. Your length of stay decides which visa you need.</p>
-      <div class="field"><label for="depSheetInput">Departure date</label>
-        <input class="input" type="date" id="depSheetInput" min="${MIN_DEP}" value="${iso(depDate())}"></div>
-      <div class="field" style="margin-top:14px"><label for="retSheetInput">Expected return date</label>
-        <input class="input" type="date" id="retSheetInput" min="${MIN_DEP}" value="${iso(retDate())}"></div>
+      <div class="dates" style="margin-top:18px">${dateBox('depSheetInput','Leave','plane',iso(depDate()))}${dateBox('retSheetInput','Return','home',iso(retDate()))}</div>
       <div class="stayinfo" id="staySheetInfo" style="margin-top:12px">${stayInfoHTML(host(),depDate(),retDate())}</div>
       <p class="ob-sub" id="depHint" style="font-size:13px">Suggested for ${esc(prog().type)} ${esc(prog().term)}: ${fmtY(D(sug))}${host().region==='us'?'. F-1 students can enter the U.S. up to 30 days before the program start date.':'.'}</p>
       ${S.depOverride||S.retOverride?`<button class="linkbtn" data-act="resetDep">${ic('swap',18)}<span>Use the suggested dates (${fmtShort(D(sug))}, about ${stayShort(STAY[S.progId])})</span></button>`:''}
@@ -1976,7 +1994,7 @@ document.addEventListener('click',e=>{
     case 'book': {const sl=$('#sheet')._slots[S.slot]; S.booked[S.mentorSheet]=sl; const m=mentorsFor()[S.mentorSheet]; closeSheet(); render(true); toast(`Booked with ${m.name}, ${fmtShort(sl.d)} ${sl.hh}:00`); break}
     case 'bcat': S.bcat=S.bcat===v?'All':v; render(true); break;
     case 'changeProg': S.pick=host(); S.region=host().region; go('school'); break;
-    case 'ap0': {const em=$('#apEmail').value.trim(); if(!/^[^@\s]+@[^@\s]+\.ac\.kr$/.test(em)){toast('Enter a university email ending in .ac.kr');return} S.apply.email=em; S.apply.step=1; render(true); toast('University email verified'); break}
+    case 'ap0': {const em=$('#apEmail').value.trim(); if(!/^[^@\s]+@[^@\s]+\.(ac\.kr|edu)$/.test(em)){toast('Enter a university email ending in .ac.kr or .edu');return} S.apply.email=em; S.apply.step=1; render(true); toast('University email verified'); break}
     case 'ap1': S.apply.step=2; render(true); toast('Proof of completion submitted'); break;
     case 'ap2': S.apply.step=3; render(true); toast('Your verified badge is live'); break;
   }
@@ -1990,7 +2008,8 @@ document.addEventListener('input',e=>{
 });
 function updStay(a,b,c,h){const x=$('#'+a),y=$('#'+b),z=$('#'+c); if(x&&y&&z&&x.value&&y.value){z.innerHTML=stayInfoHTML(h,D(x.value),D(y.value)); translate(z)}}
 document.addEventListener('change',e=>{
-  if(e.target.id==='depInput'&&e.target.value){S.pickDep=e.target.value; if(!S.pickRet){const r=$('#retInput'); if(r) r.value=iso(addDays(D(S.pickDep),STAY[S.pickProg]))} updStay('depInput','retInput','stayInfo',S.pick||host())}
+  if(e.target.type==='date'&&e.target.value){const dv=e.target.parentElement.querySelector('.dv'); if(dv) dv.textContent=fmtY(D(e.target.value))}
+  if(e.target.id==='depInput'&&e.target.value){S.pickDep=e.target.value; if(!S.pickRet){const r=$('#retInput'); if(r){r.value=iso(addDays(D(S.pickDep),STAY[S.pickProg])); r.parentElement.querySelector('.dv').textContent=fmtY(D(r.value))}} updStay('depInput','retInput','stayInfo',S.pick||host())}
   if(e.target.id==='retInput'&&e.target.value){S.pickRet=e.target.value; updStay('depInput','retInput','stayInfo',S.pick||host())}
   if(e.target.id==='depSheetInput'||e.target.id==='retSheetInput') updStay('depSheetInput','retSheetInput','staySheetInfo',host());
   if(e.target.id==='apFile'&&e.target.files[0]){S.apply.file=e.target.files[0].name; render(true)}
