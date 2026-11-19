@@ -425,6 +425,42 @@ p{margin:0}
 .offer b{display:block;font-size:15px}
 .offer small{display:block;font-size:13px;color:var(--ink-2)}
 .offer .deal{display:block;font-size:13px;font-weight:800;color:var(--primary-ink);margin-top:4px}
+.csearch{position:relative;display:block}
+.csearch .ic{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--ink-3);pointer-events:none}
+.csearch .input{padding-left:42px;height:46px;font-size:15px}
+.mychips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:12px -20px 0;padding:0 20px}
+.mychips:empty{display:none}
+.mychips .chip{display:inline-flex;align-items:center;gap:4px}
+.ccard{margin-top:12px;padding:16px;border-radius:18px;background:var(--surface)}
+.ctop{display:flex;align-items:center;gap:12px}
+.ctop .mono{background:var(--bg)}
+.ctop .t{flex:1;min-width:0}.ctop b{display:block;font-size:16px;font-weight:800;overflow-wrap:anywhere}.ctop small{font-size:12px;color:var(--ink-2)}
+.ctop .chip{display:inline-flex;align-items:center;gap:4px;flex:none}
+.ctop .btn{flex:none}
+.cnote{margin-top:10px;font-size:12px;color:var(--ink-3)}
+.clock small{display:block;font-size:13px;color:var(--ink-2);margin:-4px 0 12px;line-height:1.5}
+.input.area{height:auto;padding:12px 14px;font-size:15px;line-height:1.5;resize:vertical;font-family:inherit}
+.hint{margin-top:6px;font-size:12px !important;color:var(--ink-3) !important;line-height:1.5 !important}
+.reqbox{padding:14px;border-radius:14px;background:var(--surface);display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.reqbox p{font-size:14px !important;white-space:pre-wrap;overflow-wrap:anywhere}
+.chatrow .ava{width:40px;height:40px;font-size:14px;background:var(--primary-soft);color:var(--primary-ink)}
+.chatrow small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat{display:flex;flex-direction:column;gap:10px}
+.chat-info{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:14px;background:var(--primary-soft);font-size:13px;color:var(--ink-2);line-height:1.5;margin-bottom:6px}
+.chat-info b{color:var(--ink)}.chat-info .ic{color:var(--primary-ink);flex:none;margin-top:1px}
+.msg{max-width:80%;display:flex;flex-direction:column;gap:3px}
+.msg p{padding:10px 14px;border-radius:18px;font-size:15px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+.msg time{font-size:11px;color:var(--ink-3)}
+.msg.me{align-self:flex-end;align-items:flex-end}
+.msg.me p{background:var(--primary);color:var(--on-primary);border-bottom-right-radius:6px}
+.msg.them{align-self:flex-start}
+.msg.them p{background:var(--surface);color:var(--ink);border-bottom-left-radius:6px}
+.msg .rq{font-size:11px;font-weight:700;color:var(--primary-ink)}
+.msg.typing p{color:var(--ink-3);letter-spacing:2px}
+.chatbar{display:flex;gap:8px;border-top:1px solid var(--line)}
+.chatbar .input{height:44px;font-size:15px;border-radius:22px}
+.chatbar .btn{border-radius:22px;flex:none}
+.bar h2 .badge{margin-left:6px;vertical-align:middle}
 .why{margin-top:18px;font-size:12px;color:var(--ink-3);line-height:1.6}
 .sample{display:inline-flex;font-size:11px;font-weight:700;color:var(--ink-3);border:1px solid var(--line);border-radius:6px;padding:1px 6px}
 
@@ -488,7 +524,7 @@ p{margin:0}
   <p class="lead">A clickable prototype of the app that takes exchange and summer school students from acceptance to departure. Tap through the phone, or jump to any screen below.</p>
   <h4>Screens</h4>
   <div class="jump" id="jump"></div>
-  <p class="note">University lists come from the open Hipo university-domains-list. Mentors, posts and partners are sample data. D-days and deadlines are counted from today’s date.</p>
+  <p class="note">University lists come from the open Hipo university-domains-list and refresh every day. Official links and English score sources are rechecked every morning. Mentors, posts and partners are sample data. D-days and deadlines are counted from today’s date.</p>
 </aside>
 
 <div class="device" id="device">
@@ -617,7 +653,7 @@ Object.assign(KO,{
 "Deadline reminders":"마감 알림","3 days and 1 day before, 9 AM":"3일 전, 1일 전 오전 9시","Ask a mentor who has done this step":"이 단계를 마친 멘토에게 물어보기","Something changed? Report it":"바뀐 내용이 있나요? 제보하기",
 "Mark as done":"완료로 표시","Mark as not done":"완료 취소","Editorial team":"운영팀",
 // english card
-"Minimum scores":"최소 점수","Verified Oct 2026":"2026년 10월 확인","Typical scores":"일반적 점수","Not verified":"미확인","typical":"일반적 범위","Test":"시험","Not required":"불필요",
+"Minimum scores":"최소 점수","Verified Oct 2026":"2026년 10월 확인","Search other universities’ communities":"다른 대학 커뮤니티 검색","Search communities":"커뮤니티 검색","Communities":"커뮤니티","No universities match. Try another spelling.":"일치하는 대학이 없어요. 다른 철자로 검색해 보세요.","My program":"내 프로그램","Joined":"가입됨","Join":"가입","Leave community":"커뮤니티 나가기","Your program’s community":"내 프로그램 커뮤니티","Join to take part":"가입하고 참여하기","Anyone can read. Only members can share progress, ask questions and cheer.":"누구나 읽을 수 있어요. 진행 상황 공유, 질문, 응원은 가입한 멤버만 할 수 있어요.","Join this community":"이 커뮤니티 가입하기","Join this community first":"먼저 커뮤니티에 가입하세요","Join this community to cheer":"응원하려면 커뮤니티에 가입하세요","Shared with the community":"커뮤니티에 공유했어요","You left this community":"커뮤니티에서 나왔어요","Chat open":"채팅 가능","Request sent":"요청 보냄","My requests & chats":"내 요청 · 채팅","Waiting for the mentor to accept":"멘토 수락 대기 중","Chat":"채팅","Pending":"대기 중","Mentor requests & chats":"멘토 요청 · 채팅","Send a request first. Once the mentor accepts, a private 1:1 chat opens and you pay for the session. Only students who completed the program can become mentors. Mentors receive the session fee, minus a platform commission.":"먼저 요청을 보내세요. 멘토가 수락하면 1:1 개인 채팅이 열리고 그때 세션 비용을 결제해요. 프로그램을 수료한 학생만 멘토가 될 수 있어요. 멘토는 플랫폼 수수료를 뺀 세션 비용을 받아요.","Your request":"내 요청","Mentors usually reply within a day. A private chat opens when they accept.":"멘토는 보통 하루 안에 답해요. 수락하면 1:1 개인 채팅이 열려요.","What do you need help with?":"어떤 도움이 필요한가요?","e.g. I’m applying for the spring exchange. Can you check my course list and tell me about housing?":"예: 봄학기 교환학생 준비 중이에요. 수강 과목 리스트를 봐주시고 숙소 얘기도 듣고 싶어요.","The mentor reads this before accepting. Be specific about your program and questions.":"멘토가 수락하기 전에 읽어요. 프로그램과 궁금한 점을 구체적으로 적어 주세요.","You pay only after the mentor accepts. Free cancellation up to 24 hours before the session.":"멘토가 수락한 뒤에만 결제돼요. 세션 24시간 전까지 무료로 취소할 수 있어요.","Write your request":"요청사항을 적어 주세요","Only you and the mentor can see this chat. Keep payments inside the app.":"이 채팅은 나와 멘토만 볼 수 있어요. 결제는 앱 안에서만 하세요.","Write a message":"메시지 입력","Message":"메시지","Send":"보내기","Pick a time":"시간을 고르세요","Source changed. Re-checking":"원문 변경, 재확인 중","The official page no longer shows these exact numbers. Confirm there before you book a test.":"공식 페이지에서 이 점수를 더 이상 찾을 수 없어요. 시험 예약 전에 꼭 확인하세요.","Typical scores":"일반적 점수","Not verified":"미확인","typical":"일반적 범위","Test":"시험","Not required":"불필요",
 "Academic":"아카데믹","Duolingo English Test":"듀오링고 영어 시험",
 "or 5.0 on the new 1–6 scale":"또는 새 1–6 점수 체계 5.0","or 4.0 on the new scale":"또는 새 점수 체계 4.0","or 4 on the new scale":"또는 새 점수 체계 4","or 5 on the new scale":"또는 새 점수 체계 5","or 4.5 on the new scale":"또는 새 점수 체계 4.5","or Level 4+ on the new scale":"또는 새 점수 체계 Level 4 이상",
 "22+ in Speaking and Writing; or 4.5 on the new scale":"말하기·쓰기 22점 이상, 또는 새 점수 체계 4.5","no band below 6.0":"모든 영역 6.0 이상","no part below 6.0":"모든 영역 6.0 이상","no subtest below 6.5":"모든 영역 6.5 이상","6.5 in each component":"모든 영역 6.5 이상",
@@ -956,8 +992,8 @@ Object.assign(KO,{
 ["Stay: {S}. Visa steps updated","체류 기간: {S}. 비자 안내가 바뀌었어요"],["Stay: {S}. Deadlines updated","체류 기간: {S}. 마감일을 업데이트했어요"],["Stay: {S}","체류 기간: {S}"],
 ["Suggested: leave {D} and stay about {S}. Set your own dates if your plans differ. You can change them later.","추천: {D} 출발, 약 {S} 체류. 계획이 다르면 직접 날짜를 정하세요. 나중에 바꿀 수 있어요."],
 ["Suggested for {X}: {D}","{X} 추천 출발일: {D}"],["Use the suggested dates ({D}, about {S})","추천 날짜 사용 ({D}, 약 {S})"],
-["Verified {D}","{D} 확인"],["Book {D}, {T}","{D} {T} 예약하기"],["Booked with {X}, {D} {T}","{X} 멘토와 {D} {T} 예약했어요"],
-["University lists come from the open Hipo university-domains-list. Mentors, posts and partners are sample data. D-days and deadlines are counted from today’s date.","대학 목록은 공개 데이터 Hipo university-domains-list를 사용해요. 멘토, 게시글, 제휴사는 예시 데이터이고, D-day와 마감일은 오늘 날짜 기준으로 계산돼요."],
+["Verified {D}","{D} 확인"],["{N} programs","프로그램 {N}개"],["Waiting for {X} to accept","{X} 멘토의 수락을 기다리는 중"],["Send request for {D}, {T}","{D} {T}로 요청 보내기"],["Session {D}, {T} KST","세션 {D} {T} (한국 시간)"],["{D}, {T} KST","{D} {T} (한국 시간)"],["Request sent to {X}","{X} 멘토에게 요청을 보냈어요"],["{X} accepted your request. You can chat now","{X} 멘토가 요청을 수락했어요. 이제 채팅할 수 있어요"],["Joined the {X} community","{X} 커뮤니티에 가입했어요"],["Checked {D}","{D} 확인"],["Links checked {D}","링크 점검 {D}"],["Book {D}, {T}","{D} {T} 예약하기"],["Booked with {X}, {D} {T}","{X} 멘토와 {D} {T} 예약했어요"],
+["University lists come from the open Hipo university-domains-list and refresh every day. Official links and English score sources are rechecked every morning. Mentors, posts and partners are sample data. D-days and deadlines are counted from today’s date.","대학 목록은 공개 데이터 Hipo university-domains-list를 사용하고 매일 갱신돼요. 공식 링크와 영어 점수 출처는 매일 아침 다시 점검해요. 멘토, 게시글, 제휴사는 예시 데이터이고, D-day와 마감일은 오늘 날짜 기준으로 계산돼요."],
 ["{X}! Good luck to everyone else getting ready.","{X}! 다들 준비 화이팅이에요."],
 ["{N} reminders are on","알림 {N}개가 켜져 있어요"],["You have {N} mentoring bookings","멘토링 예약이 {N}건 있어요"],["{N} students","{N}명"],["{N} answers","답변 {N}개"],["{N} on","{N}개 켜짐"],["Cheer {N}","응원 {N}"],["{N} reviews","리뷰 {N}개"],
 ["{X} ({N} days)","{X} ({N}일)"],["{X} (suggested)","{X} (추천)"],["{X}(suggested)","{X}(추천)"],["Mentor {X}","멘토 {X}"],
@@ -1051,10 +1087,16 @@ function makeHost([name,cc,url]){
   const head=name.split(' - ')[0];
   return {name,cc,url:url||'',ko:arguments[0][3]||'',country:c[0],region:c[1],mono:monoOf(name),short:head.length<=32?head:name};
 }
+/* Daily accuracy check (scripts/verify-data.mjs, run every morning by GitHub Actions) */
+let STATUS=null;
+const linkState=u=>STATUS&&STATUS.links[u]?STATUS.links[u].s:'';
+const checkedDay=()=>STATUS?new Date(STATUS.checkedAt):null;
 async function loadData(){
+  const st=fetch('data/status.json',{cache:'no-cache'}).then(r=>r.json()).then(j=>{STATUS=j}).catch(()=>{});
   try{
-    const r=await fetch('data/universities.json'); DATA=await r.json(); COUNTRIES=DATA.countries; buildNameKo(COUNTRIES);
+    const r=await fetch('data/universities.json',{cache:'no-cache'}); DATA=await r.json(); COUNTRIES=DATA.countries; buildNameKo(COUNTRIES);
   }catch(e){ DATA={unis:[],kr:[],countries:COUNTRIES,error:true}; }
+  await st;
   render(true);
 }
 
@@ -1074,9 +1116,10 @@ const PROGRAMS=[
     what:'Join a short 2–4 week course or cultural immersion program over winter break.',len:'2–4 weeks',credits:'2–6 credits',cost:'Program fee'}
 ];
 const hash=s=>{let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))>>>0;return h};
+const NO_SUMMER=new Set(['University of Helsinki']); // Helsinki Summer School was discontinued in 2021
 function programsOf(h){ // not every host offers every program type
   const x=hash(h.name);
-  return PROGRAMS.filter(p=>!(p.id==='visit'&&x%3===0)&&!(p.id==='ws'&&x%4===1));
+  return PROGRAMS.filter(p=>!(p.id==='visit'&&x%3===0)&&!(p.id==='ws'&&x%4===1)&&!(p.id==='ss'&&NO_SUMMER.has(h.name)));
 }
 function depOf(p,h){
   const na=h.region==='us'||h.region==='ca', jp=h.cc==='JP';
@@ -1102,8 +1145,8 @@ function stayImpact(h,d){
   return d>90?'Over 90 days: a student visa is likely needed.':'Up to 90 days: often visa-free. Check the embassy rules.';
 }
 /* ---------------- host university pages (verified links; others fall back to a site search) ---------------- */
-const HOST_PAGES={"Harvard University":{"summer":"https://summer.harvard.edu/","housing":"https://summer.harvard.edu/student-life/housing/","intl":"https://www.hio.harvard.edu/"},"Stanford University":{"intl":"https://bechtel.stanford.edu/","summer":"https://summer.stanford.edu/","housing":"https://rde.stanford.edu/"},"University of California, Berkeley":{"intl":"https://internationaloffice.berkeley.edu/","summer":"https://summer.berkeley.edu/","exch":"https://internationaloffice.berkeley.edu/students/exchange","housing":"https://housing.berkeley.edu/"},"University of California, Los Angeles":{"intl":"https://internationalcenter.ucla.edu/","summer":"https://summer.ucla.edu/","housing":"https://reslife.ucla.edu/"},"University of California, San Diego":{"intl":"https://ispo.ucsd.edu/","summer":"https://summersession.ucsd.edu/","housing":"https://hdh.ucsd.edu/"},"University of Pennsylvania":{"summer":"https://summer.sas.upenn.edu/","intl":"https://global.upenn.edu/isss"},"Yale University":{"intl":"https://oiss.yale.edu/","summer":"https://summer.yale.edu/"},"Cornell University":{"intl":"https://international.cornell.edu/","summer":"https://sce.cornell.edu/"},"Massachusetts Institute of Technology":{"intl":"https://iso.mit.edu/"},"University of Chicago":{"intl":"https://internationalaffairs.uchicago.edu/","summer":"https://summer.uchicago.edu/"},"Duke University":{"summer":"https://summersession.duke.edu/"},"Georgetown University":{"intl":"https://internationalservices.georgetown.edu/","summer":"https://summer.georgetown.edu/"},"University of Washington":{"intl":"https://iss.washington.edu/","exch":"https://iss.washington.edu/","housing":"https://hfs.uw.edu/","summer":"https://summer.uw.edu/"},"The University of Texas at Austin":{"intl":"https://global.utexas.edu/isss","summer":"https://summer.utexas.edu/","exch":"https://global.utexas.edu/","housing":"https://housing.utexas.edu/"},"University of North Carolina at Chapel Hill":{"intl":"https://isss.unc.edu/","summer":"https://summer.unc.edu/","exch":"https://studyabroad.unc.edu/","housing":"https://housing.unc.edu/"},"Boston University":{"intl":"https://www.bu.edu/isso/","summer":"https://www.bu.edu/summer/","housing":"https://www.bu.edu/housing/"},"University of Southern California":{"intl":"https://ois.usc.edu/","summer":"https://summer.usc.edu/","housing":"https://housing.usc.edu/"},"University of Illinois Urbana-Champaign":{"intl":"https://isss.illinois.edu/"},"University of Wisconsin - Madison":{"summer":"https://summer.wisc.edu/","intl":"https://iss.wisc.edu/"},"Purdue University":{"intl":"https://www.purdue.edu/ippu/iss/"},"Pennsylvania State University":{"intl":"https://global.psu.edu/category/international-students","summer":"https://summer.psu.edu/"},"Arizona State University":{"intl":"https://issc.asu.edu/","summer":"https://summer.asu.edu/"},"Emory University":{"intl":"https://isss.emory.edu/"},"Georgia Institute of Technology":{"intl":"https://oie.gatech.edu/"},"University of Toronto":{"intl":"https://studentlife.utoronto.ca/department/centre-for-international-experience/","summer":"https://summerabroad.utoronto.ca/","exch":"https://learningabroad.utoronto.ca/","housing":"https://housing.utoronto.ca/"},"University of British Columbia":{"summer":"https://extendedlearning.ubc.ca/","intl":"https://students.ubc.ca/international-student-guide"},"McGill University":{"intl":"https://www.mcgill.ca/internationalstudents/","summer":"https://www.mcgill.ca/summer/","exch":"https://www.mcgill.ca/students/international/"},"Queen's University":{"intl":"https://quic.queensu.ca/","exch":"https://quic.queensu.ca/"},"Simon Fraser University":{"intl":"https://www.sfu.ca/students/isap.html"},"University of Ottawa":{"intl":"https://www.uottawa.ca/study/international-students"},"National University of Singapore":{"intl":"https://www.nus.edu.sg/gro/","summer":"https://nus.edu.sg/gro/global-programmes","exch":"https://nus.edu.sg/gro/global-programmes/student-exchange/incoming-exchangers"},"Waseda University":{"intl":"https://www.waseda.jp/inst/cie/en/","exch":"https://www.waseda.jp/inst/cie/en/","summer":"https://www.waseda.jp/inst/cie/en/to-waseda/short"},"Keio University":{"intl":"https://www.keio.ac.jp/en/admissions/","exch":"https://www.ic.keio.ac.jp/en/study/exchange/"},"Kyoto University":{"exch":"https://www.oc.kyoto-u.ac.jp/en/"},"The University of Hong Kong":{"intl":"https://intlaffairs.hku.hk/","exch":"https://intlaffairs.hku.hk/exchange"},"The Hong Kong University of Science and Technology":{"intl":"https://ugadmin.hkust.edu.hk/","exch":"https://studyabroad.hkust.edu.hk/"},"Peking University":{"intl":"https://www.isd.pku.edu.cn/"},"Tsinghua University":{"intl":"https://www.tsinghua.edu.cn/en/Admissions.htm"},"Fudan University":{"intl":"https://iso.fudan.edu.cn/"},"Shanghai Jiao Tong University":{"intl":"https://isc.sjtu.edu.cn/"},"Zhejiang University":{"intl":"https://iczu.zju.edu.cn/"},"National Taiwan University":{"intl":"https://oia.ntu.edu.tw/","exch":"https://oia.ntu.edu.tw/en/incoming-students/","summer":"https://oia.ntu.edu.tw/en/summer-programs/"},"KU Leuven":{"exch":"https://www.kuleuven.be/english/apply/application-instructions/instructions-exchange","summer":"https://www.kuleuven.be/english/summer-schools","intl":"https://www.kuleuven.be/global/going-abroad/incomingstudentmobility"},"University of Amsterdam":{"exch":"https://www.uva.nl/en/education/exchange/global-exchange-programme/global-exchange-programme.html","summer":"https://summerschool.uva.nl/"},"Lund University":{"intl":"https://www.lunduniversity.lu.se/admissions","exch":"https://www.lunduniversity.lu.se/study/exchange-and-study-abroad/exchange-studies/exchange-application-and-acceptance/application-guide-incoming-exchange-students"},"Bocconi University":{"intl":"https://www.unibocconi.it/en/programs","exch":"https://www.unibocconi.it/en/international-students","summer":"https://www.unibocconi.it/en/programs/summer-school"},"Copenhagen Business School":{"intl":"https://www.cbs.dk/en/study/internationals","summer":"https://www.cbs.dk/en/study/cbs-summer-university","exch":"https://www.cbs.dk/en/study-programmes/international-students/exchange-students"},"Erasmus University Rotterdam":{"intl":"https://www.eur.nl/en"},"University of Edinburgh":{"intl":"https://www.ed.ac.uk/studying/international","housing":"https://www.accom.ed.ac.uk/","summer":"https://study.ed.ac.uk/summer-school"},"University of Oxford":{"summer":"https://www.conted.ox.ac.uk/about/summer-schools","intl":"https://www.ox.ac.uk/students/visa"},"University of Cambridge":{"intl":"https://www.internationalstudents.cam.ac.uk/","summer":"https://www.ice.cam.ac.uk/intensive-study/international-summer-programmes"},"Imperial College London":{"intl":"https://www.imperial.ac.uk/study/international-students/"},"King's College London, University of London":{"intl":"https://www.kcl.ac.uk/international"},"University of Warwick":{"intl":"https://warwick.ac.uk/services/international/","summer":"https://warwick.ac.uk/study/summer-with-warwick/"},"University of Manchester":{"intl":"https://www.manchester.ac.uk/study/international/","exch":"https://www.manchester.ac.uk/study/international/study-abroad-programmes/"},"University College Dublin":{"intl":"https://www.ucd.ie/global/"},"ETHZ - ETH Zurich":{"intl":"https://ethz.ch/en/studies.html"},"Universität Mannheim":{"exch":"https://www.uni-mannheim.de/en/academics/coming-to-mannheim/"},"Ludwig-Maximilians-Universität München":{"intl":"https://www.lmu.de/en/study/"},"Technische Universität München":{"intl":"https://www.tum.de/en/studies/international-students"},"Freie Universität Berlin":{"intl":"https://www.fu-berlin.de/en/studium/international/","summer":"https://www.fubis.org/"},"Maastricht University":{"intl":"https://www.maastrichtuniversity.nl/support","exch":"https://www.maastrichtuniversity.nl/education/exchange"},"Universiteit Leiden":{"intl":"https://www.universiteitleiden.nl/en/education/admission-and-application/international-students","exch":"https://www.universiteitleiden.nl/en/education/study-programmes/exchange","summer":"https://www.universiteitleiden.nl/en/education/summer-schools"},"Utrecht University":{"intl":"https://www.uu.nl/en","exch":"https://www.uu.nl/en/education/exchange-students","summer":"https://www.utrechtsummerschool.nl/"},"University of Copenhagen":{"intl":"https://studies.ku.dk/","exch":"https://studies.ku.dk/","summer":"https://studies.ku.dk/summer-school/"},"Aalto University":{"intl":"https://www.aalto.fi/en/study-at-aalto"},"University of Helsinki":{"intl":"https://www.helsinki.fi/en/admissions-and-education/international-students","exch":"https://www.helsinki.fi/en/admissions-and-education/apply-exchange-studies","summer":"https://www.helsinki.fi/en/summer-school"},"Universidad Complutense de Madrid":{"intl":"https://www.ucm.es/english"},"Wirtschaftsuniversität Wien":{"intl":"https://www.wu.ac.at/en/","exch":"https://www.wu.ac.at/en/programs/incoming-students"},"Columbia University":{"intl":"https://isso.columbia.edu/"},"New York University":{"intl":"https://www.nyu.edu/students/student-information-and-resources/student-visa-and-immigration.html","summer":"https://www.nyu.edu/admissions/summer-sessions.html"},"University of Michigan - Ann Arbor":{"intl":"https://internationalcenter.umich.edu/"},"University of Minnesota":{"intl":"https://isss.umn.edu/"},"Nanyang Technological University":{"exch":"https://www.ntu.edu.sg/education/student-exchanges/exchange-programmes/inbound-programmes"},"University of Tokyo":{"intl":"https://www.u-tokyo.ac.jp/en/prospective-students/prospective_students.html","exch":"https://www.u-tokyo.ac.jp/en/academics/ustep.html"},"Uppsala University":{"exch":"https://www.uu.se/en/study/exchange-studies"},"The Chinese University of Hong Kong":{"intl":"https://www.oal.cuhk.edu.hk/"},"York University":{"intl":"https://yorkinternational.yorku.ca/"},"University of Dublin, Trinity College":{"intl":"https://www.tcd.ie/study/international/","exch":"https://www.tcd.ie/study/visiting/"}};
-const SUMMER_NAME={'Harvard University':'Harvard Summer School','University of California, Berkeley':'Berkeley Summer Sessions','University of California, Los Angeles':'UCLA Summer Sessions','University of Washington':'UW Summer Quarter','Stanford University':'Stanford Summer Session','Yale University':'Yale Summer Session','University of Chicago':'UChicago Summer Session','University of Pennsylvania':'Penn Summer','Georgetown University':'Georgetown Summer Sessions','Boston University':'BU Summer Term','University of Southern California':'USC Summer Programs','University of North Carolina at Chapel Hill':'UNC Summer School','The University of Texas at Austin':'UT Austin Summer Session','Cornell University':'Cornell Summer Session','Duke University':'Duke Summer Session','University of California, San Diego':'UC San Diego Summer Session','Copenhagen Business School':'CBS Summer University','University of Edinburgh':'Edinburgh Summer School','Waseda University':'Waseda Short-Term Programs','McGill University':'McGill Summer Studies','University of Toronto':'U of T Summer Abroad','University of Cambridge':'Cambridge International Summer Programmes','University of Oxford':'Oxford Summer Schools',"King's College London, University of London":'King’s Summer School','University of Warwick':'Summer with Warwick','Bocconi University':'Bocconi Summer School','University of Amsterdam':'UvA Summer Programmes','KU Leuven':'KU Leuven Summer Schools','Peking University':'PKU Summer School','National Taiwan University':'NTU Summer Programs','National University of Singapore':'NUS Summer Programmes','Utrecht University':'Utrecht Summer School','University of Helsinki':'Helsinki Summer School','University of Copenhagen':'UCPH Summer School','Freie Universität Berlin':'FUBiS','ETHZ - ETH Zurich':'ETH Summer Schools'};
+const HOST_PAGES={"Harvard University":{"summer":"https://summer.harvard.edu/","housing":"https://summer.harvard.edu/student-life/housing/","intl":"https://www.hio.harvard.edu/"},"Stanford University":{"intl":"https://bechtel.stanford.edu/","summer":"https://summer.stanford.edu/","housing":"https://rde.stanford.edu/"},"University of California, Berkeley":{"intl":"https://internationaloffice.berkeley.edu/","summer":"https://summer.berkeley.edu/","exch":"https://internationaloffice.berkeley.edu/students/exchange","housing":"https://housing.berkeley.edu/"},"University of California, Los Angeles":{"intl":"https://internationalcenter.ucla.edu/","summer":"https://summer.ucla.edu/","housing":"https://reslife.ucla.edu/"},"University of California, San Diego":{"intl":"https://ispo.ucsd.edu/","summer":"https://summersession.ucsd.edu/","housing":"https://hdh.ucsd.edu/"},"University of Pennsylvania":{"summer":"https://summer.sas.upenn.edu/","intl":"https://global.upenn.edu/isss"},"Yale University":{"intl":"https://oiss.yale.edu/","summer":"https://summer.yale.edu/"},"Cornell University":{"intl":"https://international.cornell.edu/","summer":"https://sce.cornell.edu/"},"Massachusetts Institute of Technology":{"intl":"https://iso.mit.edu/"},"University of Chicago":{"intl":"https://internationalaffairs.uchicago.edu/","summer":"https://summer.uchicago.edu/"},"Duke University":{"summer":"https://summersession.duke.edu/"},"Georgetown University":{"intl":"https://internationalservices.georgetown.edu/","summer":"https://summer.georgetown.edu/"},"University of Washington":{"intl":"https://iss.washington.edu/","exch":"https://iss.washington.edu/","housing":"https://hfs.uw.edu/","summer":"https://summer.uw.edu/"},"The University of Texas at Austin":{"intl":"https://global.utexas.edu/isss","exch":"https://global.utexas.edu/isss/advising-services/student-exchange-program","housing":"https://housing.utexas.edu/"},"University of North Carolina at Chapel Hill":{"intl":"https://isss.unc.edu/","summer":"https://summer.unc.edu/","exch":"https://studyabroad.unc.edu/","housing":"https://housing.unc.edu/"},"Boston University":{"intl":"https://www.bu.edu/isso/","summer":"https://www.bu.edu/summer/","housing":"https://www.bu.edu/housing/"},"University of Southern California":{"intl":"https://ois.usc.edu/","housing":"https://housing.usc.edu/"},"University of Illinois Urbana-Champaign":{"intl":"https://isss.illinois.edu/"},"University of Wisconsin - Madison":{"summer":"https://summer.wisc.edu/","intl":"https://iss.wisc.edu/"},"Purdue University":{"intl":"https://www.purdue.edu/ippu/iss/"},"Pennsylvania State University":{"intl":"https://global.psu.edu/category/international-students","summer":"https://summer.psu.edu/"},"Arizona State University":{"intl":"https://issc.asu.edu/","summer":"https://summer.asu.edu/"},"Emory University":{"intl":"https://isss.emory.edu/"},"Georgia Institute of Technology":{"intl":"https://oie.gatech.edu/"},"University of Toronto":{"intl":"https://internationalexperience.utoronto.ca/","exch":"https://learningabroad.utoronto.ca/inbound-visiting/inbound-exchange/","housing":"https://housing.utoronto.ca/"},"University of British Columbia":{"summer":"https://extendedlearning.ubc.ca/","intl":"https://students.ubc.ca/international-student-guide"},"McGill University":{"intl":"https://www.mcgill.ca/internationalstudents/","summer":"https://www.mcgill.ca/summer/","exch":"https://www.mcgill.ca/isa/student/special/visiting"},"Queen's University":{"intl":"https://quic.queensu.ca/","exch":"https://quic.queensu.ca/"},"Simon Fraser University":{"intl":"https://www.sfu.ca/students/isap.html"},"University of Ottawa":{"intl":"https://www.uottawa.ca/study/international-students"},"National University of Singapore":{"intl":"https://www.nus.edu.sg/gro/","summer":"https://nus.edu.sg/gro/global-programmes","exch":"https://nus.edu.sg/gro/global-programmes/student-exchange/incoming-exchangers"},"Waseda University":{"intl":"https://www.waseda.jp/inst/cie/en/","exch":"https://www.waseda.jp/inst/cie/en/","summer":"https://www.waseda.jp/inst/cie/en/to-waseda/short"},"Keio University":{"intl":"https://www.keio.ac.jp/en/admissions/","exch":"https://www.ic.keio.ac.jp/en/study/exchange/"},"Kyoto University":{"exch":"https://www.oc.kyoto-u.ac.jp/en/"},"The University of Hong Kong":{"intl":"https://intlaffairs.hku.hk/","exch":"https://intlaffairs.hku.hk/exchange"},"The Hong Kong University of Science and Technology":{"intl":"https://ugadmin.hkust.edu.hk/","exch":"https://studyabroad.hkust.edu.hk/"},"Peking University":{"intl":"https://www.isd.pku.edu.cn/"},"Tsinghua University":{"intl":"https://www.tsinghua.edu.cn/en/Admissions.htm"},"Fudan University":{"intl":"https://iso.fudan.edu.cn/"},"Shanghai Jiao Tong University":{"intl":"https://isc.sjtu.edu.cn/"},"Zhejiang University":{"intl":"https://iczu.zju.edu.cn/"},"National Taiwan University":{"intl":"https://oia.ntu.edu.tw/","exch":"https://isss.ntu.edu.tw/exchange-visiting-students/overview/"},"KU Leuven":{"exch":"https://www.kuleuven.be/english/apply/application-instructions/instructions-exchange","summer":"https://www.kuleuven.be/english/summer-schools","intl":"https://www.kuleuven.be/global/going-abroad/incomingstudentmobility"},"University of Amsterdam":{"exch":"https://www.uva.nl/en/education/exchange/global-exchange-programme/global-exchange-programme.html","summer":"https://summerschool.uva.nl/"},"Lund University":{"intl":"https://www.lunduniversity.lu.se/admissions","exch":"https://www.lunduniversity.lu.se/study/exchange-and-study-abroad/exchange-studies/exchange-application-and-acceptance/application-guide-incoming-exchange-students"},"Bocconi University":{"intl":"https://www.unibocconi.it/en/programs","exch":"https://www.unibocconi.it/en/international-students","summer":"https://www.unibocconi.it/en/programs/summer-school"},"Copenhagen Business School":{"intl":"https://www.cbs.dk/en/study/internationals","summer":"https://www.cbs.dk/en/study/cbs-summer-university","exch":"https://www.cbs.dk/en/study-programmes/international-students/exchange-students"},"Erasmus University Rotterdam":{"intl":"https://www.eur.nl/en"},"University of Edinburgh":{"intl":"https://www.ed.ac.uk/studying/international","housing":"https://www.accom.ed.ac.uk/","summer":"https://study.ed.ac.uk/summer-school"},"University of Oxford":{"summer":"https://www.conted.ox.ac.uk/about/summer-schools","intl":"https://www.ox.ac.uk/students/visa"},"University of Cambridge":{"intl":"https://www.internationalstudents.cam.ac.uk/","summer":"https://www.pace.cam.ac.uk/course-type/international-summer-programme"},"Imperial College London":{"intl":"https://www.imperial.ac.uk/study/international-students/"},"King's College London, University of London":{"intl":"https://www.kcl.ac.uk/international"},"University of Warwick":{"intl":"https://warwick.ac.uk/services/international/","summer":"https://warwick.ac.uk/study/summer-with-warwick/"},"University of Manchester":{"intl":"https://www.manchester.ac.uk/study/international/","exch":"https://www.manchester.ac.uk/study/international/study-abroad-programmes/"},"University College Dublin":{"intl":"https://www.ucd.ie/global/"},"ETHZ - ETH Zurich":{"intl":"https://ethz.ch/en/studies.html"},"Universität Mannheim":{"exch":"https://www.uni-mannheim.de/en/academics/coming-to-mannheim/"},"Ludwig-Maximilians-Universität München":{"intl":"https://www.lmu.de/en/study/"},"Technische Universität München":{"intl":"https://www.tum.de/en/studies/international-students"},"Freie Universität Berlin":{"intl":"https://www.fu-berlin.de/en/studium/international/","summer":"https://www.fubis.org/"},"Maastricht University":{"intl":"https://www.maastrichtuniversity.nl/support","exch":"https://www.maastrichtuniversity.nl/education/exchange"},"Universiteit Leiden":{"intl":"https://www.universiteitleiden.nl/en/education/admission-and-application/international-students","exch":"https://www.universiteitleiden.nl/en/education/study-programmes/exchange","summer":"https://www.universiteitleiden.nl/en/education/summer-schools"},"Utrecht University":{"intl":"https://www.uu.nl/en","exch":"https://www.uu.nl/en/education/exchange-students","summer":"https://www.utrechtsummerschool.nl/"},"University of Copenhagen":{"intl":"https://studies.ku.dk/","exch":"https://studies.ku.dk/","summer":"https://studies.ku.dk/summer-school/"},"Aalto University":{"intl":"https://www.aalto.fi/en/study-at-aalto"},"University of Helsinki":{"intl":"https://www.helsinki.fi/en/admissions-and-education/international-students","exch":"https://www.helsinki.fi/en/admissions-and-education/apply-exchange-and-visiting-studies"},"Universidad Complutense de Madrid":{"intl":"https://www.ucm.es/english"},"Wirtschaftsuniversität Wien":{"intl":"https://www.wu.ac.at/en/","exch":"https://www.wu.ac.at/en/programs/incoming-students"},"Columbia University":{"intl":"https://isso.columbia.edu/"},"New York University":{"intl":"https://www.nyu.edu/students/student-information-and-resources/student-visa-and-immigration.html","summer":"https://www.nyu.edu/admissions/summer-sessions.html"},"University of Michigan - Ann Arbor":{"intl":"https://internationalcenter.umich.edu/"},"University of Minnesota":{"intl":"https://isss.umn.edu/"},"Nanyang Technological University":{"exch":"https://www.ntu.edu.sg/education/student-exchanges/exchange-programmes/inbound-programmes"},"University of Tokyo":{"intl":"https://www.u-tokyo.ac.jp/en/prospective-students/prospective_students.html","exch":"https://www.u-tokyo.ac.jp/en/academics/ustep.html"},"Uppsala University":{"exch":"https://www.uu.se/en/study/exchange-studies"},"The Chinese University of Hong Kong":{"intl":"https://www.oal.cuhk.edu.hk/"},"York University":{"intl":"https://yorkinternational.yorku.ca/"},"University of Dublin, Trinity College":{"intl":"https://www.tcd.ie/study/international/","exch":"https://www.tcd.ie/study/visiting/"}};
+const SUMMER_NAME={'Harvard University':'Harvard Summer School','University of California, Berkeley':'Berkeley Summer Sessions','University of California, Los Angeles':'UCLA Summer Sessions','University of Washington':'UW Summer Quarter','Stanford University':'Stanford Summer Session','Yale University':'Yale Summer Session','University of Chicago':'UChicago Summer Session','University of Pennsylvania':'Penn Summer','Georgetown University':'Georgetown Summer Sessions','Boston University':'BU Summer Term','University of Southern California':'USC Summer Programs','University of North Carolina at Chapel Hill':'UNC Summer School','The University of Texas at Austin':'UT Austin Summer Session','Cornell University':'Cornell Summer Session','Duke University':'Duke Summer Session','University of California, San Diego':'UC San Diego Summer Session','Copenhagen Business School':'CBS Summer University','University of Edinburgh':'Edinburgh Summer School','Waseda University':'Waseda Short-Term Programs','McGill University':'McGill Summer Studies','University of Cambridge':'Cambridge International Summer Programmes','University of Oxford':'Oxford Summer Schools',"King's College London, University of London":'King’s Summer School','University of Warwick':'Summer with Warwick','Bocconi University':'Bocconi Summer School','University of Amsterdam':'UvA Summer Programmes','KU Leuven':'KU Leuven Summer Schools','Peking University':'PKU Summer School','National Taiwan University':'NTU Summer Programs','National University of Singapore':'NUS Summer Programmes','Utrecht University':'Utrecht Summer School','University of Copenhagen':'UCPH Summer School','Freie Universität Berlin':'FUBiS','ETHZ - ETH Zurich':'ETH Summer Schools'};
 const domainOf=u=>{try{return new URL(u).hostname.replace(/^www\./,'')}catch(e){return ''}};
 function pagesOf(h){
   const P=HOST_PAGES[h.name]||{}, dom=domainOf(h.url);
@@ -1128,7 +1171,7 @@ const US={
   fmj:L('I-901 SEVIS fee payment (official)','https://www.fmjfee.com/i901fee/index.html'),
   ceac:L('DS-160 online application (CEAC)','https://ceac.state.gov/genniv/'),
   photo:L('U.S. visa photo requirements','https://travel.state.gov/content/travel/en/us-visas/visa-information-resources/photos.html'),
-  appt:L('U.S. visa appointment service · Korea','https://www.ustraveldocs.com/kr/'),
+  appt:L('U.S. visa appointment service','https://www.ustraveldocs.com/'),
   emb:L('U.S. Embassy Seoul · Visas','https://kr.usembassy.gov/visas/'),
   f1:L('U.S. Department of State · Student visa','https://travel.state.gov/content/travel/en/us-visas/study/student-visa.html'),
   sits:L('Study in the States (DHS)','https://studyinthestates.dhs.gov/'),
@@ -1145,7 +1188,7 @@ const RULES={
   NO:{rule:'Study permit, applied online through UDI',links:[L('UDI (Norwegian Directorate of Immigration)','https://www.udi.no/en/')]},
   ES:{rule:'Student visa from the Spanish consulate for stays over 90 days, then a TIE card after arrival',links:[L('Spanish Ministry of Foreign Affairs','https://www.exteriores.gob.es')]},
   IT:{rule:'Study (D) visa before departure, then a permesso di soggiorno within 8 days of arrival',links:[L("Visto per l'Italia",'https://vistoperitalia.esteri.it')]},
-  CH:{rule:'Residence permit through the cantonal migration office, guided by the host',links:[L('State Secretariat for Migration (SEM)','https://www.sem.admin.ch/sem/en/home.html')]},
+  CH:{rule:'Residence permit through the cantonal migration office, guided by the host',links:[L('State Secretariat for Migration (SEM)','https://www.sem.admin.ch/en')]},
   AT:{rule:'Visa D for shorter stays, residence permit for students for longer ones',links:[L('Migration.gv.at','https://www.migration.gv.at/en/')]},
   MY:{rule:'Student pass approval through EMGS before entry',links:[L('Education Malaysia Global Services','https://educationmalaysia.gov.my')]},
   TH:{rule:'Non-Immigrant ED visa through Thai e-Visa',links:[L('Thai e-Visa (official)','https://www.thaievisa.go.th')]}
@@ -1232,18 +1275,18 @@ const T=(test,min,detail='')=>[test,min,detail];
 const ENGLISH={
   'Harvard University':{ss:{t:[T('TOEFL iBT','100','or 5.0 on the new 1–6 scale'),T('IELTS','7.0','Academic'),T('DET','125','Duolingo English Test')],scope:'Harvard Summer School (Harvard DCE rule)',note:'Scores must be no more than 2 years old.',src:L('Harvard DCE · English proficiency requirement','https://extension.harvard.edu/registration-admissions/course-registration/english-proficiency-requirement/')}},
   'University of California, Berkeley':{
-    ss:{t:[T('TOEFL iBT','80'),T('IELTS','6.5'),T('DET','115')],scope:'Berkeley Summer Sessions, visiting international students',note:'Tests from the last 3 years are accepted. MyBest scores accepted.',src:L('Berkeley Summer Sessions · English Proficiency Requirement','https://summer.berkeley.edu/international/english-proficiency-requirement')},
+    ss:{t:[T('TOEFL iBT','80'),T('IELTS','6.5'),T('DET','115')],scope:'Berkeley Summer Sessions, visiting international students',note:'Tests from the last 3 years are accepted. MyBest scores accepted.',src:L('Berkeley Summer Sessions · English Proficiency Requirement','https://summer.berkeley.edu/visiting-international/english-proficiency-requirement-epr')},
     ex:{t:[T('TOEFL iBT','80'),T('IELTS','6.5','Academic')],scope:'Berkeley International Office standard',note:'Host departments can ask for higher scores.',src:L('Berkeley International Office · English proficiency','https://internationaloffice.berkeley.edu/elp-documentation')}},
   'University of California, Los Angeles':{ss:{t:[T('TOEFL iBT','80','or 4.0 on the new scale'),T('IELTS','6.5'),T('DET','105')],scope:'UCLA Summer Sessions',note:'Scores must be from the past 2 years.',src:L('UCLA Summer Sessions · International student info','https://summer.ucla.edu/international-student-info/')}},
-  'University of Washington':{ex:{t:[T('TOEFL iBT','76'),T('IELTS','6.5'),T('DET','105')],scope:'UW undergraduate minimum',note:'Your exchange coordinator may set a higher bar.',src:L('UW Admissions · English proficiency','https://admit.washington.edu/apply/transfer/how-to-apply/english-proficiency/')}},
+  'University of Washington':{ex:{t:[T('TOEFL iBT','76','or 4.0 on the new scale'),T('IELTS','6.0'),T('DET','110')],scope:'Visiting and exchange students',note:'Recommended: TOEFL 105, IELTS 7.0, DET 125.',src:L('UW Study Abroad · Visiting & exchange application','https://www.washington.edu/studyabroad/visitingexchange/application-2/')}},
   'The University of Texas at Austin':{ex:{t:[T('TOEFL iBT','79','or 4 on the new scale'),T('IELTS','6.5')],scope:'Incoming exchange students',note:'Your home university can instead attest to CEFR B2 or higher.',src:L('UT Austin ISSS · Exchange partner fact sheet','https://global.utexas.edu/isss/advising-services/student-exchange-program/exchange-partner-fact-sheet')}},
   'University of North Carolina at Chapel Hill':{ex:{t:[T('TOEFL iBT','100','or 5 on the new scale'),T('IELTS','6.0'),T('DET','130')],scope:'Incoming exchange students',note:'A home-university letter can also certify your English level.',src:L('UNC Study Abroad · Incoming exchange: how to apply','https://studyabroad.unc.edu/incoming-exchange/how-to-apply/')}},
   'Boston University':{ss:{t:[T('TOEFL iBT','84','or 4.5 on the new scale'),T('IELTS','7.0'),T('DET','115')],scope:'BU Summer Term, visiting international students',note:'Submit before Summer Term registration.',src:L('BU Summer Term · English proficiency requirements','https://www.bu.edu/summer/international-college-students/toefl/')}},
   'University of Toronto':{ex:{t:[T('TOEFL iBT','89','22+ in Speaking and Writing; or 4.5 on the new scale'),T('IELTS','6.5','no band below 6.0')],scope:'Undergraduate inbound exchange',note:'Duolingo is also accepted. Law and graduate exchanges need higher scores.',src:L('U of T Learning Abroad · English requirements','https://learningabroad.utoronto.ca/inbound-visiting/inbound-exchange/english-requirements/')}},
   'University of British Columbia':{ex:{t:[T('TOEFL iBT','90','or 4.5 on the new scale'),T('IELTS','6.5','no part below 6.0'),T('DET','125')],scope:'Exchange students coming to UBC',note:'Section minimums apply. Scores must come from a single sitting.',src:L('UBC Go Global · English requirements for exchange','https://goglobal.ubc.ca/go-global/coming-ubc/coming-ubc-exchange/english-language-requirements-coming-ubc-exchange')}},
   'University of Tokyo':{ex:{t:[T('TOEFL iBT','90'),T('IELTS','6.5'),T('DET','120')],scope:'USTEP exchange, English-taught courses',note:'JLPT N1 is accepted instead. MyBest scores are not accepted.',src:L('UTokyo · Overview of USTEP','https://www.u-tokyo.ac.jp/en/academics/ustep-overview.html')}},
-  'Waseda University':{ex:{t:[T('TOEFL iBT','80'),T('IELTS','6.0')],scope:'School of International Liberal Studies (varies by school)',note:'Some schools accept lower scores. TOEFL Home Edition is not accepted.',src:L('Waseda CIE · Application guidelines for exchange','https://www.waseda.jp/inst/cie/assets/uploads/2025/10/ce1d2cb793005d8e7d5cf9f84d634c16-1.pdf')}},
-  'The University of Hong Kong':{ex:{t:[T('TOEFL iBT','97'),T('IELTS','7.0','no subtest below 6.5')],scope:'Incoming exchange, 2026–27',note:'Your home university uploads the proof. Expired scores are rejected.',src:L('HKU · Exchange information sheet 2026–27 (PDF)','https://intlaffairs.hku.hk/backend/wp-content/uploads/2026/07/HKU-Information-Sheet-2026-27-Updated-July-2026.pdf')}},
+  'Waseda University':{ex:{t:[T('TOEFL iBT','80','or 4.0 on the new scale'),T('IELTS','6.0')],scope:'School of International Liberal Studies (varies by school)',note:'Some schools accept lower scores. TOEFL Home Edition is not accepted.',src:L('Waseda CIE · Exchange requirements, A.Y. 2027 (PDF)','https://www.waseda.jp/inst/cie/assets/uploads/2026/06/e4b83beb6ee3607bf5992252db1e8fae.pdf')}},
+  'The University of Hong Kong':{ex:{t:[T('TOEFL iBT','97'),T('IELTS','7.0','no subtest below 6.5')],scope:'Incoming exchange, 2026–27',note:'Your home university uploads the proof. Expired scores are rejected.',src:L('HKU · Exchange information sheet 2026–27 (PDF)','https://intlaffairs.hku.hk/backend/wp-content/uploads/2026/10/HKU-Information-Sheet-2026-27.pdf')}},
   'National Taiwan University':{ex:{t:[T('TOEFL iBT','72','or Level 4+ on the new scale'),T('IELTS','5.5')],scope:'Incoming exchange (CEFR B2)',note:'Chinese at CEFR B1 (TOCFL B3 or HSK 5) works instead.',src:L('NTU OIA · Exchange student overview','https://isss.ntu.edu.tw/exchange-visiting-students/overview/')}},
   'National University of Singapore':{ex:{none:true,t:[T('Test','Not required','except Law: TOEFL 100 / IELTS 6.5')],scope:'Non-graduating exchange',note:'Only Law courses need TOEFL or IELTS for students from non-English-medium universities.',src:L('NUS GRO · Incoming exchange students','https://nus.edu.sg/gro/global-programmes/student-exchange/incoming-exchangers')}},
   'University of Amsterdam':{ex:{t:[T('TOEFL iBT','92','or 4.5 on the new scale'),T('IELTS','6.5'),T('Cambridge','C','CAE')],scope:"Bachelor's level: Humanities, Social Sciences, Economics & Business",note:"Master's-level exchange needs TOEFL 100 / IELTS 7.0 in some faculties.",src:L('UvA · Exchange entry requirements','https://www.uva.nl/en/education/exchange/global-exchange-programme/entry-requirements-and-course-selection/entry-requirements-and-course-selection.html')}},
@@ -1253,15 +1296,22 @@ const ENGLISH={
 };
 function englishOf(h,p){
   const E=ENGLISH[h.name]; const key=p.long?'ex':'ss';
-  if(E&&E[key]) return {...E[key],verified:true};
+  if(E&&E[key]) return {...E[key],verified:true,check:STATUS&&STATUS.english[h.name+'|'+key]};
   const dom=domainOf(h.url);
   return {verified:false,t:[T('TOEFL iBT','80–100','typical'),T('IELTS','6.0–7.0','typical'),T('DET','105–130','typical')],scope:'Typical range at partner universities',note:`We have not verified ${h.short}’s exact scores yet. Check the official page before you book a test.`,
     src:{label:`Search ${dom||h.short} for English requirements`,url:'https://www.google.com/search?q='+encodeURIComponent((dom?'site:'+dom+' ':h.name+' ')+'English language requirements '+(p.long?'exchange':'summer')),verified:false}};
 }
 const engLine=e=>e.none?'English test not required':e.t.filter(x=>x[0]!=='Cambridge').map(x=>`${x[0].replace(' iBT','')} ${x[1]}`).join(' · ');
-function engCard(e){return `<div class="eng${e.verified?'':' est'}"><div class="eng-top"><b>${e.verified?'Minimum scores':'Typical scores'}</b><span class="pill ${e.verified?'ok':'cat'}">${e.verified?'Verified Oct 2026':'Not verified'}</span></div>
+function engPill(e){
+  if(!e.verified) return `<span class="pill cat">Not verified</span>`;
+  const c=e.check&&e.check.s, d=checkedDay();
+  if(c==='changed') return `<span class="pill cat">Source changed. Re-checking</span>`;
+  if(c==='ok'&&d) return `<span class="pill ok">Checked ${fmtShort(d)}</span>`;
+  return `<span class="pill ok">Verified Oct 2026</span>`;
+}
+function engCard(e){return `<div class="eng${e.verified?'':' est'}"><div class="eng-top"><b>${e.verified?'Minimum scores':'Typical scores'}</b>${engPill(e)}</div>
   <div class="eng-grid">${e.t.map(x=>`<div><small>${x[0]}</small><b class="num">${x[1]}</b>${x[2]?`<em>${x[2]}</em>`:''}</div>`).join('')}</div>
-  <p>${esc(e.scope)}. ${esc(e.note)}</p>${linkHTML(lk(e.src),true)}</div>`}
+  <p>${esc(e.scope)}. ${esc(e.note)}${e.check&&e.check.s==='changed'?' <b>The official page no longer shows these exact numbers. Confirm there before you book a test.</b>':''}</p>${linkHTML(lk(e.src),true)}</div>`}
 
 /* ---------------- immunizations ---------------- */
 const KDCA=L('KDCA Immunization Helper · English certificate (예방접종도우미)','https://nip.kdca.go.kr/irhp/mngm/goVcntMngm.do?menuLv=3&menuCd=341');
@@ -1557,9 +1607,9 @@ const S={
   progId:'exS', pickProg:'exS', depOverride:null, pickDep:null, retOverride:null, pickRet:null,
   done:new Set(), remind:new Set(['health','fin','i20','sevis','ds160','appt','visa','housing','eta','permit']),
   ctab:'status', liked:new Set(), bcat:'All',
-  booked:{}, slot:null, mentorSheet:null,
+  reqs:{}, chats:{}, chatWith:null, typing:null, reqNote:'', slot:null, mentorSheet:null,
+  joined:new Set(), cv:null, cq:'', cposts:{}, cinfo:{},
   apply:{step:0,email:'',file:''},
-  posts:null
 };
 const host=()=>S.host;
 const prog=()=>PROGRAMS.find(p=>p.id===S.progId);
@@ -1572,9 +1622,9 @@ const items=()=>buildChecklist(host(),prog(),stayDays(),depDate(),retDate()).map
 function resetDone(){S.done=new Set(items().filter(i=>dd(i.date)<7).map(i=>i.id))}
 resetDone();
 
-function seedPosts(){
-  const h=host(),us=h.region==='us';
-  return [
+function seedPosts(h,rot=0){
+  const us=h.region==='us';
+  const all=[
     {type:'status',who:'Minjun P.',meta:'Computer Science · 3rd year',tag:us?'DS-2019 received':'Admission letter in',text:`${h.short} sent the PDF first. The original is coming by mail separately.`,time:'2h ago',likes:8},
     {type:'q',who:'Rin C.',meta:'International Studies · 2nd year',text:us?'Do I need a card that works overseas to pay the SEVIS fee?':'The permit application asks for proof of insurance. Does a Korean policy count?',time:'5h ago',
       answer:{who:'Yeon L.',text:us?'Yes, you need a card that supports overseas payments. Print the receipt PDF and bring it to your interview.':'It depends on the country, so check the coverage rules in your host’s email first. You usually need an English certificate.'}},
@@ -1582,6 +1632,9 @@ function seedPosts(){
     {type:'q',who:'Jiho Y.',meta:'Business · 3rd year',text:`Did anyone arrive in ${h.short} before orientation? I need somewhere to stay the night before move-in.`,time:'Yesterday',answers:2},
     {type:'status',who:'Seoa S.',meta:'English Literature · 3rd year',tag:'Applied',text:'The application portal email was in my spam folder. If you haven’t got yours, check there!',time:'2d ago',likes:21}
   ];
+  if(!rot) return all;
+  // other communities: same kinds of posts, different order and size
+  const k=rot%all.length; return all.slice(k).concat(all.slice(0,k)).slice(0,3+rot%3);
 }
 
 /* ---------------- render helpers ---------------- */
@@ -1601,7 +1654,9 @@ function stayInfoHTML(h,dep,ret){
   if(!(d>0)) return `<b class="warn">Return date must be after departure</b>`;
   return `<b>Stay: ${stayLabel(d)}</b><span>${stayImpact(h,d)}</span>`;
 }
-function linkHTML(l,mini){const [label,url,ver]=l;return `<a class="src${mini?' mini':''}${ver===false?' guess':''}" href="${esc(url)}" target="_blank" rel="noopener"><span class="t"><b>${esc(label)}</b><small>${esc(prettyUrl(url))}</small></span>${ic(ver===false?'search':'ext',mini?16:18)}</a>`}
+function linkHTML(l,mini){let [label,url,ver]=l; const st=linkState(url);
+  if(st==='broken'||st==='moved'){ver=false; url='https://www.google.com/search?q='+encodeURIComponent('site:'+domainOf(url)+' '+label.replace(/^.*·\s*/,''))}
+  return `<a class="src${mini?' mini':''}${ver===false?' guess':''}" href="${esc(url)}" target="_blank" rel="noopener"><span class="t"><b>${esc(label)}</b><small>${esc(prettyUrl(url))}</small></span>${ic(ver===false?'search':'ext',mini?16:18)}</a>`}
 const bar=(title,back='back',right='')=>`<div class="bar"><button class="iconbtn" data-act="${back}" aria-label="Back">${ic('back')}</button><h2>${title}</h2>${right}</div>`;
 const regionHosts=()=>DATA?DATA.unis.filter(u=>(COUNTRIES[u[1]]||[])[1]===S.region):[];
 
@@ -1690,6 +1745,16 @@ const SCREENS={
       <h2 class="ob-title">Building your ${p.type.toLowerCase()} checklist for ${esc(h.short)}</h2>
       <p class="ob-sub">Collecting official sources and the latest notes from past students</p></div>`},
 
+  chat(){
+    const id=S.chatWith, m=mentorsFor()[id], r=S.reqs[id], msgs=S.chats[id]||[];
+    return `${bar(esc(m.name)+' <span class="badge">'+ic('shield',13,2.4)+'Verified</span>','back')}
+    <div class="scroll pad chat" id="chatScroll">
+      <div class="chat-info">${ic('mentor',18)}<span><b>Session ${fmtShort(r.slot.d)}, ${r.slot.hh}:00 KST</b> · 30 min · ₩${m.price}<br><small>Only you and the mentor can see this chat. Keep payments inside the app.</small></span></div>
+      ${msgs.map(msgHTML).join('')}
+      ${S.typing===id?'<div class="msg them typing"><p>•••</p></div>':''}
+    </div>
+    <div class="cta chatbar"><input class="input" id="chatInput" placeholder="Write a message" autocomplete="off" aria-label="Message"><button class="btn sm" data-act="sendMsg" aria-label="Send">${ic('send',18)}</button></div>`;
+  },
   app(){return ({home:homeTab,community:communityTab,mentor:mentorTab,perks:perksTab,me:meTab})[S.tab]()},
 
   detail(){
@@ -1708,7 +1773,7 @@ const SCREENS={
         ${st.link?linkHTML([st.link.label,st.link.url,st.link.verified],true):''}</div></li>`).join('')}</ol></div>`:''}
       <div class="d-sec"><h3>At a glance</h3><table class="tbl">${i.rows.map(r=>`<tr><th scope="row">${r[0]}</th><td>${r[1]}</td></tr>`).join('')}</table></div>
       <div class="d-sec"><h3>Official links</h3>${i.links.map(l=>linkHTML(l)).join('')}
-        <div class="verified">${ic('shield',18)}<span><b>Verified ${fmtY(D(i.ver))}</b> · ${i.by}<br>Details can change. Always confirm with the official source before you submit.</span></div></div>
+        <div class="verified">${ic('shield',18)}<span><b>Verified ${fmtY(D(i.ver))}</b> · ${i.by}${checkedDay()?`<br>Links checked ${fmtY(checkedDay())}`:''}<br>Details can change. Always confirm with the official source before you submit.</span></div></div>
       <div class="d-sec">
         <div class="row-toggle"><span><b>Deadline reminders</b><small>3 days and 1 day before, 9 AM</small></span><button class="switch${S.remind.has(i.id)?' on':''}" role="switch" aria-checked="${S.remind.has(i.id)}" aria-label="Deadline reminders" data-act="remind" data-v="${i.id}"></button></div>
         <button class="linkbtn" data-act="tab" data-v="mentor">${ic('mentor',18)}<span>Ask a mentor who has done this step</span></button>
@@ -1795,27 +1860,53 @@ function homeTab(){
   </div>`;
 }
 
+/* ---------------- communities: one per host university + program; read freely, join to take part ---------------- */
+const ckey=(h,p)=>h.cc+'|'+h.name+'|'+p.id;
+const myCKey=()=>ckey(host(),prog());
+const cview=()=>S.cv||{h:host(),p:prog()};
+const cMembers=(h,p)=>ckey(h,p)===myCKey()?PEERS.length+8+(S.joined.has(myCKey())?1:0):9+hash(h.name+p.id)%120+(S.joined.has(ckey(h,p))?1:0);
+function cPosts(c){const k=ckey(c.h,c.p); if(!S.cposts[k]) S.cposts[k]=seedPosts(c.h,k===myCKey()?0:1+hash(k)%7); return S.cposts[k]}
+function cResultsHTML(){
+  if(!DATA) return '<p class="loadmsg">Loading universities…</p>';
+  const q=S.cq.trim(); if(!q) return '';
+  // well-known exchange partners (ones we have verified pages for) come first within the same match quality
+  const m=DATA.unis.filter(u=>uniHit(u[0],u[3],q)).map(u=>[(HOST_PAGES[u[0]]?0:100)+uniRank(u[0],u[3],q),u]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+  return `<p class="sect-label">Communities<span class="num">${m.length.toLocaleString()}</span></p>${m.length?m.slice(0,30).map(u=>{const h=makeHost(u);
+    return `<button class="srow" data-act="cpick" data-v="${esc(u[0])}" data-cc="${u[1]}"><span class="mono">${esc(h.mono)}</span><span class="t"><b>${hi(u[0],q)}</b><small>${esc(h.country)} · ${programsOf(h).length} programs</small></span>${ic('chev',18)}</button>`}).join(''):'<p class="loadmsg">No universities match. Try another spelling.</p>'}`;
+}
 function communityTab(){
-  const h=host(),p=prog();
-  if(!S.posts) S.posts=seedPosts();
-  const ps=S.posts.filter(x=>S.ctab==='status'?x.type==='status':x.type==='q');
-  const mine=Math.round(items().filter(i=>S.done.has(i.id)).length/items().length*100);
   return `<div class="bar main"><h2>Community</h2></div>
   <div class="scroll pad">
-    <p style="font-size:13px;color:var(--ink-2);margin-bottom:12px">${esc(h.short)} · ${p.type} ${p.term} · <b style="color:var(--ink)">${PEERS.length+8} students</b> preparing</p>
-    <div class="peers">${[['Me','You',mine,'Your progress']].concat(PEERS).map(x=>`<div class="peer"><div class="ring" style="--p:${x[2]}"><div class="ava">${x[0]}</div></div><small><b>${x[1]}</b>${x[3]}</small></div>`).join('')}</div>
+    <label class="csearch">${ic('search',18)}<input class="input" id="cQ" type="search" placeholder="Search other universities’ communities" value="${esc(S.cq)}" autocomplete="off" aria-label="Search communities"></label>
+    <div id="cBody">${cBodyHTML()}</div>
+  </div>`;
+}
+function cBodyHTML(){
+  const c=cview(), h=c.h, p=c.p, k=ckey(h,p), joined=S.joined.has(k), mineC=k===myCKey();
+  const ps=cPosts(c).filter(x=>S.ctab==='status'?x.type==='status':x.type==='q');
+  const mine=Math.round(items().filter(i=>S.done.has(i.id)).length/items().length*100);
+  const my=[...S.joined].map(j=>[j,S.cinfo[j]]).filter(x=>x[1]);
+  if(S.cq.trim()) return cResultsHTML();
+  return `
+    <div class="mychips">${!mineC?`<button class="chip sm" data-act="cgo" data-v="">${ic('back',14)} My program</button>`:''}${my.map(([j,x])=>`<button class="chip sm${j===k?' on':''}" data-act="cgo" data-v="${esc(j)}">${esc(x.h.short)} · ${esc(x.p.type)}</button>`).join('')}</div>
+    <section class="ccard">
+      <div class="ctop"><span class="mono">${esc(h.mono)}</span><span class="t"><b>${esc(h.short)}</b><small>${esc(p.type)} ${esc(p.term)} · ${cMembers(h,p)} students</small></span>
+        ${joined?`<button class="chip sm on" data-act="cleave" aria-label="Leave community">${ic('check',14,2.6)} Joined</button>`:`<button class="btn sm" data-act="cjoin">Join</button>`}</div>
+      ${mineC?'<p class="cnote">Your program’s community</p>':`<div class="chips" style="margin-top:12px">${programsOf(h).map(x=>`<button class="chip sm${x.id===p.id?' on':''}" data-act="cprog" data-v="${x.id}">${esc(x.type)} ${esc(x.term)}</button>`).join('')}</div>`}
+    </section>
+    ${joined&&mineC?`<div class="peers" style="margin-top:14px">${[['Me','You',mine,'Your progress']].concat(PEERS).map(x=>`<div class="peer"><div class="ring" style="--p:${x[2]}"><div class="ava">${x[0]}</div></div><small><b>${x[1]}</b>${x[3]}</small></div>`).join('')}</div>`:''}
     <div style="margin-top:18px" class="seg" role="tablist"><button class="${S.ctab==='status'?'on':''}" data-act="ctab" data-v="status">Progress</button><button class="${S.ctab==='q'?'on':''}" data-act="ctab" data-v="q">Q&amp;A</button><button data-act="tab" data-v="mentor">1:1 Mentors</button></div>
-    ${S.ctab==='status'?`<div class="compose"><p>Share where you are</p>
+    ${!joined?`<div class="compose clock"><p>Join to take part</p><small>Anyone can read. Only members can share progress, ask questions and cheer.</small><button class="btn sm" data-act="cjoin">Join this community</button></div>`
+    :S.ctab==='status'?`<div class="compose"><p>Share where you are</p>
       <div class="chips">${['Applied','Visa submitted','Housing set','Flight booked'].map(t=>`<button class="chip sm" data-act="share" data-v="${t}">${t}</button>`).join('')}</div></div>`
     :`<div class="compose"><p>Ask students on the same program, free</p>
       <div class="row"><input class="input" id="qInput" placeholder="e.g. Where did you stay before move-in?"><button class="btn sm" data-act="ask" aria-label="Post question">${ic('send',18)}</button></div></div>`}
-    <div>${ps.map(x=>{const idx=S.posts.indexOf(x);return `<article class="post">
+    <div>${ps.map(x=>{const idx=cPosts(c).indexOf(x), lk=k+'#'+idx;return `<article class="post">
       <div class="who"><span class="ava">${x.who[0]}</span><span class="t"><b>${esc(x.who)}${x.tag?` <span class="pill ok">${x.tag}</span>`:''}</b><small>${x.meta} · ${x.time}</small></span></div>
-      <p class="txt${x.type==='q'?' q':''}">${esc(x.text)}</p>
+      <p class="txt${x.type==='q'?' q':''}"${x.who==='You'?' data-notr':''}>${esc(x.text)}</p>
       ${x.answer?`<div class="answer"><b>${x.answer.who} <span class="badge">${ic('shield',13,2.4)}Verified mentor</span></b>${x.answer.text}</div>`:''}
-      <div class="foot">${x.type==='status'?`<button class="${S.liked.has(idx)?'on':''}" data-act="like" data-v="${idx}">${ic('heart',15)} Cheer ${x.likes+(S.liked.has(idx)?1:0)}</button>`:`<span>${x.answer?1:(x.answers||0)} answers</span>`}</div>
-    </article>`}).join('')}</div>
-  </div>`;
+      <div class="foot">${x.type==='status'?`<button class="${S.liked.has(lk)?'on':''}" data-act="like" data-v="${esc(lk)}">${ic('heart',15)} Cheer ${x.likes+(S.liked.has(lk)?1:0)}</button>`:`<span>${x.answer?1:(x.answers||0)} answers</span>`}</div>
+    </article>`}).join('')}</div>`;
 }
 
 function mentorsFor(){
@@ -1823,21 +1914,30 @@ function mentorsFor(){
   return MENTORS.map((m,k)=>({id:k,name:m[0],major:m[1],price:m[2],rate:m[3],reviews:m[4],topics:m[5],
     prog:`${h.short} · ${k===2?'Summer school 2025':p.type+(k===0?' Fall 2025':' Spring 2025')}`}));
 }
+const hm=d=>`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+function chatListHTML(){
+  const ids=Object.keys(S.reqs).map(Number); if(!ids.length) return '';
+  const M=mentorsFor();
+  return `<div class="list-head"><h3>My requests & chats</h3></div>${ids.map(id=>{const m=M[id],r=S.reqs[id],c=S.chats[id]||[],last=c[c.length-1];
+    const prev=last?(last.me?last.text:(LANG==='ko'?last.ko:last.en)):'';
+    return `<button class="srow chatrow" data-act="${r.status==='accepted'?'chat':'mentor'}" data-v="${id}"><span class="ava">${m.name[0]}</span><span class="t"><b>${m.name}</b><small>${r.status==='accepted'?'':'Waiting for the mentor to accept · '}<span data-notr>${esc(prev.slice(0,60))}</span></small></span>${r.status==='accepted'?`<span class="pill ok">Chat</span>`:`<span class="pill warn">Pending</span>`}</button>`}).join('')}`;
+}
 function mentorTab(){
   const h=host();
   return `<div class="bar main"><h2>Mentors</h2></div>
   <div class="scroll pad">
     <section class="mhero"><b>Talk 1:1 with verified students who completed ${esc(h.short)}</b>
       <div class="flow"><span>University email</span><span>Proof of completion</span><span>Team review</span></div></section>
+    ${chatListHTML()}
     <div class="list-head"><h3>Verified mentors</h3><span>30 min · video or chat</span></div>
     ${mentorsFor().map(m=>`<button class="mentor" data-act="mentor" data-v="${m.id}">
       <span class="ava">${m.name[0]}</span>
-      <span class="t"><span class="name">${m.name}<span class="badge">${ic('shield',14,2.4)}Verified</span>${S.booked[m.id]?'<span class="pill ok">Booked</span>':''}</span>
+      <span class="t"><span class="name">${m.name}<span class="badge">${ic('shield',14,2.4)}Verified</span>${S.reqs[m.id]?(S.reqs[m.id].status==='accepted'?'<span class="pill ok">Chat open</span>':'<span class="pill warn">Request sent</span>'):''}</span>
         <span class="prog">${esc(m.prog)} · ${m.major}</span>
         <span class="tags">${m.topics.map(t=>`<span class="pill cat">${t}</span>`).join('')}</span>
         <span class="bottom"><span class="rate">${ic('star',14)}<b>${m.rate}</b> (${m.reviews})</span><span class="price num">₩${m.price} <small>/ 30 min</small></span></span></span>
     </button>`).join('')}
-    <p class="why">Only students who completed the program can become mentors. Mentors receive the session fee, minus a platform commission.</p>
+    <p class="why">Send a request first. Once the mentor accepts, a private 1:1 chat opens and you pay for the session. Only students who completed the program can become mentors. Mentors receive the session fee, minus a platform commission.</p>
   </div>`;
 }
 
@@ -1868,7 +1968,7 @@ function meTab(){
       <button data-act="changeProg">${ic('swap',20)}<span class="t">Change program</span>${ic('chev',18)}</button>
       <button data-act="editDep">${ic('plane',20)}<span class="t">Travel dates<br><small>${fmtShort(depDate())} → ${fmtY(retDate())} · ${stayShort(stayDays())}</small></span>${ic('chev',18)}</button>
       <button data-act="toast" data-v="${S.remind.size} reminders are on">${ic('bell',20)}<span class="t">Deadline reminders<br><small>${S.remind.size} on</small></span>${ic('chev',18)}</button>
-      <button data-act="toast" data-v="You have ${Object.keys(S.booked).length} mentoring bookings">${ic('mentor',20)}<span class="t">Mentoring bookings</span><small>${Object.keys(S.booked).length}</small></button>
+      <button data-act="tab" data-v="mentor">${ic('chat',20)}<span class="t">Mentor requests & chats</span><small>${Object.keys(S.reqs).length}</small></button>
       <button data-act="openLang">${ic('globe',20)}<span class="t">Language<br><small>${LANG==='ko'?'한국어':'English'}</small></span>${ic('chev',18)}</button>
       <button data-go="splash">${ic('back',20)}<span class="t">Back to start (demo)</span></button>
     </div>
@@ -1877,7 +1977,8 @@ function meTab(){
 
 /* ---------------- mentor booking sheet ---------------- */
 function openMentorSheet(id){
-  const m=mentorsFor()[id]; S.mentorSheet=id; S.slot=null;
+  if(S.reqs[id]&&S.reqs[id].status==='accepted') return openChat(id);
+  const m=mentorsFor()[id], req=S.reqs[id]; S.mentorSheet=id; S.slot=null; S.reqNote='';
   const slots=[];
   for(let k=1;slots.length<6;k++){const d=addDays(TODAY,k);[20,21].forEach(hh=>{if(slots.length<6)slots.push({d,hh})})}
   const sheet=$('#sheet');
@@ -1889,10 +1990,12 @@ function openMentorSheet(id){
         <div class="vitem">${ic('mail',18)}<span>University email verified<small>Enrollment confirmed</small></span></div>
         <div class="vitem">${ic('doc',18)}<span>${esc(host().short)} transcript checked<small>Matched by our team</small></span></div>
         <div class="vitem">${ic('shield',18)}<span>Team review passed<small>Approved Dec 2025</small></span></div></div></div>
+      ${req?`<div class="d-sec"><h3>Your request</h3><div class="reqbox"><span class="pill warn">Waiting for ${m.name} to accept</span><b>${fmtShort(req.slot.d)}, ${req.slot.hh}:00 KST</b><p data-notr>${esc(req.note)}</p></div><p class="hint">Mentors usually reply within a day. A private chat opens when they accept.</p></div>`:`
       <div class="d-sec"><h3>Pick a time (KST)</h3><div class="slots">${slots.map((s,k)=>`<button class="chip${S.slot===k?' on':''}" data-act="slot" data-v="${k}"><span class="num">${LANG==='ko'?fmt(s.d):WD[s.d.getDay()]+' '+fmtShort(s.d)}</span><small class="num">${s.hh}:00</small></button>`).join('')}</div></div>
-      <div class="d-sec" style="padding-bottom:8px"><div class="pay"><div><span>1:1 mentoring, 30 min</span><span class="num">₩${m.price}</span></div><div class="tot"><span>Total</span><span class="num">₩${m.price}</span></div><p>Free cancellation up to 24 hours before the session.</p></div></div>
+      <div class="d-sec"><h3>What do you need help with?</h3><textarea class="input area" id="reqNote" maxlength="500" rows="4" placeholder="e.g. I’m applying for the spring exchange. Can you check my course list and tell me about housing?">${esc(S.reqNote)}</textarea><p class="hint">The mentor reads this before accepting. Be specific about your program and questions.</p></div>
+      <div class="d-sec" style="padding-bottom:8px"><div class="pay"><div><span>1:1 mentoring, 30 min</span><span class="num">₩${m.price}</span></div><div class="tot"><span>Total</span><span class="num">₩${m.price}</span></div><p>You pay only after the mentor accepts. Free cancellation up to 24 hours before the session.</p></div></div>`}
     </div>
-    <div class="cta"><button class="btn" data-act="book" ${S.slot===null?'disabled':''}>${S.slot===null?'Pick a time':`Book ${fmtShort(slots[S.slot].d)}, ${slots[S.slot].hh}:00`}</button></div>`;};
+    ${req?'':`<div class="cta"><button class="btn" id="reqBtn" data-act="sendReq" ${reqReady()?'':'disabled'}>${reqLabel(slots)}</button></div>`}`;};
   sheet._draw=()=>{draw();translate(sheet)}; sheet._slots=slots; draw();
   translate(sheet); sheet.classList.add('on'); $('#scrim').classList.add('on');
 }
@@ -1910,6 +2013,33 @@ function openDepSheet(){
     <div class="cta"><button class="btn" data-act="saveDep">Save travel dates</button></div>`;
   translate(sheet); sheet.classList.add('on'); $('#scrim').classList.add('on');
 }
+const reqReady=()=>S.slot!==null&&S.reqNote.trim().length>=5;
+const reqLabel=slots=>S.slot===null?'Pick a time':S.reqNote.trim().length<5?'Write your request':`Send request for ${fmtShort(slots[S.slot].d)}, ${slots[S.slot].hh}:00`;
+
+/* ---------------- private chat with a mentor (opens after they accept) ---------------- */
+const REPLIES=[
+  {en:'Good question. When I went, the international office answered emails within 2–3 days, so I would send it early.',ko:'좋은 질문이에요. 제가 갔을 때 국제처는 메일에 2–3일 안에 답했어요. 미리 보내두는 걸 추천해요.'},
+  {en:'I can share the checklist I used. Let’s go through it together in our session.',ko:'제가 썼던 체크리스트를 공유해 드릴게요. 세션 때 같이 하나씩 봐요.'},
+  {en:'For housing, apply the day the portal opens. The cheaper rooms go first.',ko:'기숙사는 포털이 열리는 날 바로 신청하세요. 저렴한 방부터 빨리 마감돼요.'},
+  {en:'Noted! I’ll prepare some examples before our call.',ko:'메모해 둘게요! 세션 전에 예시를 준비해 갈게요.'}
+];
+function acceptReq(id){
+  const r=S.reqs[id]; if(!r||r.status==='accepted') return; const m=mentorsFor()[id];
+  r.status='accepted';
+  S.chats[id].push({me:false,time:hm(new Date()),
+    en:`Hi! I accepted your request for ${fmtShort(r.slot.d)} at ${r.slot.hh}:00. Thanks for the details. Message me here any time before the session.`,
+    ko:`안녕하세요! ${r.slot.d.getMonth()+1}월 ${r.slot.d.getDate()}일 ${r.slot.hh}:00 요청을 수락했어요. 자세히 적어줘서 고마워요. 세션 전에 언제든 여기로 메시지 주세요.`});
+  if(S.screen==='app') render(true);
+  toast(`${m.name} accepted your request. You can chat now`);
+}
+function openChat(id){ closeSheet(); S.chatWith=id; S.screen='chat'; render(); setTimeout(()=>{const i=$('#chatInput'); i&&i.focus()},50) }
+const msgHTML=x=>`<div class="msg ${x.me?'me':'them'}">${x.req?'<small class="rq">Your request</small>':''}<p data-notr>${esc(x.me?x.text:(LANG==='ko'?x.ko:x.en))}</p><time>${x.time}</time></div>`;
+function sendMsg(){
+  const i=$('#chatInput'); const t=i&&i.value.trim(); if(!t){i&&i.focus();return}
+  const id=S.chatWith; S.chats[id].push({me:true,text:t,time:hm(new Date())}); S.typing=id; render(); $('#chatInput').focus();
+  setTimeout(()=>{const c=S.chats[id]; const n=c.filter(x=>!x.me).length; c.push({...REPLIES[(n-1)%REPLIES.length],me:false,time:hm(new Date())}); S.typing=null;
+    if(S.screen==='chat'&&S.chatWith===id){const v=$('#chatInput').value; render(); const ni=$('#chatInput'); ni.value=v; ni.focus()}},1400);
+}
 function closeSheet(){ $('#sheet').classList.remove('on'); $('#scrim').classList.remove('on'); S.mentorSheet=null; }
 
 /* ---------------- toast ---------------- */
@@ -1924,7 +2054,7 @@ function render(keepScroll){
   const sc=view.querySelector('.scroll'); const top=sc&&keepScroll&&key===lastKey?sc.scrollTop:0;
   const focusId=document.activeElement&&view.contains(document.activeElement)?document.activeElement.id:null;
   view.innerHTML=SCREENS[S.screen]();
-  const ns=view.querySelector('.scroll'); if(ns) ns.scrollTop=top;
+  const ns=view.querySelector('.scroll'); if(ns) ns.scrollTop=S.screen==='chat'?ns.scrollHeight:top;
   if(S.screen==='profile'&&$('#homeList')) ($('#homeList').innerHTML=homeListHTML(),translate($('#homeList')));
   if(focusId&&document.getElementById(focusId)){const el=document.getElementById(focusId);el.focus();if(el.setSelectionRange&&el.type!=='email')el.setSelectionRange(el.value.length,el.value.length)}
   lastKey=key;
@@ -1965,7 +2095,7 @@ document.addEventListener('click',e=>{
     case 'pick': {const u=DATA.unis.find(x=>x[0]===v&&x[1]===a.dataset.cc); S.pick=makeHost(u); S.pickDep=null; S.pickRet=null; ($('#schoolList').innerHTML=schoolListHTML(),translate($('#schoolList'))); const b=view.querySelector('[data-act="toProgram"]'); b.disabled=false; b.textContent='Next: choose program'; break}
     case 'toProgram': if(S.pick){S.pickProg=(S.pick.name===host().name?S.progId:'exS'); go('program')} break;
     case 'pickProg': if(S.pickProg!==v){S.pickProg=v; S.pickDep=null; S.pickRet=null} render(true); break;
-    case 'build': S.host=S.pick||S.host; S.progId=S.pickProg; S.depOverride=(S.pickDep&&S.pickDep!==depOf(prog(),S.host))?S.pickDep:null; S.retOverride=(S.pickRet&&S.pickRet>iso(depDate()))?S.pickRet:null; S.posts=null; S.filter='All'; resetDone(); S.screen='building'; render(); setTimeout(()=>{S.screen='app';S.tab='home';render()},1100); break;
+    case 'build': S.host=S.pick||S.host; S.progId=S.pickProg; S.depOverride=(S.pickDep&&S.pickDep!==depOf(prog(),S.host))?S.pickDep:null; S.retOverride=(S.pickRet&&S.pickRet>iso(depDate()))?S.pickRet:null; S.cv=null; S.filter='All'; resetDone(); S.screen='building'; render(); setTimeout(()=>{S.screen='app';S.tab='home';render()},1100); break;
     case 'tab': S.tab=v; S.screen='app'; S.detail=null; closeSheet(); render(); break;
     case 'filter': S.filter=v; render(true); break;
     case 'open': S.detail=v; go('detail'); break;
@@ -1974,9 +2104,20 @@ document.addEventListener('click',e=>{
     case 'flag': toast('Thanks! Our team will check and update it'); break;
     case 'toast': toast(v); break;
     case 'ctab': S.ctab=v; render(true); break;
-    case 'share': {const P=S.profile; S.posts.unshift({type:'status',who:'You',meta:`${P.major} · ${P.year}`,tag:v,text:`${v}! Good luck to everyone else getting ready.`,time:'Just now',likes:0}); render(); toast('Shared with your program'); break}
-    case 'ask': {const q=$('#qInput'); const t=q&&q.value.trim(); if(!t){q&&q.focus();return} const P=S.profile; S.posts.unshift({type:'q',who:'You',meta:`${P.major} · ${P.year}`,text:t,time:'Just now',answers:0}); render(); toast('Question posted'); break}
-    case 'like': {const k=+v; S.liked.has(k)?S.liked.delete(k):S.liked.add(k); render(true); break}
+    case 'share': {if(!S.joined.has(ckey(cview().h,cview().p))) return toast('Join this community first'); const P=S.profile; cPosts(cview()).unshift({type:'status',who:'You',meta:`${P.major} · ${P.year}`,tag:v,text:`${v}! Good luck to everyone else getting ready.`,time:'Just now',likes:0}); render(true); toast('Shared with the community'); break}
+    case 'ask': {if(!S.joined.has(ckey(cview().h,cview().p))) return toast('Join this community first'); const q=$('#qInput'); const t=q&&q.value.trim(); if(!t){q&&q.focus();return} const P=S.profile; cPosts(cview()).unshift({type:'q',who:'You',meta:`${P.major} · ${P.year}`,text:t,time:'Just now',answers:0}); render(true); toast('Question posted'); break}
+    case 'like': {if(!S.joined.has(v.split('#')[0])) return toast('Join this community to cheer'); S.liked.has(v)?S.liked.delete(v):S.liked.add(v); render(true); break}
+    case 'cjoin': {const c=cview(),k=ckey(c.h,c.p); S.joined.add(k); S.cinfo[k]=c; render(true); toast(`Joined the ${c.h.short} community`); break}
+    case 'cleave': {const c=cview(),k=ckey(c.h,c.p); S.joined.delete(k); render(true); toast('You left this community'); break}
+    case 'cpick': {const u=DATA.unis.find(x=>x[0]===v&&x[1]===a.dataset.cc); const h=makeHost(u); const ps=programsOf(h); const p=ps.find(x=>x.id===S.progId)||ps.find(x=>x.type===prog().type)||ps[0];
+      S.cv=ckey(h,p)===myCKey()?null:{h,p}; S.cq=''; S.ctab='status'; render(); break}
+    case 'cprog': {const c=cview(); const p=PROGRAMS.find(x=>x.id===v); S.cv=ckey(c.h,p)===myCKey()?null:{h:c.h,p}; render(true); break}
+    case 'cgo': S.cv=v&&v!==myCKey()?S.cinfo[v]:null; render(); break;
+    case 'chat': openChat(+v); break;
+    case 'sendMsg': sendMsg(); break;
+    case 'sendReq': {if(!reqReady()) return; const id=S.mentorSheet, sl=$('#sheet')._slots[S.slot], m=mentorsFor()[id], note=S.reqNote.trim();
+      S.reqs[id]={status:'pending',slot:sl,note}; S.chats[id]=[{me:true,req:true,text:note,time:hm(new Date())}];
+      closeSheet(); render(true); toast(`Request sent to ${m.name}`); setTimeout(()=>acceptReq(id),3000); break}
     case 'mentor': openMentorSheet(+v); break;
     case 'closeSheet': closeSheet(); break;
     case 'slot': S.slot=+v; $('#sheet')._draw(); break;
@@ -1991,7 +2132,6 @@ document.addEventListener('click',e=>{
       closeSheet(); render(true);
       toast(items().map(i=>i.title).join()!==before?`Stay: ${stayShort(stayDays())}. Visa steps updated`:`Stay: ${stayShort(stayDays())}. Deadlines updated`); break}
     case 'resetDep': S.depOverride=null; S.retOverride=null; closeSheet(); render(true); toast('Using the suggested travel dates'); break;
-    case 'book': {const sl=$('#sheet')._slots[S.slot]; S.booked[S.mentorSheet]=sl; const m=mentorsFor()[S.mentorSheet]; closeSheet(); render(true); toast(`Booked with ${m.name}, ${fmtShort(sl.d)} ${sl.hh}:00`); break}
     case 'bcat': S.bcat=S.bcat===v?'All':v; render(true); break;
     case 'changeProg': S.pick=host(); S.region=host().region; go('school'); break;
     case 'ap0': {const em=$('#apEmail').value.trim(); if(!/^[^@\s]+@[^@\s]+\.(ac\.kr|edu)$/.test(em)){toast('Enter a university email ending in .ac.kr or .edu');return} S.apply.email=em; S.apply.step=1; render(true); toast('University email verified'); break}
@@ -2004,6 +2144,8 @@ document.addEventListener('input',e=>{
   if(t.dataset.model) S.profile[t.dataset.model]=t.value;
   if(t.id==='email') S.email=t.value;
   if(t.id==='homeQ'){S.homeQ=t.value; ($('#homeList').innerHTML=homeListHTML(),translate($('#homeList')))}
+  if(t.id==='cQ'){S.cq=t.value; const b=$('#cBody'); if(b){b.innerHTML=cBodyHTML(); translate(b)}}
+  if(t.id==='reqNote'){S.reqNote=t.value; const b=$('#reqBtn'); if(b){b.disabled=!reqReady(); b.textContent=trText(reqLabel($('#sheet')._slots))}}
   if(t.id==='schoolQ'){S.sq=t.value; S.slimit=40; ($('#schoolList').innerHTML=schoolListHTML(),translate($('#schoolList')))}
 });
 function updStay(a,b,c,h){const x=$('#'+a),y=$('#'+b),z=$('#'+c); if(x&&y&&z&&x.value&&y.value){z.innerHTML=stayInfoHTML(h,D(x.value),D(y.value)); translate(z)}}
@@ -2014,7 +2156,7 @@ document.addEventListener('change',e=>{
   if(e.target.id==='depSheetInput'||e.target.id==='retSheetInput') updStay('depSheetInput','retSheetInput','staySheetInfo',host());
   if(e.target.id==='apFile'&&e.target.files[0]){S.apply.file=e.target.files[0].name; render(true)}
 });
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet(); if(e.key==='Enter'&&e.target.id==='qInput') document.querySelector('[data-act="ask"]').click()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet(); if(e.key==='Enter'&&e.target.id==='qInput') document.querySelector('[data-act="ask"]').click(); if(e.key==='Enter'&&!e.isComposing&&e.target.id==='chatInput'){e.preventDefault(); sendMsg()}});
 
 /* fit the true-size phone into short browser windows */
 function fit(){

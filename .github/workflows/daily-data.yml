@@ -1,0 +1,47 @@
+name: Daily data refresh
+
+# Every day at 06:00 Korea time: refresh the university list, recheck every
+# official link and English score source, and commit the result. The push
+# redeploys the site on Vercel, so students see data that is at most a day old.
+on:
+  schedule:
+    - cron: '0 21 * * *'   # 21:00 UTC = 06:00 KST
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install PDF reader
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+      - name: Refresh university list
+        run: node scripts/refresh-universities.mjs
+      - name: Check links and English score sources
+        run: node scripts/verify-data.mjs | tee report.txt
+      - name: Commit
+        run: |
+          git config user.name "daily-data-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/universities.json data/status.json
+          git diff --cached --quiet && exit 0
+          git commit -m "Daily data refresh $(date -u +%F)" -m "$(cat report.txt)"
+          git push
+      - name: Flag problems
+        if: always()
+        run: |
+          if grep -qE '^ +(BROKEN|MOVED|CHANGED)' report.txt; then
+            echo "::warning::Some links or English scores need a human check. See the report below."
+            grep -E '^ +(BROKEN|MOVED|CHANGED)' report.txt
+          fi

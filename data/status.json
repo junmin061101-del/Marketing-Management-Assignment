@@ -1,0 +1,1266 @@
+{
+ "checkedAt": "2026-11-19T04:16:56.644Z",
+ "links": {
+  "http://www.washington.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://administration-etrangers-en-france.interieur.gouv.fr/": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://administration-etrangers-en-france.interieur.gouv.fr/particuliers/",
+   "since": "2026-11-19"
+  },
+  "https://bechtel.stanford.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://cahss.ed.ac.uk/international-and-study-abroad/visiting-student-office/your-studies-in-edinburgh/enrol-on-courses/eligibility-enrolment": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://ceac.state.gov/genniv/": {
+   "s": "blocked",
+   "code": 403,
+   "since": "2026-11-19"
+  },
+  "https://direct.samsungfire.com/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://dofi.ibz.be": {
+   "s": "down",
+   "code": "ETIMEDOUT",
+   "since": "2026-11-19"
+  },
+  "https://educationmalaysia.gov.my": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://educationmalaysia.gov.my/",
+   "since": "2026-11-19"
+  },
+  "https://ethz.ch/en/studies.html": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://extendedlearning.ubc.ca/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://extension.harvard.edu/registration-admissions/course-registration/english-proficiency-requirement/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://france-visas.gouv.fr/": {
+   "s": "blocked",
+   "code": 403,
+   "since": "2026-11-19"
+  },
+  "https://global.psu.edu/category/international-students": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://global.psu.edu/landing/current-international-students",
+   "since": "2026-11-19"
+  },
+  "https://global.upenn.edu/isss": {
+   "s": "blocked",
+   "code": 403,
+   "since": "2026-11-19"
+  },
+  "https://global.utexas.edu/isss": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://global.utexas.edu/isss/advising-services/student-exchange-program": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://global.utexas.edu/isss/advising-services/student-exchange-program/exchange-partner-fact-sheet": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://goglobal.ubc.ca/go-global/coming-ubc/coming-ubc-exchange/english-language-requirements-coming-ubc-exchange": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://hdh.ucsd.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://hfs.uw.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://housing.berkeley.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://housing.unc.edu/": {
+   "s": "blocked",
+   "code": 403,
+   "since": "2026-11-19"
+  },
+  "https://housing.usc.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://housing.utexas.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://housing.utoronto.ca/": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://www.studentlife.utoronto.ca/department/housing/",
+   "since": "2026-11-19"
+  },
+  "https://i94.cbp.dhs.gov/": {
+   "s": "blocked",
+   "code": 403,
+   "since": "2026-11-19"
+  },
+  "https://iczu.zju.edu.cn/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://ind.nl/en/residence-permits/study": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://international.cornell.edu/": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://international.globallearning.cornell.edu/",
+   "since": "2026-11-19"
+  },
+  "https://internationalaffairs.uchicago.edu/": {
+   "s": "blocked",
+   "code": 403,
+   "since": "2026-11-19"
+  },
+  "https://internationalcenter.ucla.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://internationalcenter.umich.edu/": {
+   "s": "blocked",
+   "code": 403,
+   "since": "2026-11-19"
+  },
+  "https://internationalexperience.utoronto.ca/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://internationaloffice.berkeley.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://internationaloffice.berkeley.edu/elp-documentation": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://internationaloffice.berkeley.edu/students/exchange": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://internationalservices.georgetown.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://intlaffairs.hku.hk/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://intlaffairs.hku.hk/backend/wp-content/uploads/2026/10/HKU-Information-Sheet-2026-27.pdf": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://intlaffairs.hku.hk/exchange": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://isc.sjtu.edu.cn/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://iso.fudan.edu.cn/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://iso.mit.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://ispo.ucsd.edu/": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://iseo.ucsd.edu/student-services/index.html",
+   "since": "2026-11-19"
+  },
+  "https://iss.washington.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://iss.wisc.edu/": {
+   "s": "ok",
+   "code": 202,
+   "since": "2026-11-19"
+  },
+  "https://issc.asu.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://isso.columbia.edu/": {
+   "s": "blocked",
+   "code": 403,
+   "since": "2026-11-19"
+  },
+  "https://isss.emory.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://isss.illinois.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://isss.ntu.edu.tw/exchange-visiting-students/overview/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://isss.umn.edu/": {
+   "s": "blocked",
+   "code": 403,
+   "since": "2026-11-19"
+  },
+  "https://isss.unc.edu/": {
+   "s": "blocked",
+   "code": 403,
+   "since": "2026-11-19"
+  },
+  "https://kr.trip.com/flights/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://kr.usembassy.gov/visas/": {
+   "s": "blocked",
+   "code": 405,
+   "since": "2026-11-19"
+  },
+  "https://learningabroad.utoronto.ca/inbound-visiting/inbound-exchange/": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://learningabroad.utoronto.ca/inbound-visiting/inbound-exchange/am-i-eligible/",
+   "since": "2026-11-19"
+  },
+  "https://learningabroad.utoronto.ca/inbound-visiting/inbound-exchange/english-requirements/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://migri.fi/en": {
+   "s": "blocked",
+   "code": 403,
+   "since": "2026-11-19"
+  },
+  "https://nip.kdca.go.kr/irhp/mngm/goVcntMngm.do?menuLv=3&menuCd=341": {
+   "s": "down",
+   "code": "ERR_SSL_UNSAFE_LEGACY_RENEGOTIATION_DISABLED",
+   "since": "2026-11-19"
+  },
+  "https://nus.edu.sg/gro/global-programmes": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://nus.edu.sg/gro/global-programmes/student-exchange/incoming-exchangers": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://oia.ntu.edu.tw/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://oie.gatech.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://ois.usc.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://oiss.yale.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://quic.queensu.ca/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://rde.stanford.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://reslife.ucla.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://roaming.kt.com/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://sce.cornell.edu/": {
+   "s": "blocked",
+   "code": 403,
+   "since": "2026-11-19"
+  },
+  "https://seoul.diplo.de/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://students.ubc.ca/international-student-guide": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://students.ubc.ca/international-student-guide/",
+   "since": "2026-11-19"
+  },
+  "https://studies.ku.dk/": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://www.ku.dk/studies",
+   "since": "2026-11-19"
+  },
+  "https://studies.ku.dk/summer-school/": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://www.ku.dk/education/international-summer-programme",
+   "since": "2026-11-19"
+  },
+  "https://study.ed.ac.uk/summer-school": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://studyabroad.hkust.edu.hk/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://studyabroad.unc.edu/": {
+   "s": "blocked",
+   "code": 403,
+   "since": "2026-11-19"
+  },
+  "https://studyabroad.unc.edu/incoming-exchange/how-to-apply/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://studyinthestates.dhs.gov/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://summer.asu.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://summer.berkeley.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://summer.berkeley.edu/visiting-international/english-proficiency-requirement-epr": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://summer.georgetown.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://summer.harvard.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://summer.harvard.edu/student-life/housing/": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://summer.harvard.edu/academic-opportunities-support/housing/",
+   "since": "2026-11-19"
+  },
+  "https://summer.psu.edu/": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://summersession.psu.edu/",
+   "since": "2026-11-19"
+  },
+  "https://summer.sas.upenn.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://summer.stanford.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://summer.uchicago.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://summer.ucla.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://summer.ucla.edu/international-student-info/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://summer.unc.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://summer.uw.edu/": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://www.summer.uw.edu/",
+   "since": "2026-11-19"
+  },
+  "https://summer.wisc.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://summer.yale.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://summerschool.uva.nl/": {
+   "s": "down",
+   "code": 500,
+   "since": "2026-11-19"
+  },
+  "https://summersession.duke.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://summersession.ucsd.edu/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://travel-europe.europa.eu/ees_en": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://travel-europe.europa.eu/en/ees",
+   "since": "2026-11-19"
+  },
+  "https://travel-europe.europa.eu/etias_en": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://travel-europe.europa.eu/en/etias",
+   "since": "2026-11-19"
+  },
+  "https://travel.state.gov/content/travel/en/us-visas/study/student-visa.html": {
+   "s": "blocked",
+   "code": 403,
+   "since": "2026-11-19"
+  },
+  "https://travel.state.gov/content/travel/en/us-visas/visa-information-resources/photos.html": {
+   "s": "blocked",
+   "code": 403,
+   "since": "2026-11-19"
+  },
+  "https://troaming.tworld.co.kr/": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://troaming.tworld.co.kr/web/roaming",
+   "since": "2026-11-19"
+  },
+  "https://ugadmin.hkust.edu.hk/": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://registry.hkust.edu.hk/",
+   "since": "2026-11-19"
+  },
+  "https://visa.vfsglobal.com/kor/en/can": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://vistoperitalia.esteri.it": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://vistoperitalia.esteri.it/",
+   "since": "2026-11-19"
+  },
+  "https://warwick.ac.uk/services/international/": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://warwick.ac.uk/study/international/",
+   "since": "2026-11-19"
+  },
+  "https://warwick.ac.uk/study/summer-with-warwick/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://wise.com/kr/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.0404.go.kr": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://www.0404.go.kr/main/mainPage",
+   "since": "2026-11-19"
+  },
+  "https://www.aalto.fi/en/study-at-aalto": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.accom.ed.ac.uk/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.boca.gov.tw/mp-2.html": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.bu.edu/housing/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.bu.edu/isso/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.bu.edu/summer/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.bu.edu/summer/international-college-students/toefl/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada/study-permit.html": {
+   "s": "down",
+   "code": "TimeoutError",
+   "since": "2026-11-19"
+  },
+  "https://www.canada.ca/en/immigration-refugees-citizenship/services/visit-canada/eta.html": {
+   "s": "down",
+   "code": "TimeoutError",
+   "since": "2026-11-19"
+  },
+  "https://www.cbs.dk/en/study-programmes/international-students/exchange-students": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.cbs.dk/en/study/cbs-summer-university": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://www.cbs.dk/en/study-programmes/summer-university",
+   "since": "2026-11-19"
+  },
+  "https://www.cbs.dk/en/study/internationals": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://www.cbs.dk/en/study-programmes/international-students",
+   "since": "2026-11-19"
+  },
+  "https://www.cbs.dk/en/study/internationals/exchange-students/nomination-and-application": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://www.cbs.dk/en/study-programmes/international-students/exchange-students",
+   "since": "2026-11-19"
+  },
+  "https://www.conted.ox.ac.uk/about/summer-schools": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://lifelong-learning.ox.ac.uk/courses/summer-schools-in-oxford/",
+   "since": "2026-11-19"
+  },
+  "https://www.coree.campusfrance.org/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.directdb.co.kr/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.ed.ac.uk/studying/international": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.eur.nl/en": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.exteriores.gob.es": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://www.exteriores.gob.es/es/Paginas/index.aspx",
+   "since": "2026-11-19"
+  },
+  "https://www.fmjfee.com/i901fee/index.html": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://www.fmjfee.com/i901fee/index.htm",
+   "since": "2026-11-19"
+  },
+  "https://www.fu-berlin.de/en/studium/international/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.fubis.org/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.gov.kr/mw/AA020InfoCappView.do?CappBizCD=14600000398": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.gov.uk/evisa": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.gov.uk/guidance/apply-for-an-electronic-travel-authorisation-eta": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://www.gov.uk/eta",
+   "since": "2026-11-19"
+  },
+  "https://www.gov.uk/healthcare-immigration-application": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.gov.uk/standard-visitor": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.gov.uk/student-visa": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.hanacard.co.kr/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.helsinki.fi/en/admissions-and-education/apply-exchange-and-visiting-studies": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.helsinki.fi/en/admissions-and-education/international-students": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.hio.harvard.edu/": {
+   "s": "blocked",
+   "code": 403,
+   "since": "2026-11-19"
+  },
+  "https://www.hostelworld.com/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.housinganywhere.com/": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://housinganywhere.com/",
+   "since": "2026-11-19"
+  },
+  "https://www.ic.keio.ac.jp/en/study/exchange/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.ica.gov.sg/reside/STP": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://www.ica.gov.sg/information-and-e-services/long-term-visit-and-study/student-s-pass/student's-pass-application-renewal",
+   "since": "2026-11-19"
+  },
+  "https://www.ica.gov.sg/reside/STP/apply": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://www.ica.gov.sg/information-and-e-services/long-term-visit-and-study/student-s-pass/student's-pass-application-renewal",
+   "since": "2026-11-19"
+  },
+  "https://www.immd.gov.hk/eng/services/visas/study.html": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.imperial.ac.uk/study/international-students/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.internationalstudents.cam.ac.uk/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.irishimmigration.ie": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://www.irishimmigration.ie/",
+   "since": "2026-11-19"
+  },
+  "https://www.isd.pku.edu.cn/": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://www.isd.pku.edu.cn/cn/",
+   "since": "2026-11-19"
+  },
+  "https://www.isic.org/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.isoa.org/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.kcl.ac.uk/international": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://www.kcl.ac.uk/study/international",
+   "since": "2026-11-19"
+  },
+  "https://www.keio.ac.jp/en/admissions/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.kr.emb-japan.go.jp/": {
+   "s": "blocked",
+   "code": 403,
+   "since": "2026-11-19"
+  },
+  "https://www.kuleuven.be/english/apply/application-instructions/instructions-exchange": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.kuleuven.be/english/summer-schools": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.kuleuven.be/global/going-abroad/incomingstudentmobility": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.lguplus.com/mobile/roaming": {
+   "s": "blocked",
+   "code": 403,
+   "since": "2026-11-19"
+  },
+  "https://www.lmu.de/en/study/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.lunduniversity.lu.se/admissions": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://www.lunduniversity.lu.se/study",
+   "since": "2026-11-19"
+  },
+  "https://www.lunduniversity.lu.se/study/exchange-and-study-abroad/exchange-studies/exchange-application-and-acceptance/application-guide-incoming-exchange-students": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://www.lunduniversity.lu.se/study/study-opportunities-lund-university/exchange-and-study-abroad/exchange-studies/exchange-application-and-acceptance/application-guide-incoming-exchange-students",
+   "since": "2026-11-19"
+  },
+  "https://www.lunduniversity.lu.se/study/study-opportunities-lund-university/exchange-and-study-abroad/exchange-studies/admission-requirements-exchange-courses": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.maaltalk.com/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.maastrichtuniversity.nl/education/exchange": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.maastrichtuniversity.nl/support": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.make-it-in-germany.com/en/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.manchester.ac.uk/study/international/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.manchester.ac.uk/study/international/study-abroad-programmes/": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://www.manchester.ac.uk/study/international/study-abroad-exchange/",
+   "since": "2026-11-19"
+  },
+  "https://www.mcgill.ca/internationalstudents/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.mcgill.ca/isa/student/special/visiting": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.mcgill.ca/summer/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.migration.gv.at/en/": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://www.migration.gv.at/en/welcome/?no_cache=1",
+   "since": "2026-11-19"
+  },
+  "https://www.migrationsverket.se/English": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.mofa.go.jp/j_info/visit/visa/": {
+   "s": "blocked",
+   "code": 403,
+   "since": "2026-11-19"
+  },
+  "https://www.moj.go.jp/isa/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.nhs.uk/vaccinations/menacwy-vaccine/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.nhs.uk/vaccinations/mmr-vaccine/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.ntu.edu.sg/education/student-exchanges/exchange-programmes/inbound-programmes": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.nus.edu.sg/gro/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.nyidanmark.dk/en-GB": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.nyu.edu/admissions/summer-sessions.html": {
+   "s": "ok",
+   "code": 202,
+   "since": "2026-11-19"
+  },
+  "https://www.nyu.edu/students/student-information-and-resources/student-visa-and-immigration.html": {
+   "s": "ok",
+   "code": 202,
+   "since": "2026-11-19"
+  },
+  "https://www.oal.cuhk.edu.hk/": {
+   "s": "down",
+   "code": "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+   "since": "2026-11-19"
+  },
+  "https://www.oc.kyoto-u.ac.jp/en/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.ox.ac.uk/students/visa": {
+   "s": "blocked",
+   "code": 403,
+   "since": "2026-11-19"
+  },
+  "https://www.pace.cam.ac.uk/course-type/international-summer-programme": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.purdue.edu/ippu/iss/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.roc-taiwan.org/kr_en/": {
+   "s": "blocked",
+   "code": 200,
+   "final": "https://www.roc-taiwan.org/Embassy_Error/error-vpn_data_url.html",
+   "since": "2026-11-19"
+  },
+  "https://www.sem.admin.ch/en": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.sfu.ca/students/isap.html": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.spareroom.co.uk/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.studentuniverse.com/": {
+   "s": "blocked",
+   "code": 403,
+   "since": "2026-11-19"
+  },
+  "https://www.tcd.ie/study/international/": {
+   "s": "ok",
+   "code": 202,
+   "since": "2026-11-19"
+  },
+  "https://www.tcd.ie/study/visiting/": {
+   "s": "ok",
+   "code": 202,
+   "since": "2026-11-19"
+  },
+  "https://www.thaievisa.go.th": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://www.thaievisa.go.th/",
+   "since": "2026-11-19"
+  },
+  "https://www.tsinghua.edu.cn/en/Admissions.htm": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.tum.de/en/studies/international-students": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.u-tokyo.ac.jp/en/academics/ustep-overview.html": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.u-tokyo.ac.jp/en/academics/ustep.html": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.u-tokyo.ac.jp/en/prospective-students/prospective_students.html": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.ucd.ie/global/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.ucm.es/english": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.udi.no/en/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.uni-mannheim.de/en/academics/coming-to-mannheim/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.unibocconi.it/en/international-students": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.unibocconi.it/en/programs": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.unibocconi.it/en/programs/summer-school": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.uniplaces.com/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.universiteitleiden.nl/en/education/admission-and-application/international-students": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.universiteitleiden.nl/en/education/study-programmes/exchange": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.universiteitleiden.nl/en/education/summer-schools": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.uottawa.ca/study/international-students": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.usimsa.com/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.ustraveldocs.com/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.utrechtsummerschool.nl/": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://utrechtsummerschool.nl/",
+   "since": "2026-11-19"
+  },
+  "https://www.uu.nl/en": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.uu.nl/en/education/exchange-students": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.uu.se/en/study/exchange-studies": {
+   "s": "down",
+   "code": "ETIMEDOUT",
+   "since": "2026-11-19"
+  },
+  "https://www.uva.nl/en/education/exchange/global-exchange-programme/entry-requirements-and-course-selection/entry-requirements-and-course-selection.html": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://www.uva.nl/en/exchange/global-exchange-programme/entry-requirements-and-course-selection",
+   "since": "2026-11-19"
+  },
+  "https://www.uva.nl/en/education/exchange/global-exchange-programme/global-exchange-programme.html": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://www.uva.nl/en/exchange/global-exchange-programme",
+   "since": "2026-11-19"
+  },
+  "https://www.visaforchina.cn/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.waseda.jp/inst/cie/assets/uploads/2026/06/e4b83beb6ee3607bf5992252db1e8fae.pdf": {
+   "s": "blocked",
+   "code": 403,
+   "since": "2026-11-19"
+  },
+  "https://www.waseda.jp/inst/cie/en/": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://www.waseda.jp/inst/cie/en",
+   "since": "2026-11-19"
+  },
+  "https://www.waseda.jp/inst/cie/en/to-waseda/short": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.washington.edu/studyabroad/visitingexchange/application-2/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.wu.ac.at/en/": {
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-19"
+  },
+  "https://www.wu.ac.at/en/programs/incoming-students": {
+   "s": "ok",
+   "code": 200,
+   "final": "https://www.wu.ac.at/studium/internationale-und-exchange-studierende/incoming-exchange-studierende",
+   "since": "2026-11-19"
+  },
+  "https://yorkinternational.yorku.ca/": {
+   "s": "down",
+   "code": "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+   "since": "2026-11-19"
+  }
+ },
+ "english": {
+  "Boston University|ss": {
+   "s": "ok"
+  },
+  "Copenhagen Business School|ex": {
+   "s": "ok"
+  },
+  "Harvard University|ss": {
+   "s": "ok"
+  },
+  "Lund University|ex": {
+   "s": "ok"
+  },
+  "National Taiwan University|ex": {
+   "s": "ok"
+  },
+  "National University of Singapore|ex": {
+   "s": "ok"
+  },
+  "The University of Hong Kong|ex": {
+   "s": "unchecked",
+   "why": "pdf reader missing"
+  },
+  "The University of Texas at Austin|ex": {
+   "s": "ok"
+  },
+  "University of Amsterdam|ex": {
+   "s": "ok"
+  },
+  "University of British Columbia|ex": {
+   "s": "ok"
+  },
+  "University of California, Berkeley|ex": {
+   "s": "ok"
+  },
+  "University of California, Berkeley|ss": {
+   "s": "ok"
+  },
+  "University of California, Los Angeles|ss": {
+   "s": "ok"
+  },
+  "University of Edinburgh|ex": {
+   "s": "ok"
+  },
+  "University of North Carolina at Chapel Hill|ex": {
+   "s": "unchecked",
+   "why": "page 403"
+  },
+  "University of Tokyo|ex": {
+   "s": "ok"
+  },
+  "University of Toronto|ex": {
+   "s": "ok"
+  },
+  "University of Washington|ex": {
+   "s": "ok"
+  },
+  "Waseda University|ex": {
+   "s": "unchecked",
+   "why": "page 403"
+  }
+ }
+}
