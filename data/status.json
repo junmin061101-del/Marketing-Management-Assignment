@@ -1,5 +1,5 @@
 {
- "checkedAt": "2026-11-19T04:16:56.644Z",
+ "checkedAt": "2026-11-20T02:07:06.029Z",
  "links": {
   "http://www.washington.edu/": {
    "s": "ok",
@@ -33,9 +33,10 @@
    "since": "2026-11-19"
   },
   "https://dofi.ibz.be": {
-   "s": "down",
-   "code": "ETIMEDOUT",
-   "since": "2026-11-19"
+   "s": "ok",
+   "code": 200,
+   "final": "https://dofi.ibz.be/",
+   "since": "2026-11-20"
   },
   "https://educationmalaysia.gov.my": {
    "s": "ok",
@@ -110,9 +111,9 @@
    "since": "2026-11-19"
   },
   "https://housing.unc.edu/": {
-   "s": "blocked",
-   "code": 403,
-   "since": "2026-11-19"
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-20"
   },
   "https://housing.usc.edu/": {
    "s": "ok",
@@ -152,9 +153,9 @@
    "since": "2026-11-19"
   },
   "https://internationalaffairs.uchicago.edu/": {
-   "s": "blocked",
-   "code": 403,
-   "since": "2026-11-19"
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-20"
   },
   "https://internationalcenter.ucla.edu/": {
    "s": "ok",
@@ -263,14 +264,14 @@
    "since": "2026-11-19"
   },
   "https://isss.umn.edu/": {
-   "s": "blocked",
-   "code": 403,
-   "since": "2026-11-19"
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-20"
   },
   "https://isss.unc.edu/": {
-   "s": "blocked",
-   "code": 403,
-   "since": "2026-11-19"
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-20"
   },
   "https://kr.trip.com/flights/": {
    "s": "ok",
@@ -278,9 +279,9 @@
    "since": "2026-11-19"
   },
   "https://kr.usembassy.gov/visas/": {
-   "s": "blocked",
-   "code": 405,
-   "since": "2026-11-19"
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-20"
   },
   "https://learningabroad.utoronto.ca/inbound-visiting/inbound-exchange/": {
    "s": "ok",
@@ -392,14 +393,14 @@
    "since": "2026-11-19"
   },
   "https://studyabroad.unc.edu/": {
-   "s": "blocked",
-   "code": 403,
-   "since": "2026-11-19"
-  },
-  "https://studyabroad.unc.edu/incoming-exchange/how-to-apply/": {
    "s": "ok",
    "code": 200,
-   "since": "2026-11-19"
+   "since": "2026-11-20"
+  },
+  "https://studyabroad.unc.edu/incoming-exchange/how-to-apply/": {
+   "s": "blocked",
+   "code": 403,
+   "since": "2026-11-20"
   },
   "https://studyinthestates.dhs.gov/": {
    "s": "ok",
@@ -490,9 +491,10 @@
    "since": "2026-11-19"
   },
   "https://summerschool.uva.nl/": {
-   "s": "down",
-   "code": 500,
-   "since": "2026-11-19"
+   "s": "ok",
+   "code": 200,
+   "final": "https://www.uva.nl/en/summerschool",
+   "since": "2026-11-20"
   },
   "https://summersession.duke.edu/": {
    "s": "ok",
@@ -607,14 +609,14 @@
    "since": "2026-11-19"
   },
   "https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada/study-permit.html": {
-   "s": "down",
-   "code": "TimeoutError",
-   "since": "2026-11-19"
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-20"
   },
   "https://www.canada.ca/en/immigration-refugees-citizenship/services/visit-canada/eta.html": {
-   "s": "down",
-   "code": "TimeoutError",
-   "since": "2026-11-19"
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-20"
   },
   "https://www.cbs.dk/en/study-programmes/international-students/exchange-students": {
    "s": "ok",
@@ -668,7 +670,7 @@
   "https://www.exteriores.gob.es": {
    "s": "ok",
    "code": 200,
-   "final": "https://www.exteriores.gob.es/es/Paginas/index.aspx",
+   "final": "https://www.exteriores.gob.es/en/Paginas/index.aspx",
    "since": "2026-11-19"
   },
   "https://www.fmjfee.com/i901fee/index.html": {
@@ -954,14 +956,14 @@
    "since": "2026-11-19"
   },
   "https://www.nyu.edu/admissions/summer-sessions.html": {
-   "s": "ok",
-   "code": 202,
-   "since": "2026-11-19"
+   "s": "blocked",
+   "code": 405,
+   "since": "2026-11-20"
   },
   "https://www.nyu.edu/students/student-information-and-resources/student-visa-and-immigration.html": {
-   "s": "ok",
-   "code": 202,
-   "since": "2026-11-19"
+   "s": "blocked",
+   "code": 405,
+   "since": "2026-11-20"
   },
   "https://www.oal.cuhk.edu.hk/": {
    "s": "down",
@@ -1016,13 +1018,14 @@
   },
   "https://www.tcd.ie/study/international/": {
    "s": "ok",
-   "code": 202,
+   "code": 200,
    "since": "2026-11-19"
   },
   "https://www.tcd.ie/study/visiting/": {
-   "s": "ok",
-   "code": 202,
-   "since": "2026-11-19"
+   "s": "broken",
+   "code": 200,
+   "final": "https://www.tcd.ie/study/404/index.php",
+   "since": "2026-11-20"
   },
   "https://www.thaievisa.go.th": {
    "s": "ok",
@@ -1142,9 +1145,9 @@
    "since": "2026-11-19"
   },
   "https://www.uu.se/en/study/exchange-studies": {
-   "s": "down",
-   "code": "ETIMEDOUT",
-   "since": "2026-11-19"
+   "s": "ok",
+   "code": 200,
+   "since": "2026-11-20"
   },
   "https://www.uva.nl/en/education/exchange/global-exchange-programme/entry-requirements-and-course-selection/entry-requirements-and-course-selection.html": {
    "s": "ok",
@@ -1221,8 +1224,7 @@
    "s": "ok"
   },
   "The University of Hong Kong|ex": {
-   "s": "unchecked",
-   "why": "pdf reader missing"
+   "s": "ok"
   },
   "The University of Texas at Austin|ex": {
    "s": "ok"
