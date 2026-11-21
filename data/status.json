@@ -1,5 +1,5 @@
 {
- "checkedAt": "2026-11-20T02:07:06.029Z",
+ "checkedAt": "2026-11-21T02:02:39.888Z",
  "links": {
   "http://www.washington.edu/": {
    "s": "ok",
@@ -535,10 +535,9 @@
    "since": "2026-11-19"
   },
   "https://ugadmin.hkust.edu.hk/": {
-   "s": "ok",
-   "code": 200,
-   "final": "https://registry.hkust.edu.hk/",
-   "since": "2026-11-19"
+   "s": "down",
+   "code": "UND_ERR_CONNECT_TIMEOUT",
+   "since": "2026-11-21"
   },
   "https://visa.vfsglobal.com/kor/en/can": {
    "s": "ok",
@@ -912,7 +911,6 @@
   "https://www.migration.gv.at/en/": {
    "s": "ok",
    "code": 200,
-   "final": "https://www.migration.gv.at/en/welcome/?no_cache=1",
    "since": "2026-11-19"
   },
   "https://www.migrationsverket.se/English": {
