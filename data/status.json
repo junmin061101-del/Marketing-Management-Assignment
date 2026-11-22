@@ -1,5 +1,5 @@
 {
- "checkedAt": "2026-11-21T02:02:39.888Z",
+ "checkedAt": "2026-11-22T01:03:40.935Z",
  "links": {
   "http://www.washington.edu/": {
    "s": "ok",
@@ -235,7 +235,7 @@
   },
   "https://iss.wisc.edu/": {
    "s": "ok",
-   "code": 202,
+   "code": 200,
    "since": "2026-11-19"
   },
   "https://issc.asu.edu/": {
@@ -481,9 +481,9 @@
    "since": "2026-11-19"
   },
   "https://summer.wisc.edu/": {
-   "s": "ok",
-   "code": 200,
-   "since": "2026-11-19"
+   "s": "blocked",
+   "code": 403,
+   "since": "2026-11-22"
   },
   "https://summer.yale.edu/": {
    "s": "ok",
@@ -535,14 +535,15 @@
    "since": "2026-11-19"
   },
   "https://ugadmin.hkust.edu.hk/": {
-   "s": "down",
-   "code": "UND_ERR_CONNECT_TIMEOUT",
-   "since": "2026-11-21"
-  },
-  "https://visa.vfsglobal.com/kor/en/can": {
    "s": "ok",
    "code": 200,
-   "since": "2026-11-19"
+   "final": "https://registry.hkust.edu.hk/",
+   "since": "2026-11-22"
+  },
+  "https://visa.vfsglobal.com/kor/en/can": {
+   "s": "blocked",
+   "code": 403,
+   "since": "2026-11-22"
   },
   "https://vistoperitalia.esteri.it": {
    "s": "ok",
@@ -608,14 +609,14 @@
    "since": "2026-11-19"
   },
   "https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada/study-permit.html": {
-   "s": "ok",
-   "code": 200,
-   "since": "2026-11-20"
+   "s": "down",
+   "code": "TimeoutError",
+   "since": "2026-11-22"
   },
   "https://www.canada.ca/en/immigration-refugees-citizenship/services/visit-canada/eta.html": {
-   "s": "ok",
-   "code": 200,
-   "since": "2026-11-20"
+   "s": "down",
+   "code": "TimeoutError",
+   "since": "2026-11-22"
   },
   "https://www.cbs.dk/en/study-programmes/international-students/exchange-students": {
    "s": "ok",
@@ -954,14 +955,16 @@
    "since": "2026-11-19"
   },
   "https://www.nyu.edu/admissions/summer-sessions.html": {
-   "s": "blocked",
-   "code": 405,
-   "since": "2026-11-20"
+   "s": "ok",
+   "code": 202,
+   "final": "https://www.nyu.edu/admissions/summer-sessions.html?challenge=d06e90d7-4d8f-4b88-9d8c-10b73beb60f1",
+   "since": "2026-11-22"
   },
   "https://www.nyu.edu/students/student-information-and-resources/student-visa-and-immigration.html": {
-   "s": "blocked",
-   "code": 405,
-   "since": "2026-11-20"
+   "s": "ok",
+   "code": 202,
+   "final": "https://www.nyu.edu/students/student-information-and-resources/student-visa-and-immigration.html?challenge=d06e90d7-4d8f-4b88-9d8c-10b73beb60f1",
+   "since": "2026-11-22"
   },
   "https://www.oal.cuhk.edu.hk/": {
    "s": "down",
@@ -989,10 +992,9 @@
    "since": "2026-11-19"
   },
   "https://www.roc-taiwan.org/kr_en/": {
-   "s": "blocked",
-   "code": 200,
-   "final": "https://www.roc-taiwan.org/Embassy_Error/error-vpn_data_url.html",
-   "since": "2026-11-19"
+   "s": "broken",
+   "code": 404,
+   "since": "2026-11-22"
   },
   "https://www.sem.admin.ch/en": {
    "s": "ok",
