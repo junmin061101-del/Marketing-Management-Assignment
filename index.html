@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>교환가자</title>
 <meta name="description" content="교환가자 — a post-selection preparation app for exchange and summer school students: personalized checklist, program community, verified mentors and departure perks.">
-<meta name="theme-color" content="#14DBBA">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Crect width=%2724%27 height=%2724%27 rx=%276%27 fill=%27%2314DBBA%27/%3E%3Cpath d=%27M5 11.8 19 5l-5 14-2.5-5.7L5 11.8Z%27 fill=%27white%27/%3E%3C/svg%3E">
+<meta name="theme-color" content="#F2F4F6">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Crect width=%2724%27 height=%2724%27 rx=%276%27 fill=%27%232F6FED%27/%3E%3Cpath d=%27M5 11.8 19 5l-5 14-2.5-5.7L5 11.8Z%27 fill=%27white%27/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -101,7 +101,7 @@ p{margin:0}
 .scroll::-webkit-scrollbar{display:none}
 .pad{padding:8px 20px 28px}
 .cta{flex:none;padding:12px 20px calc(12px + var(--sab));background:var(--bg)}
-.btn{width:100%;height:54px;border-radius:16px;background:var(--primary);color:var(--on-primary);font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 16px rgba(16,186,157,.28);transition:background .15s,transform .1s}
+.btn{width:100%;height:54px;border-radius:16px;background:var(--primary);color:var(--on-primary);font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:none;transition:background .15s,transform .1s}
 .btn:hover{background:var(--primary-press)}
 .btn:active{transform:scale(.985)}
 .btn[disabled]{background:var(--line);color:var(--ink-3);box-shadow:none;cursor:not-allowed}
@@ -537,36 +537,29 @@ h1,h2,h3{letter-spacing:-.03em}
 #view.surf .bar{background:var(--surface)}
 .bar.main h2{font-size:24px;font-weight:800;letter-spacing:-.035em}
 
-/* hero: deep navy card, mint only on the meter */
-.hero{background:linear-gradient(155deg,var(--hero) 0%,var(--hero-2) 100%);color:#fff;border-radius:24px;padding:22px 20px 18px;gap:18px;box-shadow:0 12px 32px rgba(1,39,67,.18)}
-.hero .mono{background:rgba(255,255,255,.1);color:#fff}
-.hero .top b{color:#fff;font-size:16px;letter-spacing:-.02em}
-.hero .top small{color:rgba(255,255,255,.62)}
-.hero .dday{align-items:flex-end}
-.hero .dday small{color:rgba(255,255,255,.62);font-size:13px;font-weight:500;margin-bottom:6px}
-.hero .dday .big{display:flex;align-items:baseline;gap:2px;color:#fff;line-height:.9;font-variant-numeric:tabular-nums}
-.hero .dday .big .dd-pre{font-size:24px;font-weight:600;letter-spacing:-.02em;color:rgba(255,255,255,.7)}
-.hero .dday .big .dd-n{font-size:60px;font-weight:800;letter-spacing:-.04em}
-.hero .dday .r{color:rgba(255,255,255,.62);font-size:12px;display:flex;flex-direction:column;align-items:flex-end;gap:2px}
-.hero .dday .r b{color:var(--mint-bright);font-size:28px;font-weight:800;letter-spacing:-.04em;line-height:1}
-.hero .dday .r b i{font-style:normal;font-size:16px;font-weight:700;margin-left:1px}
-.hero .meter{height:6px;background:rgba(255,255,255,.14)}
-.hero .meter i{background:var(--mint-bright)}
-.depbtn{background:rgba(255,255,255,.08);color:#fff;padding:11px 14px;border-radius:14px;gap:10px}
-.depbtn .ic{color:var(--mint-bright)}
-.depbtn .dt{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
-.depbtn .dt small{font-size:11px;color:rgba(255,255,255,.55);font-weight:500}
-.depbtn .dt b{color:#fff;font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.depbtn .edit{color:var(--mint-bright);flex:none;white-space:nowrap}
-.depbtn:hover{background:rgba(255,255,255,.12)}
+/* hero: plain card that says the countdown as a sentence */
+.hero{background:var(--card);color:var(--ink);border-radius:22px;padding:20px;gap:0;box-shadow:var(--card-shadow)}
+.hero .top{gap:10px}
+.hero .mono{width:36px;height:36px;border-radius:10px;font-size:11px;background:var(--surface);color:var(--ink-2)}
+.hero .top b{font-size:15px;font-weight:700;color:var(--ink)}
+.hero .top small{font-size:12px;color:var(--ink-3)}
+.hero .lead{margin-top:18px;font-size:24px;font-weight:700;line-height:1.35;letter-spacing:-.03em;color:var(--ink)}
+.hero .lead em{font-style:normal;color:var(--primary);font-variant-numeric:tabular-nums}
+.hero .trip{display:flex;align-items:center;gap:6px;width:100%;margin-top:8px;font-size:14px;color:var(--ink-2);text-align:left;white-space:nowrap}
+.hero .trip .d{overflow:hidden;text-overflow:ellipsis;min-width:0}
+.hero .trip .edit{margin-left:auto;flex:none;font-size:13px;font-weight:600;color:var(--ink-3);text-decoration:underline;text-underline-offset:3px}
+.hero .prog{margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+.hero .prog .row{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--ink-2);margin-bottom:8px}
+.hero .prog .row b{font-weight:700;color:var(--ink)}
+.hero .meter{height:6px;background:var(--track)}
+.hero .meter i{background:var(--primary)}
 
-/* spotlight: the one thing to do next */
-.next{margin-top:12px;background:var(--card);border:0;border-radius:20px;padding:18px;box-shadow:var(--card-shadow);gap:14px;position:relative;overflow:hidden}
-.next::before{content:'';position:absolute;left:0;top:16px;bottom:16px;width:4px;border-radius:0 4px 4px 0;background:var(--mint-bright)}
-.next .lbl{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--ink-2);text-transform:none;letter-spacing:0}
-.next b{font-size:17px;font-weight:800;letter-spacing:-.03em;margin-top:8px;line-height:1.35}
-.next small{display:block;font-size:12px;color:var(--ink-3);margin-top:4px}
-.next .go{flex:none;display:flex;align-items:center;gap:2px;height:36px;padding:0 10px 0 14px;border-radius:18px;background:var(--primary);color:var(--on-primary);font-size:13px;font-weight:700}
+/* next task: a plain row card, no decoration */
+.next{margin-top:10px;background:var(--card);border:0;border-radius:18px;padding:16px 16px 16px 18px;box-shadow:var(--card-shadow);gap:10px}
+.next .lbl{display:flex;justify-content:space-between;gap:8px;font-size:12px;font-weight:600;color:var(--ink-3);text-transform:none;letter-spacing:0;white-space:nowrap}
+.next .lbl .soon{color:var(--warn)}
+.next b{font-size:16px;font-weight:700;letter-spacing:-.02em;margin-top:6px;line-height:1.4}
+.next>.ic{color:var(--ink-3)}
 
 /* checklist: open items in a card, completed folded */
 .filters{margin:22px -20px 4px}
@@ -613,7 +606,7 @@ h1,h2,h3{letter-spacing:-.03em}
 .post .foot{border-top:1px solid var(--line);margin-top:12px;padding-top:10px}
 
 /* mentors: coffee-chat cards */
-.mhero{background:linear-gradient(155deg,var(--hero) 0%,var(--hero-2) 100%);color:#fff;border-radius:22px}
+.mhero{border-radius:22px}
 .mhero .flow span{background:rgba(255,255,255,.1)}
 .mentor{background:var(--card);border:0;border-radius:20px;padding:18px;margin-top:10px;box-shadow:var(--card-shadow);gap:14px}
 .mentor .ava{width:52px;height:52px;font-size:18px;font-weight:800}
@@ -645,11 +638,58 @@ h1,h2,h3{letter-spacing:-.03em}
 .dview .eng-grid b{color:var(--ink);letter-spacing:-.04em}
 .dview .eng{border-width:1px}
 
+/* calm palette: neutral grays, one blue accent */
+:root{--mint:#2F6FED; --primary:#2F6FED; --primary-press:#2459C9; --primary-ink:#2459C9; --primary-soft:#EEF3FE; --primary-line:#CADAFB;
+  --navy:#191F28; --on-primary:#FFFFFF; --ink:#191F28; --ink-2:#4E5968; --ink-3:#8B95A1; --line:#EBEEF1;
+  --bg:#FFFFFF; --surface:#F2F4F6; --stage:#E8EBEE; --card:#FFFFFF; --track:#E5E8EB;
+  --warn:#C2410C; --warn-soft:#FFF1E7;
+  --shadow:0 4px 16px rgba(25,31,40,.06); --glow:0 16px 40px rgba(47,111,237,.28);
+  --card-shadow:0 1px 3px rgba(25,31,40,.04)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--mint:#4E86F7; --primary:#4E86F7; --primary-press:#3C74E6; --primary-ink:#8DB1FA; --primary-soft:#1D2840; --primary-line:#2C3D63;
+  --navy:#F2F4F6; --on-primary:#FFFFFF; --ink:#ECEEF1; --ink-2:#AEB5BE; --ink-3:#6E7682; --line:#2B2E35;
+  --bg:#17181C; --surface:#0F1013; --stage:#08090B; --card:#1E1F24; --track:#2A2C32;
+  --warn:#FB923C; --warn-soft:#3A2414;
+  --shadow:0 4px 16px rgba(0,0,0,.4); --glow:0 16px 40px rgba(78,134,247,.25);
+  --card-shadow:none;
+  color-scheme:dark}}
+:root[data-theme="dark"]{--mint:#4E86F7; --primary:#4E86F7; --primary-press:#3C74E6; --primary-ink:#8DB1FA; --primary-soft:#1D2840; --primary-line:#2C3D63;
+  --navy:#F2F4F6; --on-primary:#FFFFFF; --ink:#ECEEF1; --ink-2:#AEB5BE; --ink-3:#6E7682; --line:#2B2E35;
+  --bg:#17181C; --surface:#0F1013; --stage:#08090B; --card:#1E1F24; --track:#2A2C32;
+  --warn:#FB923C; --warn-soft:#3A2414;
+  --shadow:0 4px 16px rgba(0,0,0,.4); --glow:0 16px 40px rgba(78,134,247,.25);
+  --card-shadow:none;
+  color-scheme:dark}
+
+/* Korean breaks between words, never inside one */
+body{word-break:keep-all;overflow-wrap:break-word}
+.pill,.chip,.btn,.mcta,.price,.rate,.edit,.lbl,.seg button,.cat-row button,.go{white-space:nowrap}
+
+/* filters and toggles use ink, not a brand color */
+.filters .chip.on,.mychips .chip.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.cat-row button.on .ico{background:var(--ink);color:var(--bg)}
+
+/* mentor hero and apply card: flat, no gradients */
+.mhero{background:var(--card);color:var(--ink);box-shadow:var(--card-shadow)}
+.mhero b{font-size:17px;font-weight:700;letter-spacing:-.02em}
+.mhero .flow span{background:var(--surface);color:var(--ink-2)}
+#view.surf .apply-card{background:var(--primary);color:#fff}
+
+/* mentor card footer */
+.mentor .bottom{align-items:center;gap:10px}
+.mentor .pr{display:flex;flex-direction:column;gap:2px;min-width:0}
+.mentor .price{font-size:16px;font-weight:800;letter-spacing:-.02em;margin:0}
+.mentor .price small{font-size:12px;font-weight:500;color:var(--ink-3)}
+.mentor .rate{font-size:12px;gap:3px}
+.mentor .rate .num{color:var(--ink-3)}
+.mentor .ava{width:46px;height:46px;font-size:16px}
+.mentor .intro{color:var(--ink-2)}
+.post .who .ava,.chatrow .ava,.me .ava{background:var(--surface);color:var(--ink-2)}
+
 /* me tab */
 #view.surf .me{border-radius:20px;padding:16px}
 #view.surf .menu{border-radius:20px;overflow:hidden;margin:0;border-top:0;padding:0 16px}
 #view.surf .me{margin-bottom:12px}
-#view.surf .apply-card{background:linear-gradient(155deg,var(--hero) 0%,var(--hero-2) 100%);color:#fff;margin-bottom:12px}
+#view.surf .apply-card{background:var(--primary);color:#fff;margin-bottom:12px}
 </style>
 </head>
 <body>
@@ -779,7 +819,7 @@ Object.assign(KO,{
 "International students office":"국제학생 오피스","Incoming exchange students":"교환학생 안내","Summer & short-term programs":"서머·단기 프로그램","Student housing":"학생 기숙사","Immunization requirements":"예방접종 요건","Official website":"공식 웹사이트",
 "immunization requirements international students":"예방접종 요건","incoming exchange students":"교환학생","international students":"국제학생","student housing":"학생 기숙사","summer school international students":"서머스쿨",
 // home
-"My prep":"내 준비","Dashboard":"대시보드","Recommended: TOEFL 105, IELTS 7.0, DET 125.":"권장 점수: TOEFL 105, IELTS 7.0, DET 125.","Suggested dates":"추천 일정","Your dates":"내 일정","Start":"시작","Everything here is done. Nice work!":"이 항목은 모두 끝냈어요. 잘하고 있어요!","Collapse":"접기","Open chat":"채팅 열기","View request":"요청 보기","Request 1:1":"1:1 요청하기","I went through the F-1 visa and course registration step by step. Ask me anything about the paperwork.":"F-1 비자와 수강신청을 하나하나 직접 해봤어요. 서류 관련해서 뭐든 물어보세요.","I found off-campus housing and set up a bank and phone in my first week. Happy to share what worked.":"첫 주에 학교 밖 숙소를 구하고 은행·휴대폰까지 개통했어요. 잘 됐던 방법을 알려드릴게요.","I transferred 15 credits back home. I can help you plan courses and English tests early.":"본교로 15학점을 인정받았어요. 수강 계획과 영어 시험 준비를 미리 도와드릴게요.","Departure in":"출국까지","done":"완료","Edit":"수정","Up next":"다음 할 일","Apply":"지원","Health":"건강","Living":"생활","Academics":"학업","Arrival":"입국",
+"My prep":"내 준비","Dashboard":"대시보드","Prep progress":"준비 현황","Change dates":"일정 바꾸기","Due today":"오늘 마감","Recommended: TOEFL 105, IELTS 7.0, DET 125.":"권장 점수: TOEFL 105, IELTS 7.0, DET 125.","Suggested dates":"추천 일정","Your dates":"내 일정","Start":"시작","Everything here is done. Nice work!":"이 항목은 모두 끝냈어요. 잘하고 있어요!","Collapse":"접기","Open chat":"채팅 열기","View request":"요청 보기","Request 1:1":"1:1 요청하기","I went through the F-1 visa and course registration step by step. Ask me anything about the paperwork.":"F-1 비자와 수강신청을 하나하나 직접 해봤어요. 서류 관련해서 뭐든 물어보세요.","I found off-campus housing and set up a bank and phone in my first week. Happy to share what worked.":"첫 주에 학교 밖 숙소를 구하고 은행·휴대폰까지 개통했어요. 잘 됐던 방법을 알려드릴게요.","I transferred 15 credits back home. I can help you plan courses and English tests early.":"본교로 15학점을 인정받았어요. 수강 계획과 영어 시험 준비를 미리 도와드릴게요.","Departure in":"출국까지","done":"완료","Edit":"수정","Up next":"다음 할 일","Apply":"지원","Health":"건강","Living":"생활","Academics":"학업","Arrival":"입국",
 "By deadline":"마감순","Done":"완료","Overdue":"마감 지남","Due soon":"임박","Checklist progress":"체크리스트 진행률",
 "Insurance shows up in visa paperwork":"보험은 비자 서류에도 필요해요","Compare student insurance deals early":"학생 보험을 미리 비교해 보세요",
 // detail
@@ -1127,7 +1167,7 @@ Object.assign(KO,{
 ["Stay: {S}. Visa steps updated","체류 기간: {S}. 비자 안내가 바뀌었어요"],["Stay: {S}. Deadlines updated","체류 기간: {S}. 마감일을 업데이트했어요"],["Stay: {S}","체류 기간: {S}"],
 ["Suggested: leave {D} and stay about {S}. Set your own dates if your plans differ. You can change them later.","추천: {D} 출발, 약 {S} 체류. 계획이 다르면 직접 날짜를 정하세요. 나중에 바꿀 수 있어요."],
 ["Suggested for {X}: {D}","{X} 추천 출발일: {D}"],["Use the suggested dates ({D}, about {S})","추천 날짜 사용 ({D}, 약 {S})"],
-["Verified {D}","{D} 확인"],["Show {N} completed","완료된 준비 {N}건 보기"],["{N} programs","프로그램 {N}개"],["Waiting for {X} to accept","{X} 멘토의 수락을 기다리는 중"],["Send request for {D}, {T}","{D} {T}로 요청 보내기"],["Session {D}, {T} KST","세션 {D} {T} (한국 시간)"],["{D}, {T} KST","{D} {T} (한국 시간)"],["Request sent to {X}","{X} 멘토에게 요청을 보냈어요"],["{X} accepted your request. You can chat now","{X} 멘토가 요청을 수락했어요. 이제 채팅할 수 있어요"],["Joined the {X} community","{X} 커뮤니티에 가입했어요"],["Checked {D}","{D} 확인"],["Links checked {D}","링크 점검 {D}"],["Book {D}, {T}","{D} {T} 예약하기"],["Booked with {X}, {D} {T}","{X} 멘토와 {D} {T} 예약했어요"],
+["Verified {D}","{D} 확인"],["{N} days left","{N}일 남음"],["{N} days overdue","{N}일 지남"],["Show {N} completed","완료된 준비 {N}건 보기"],["{N} programs","프로그램 {N}개"],["Waiting for {X} to accept","{X} 멘토의 수락을 기다리는 중"],["Send request for {D}, {T}","{D} {T}로 요청 보내기"],["Session {D}, {T} KST","세션 {D} {T} (한국 시간)"],["{D}, {T} KST","{D} {T} (한국 시간)"],["Request sent to {X}","{X} 멘토에게 요청을 보냈어요"],["{X} accepted your request. You can chat now","{X} 멘토가 요청을 수락했어요. 이제 채팅할 수 있어요"],["Joined the {X} community","{X} 커뮤니티에 가입했어요"],["Checked {D}","{D} 확인"],["Links checked {D}","링크 점검 {D}"],["Book {D}, {T}","{D} {T} 예약하기"],["Booked with {X}, {D} {T}","{X} 멘토와 {D} {T} 예약했어요"],
 ["University lists come from the open Hipo university-domains-list and refresh every day. Official links and English score sources are rechecked every morning. Mentors, posts and partners are sample data. D-days and deadlines are counted from today’s date.","대학 목록은 공개 데이터 Hipo university-domains-list를 사용하고 매일 갱신돼요. 공식 링크와 영어 점수 출처는 매일 아침 다시 점검해요. 멘토, 게시글, 제휴사는 예시 데이터이고, D-day와 마감일은 오늘 날짜 기준으로 계산돼요."],
 ["{X}! Good luck to everyone else getting ready.","{X}! 다들 준비 화이팅이에요."],
 ["{N} reminders are on","알림 {N}개가 켜져 있어요"],["You have {N} mentoring bookings","멘토링 예약이 {N}건 있어요"],["{N} students","{N}명"],["{N} answers","답변 {N}개"],["{N} on","{N}개 켜짐"],["Cheer {N}","응원 {N}"],["{N} reviews","리뷰 {N}개"],
@@ -1198,6 +1238,10 @@ const fmt=d=>LANG==='ko'?`${d.getMonth()+1}월 ${d.getDate()}일 (${WD_KO[d.getD
 const fmtY=d=>LANG==='ko'?`${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`:`${MON[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
 const fmtShort=d=>LANG==='ko'?`${d.getMonth()+1}월 ${d.getDate()}일`:`${MON[d.getMonth()]} ${d.getDate()}`;
 const ddLabel=n=>n===0?'D-DAY':n>0?`D-${n}`:`D+${-n}`;
+const leadHTML=n=>LANG==='ko'
+  ?(n>0?`출국까지 <em>${n}일</em> 남았어요`:n===0?'<em>오늘</em> 출국해요':`출국한 지 <em>${-n}일</em> 됐어요`)
+  :(n>0?`<em>${n} days</em> until you leave`:n===0?'You leave <em>today</em>':`<em>${-n} days</em> since you left`);
+const leftLabel=n=>n>0?`${n} days left`:n===0?'Due today':`${-n} days overdue`;
 const ddHTML=n=>n===0?'<span class="dd-n">D-DAY</span>':`<span class="dd-pre">${n>0?'D-':'D+'}</span><span class="dd-n">${Math.abs(n)}</span>`;
 
 /* ---------------- university data ---------------- */
@@ -1987,12 +2031,12 @@ function homeTab(){
   <div class="scroll pad">
     <section class="hero">
       <div class="top"><span class="mono">${esc(h.mono)}</span><span class="t"><b>${esc(h.name)}</b><small>${p.type} · ${p.term}</small></span></div>
-      <div class="dday"><div><small>Departure in</small><span class="big num">${ddHTML(dd(depDate()))}</span></div>
-        <div class="r"><b class="num">${pct}<i>%</i></b><span><span class="num">${doneN}/${list.length}</span> done</span></div></div>
-      <div class="meter" role="progressbar" aria-label="Checklist progress" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pct}%"></i></div>
-      <button class="depbtn" data-act="editDep">${ic('plane',16)}<span class="dt"><small>${S.depOverride||S.retOverride?'Your dates':'Suggested dates'}</small><b><span class="num">${fmtShort(depDate())} → ${fmtShort(retDate())}</span> · ${stayShort(stayDays())}</b></span><span class="edit">Edit</span></button>
+      <p class="lead" data-notr>${leadHTML(dd(depDate()))}</p>
+      <button class="trip" data-act="editDep"><span class="d num">${fmtShort(depDate())} – ${fmtShort(retDate())} · ${stayShort(stayDays())}</span><span class="edit">${S.depOverride||S.retOverride?'Edit':'Change dates'}</span></button>
+      <div class="prog"><div class="row"><span>Prep progress</span><b class="num">${doneN} / ${list.length}</b></div>
+        <div class="meter" role="progressbar" aria-label="Checklist progress" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pct}%"></i></div></div>
     </section>
-    ${next?`<button class="next" data-act="open" data-v="${next.id}"><span class="t"><span class="lbl"><span class="pill ${dd(next.date)<=14?'warn':'ok'} num">${ddLabel(dd(next.date))}</span>Up next</span><b>${next.title}</b><small><span class="num">${fmt(next.date)}</span> · ${next.cat}</small></span><span class="go">Start${ic('chev',16)}</span></button>`:''}
+    ${next?`<button class="next" data-act="open" data-v="${next.id}"><span class="t"><span class="lbl"><span>Up next</span><span class="num${dd(next.date)<=14?' soon':''}">${fmt(next.date)} · ${leftLabel(dd(next.date))}</span></span><b>${next.title}</b></span>${ic('chev',18)}</button>`:''}
     <div class="hscroll filters">${cats.map(c=>`<button class="chip sm${c===S.filter?' on':''}" data-act="filter" data-v="${c}">${c}</button>`).join('')}</div>
     <div class="list-head"><h3>Checklist</h3><span>By deadline</span></div>
     ${(()=>{const open=shown.filter(i=>!S.done.has(i.id)), closed=shown.filter(i=>S.done.has(i.id));
@@ -2052,10 +2096,12 @@ function cBodyHTML(){
     </article>`}).join('')}</div>`;
 }
 
+// a mentor finished the same program in an earlier year: "Spring 2027" -> "Spring 2026"
+const pastTerm=(t,n)=>t.replace(/(\d{4})(?:–(\d{2}))?/,(m,y,yy)=>(y-n)+(yy?'–'+String(+yy-n).padStart(2,'0'):''));
 function mentorsFor(){
   const h=host(),p=prog();
   return MENTORS.map((m,k)=>({id:k,name:m[0],major:m[1],price:m[2],rate:m[3],reviews:m[4],topics:m[5],intro:MENTOR_INTRO[k],
-    prog:`${h.short} · ${k===2?'Summer school 2025':p.type+(k===0?' Fall 2025':' Spring 2025')}`}));
+    prog:`${h.short} · ${k===2&&p.season!=='summer'?'Summer school 2025':p.type+' '+pastTerm(p.term,k===0?1:2)}`}));
 }
 const hm=d=>`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
 function chatListHTML(){
@@ -2079,7 +2125,7 @@ function mentorTab(){
         <span class="prog">${esc(m.prog)} · ${m.major}</span>
         <span class="tags">${m.topics.map(t=>`<span class="pill cat">${t}</span>`).join('')}</span>
         <span class="intro">${m.intro}</span>
-        <span class="bottom"><span class="rate">${ic('star',14)}<b>${m.rate}</b> (${m.reviews})<span class="price num">₩${m.price} <small>/ 30 min</small></span></span><span class="mcta${S.reqs[m.id]?' ghost':''}">${S.reqs[m.id]?(S.reqs[m.id].status==='accepted'?'Open chat':'View request'):'Request 1:1'}</span></span></span>
+        <span class="bottom"><span class="pr"><span class="price num">₩${m.price}<small> / 30 min</small></span><span class="rate">${ic('star',13)}<b>${m.rate}</b><span class="num">(${m.reviews})</span></span></span><span class="mcta${S.reqs[m.id]?' ghost':''}">${S.reqs[m.id]?(S.reqs[m.id].status==='accepted'?'Open chat':'View request'):'Request 1:1'}</span></span></span>
     </button>`).join('')}
     <p class="why">Send a request first. Once the mentor accepts, a private 1:1 chat opens and you pay for the session. Only students who completed the program can become mentors. Mentors receive the session fee, minus a platform commission.</p>
   </div>`;
