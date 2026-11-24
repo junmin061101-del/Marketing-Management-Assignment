@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>교환가자 · 합격 그다음, 출국까지의 모든 준비</title>
+<meta name="description" content="교환학생·서머스쿨 합격 후 출국까지. 97개국 8,519개 파견교 맞춤 체크리스트, 비자 안내, 파견교별 한인 커뮤니티, 수료 증빙을 확인한 선배 멘토.">
+<meta name="theme-color" content="#E9F3F1">
+<meta property="og:title" content="교환가자 · 합격 그다음, 출국까지의 모든 준비">
+<meta property="og:description" content="97개국 8,519개 파견교 맞춤 가이드">
+<meta property="og:type" content="website">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+</head>
+<body>
+<a class="sr" href="#main">본문으로 건너뛰기</a>
+
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="교환가자">
+      <span class="appicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 21 3l-6.5 18-3.2-7.3L3 11.5Z"/><path d="m11.3 13.7 4.2-4.2"/></svg></span>
+      <span>교환가자</span>
+    </a>
+    <nav class="links" aria-label="섹션">
+      <a href="#features" data-i18n="nav.features">기능</a>
+      <a href="#data" data-i18n="nav.data">파견교 데이터</a>
+      <a href="#trust" data-i18n="nav.trust">멘토·신뢰</a>
+    </nav>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="ko" aria-pressed="true">KR</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+    <a class="pill-btn navy sm cta-start" data-app href="https://gyohwan-gaja-application-development.vercel.app" data-i18n="nav.start">앱 시작하기</a>
+  </div>
+</header>
+
+<main id="main">
+  <!-- 1. hero -->
+  <section class="hero" id="top">
+    <div class="stage" id="stage">
+      <canvas id="hero3d" aria-hidden="true"></canvas>
+      <div class="copy">
+        <span class="eyebrow"><i></i><span data-i18n="hero.eyebrow">교환학생 · 서머스쿨 출국 준비 앱</span></span>
+        <h1 data-i18n="hero.title">합격 그다음,<br><em>출국까지의 모든 준비</em></h1>
+        <p class="sub" data-i18n="hero.sub"><b><span class="num" data-stat="countries">97</span>개국 <span class="num" data-stat="unis">8,519</span>개</b> 파견교 맞춤 가이드, 교환가자</p>
+        <div class="actions">
+          <a class="pill-btn navy" data-app href="https://gyohwan-gaja-application-development.vercel.app" data-i18n="hero.cta">교환가자 시작하기</a>
+          <a class="pill-btn ghost" href="#features" data-i18n="hero.more">어떤 앱인지 보기</a>
+        </div>
+      </div>
+      <a class="scrollcue" href="#features" aria-label="아래로 스크롤" data-i18n-aria="hero.cue">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- 2. app showcase -->
+  <section class="showcase" id="features">
+    <div class="wrap">
+      <span class="label rv" data-i18n="show.label">소개합니다</span>
+      <h2 class="h2 rv" data-i18n="show.title">합격 메일을 받은 날부터<br>입국 심사대까지, 한 앱으로</h2>
+      <p class="lede rv" data-i18n="show.lede">파견교와 출국일을 고르면 지원, 비자, 숙소, 보험, 수강신청까지 해야 할 일이 마감일 순서로 정리돼요. 막히는 곳은 같은 학교 선배에게 물어보세요.</p>
+      <div class="actions rv">
+        <a class="pill-btn mint" data-app href="https://gyohwan-gaja-application-development.vercel.app" data-i18n="show.start">지금 바로 시작하기</a>
+        <a class="pill-btn ghost" href="#data" data-i18n="show.list">파견교 리스트 보기</a>
+      </div>
+    </div>
+    <div class="device-zone" id="deviceZone">
+      <canvas id="show3d" aria-hidden="true"></canvas>
+      <div class="phone" id="phone" role="img" aria-label="교환가자 앱 화면" data-i18n-aria="show.phone">
+        <div class="screen">
+          <span class="island"></span>
+          <div class="status"><span class="num" id="clock">9:41</span><i aria-hidden="true">
+            <svg width="17" height="11" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1" fill="currentColor"/><rect x="5" y="5" width="3" height="7" rx="1" fill="currentColor"/><rect x="10" y="2.5" width="3" height="9.5" rx="1" fill="currentColor"/><rect x="15" y="0" width="3" height="12" rx="1" fill="currentColor"/></svg>
+            <svg width="25" height="12" viewBox="0 0 27 13"><rect x=".5" y=".5" width="23" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="18" height="9" rx="2" fill="currentColor"/></svg></i></div>
+          <div class="screen-pane" id="pane"></div>
+          <nav class="tabbar" id="tabbar" aria-label="앱 탭"></nav>
+        </div>
+      </div>
+      <div class="badge3d b1" data-depth="1.4"><span class="dot"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M3 11.5 21 3l-6.5 18-3.2-7.3L3 11.5Z"/></svg></span><span><b class="num" id="badgeDday">D-40</b> <span data-i18n="badge.dep">출국</span></span></div>
+      <div class="badge3d b2" data-depth="-1.1"><span class="dot"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.4-8 9-4.6-.6-8-4.5-8-9V6l8-3Z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg></span><span data-i18n="badge.visa">체류 기간으로 <b>비자 판단</b></span></div>
+      <div class="badge3d b3" data-depth="-1.6"><span class="dot"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-3.9 3.1-7 7-7 1.5 0 2.9.4 4 1.2"/><path d="m15 18 2 2 4-4"/></svg></span><span data-i18n="badge.mentor"><b>인증 멘토</b> · 같은 학교 먼저</span></div>
+      <div class="badge3d b4" data-depth="1.2"><span class="dot"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></span><span data-i18n="badge.list">할 일 <b class="num">17</b>개 마감일 순</span></div>
+    </div>
+    <p class="demo-note wrap" data-i18n="show.note">실제 앱 화면입니다. 기준: University of Washington 2027 봄학기 교환학생 · 멘토와 채팅은 예시 데이터</p>
+    <div class="marquee" id="marquee" aria-label="기능 바로 보기" data-i18n-aria="show.chips"></div>
+  </section>
+
+  <!-- 3–4. deep navy: data + trust -->
+  <div class="deep">
+    <section class="wrap data" id="data">
+      <div class="globe-wrap rv"><canvas id="globe3d" aria-hidden="true"></canvas></div>
+      <div class="text">
+        <span class="label rv" data-i18n="data.label">파견교 데이터</span>
+        <h2 class="h2 rv" data-i18n="data.title">전 세계 파견교를,<br>매일 아침 다시 확인해요</h2>
+        <p class="lede rv" data-i18n="data.lede"><span class="num" data-stat="countries">97</span>개국 <span class="num" data-stat="unis">8,519</span>개 대학과 <span class="num" data-stat="kr">244</span>개 한국 대학, 그리고 매일 자동으로 점검하는 공식 국제처·비자 링크.</p>
+        <div class="stats rv">
+          <div class="stat"><b class="num"><span data-stat="countries" data-count>97</span><small data-i18n="u.country">개국</small></b><span data-i18n="data.s1">파견 국가</span></div>
+          <div class="stat"><b class="num"><span data-stat="unis" data-count>8,519</span><small data-i18n="u.school">곳</small></b><span data-i18n="data.s2">해외 대학</span></div>
+          <div class="stat"><b class="num"><span data-stat="kr" data-count>244</span><small data-i18n="u.school">곳</small></b><span data-i18n="data.s3">본교로 고를 수 있는 한국 대학</span></div>
+          <div class="stat"><b class="num"><span data-stat="links" data-count>480</span><small data-i18n="u.link">개</small></b><span data-i18n="data.s4">매일 점검하는 공식 링크</span></div>
+        </div>
+        <div class="regions rv" id="regions"></div>
+        <p class="checked rv"><i></i><span id="checkedAt">마지막 점검</span></p>
+      </div>
+    </section>
+
+    <section class="wrap trust" id="trust">
+      <div class="head">
+        <span class="label rv" data-i18n="trust.label">멘토·신뢰</span>
+        <h2 class="h2 rv" data-i18n="trust.title">믿을 수 있는 정보만,<br>검증한 사람만</h2>
+      </div>
+      <div class="cards">
+        <article class="tcard rv">
+          <span class="no">01</span>
+          <span class="ti"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3Z"/></svg></span>
+          <h3 data-i18n="trust.c1t">공식 출처 일일 검증</h3>
+          <p data-i18n="trust.c1p">매일 아침 6시, 각 대학 국제처와 비자 안내의 공식 링크를 전부 다시 열어 봐요. 어학 최소 점수는 출처 페이지에 그 숫자가 아직 있는지까지 확인하고, 끊긴 링크는 앱에서 숨겨요.</p>
+          <span class="fact num"><span data-i18n="trust.c1f">링크</span>&nbsp;<span data-stat="links">480</span> · <span data-i18n="trust.c1g">어학 출처</span>&nbsp;<span data-stat="english">55</span></span>
+        </article>
+        <article class="tcard rv">
+          <span class="no">02</span>
+          <span class="ti"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-3.9 3.1-7 7-7 1.5 0 2.9.4 4 1.2"/><path d="m15 18 2 2 4-4"/></svg></span>
+          <h3 data-i18n="trust.c2t">수료 증빙을 확인한 선배</h3>
+          <p data-i18n="trust.c2p">멘토가 되려면 파견교 성적증명서나 수료증을 제출하고, 운영팀이 직접 확인해야 해요. 심사는 최대 24시간이 걸리고, 승인된 선배만 프로필을 공개할 수 있어요.</p>
+          <span class="fact" data-i18n="trust.c2f">운영팀 심사 최대 24시간</span>
+        </article>
+        <article class="tcard rv">
+          <span class="no">03</span>
+          <span class="ti"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.4-8 9-4.6-.6-8-4.5-8-9V6l8-3Z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg></span>
+          <h3 data-i18n="trust.c3t">필요한 것만, 증빙은 자동 파기</h3>
+          <p data-i18n="trust.c3p">가입에는 아이디, 이름, 비밀번호만 받고 비밀번호는 되돌릴 수 없게 암호화해요. 멘토 수료 증빙 파일은 심사 후 30일이 지나면 자동으로 삭제돼요.</p>
+          <span class="fact" data-i18n="trust.c3f">증빙 파일 30일 후 자동 삭제</span>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <!-- 5. FAQ -->
+  <section class="faq" id="faq">
+    <div class="wrap grid">
+      <div>
+        <span class="label rv">FAQ</span>
+        <h2 class="h2 rv" data-i18n="faq.title">자주 묻는 질문</h2>
+        <p class="lede rv" data-i18n="faq.lede">더 궁금한 점은 gyohwan.info@gmail.com으로 보내 주세요.</p>
+      </div>
+      <div class="acc rv">
+        <details open><summary><span data-i18n="faq.q1">어떤 학교를 지원하나요?</span><span class="pm" aria-hidden="true">+</span></summary>
+          <div class="ans" data-i18n="faq.a1"><b><span data-stat="countries">97</span>개국 <span data-stat="unis">8,519</span>개 해외 대학</b>을 한글·영문으로 검색할 수 있고, 본교는 <b><span data-stat="kr">244</span>개 한국 대학</b> 중에서 고를 수 있어요. 대학 목록은 공개 데이터(Hipo university-domains-list)에 한국 대학들의 파견교 공지에 나온 학교를 더해 매일 갱신해요. 주요 파견교 96곳은 학교 포털 로그인부터 지원서 제출까지 학교별 실제 절차를, 나머지 학교는 공통 절차를 안내해요.</div></details>
+        <details><summary><span data-i18n="faq.q2">비자·어학 정보는 어디서 오나요?</span><span class="pm" aria-hidden="true">+</span></summary>
+          <div class="ans" data-i18n="faq.a2">각 대학 국제처와 대사관·이민청의 <b>공식 페이지</b>가 출처이고, 모든 안내에 원문 링크를 달아요. 링크와 어학 최소 점수는 매일 아침 자동으로 다시 확인해요. 출국일과 귀국일을 넣으면 체류 기간에 맞는 비자 단계로 바뀌어요. 제도는 바뀔 수 있으니, 실제로 제출하기 전에는 연결된 공식 페이지를 꼭 한 번 더 확인하세요.</div></details>
+        <details><summary><span data-i18n="faq.q3">선배 멘토는 어떻게 신청하나요?</span><span class="pm" aria-hidden="true">+</span></summary>
+          <div class="ans" data-i18n="faq.a3">프로그램을 마친 뒤 앱의 <b>마이 → 멘토 신청</b>에서 학교 이메일을 적고 파견교 성적증명서나 수료증(PDF·JPG·PNG, 3MB 이하)을 올리면 돼요. 운영팀이 <b>최대 24시간</b> 안에 심사하고 결과를 메일로 알려 드려요. 심사 중에도 멘토 프로필은 미리 써서 임시저장할 수 있어요.</div></details>
+        <details><summary><span data-i18n="faq.q4">이용 요금이 있나요?</span><span class="pm" aria-hidden="true">+</span></summary>
+          <div class="ans" data-i18n="faq.a4">체크리스트, 파견교 커뮤니티, 채팅은 <b>무료</b>예요. 선배 멘토링은 멘토마다 채팅으로 내용·시간·금액을 정하는데, 앱 안 결제는 아직 준비 중이라 지금은 합의 내용만 기록돼요. 출국 혜택 링크는 각 업체 공식 사이트로 연결되고, 제휴 수수료로 무료 기능을 운영할 계획이에요.</div></details>
+        <details><summary><span data-i18n="faq.q5">꼭 가입해야 하나요?</span><span class="pm" aria-hidden="true">+</span></summary>
+          <div class="ans" data-i18n="faq.a5">아니요. 로그인 없이 바로 둘러볼 수 있어요. 아이디로 가입하면 고른 파견교, 일정, 완료한 할 일이 계정에 저장되고, 한 번 로그인하면 1년 동안 로그인 화면 없이 바로 대시보드가 열려요.</div></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta rv">
+    <h2 data-i18n="cta.title">출국 준비, 이제 혼자 헤매지 마세요</h2>
+    <p data-i18n="cta.sub">파견교만 고르면 오늘 해야 할 일부터 알려 드려요.</p>
+    <a class="pill-btn" data-app href="https://gyohwan-gaja-application-development.vercel.app" data-i18n="cta.btn">교환가자 열기</a>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="appicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 21 3l-6.5 18-3.2-7.3L3 11.5Z"/><path d="m11.3 13.7 4.2-4.2"/></svg></span>교환가자</a>
+    <nav aria-label="Footer">
+      <a href="https://gyohwan-gaja-application-development.vercel.app/privacy" data-i18n="f.privacy">개인정보처리방침</a>
+      <a href="https://gyohwan-gaja-application-development.vercel.app/terms" data-i18n="f.terms">이용약관</a>
+      <a href="mailto:gyohwan.info@gmail.com">gyohwan.info@gmail.com</a>
+    </nav>
+    <span>© 2026 교환가자</span>
+  </div>
+</footer>
+
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>
