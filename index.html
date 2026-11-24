@@ -251,7 +251,7 @@ p{margin:0}
 .src:hover{border-color:var(--primary)}
 .src .t{flex:1;min-width:0}
 .src b{display:block;font-size:14px;font-weight:700}
-.src small{display:block;color:var(--ink-3);font-size:12px;overflow-wrap:anywhere}
+.src small{display:block;color:var(--ink-3);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .src .ic{color:var(--primary-ink)}
 .eng{border:1.5px solid var(--primary);border-radius:16px;padding:14px;background:var(--bg)}
 .eng.est{border-style:dashed;border-color:var(--line)}
@@ -264,6 +264,9 @@ p{margin:0}
 .eng-grid b{font-size:24px;font-weight:900;line-height:1.15;color:var(--primary-ink);letter-spacing:-.02em}
 .eng.est .eng-grid b{color:var(--ink);font-size:18px}
 .eng-grid em{font-style:normal;font-size:11px;color:var(--ink-3);line-height:1.3;margin-top:2px}
+.eng-grid small,.eng-grid em{overflow-wrap:normal;word-break:keep-all;hyphens:none}
+.eng-grid div.wide{grid-column:1/-1}
+.eng-grid div.wide b{font-size:17px;line-height:1.3;letter-spacing:-.01em}
 .eng>p{font-size:13px;color:var(--ink-2);margin-top:10px;line-height:1.5}
 .guide{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .guide>li{display:flex;gap:12px;position:relative;padding-bottom:18px}
@@ -494,7 +497,7 @@ p{margin:0}
 .ftip{font-size:12px;color:var(--ink-3);line-height:1.4}
 .phrow{display:flex;gap:8px;align-items:center}.phrow .input{flex:1;min-width:0}.phrow .btn{flex:none}
 .board-head{display:flex;align-items:center;justify-content:space-between}
-.writebtn{gap:6px;height:36px;padding:0 14px}
+.writebtn{gap:6px;height:36px;padding:0 14px}.list-head .writebtn span{color:inherit;font-size:14px;font-weight:700}
 .ccats{margin:10px -20px 4px;padding:0 20px;display:flex;gap:6px}
 .ccats .chip{background:var(--card);border-color:transparent;flex:none}
 .ccats .chip.on{background:var(--navy);border-color:var(--navy);color:var(--bg)}
@@ -1414,7 +1417,7 @@ Object.assign(KO,{"Visa & documents":"비자·서류","Application & courses":"�
 "Report this post":"게시글 신고","Our team reviews every report. The post is hidden for you right away.":"운영팀이 모든 신고를 확인해요. 신고한 글은 바로 내 화면에서 숨겨져요.",
 "Spam or advertising":"스팸·광고","Insults or harassment":"욕설·비방","Shares personal information":"개인정보 노출","False information":"허위 정보","Something else":"기타",
 "Reported. Our team will review it":"신고했어요. 운영팀이 확인할게요","No posts in this category yet":"이 카테고리에는 아직 글이 없어요","Tap Write to share a tip or ask a question.":"글쓰기를 눌러 팁을 나누거나 질문해 보세요."});
-Object.assign(KO,{"Not confirmed yet":"아직 확인 전","Official requirement not confirmed":"공식 기준 확인 전","Cambridge English: results in about 2–3 weeks":"케임브리지 영어: 결과까지 약 2~3주",
+Object.assign(KO,{"English score":"영어 점수","Accepted":"인정","No score required":"점수 제출 불필요","York minimums":"York 최소 기준","Home-university letter":"본교 영어 능력 확인서","Not confirmed yet":"아직 확인 전","Official requirement not confirmed":"공식 기준 확인 전","Cambridge English: results in about 2–3 weeks":"케임브리지 영어: 결과까지 약 2~3주",
 "Choose one of the tests the official page lists. Book early: results take from 2 days (DET) to about 2 weeks.":"공식 페이지에 나온 시험 중 하나를 고르세요. 결과는 2일(DET)부터 약 2주까지 걸리니 일찍 예약하세요."});
 T_('We have not confirmed {X}’s official English requirement yet. Accepted tests differ by university (TOEFL, IELTS, Cambridge, CEFR level, TOEIC and others), so check the official page before you book a test.','{X}의 공식 어학 기준은 아직 확인하지 못했어요. 학교마다 인정하는 시험(TOEFL, IELTS, 케임브리지, CEFR 등급, TOEIC 등)이 다르니 시험을 예약하기 전에 공식 페이지를 꼭 확인하세요.');
 T_('We have not confirmed {X}’s official English requirement yet. Open the official page and note which tests it accepts and the minimum for each.','{X}의 공식 어학 기준은 아직 확인하지 못했어요. 공식 페이지에서 인정하는 시험과 시험별 최소 점수를 확인하세요.');
@@ -1813,7 +1816,7 @@ const ENGLISH={
   'University of Calgary':{ex:{t:[T('TOEFL iBT','86','or 5.5 on the new scale'),T('IELTS','6.5','Academic'),T('DET','120'),T('PTE Academic','60')],scope:'Incoming exchange students (undergraduate minimums)',note:'Proof must be emailed before the application counts as complete. TOEFL ITP and MyBest scores are not accepted. Law asks for TOEFL 100 or IELTS 7.0.',src:L('University of Calgary · Incoming exchange FAQ','https://ucalgary.ca/international/study-abroad/incoming-exchange/FAQ')}},
   'University of New South Wales':{ex:{t:[T('IELTS','6.5','overall only, Academic'),T('TOEFL iBT','90','overall only'),T('Cambridge C1 Advanced','Accepted','see UNSW table for the score')],scope:'Exchange and study abroad students',note:'Exchange students only need the overall score, not each section. Tests must be within 2 years of your start; MyBest scores are not accepted.',src:L('UNSW · English language requirements','https://www.unsw.edu.au/study/how-to-apply/english-language-requirements')}},
   'Ritsumeikan University':{ex:{t:[T('TOEFL iBT','76','or 4.0 on the new scale'),T('IELTS','6.0','Academic'),T('Cambridge B2 First / C1 Advanced','170'),T('DET','100'),T('JLPT','N1','only for regular Japanese-taught courses')],scope:'Study in Kansai Program (SKP), English-taught track',note:'The Intensive Japanese track needs no Japanese. Students in a fully English-taught program at home can get a waiver. GPA 3.0/4.0 is also required.',src:L('Ritsumeikan SKP · English proficiency requirements','https://en.ritsumei.ac.jp/skp/apply/pdf/LanguageRequirementsENG.pdf')}},
-  'Chuo University':{ex:{t:[T('JLPT','N2','Commerce; N1 or N2 for Global Informatics, Science & Engineering'),T('JLPT','N3','suggested for Law, Economics, Letters'),T('English','No score required','Global Management and Policy Studies, but you must follow English classes')],scope:'Inbound exchange, undergraduate (by faculty)',note:'Most courses are taught in Japanese. Global Management teaches over 70% of its courses in English.',src:L('Chuo University · Fact sheet, student exchange program (inbound)','https://chuo-u.ac.jp/uploads/2024/12/english_admissions_exchange_semester-or-full-year_01_20241220.pdf')}},
+  'Chuo University':{ex:{t:[T('JLPT','N2','Commerce; N1 or N2 for Global Informatics, Science & Engineering'),T('JLPT','N3','suggested for Law, Economics, Letters'),T('English score','No score required','Global Management and Policy Studies, but you must follow English classes')],scope:'Inbound exchange, undergraduate (by faculty)',note:'Most courses are taught in Japanese. Global Management teaches over 70% of its courses in English.',src:L('Chuo University · Fact sheet, student exchange program (inbound)','https://chuo-u.ac.jp/uploads/2024/12/english_admissions_exchange_semester-or-full-year_01_20241220.pdf')}},
   'Nanjing University':{ex:{t:[T('IELTS','6.0','for English-taught courses'),T('TOEFL iBT','70–78','pages differ; confirm with NJU'),T('HSK','5','only for Chinese-taught courses')],scope:'Exchange students',note:'Chinese language courses have no requirement. A language letter from your home university may be accepted.',src:L('Nanjing University · Exchange students application','https://njunju.nju.edu.cn/EN/7b/c1/c5043a162753/page.htm')}}
 };
 function englishOf(h,p){
@@ -1832,7 +1835,7 @@ function engPill(e){
   return `<span class="pill ok">Verified Oct 2026</span>`;
 }
 function engCard(e){return `<div class="eng${e.verified?'':' est'}"><div class="eng-top"><b>${e.verified?'Minimum scores':'Official requirement not confirmed'}</b>${engPill(e)}</div>
-  ${e.t.length?'':''}<div class="eng-grid">${e.t.map(x=>`<div><small>${x[0]}</small><b class="num">${x[1]}</b>${x[2]?`<em>${x[2]}</em>`:''}</div>`).join('')}</div>
+  ${e.t.length?'':''}<div class="eng-grid">${e.t.map(x=>{const w=String(x[1]).length>6||String(x[0]).length>16;return `<div${w?' class="wide"':''}><small>${x[0]}</small><b class="num">${x[1]}</b>${x[2]?`<em>${x[2]}</em>`:''}</div>`}).join('')}</div>
   <p>${e.t.length?esc(e.scope)+'. ':''}${esc(e.note)}${e.check&&e.check.s==='changed'?' <b>The official page no longer shows these exact numbers. Confirm there before you book a test.</b>':''}</p>${linkHTML(lk(e.src),true)}</div>`}
 
 /* ---------------- immunizations ---------------- */
@@ -2850,7 +2853,9 @@ function render(keepScroll){
   const sc=view.querySelector('.scroll'); const top=sc&&keepScroll&&key===lastKey?sc.scrollTop:0;
   const focusId=document.activeElement&&view.contains(document.activeElement)?document.activeElement.id:null;
   view.classList.toggle('surf',S.screen==='app'||S.screen==='detail');
+  const hx=key===lastKey?[...view.querySelectorAll('.hscroll,.mychips')].map(e=>e.scrollLeft):[];
   view.innerHTML=SCREENS[S.screen]();
+  view.querySelectorAll('.hscroll,.mychips').forEach((e,i)=>{if(hx[i]) e.scrollLeft=hx[i]});
   const ns=view.querySelector('.scroll'); if(ns) ns.scrollTop=S.screen==='chat'?ns.scrollHeight:top;
   if(S.screen==='profile'&&$('#homeList')) ($('#homeList').innerHTML=homeListHTML(),translate($('#homeList')));
   if(restore){ Object.entries(restore).forEach(([id,v])=>{const el=document.getElementById(id); if(!el||el.type==='file'||v===null) return; if(el.type==='checkbox') el.checked=v; else el.value=v}); delete KEEP[NAV.key] }
