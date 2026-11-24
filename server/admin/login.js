@@ -13,7 +13,7 @@ export default async function handler(req, res) {
   if (isAdminEmail(email)) {
     const code = await issueCode('admin', email);
     try { await sendMail({ to: email, subject: `[교환가자] 관리자 로그인 코드 ${code}`, html: codeMail('관리자 로그인 코드', code) }); }
-    catch (e) { return send(res, 502, { error: 'mail_failed' }); }
+    catch (e) { await redis('DEL', `cool:adm:${email}`); return send(res, 502, { error: 'mail_failed' }); }
   }
   send(res, 200, { ok: true });
 }

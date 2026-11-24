@@ -16,6 +16,9 @@ export default async function handler(req, res) {
     const code = await issueCode(purpose, email);
     await sendMail({ to: email, subject: `[교환가자] 인증 코드 ${code}`, html: codeMail(purpose === 'signup' ? '이메일 인증 코드' : '비밀번호 재설정 코드', code) });
   }
-  } catch (e) { return send(res, 502, { error: 'mail_failed' }); }
+  } catch (e) {
+    await redis('DEL', `cool:${purpose}:${email}`); // nothing was sent, so let the student retry right away
+    return send(res, 502, { error: 'mail_failed' });
+  }
   send(res, 200, { ok: true });
 }
