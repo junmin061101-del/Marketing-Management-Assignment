@@ -1,0 +1,5 @@
+# secrets and local tooling never go into Git
+.env
+.env.*
+.vercel
+node_modules

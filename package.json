@@ -1,0 +1,6 @@
+{
+  "name": "gyohwan-gaja",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" }
+}

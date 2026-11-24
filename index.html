@@ -501,6 +501,14 @@ p{margin:0}
 .offer-n{font-size:12px;color:var(--ink-3)}
 .mform{display:flex;flex-direction:column;gap:10px}.mform label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--ink-2)}
 .mform .mrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.mform select.input{height:42px;font-size:14px;padding:0 8px}
+.aerr{margin-top:10px;font-size:13px;color:var(--danger);font-weight:600}
+.guestbtn{margin-top:18px;color:var(--ink-3)}
+.agree{display:flex;gap:10px;align-items:flex-start;margin-top:14px;font-size:13px;line-height:1.55;color:var(--ink-2)}.agree input{width:18px;height:18px;margin-top:2px;flex:none}.agree a{color:var(--primary)}
+.input.area.big{min-height:190px}
+.hide{display:none!important}
+.mform select.input+.input{margin-top:6px;height:42px;font-size:14px}
+.menu a{display:flex;align-items:center;gap:12px;width:100%;padding:16px 0;border-bottom:1px solid var(--line);font-size:15px;font-weight:500;color:var(--ink);text-decoration:none}
+.menu a .t{flex:1}
 .why{margin-top:18px;font-size:12px;color:var(--ink-3);line-height:1.6}
 .sample{display:inline-flex;font-size:11px;font-weight:700;color:var(--ink-3);border:1px solid var(--line);border-radius:6px;padding:1px 6px}
 
@@ -1311,12 +1319,69 @@ function makeHost([name,cc,url]){
 let STATUS=null;
 const linkState=u=>STATUS&&STATUS.links[u]?STATUS.links[u].s:'';
 const checkedDay=()=>STATUS?new Date(STATUS.checkedAt):null;
+/* ---------------- accounts: real sign-up and login through /api (see api/_lib.js) ---------------- */
+const AUTH={ready:false,configured:false,user:null};
+async function api(path,data){
+  const opt=data===undefined?{credentials:'same-origin'}:{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)};
+  let r; try{r=await fetch('/api/'+path,opt)}catch(e){throw Object.assign(new Error('network'),{code:'network'})}
+  let j={}; try{j=await r.json()}catch(e){}
+  if(!r.ok) throw Object.assign(new Error(j.error||'error'),{code:j.error||(r.status===404?'not_configured':'network'),left:j.left});
+  return j;
+}
+const mStat=()=>{const m=AUTH.user&&AUTH.user.mentor; return !m?'none':m.profile?'published':m.status};
+const ERR={bad_email:'Enter a valid email address.',wait_a_minute:'Please wait a minute before asking for another code.',too_many_requests:'Too many tries. Please try again later.',
+  weak_password:'Use 8–72 characters with at least one letter and one number.',consent_required:'Please agree to the Terms and Privacy Policy.',name_required:'Enter your name.',
+  code_expired:'The code has expired. Ask for a new one.',too_many_attempts:'Too many wrong codes. Ask for a new one.',code_wrong:'That code is not right.',already_registered:'This email already has an account. Log in instead.',
+  invalid_login:'The email or password is not right.',login_required:'Please log in first.',not_university_email:'Use a university email ending in .ac.kr or .edu.',
+  verify_university_email_first:'Verify your university email first.',file_too_large:'The file must be 3 MB or smaller.',pdf_jpg_png_only:'Upload a PDF, JPG or PNG file.',
+  review_not_approved:'You can publish after the review is approved.',profile_incomplete:'Fill in what you offer, the session length, number of sessions and format.',
+  already_approved:'Your review is already approved.',bad_sessions:'Sessions must be a whole number from 1 to 20.',not_configured:'Accounts are not connected yet. You can keep browsing without one.',network:'Could not reach the server. Check your connection.'};
+Object.assign(KO,{
+// accounts
+"Sign in":"로그인","Accounts are not connected yet. You can keep browsing without one.":"아직 계정 기능이 연결되지 않았어요. 로그인 없이 계속 둘러볼 수 있어요.","Continue without an account":"로그인 없이 둘러보기",
+"Welcome back":"다시 오신 걸 환영해요","Create your account":"계정 만들기","Log in":"로그인","Sign up":"회원가입","Email":"이메일","Password":"비밀번호","Forgot your password?":"비밀번호를 잊으셨나요?",
+"We send a 6-digit code to confirm the address. It expires in 10 minutes.":"이메일 주소 확인을 위해 6자리 코드를 보내요. 코드는 10분 동안 유효해요.","Send code":"코드 받기","6-digit code from your email":"이메일로 받은 6자리 코드","6-digit code":"6자리 코드",
+"Name":"이름","8–72 characters with at least one letter and one number.":"8~72자, 영문과 숫자를 하나 이상 넣어 주세요.","I am 14 or older and agree to the":"만 14세 이상이며","Terms of Service":"이용약관","and":"및","Privacy Policy":"개인정보처리방침",
+", including storage on servers outside Korea.":"에 동의해요 (국외 서버 보관 포함).","Send the code again":"코드 다시 받기","Create account":"가입하기","Reset your password":"비밀번호 재설정",
+"Enter your account email. We send a code to reset your password.":"가입한 이메일을 입력하세요. 비밀번호 재설정 코드를 보내 드려요.","New password":"새 비밀번호","Set new password":"새 비밀번호 설정",
+"Browsing as a guest":"게스트로 둘러보는 중","Log in to apply as a mentor and keep your account.":"로그인하면 멘토 신청을 하고 정보를 계정에 저장할 수 있어요.","Log out":"로그아웃","Log in or sign up":"로그인 또는 회원가입","Log in to apply":"로그인하고 신청하기",
+"Your application and review status are saved to your account.":"신청 내용과 심사 상태는 계정에 저장돼요.",
+// mentor application
+"Mentoring is paid, so we verify that every mentor actually completed the program. The operations team reviews every application, which takes up to 24 hours.":"멘토링은 유료라서 멘토가 실제로 프로그램을 마쳤는지 확인해요. 운영팀이 모든 신청을 직접 심사하며, 심사에는 최대 24시간이 걸릴 수 있어요.",
+"Verify your university email":"학교 이메일 인증","Confirms you are a current student or graduate":"재학생 또는 졸업생임을 확인해요","Verify":"인증",
+"Upload proof of completion":"수료 증빙 올리기","Host transcript or certificate of attendance · PDF, JPG or PNG up to 3 MB":"파견교 성적표 또는 수료증 · PDF, JPG, PNG 3MB 이하",
+"The last proof could not be confirmed. Upload a certificate or host transcript.":"지난번 증빙은 확인되지 않았어요. 수료증이나 파견교 성적표를 다시 올려 주세요.","Choose a PDF, JPG or PNG":"PDF, JPG, PNG 파일 선택","Submit for review":"심사 요청하기",
+"Team review":"운영팀 심사","up to 24 hours":"최대 24시간","up to 24 hours. We email you the result.":"최대 24시간 걸려요. 결과는 이메일로 알려 드려요.","In review · up to 24 hours. We email you the result.":"심사 중 · 최대 24시간 걸려요. 결과는 이메일로 알려 드려요.","In review · up to 24 hours":"심사 중 · 최대 24시간",
+"Approved":"승인됨","Takes up to 24 hours after you submit":"제출 후 최대 24시간 걸려요","Check status":"심사 상태 확인",
+"Write your mentor profile":"멘토 프로필 작성","You can write and save a draft now. Publishing opens after the review is approved.":"지금 작성해서 임시저장할 수 있어요. 공개는 심사가 승인된 뒤에 가능해요.","Publish it when you are ready":"준비되면 공개하세요",
+"Activities you took part in":"참여한 활동","Clubs and networking":"동아리·네트워킹","Research or lab work":"연구·랩실 경험","Courses that helped":"도움이 된 수업","What your mentoring covers":"멘토링에서 다룰 내용",
+"Session length":"세션 길이","Sessions":"횟수","Format":"형식","Enter your own":"직접 입력","30 min":"30분","1 hour":"1시간","2 hours":"2시간","90 min":"90분","Video call":"화상 통화","Chat":"채팅","In person":"대면",
+"Save draft":"임시저장","Publish profile":"프로필 공개하기","Update profile":"프로필 수정하기","Draft saved":"임시저장했어요","Get your verified badge":"인증 배지 받기",
+"Your profile is live. Students can now chat with you.":"프로필이 공개됐어요. 이제 학생들이 채팅을 걸 수 있어요.","Students find you by your profile and chat with you":"학생들이 프로필을 보고 채팅을 걸어요",
+// toasts
+"We sent a code to your email":"이메일로 코드를 보냈어요","We sent a code to your university email":"학교 이메일로 코드를 보냈어요","Signed in":"로그인했어요","Logged out":"로그아웃했어요","University email verified":"학교 이메일을 인증했어요",
+"Submitted. The review takes up to 24 hours":"제출했어요. 심사는 최대 24시간 걸려요","Review approved":"심사가 승인됐어요","Still in review":"아직 심사 중이에요","Your profile is live":"프로필이 공개됐어요","Mentoring confirmed":"멘토링 합의를 기록했어요",
+"Payments are not connected yet. Confirming records the agreement only; no money is charged.":"아직 결제는 연결되지 않았어요. 확인을 누르면 합의 내용만 기록되고 돈은 청구되지 않아요.","Confirm":"확인","Confirmed":"확인됨",
+// errors
+"Enter a valid email address.":"올바른 이메일 주소를 입력하세요.","Please wait a minute before asking for another code.":"1분 뒤에 코드를 다시 요청하세요.","Too many tries. Please try again later.":"시도가 너무 많아요. 잠시 후 다시 시도하세요.",
+"Use 8–72 characters with at least one letter and one number.":"8~72자로, 영문과 숫자를 하나 이상 넣어 주세요.","Please agree to the Terms and Privacy Policy.":"이용약관과 개인정보처리방침에 동의해 주세요.","Enter your name.":"이름을 입력하세요.",
+"The code has expired. Ask for a new one.":"코드가 만료됐어요. 새 코드를 받아 주세요.","Too many wrong codes. Ask for a new one.":"잘못된 코드를 너무 많이 입력했어요. 새 코드를 받아 주세요.","That code is not right.":"코드가 맞지 않아요.",
+"This email already has an account. Log in instead.":"이미 가입된 이메일이에요. 로그인해 주세요.","The email or password is not right.":"이메일 또는 비밀번호가 맞지 않아요.","Please log in first.":"먼저 로그인해 주세요.",
+"Use a university email ending in .ac.kr or .edu.":".ac.kr 또는 .edu로 끝나는 학교 이메일을 사용하세요.","Verify your university email first.":"먼저 학교 이메일을 인증하세요.","The file must be 3 MB or smaller.":"파일은 3MB 이하여야 해요.",
+"Upload a PDF, JPG or PNG file.":"PDF, JPG, PNG 파일만 올릴 수 있어요.","You can publish after the review is approved.":"심사가 승인된 뒤에 공개할 수 있어요.","Fill in what you offer, the session length, number of sessions and format.":"멘토링 내용, 세션 길이, 횟수, 형식을 모두 입력하세요.",
+"Your review is already approved.":"이미 심사가 승인됐어요.","Sessions must be a whole number from 1 to 20.":"횟수는 1부터 20 사이의 정수로 입력하세요.","Could not reach the server. Check your connection.":"서버에 연결할 수 없어요. 인터넷 연결을 확인하세요.",
+});
+T_('Draft saved {D}','{D} 임시저장됨');
+T_('e.g. {X}','예: {X}');
+const errMsg=e=>ERR[e.code]||ERR.network;
+async function loadMe(){try{const j=await api('me');AUTH.configured=j.configured!==false;AUTH.user=j.user||null}catch(e){AUTH.configured=false}AUTH.ready=true}
 async function loadData(){
+  const me=loadMe();
   const st=fetch('data/status.json',{cache:'no-cache'}).then(r=>r.json()).then(j=>{STATUS=j}).catch(()=>{});
   try{
     const r=await fetch('data/universities.json',{cache:'no-cache'}); DATA=await r.json(); COUNTRIES=DATA.countries; buildNameKo(COUNTRIES);
   }catch(e){ DATA={unis:[],kr:[],countries:COUNTRIES,error:true}; }
-  await st;
+  await st; await me;
   render(true);
 }
 
@@ -2014,7 +2079,8 @@ const S={
   ctab:'feed', liked:new Set(), bcat:'All', showDone:false,
   reqs:{}, chats:{}, chatWith:null, typing:null, reqNote:'', slot:null, mentorSheet:null,
   joined:new Set(), cv:null, cq:'', cposts:{}, cinfo:{}, cchat:{}, jstatus:{}, joining:null,
-  apply:{step:0,email:'',file:''},
+  apply:{step:0,email:'',file:'',sent:false,busy:false,err:''},
+  auth:{mode:'login',step:0,email:'',busy:false,err:''},
 };
 const host=()=>S.host;
 const prog=()=>PROGRAMS.find(p=>p.id===S.progId);
@@ -2080,16 +2146,30 @@ const SCREENS={
       <div><h1>교환가자</h1><p>From acceptance to departure,<br>one step at a time.</p></div></div>
     <div class="cta"><button class="btn" data-go="login">Get started</button></div>`},
 
-  login(){return `${bar('','go:splash')}
+  login(){const A=S.auth, err=A.err?`<p class="aerr" role="alert">${esc(A.err)}</p>`:'';
+    const guest=`<button class="linkbtn guestbtn" data-go="profile">Continue without an account</button>`;
+    if(AUTH.ready&&!AUTH.configured) return `${bar('','go:splash')}<div class="scroll pad"><h2 class="ob-title">Sign in</h2>
+      <div class="pnote" style="margin-top:16px">${ic('flag',14)}<span>Accounts are not connected yet. You can keep browsing without one.</span></div></div>
+      <div class="cta"><button class="btn" data-go="profile">Continue without an account</button></div>`;
+    const tabs=`<div class="seg" style="--n:2;margin:6px 0 20px" role="tablist"><button class="${A.mode!=='signup'?'on':''}" data-act="authMode" data-v="login">Log in</button><button class="${A.mode==='signup'?'on':''}" data-act="authMode" data-v="signup">Sign up</button></div>`;
+    const email=(lock)=>`<div class="field"><label for="auEmail">Email</label><input class="input" id="auEmail" type="email" autocomplete="email" value="${esc(A.email)}" ${lock?'readonly':''}></div>`;
+    const pw=(id,label,auto)=>`<div class="field"><label for="${id}">${label}</label><input class="input" id="${id}" type="password" autocomplete="${auto}" maxlength="72"></div>`;
+    const code=`<div class="field"><label for="auCode">6-digit code from your email</label><input class="input num" id="auCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*"></div>`;
+    let body='', cta='';
+    if(A.mode==='login'){ body=email()+pw('auPw','Password','current-password')+`<button class="linkbtn" data-act="authMode" data-v="reset">Forgot your password?</button>`; cta=`<button class="btn" data-act="authLogin" ${A.busy?'disabled':''}>Log in</button>`; }
+    else if(A.mode==='signup'&&A.step===0){ body=email()+`<p class="hint">We send a 6-digit code to confirm the address. It expires in 10 minutes.</p>`; cta=`<button class="btn" data-act="authSend" ${A.busy?'disabled':''}>Send code</button>`; }
+    else if(A.mode==='signup'){ body=email(true)+code+`<div class="field"><label for="auName">Name</label><input class="input" id="auName" autocomplete="name" maxlength="40"></div>`+pw('auPw','Password','new-password')+`<p class="hint">8–72 characters with at least one letter and one number.</p>
+        <label class="agree"><input type="checkbox" id="auAgree"><span>I am 14 or older and agree to the <a href="/terms" target="_blank" rel="noopener">Terms of Service</a> and <a href="/privacy" target="_blank" rel="noopener">Privacy Policy</a>, including storage on servers outside Korea.</span></label>
+        <button class="linkbtn" data-act="authSend">Send the code again</button>`; cta=`<button class="btn" data-act="authVerify" ${A.busy?'disabled':''}>Create account</button>`; }
+    else if(A.step===0){ body=`<p class="ob-sub" style="margin-bottom:12px">Enter your account email. We send a code to reset your password.</p>`+email(); cta=`<button class="btn" data-act="authSend" ${A.busy?'disabled':''}>Send code</button>`; }
+    else { body=email(true)+code+pw('auPw','New password','new-password')+`<p class="hint">8–72 characters with at least one letter and one number.</p>`; cta=`<button class="btn" data-act="authVerify" ${A.busy?'disabled':''}>Set new password</button>`; }
+    return `${bar('','go:splash')}
     <div class="scroll pad">
-      <h2 class="ob-title">Start with your<br>university email</h2>
-      <p class="ob-sub">We use it to connect you with students from your school and program.</p>
-      <div class="field"><label for="email">University email</label>
-        <input class="input" id="email" type="email" value="${esc(S.email)}" autocomplete="email"></div>
-      <div class="divider">or</div>
-      <div class="social"><button data-go="profile">Continue with Kakao</button><button data-go="profile">Continue with Google</button><button data-go="profile">Continue with Apple</button></div>
+      <h2 class="ob-title">${A.mode==='reset'?'Reset your password':A.mode==='signup'?'Create your account':'Welcome back'}</h2>
+      ${A.mode==='reset'?'<div style="height:16px"></div>':tabs}
+      ${body}${err}${guest}
     </div>
-    <div class="cta"><button class="btn" data-go="profile">Continue</button></div>`},
+    <div class="cta">${cta}</div>`},
 
   profile(){const P=S.profile;return `${bar('','go:login')}
     <div class="scroll pad">
@@ -2152,6 +2232,7 @@ const SCREENS={
 
   chat(){
     const id=S.chatWith, m=mentorsFor()[id], r=S.reqs[id], msgs=S.chats[id]||[];
+    if(!m){S.screen='app';S.tab='mentor';return SCREENS.app()}
     return `${bar(esc(m.name)+' <span class="badge">'+ic('shield',13,2.4)+'Verified</span>','back')}
     <div class="scroll pad chat" id="chatScroll">
       <div class="chat-info">${ic('mentor',18)}<span><b>${r&&r.status==='booked'?'Mentoring confirmed':'Agree on what, how long and the price here'}</b><br><small>The mentor sends a proposal. You pay only when you confirm it. Keep payments inside the app.</small></span></div>
@@ -2188,33 +2269,42 @@ const SCREENS={
     <div class="cta"><button class="btn${done?' ghost':''}" data-act="toggleDone" data-v="${i.id}">${done?'Mark as not done':ic('check',20)+'Mark as done'}</button></div>`},
 
   mentorApply(){
-    const st=S.apply.step;
-    const cls=k=>k<st?'done':k===st?'cur':'';
-    const n=k=>k<st?ic('check',16,3):k+1;
-    return `${bar('Become a mentor','back')}
-    <div class="scroll pad">
+    const u=AUTH.user, m=u?u.mentor:null, A=S.apply, ferr=A.err&&A.errAt==='form'?`<p class="aerr" role="alert">${esc(A.err)}</p>`:'', err=A.err&&A.errAt!=='form'?`<p class="aerr" role="alert">${esc(A.err)}</p>`:'';
+    const head=`${bar('Become a mentor','back')}<div class="scroll pad">
       <h2 class="ob-title" style="font-size:24px">Help the next student<br>with what you learned</h2>
-      <p class="ob-sub" style="margin-bottom:26px">Mentoring is paid, so we verify that every mentor actually completed the program. Pass the review to get a verified badge.</p>
-      <div class="vstep ${cls(0)}"><span class="n">${n(0)}</span><div class="t"><b>Verify your university email</b><small>Confirms you are a current student or graduate</small>
-        ${st===0?`<div class="act"><div class="row"><input class="input" id="apEmail" type="email" placeholder="name@university.ac.kr" value="${esc(S.apply.email||S.email)}"><button class="btn sm" data-act="ap0">Verify</button></div></div>`:''}</div></div>
-      <div class="vstep ${cls(1)}"><span class="n">${n(1)}</span><div class="t"><b>Upload proof of completion</b><small>Host transcript or certificate of attendance</small>
-        ${st===1?`<div class="act"><label class="file">${ic('upload',18)}<span>${S.apply.file?esc(S.apply.file):'Upload a PDF or image'}</span><input type="file" id="apFile" accept=".pdf,image/*"></label>
-          <button class="btn sm" data-act="ap1" ${S.apply.file?'':'disabled'}>Submit</button></div>`:''}</div></div>
-      <div class="vstep ${cls(2)}"><span class="n">${n(2)}</span><div class="t"><b>Team review</b><small>${st===2?'In review · results within 3 business days':'We match your documents against the program'}</small>
-        ${st===2?`<div class="act"><button class="btn sm ghost" data-act="ap2">Approve (demo)</button></div>`:''}</div></div>
-      <div class="vstep ${cls(3)}"><span class="n">${n(3)}</span><div class="t"><b>Write your mentor profile</b><small>What you did there and what you can offer</small>
-        ${st===3?`<div class="act mform">
-          <label>Activities you took part in<textarea class="input area" rows="2" id="mfAct" placeholder="e.g. Orientation buddy, hackathon, volunteering"></textarea></label>
-          <label>Clubs and networking<textarea class="input area" rows="2" id="mfClub" placeholder="e.g. Korean Students Association, consulting club"></textarea></label>
-          <label>Research or lab work<textarea class="input area" rows="2" id="mfLab" placeholder="e.g. Research assistant in a robotics lab (optional)"></textarea></label>
-          <label>Courses that helped<textarea class="input area" rows="2" id="mfCourse" placeholder="e.g. Negotiation: real company cases"></textarea></label>
-          <label>What your mentoring covers<textarea class="input area" rows="2" id="mfOffer" placeholder="e.g. Course plan review and credit transfer check"></textarea></label>
-          <div class="mrow"><label>Session length<select class="input" id="mfLen"><option>30 min</option><option selected>1 hour</option><option>2 hours</option></select></label>
-            <label>Sessions<select class="input" id="mfN"><option>1</option><option>2</option><option>3</option><option>4</option></select></label>
-            <label>Format<select class="input" id="mfFmt"><option>Video call</option><option>Chat</option><option>In person</option></select></label></div>
-          <p class="hint">Price is agreed with each student in chat.</p>
-          <button class="btn sm" data-act="ap3">Publish profile</button></div>`:''}</div></div>
-      <div class="vstep ${cls(4)}"><span class="n">${st>=4?ic('shield',16,2.4):5}</span><div class="t"><b>Get your verified badge</b><small>${st>=4?'Your profile is live. Students can now chat with you.':'Students find you by your profile and chat with you'}</small></div></div>
+      <p class="ob-sub" style="margin-bottom:22px">Mentoring is paid, so we verify that every mentor actually completed the program. The operations team reviews every application, which takes up to 24 hours.</p>`;
+    if(AUTH.ready&&!AUTH.configured) return head+`<div class="pnote">${ic('flag',14)}<span>Accounts are not connected yet. You can keep browsing without one.</span></div></div>`;
+    if(!u) return head+`<div class="compose clock"><p>Log in to apply</p><small>Your application and review status are saved to your account.</small><button class="btn sm" data-go="login">Log in or sign up</button></div></div>`;
+    const st=m.status, uniOK=m.uniVerified, approved=st==='approved', live=!!m.profile;
+    const step=!uniOK?0:(st==='none'||st==='rejected')?1:st==='pending'?2:live?4:3;
+    const cls=k=>k<step?'done':k===step?'cur':'';
+    const n=k=>k<step?ic('check',16,3):k+1;
+    let local=null; try{local=JSON.parse(localStorage.getItem('gg_mentor_draft')||'null')}catch(e){}
+    const d=S.apply.form||m.draft||m.profile||local||{};
+    const pick=(id,label,opts,val,type)=>{const custom=val&&!opts.includes(String(val));return `<label>${label}<select class="input" id="${id}Sel" data-custom="${id}">${opts.map(o=>`<option value="${o}"${String(val)===o?' selected':''}>${o}</option>`).join('')}<option value="__custom"${custom?' selected':''}>Enter your own</option></select>
+        <input class="input${custom?'':' hide'}" id="${id}" ${type==='number'?'type="number" min="1" max="20" step="1" inputmode="numeric"':'maxlength="30"'} value="${custom?esc(val):''}" placeholder="${type==='number'?'1–20':'e.g. 90 min'}"></label>`};
+    const ta=(id,label,ph,val)=>`<label>${label}<textarea class="input area big" rows="7" id="${id}" maxlength="2000" placeholder="${ph}">${esc(val||'')}</textarea></label>`;
+    return head+`
+      <div class="vstep ${cls(0)}"><span class="n">${n(0)}</span><div class="t"><b>Verify your university email</b><small>${uniOK?`<span data-notr>${esc(m.uniEmail)}</span>`:'Confirms you are a current student or graduate'}</small>
+        ${step===0?`<div class="act">${A.sent?`<div class="row"><input class="input num" id="apCode" inputmode="numeric" maxlength="6" placeholder="6-digit code"><button class="btn sm" data-act="apVerify" ${A.busy?'disabled':''}>Verify</button></div><button class="linkbtn" data-act="apSend">Send the code again</button>`
+          :`<div class="row"><input class="input" id="apEmail" type="email" placeholder="name@university.ac.kr" value="${esc(A.email)}"><button class="btn sm" data-act="apSend" ${A.busy?'disabled':''}>Send code</button></div>`}${err}</div>`:''}</div></div>
+      <div class="vstep ${cls(1)}"><span class="n">${n(1)}</span><div class="t"><b>Upload proof of completion</b><small>${st==='rejected'?'The last proof could not be confirmed. Upload a certificate or host transcript.':'Host transcript or certificate of attendance · PDF, JPG or PNG up to 3 MB'}</small>
+        ${step===1?`<div class="act"><label class="file">${ic('upload',18)}<span>${A.file?esc(A.file):'Choose a PDF, JPG or PNG'}</span><input type="file" id="apFile" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"></label>
+          <button class="btn sm" data-act="apUpload" ${A.file&&!A.busy?'':'disabled'}>Submit for review</button>${err}</div>`:''}</div></div>
+      <div class="vstep ${cls(2)}"><span class="n">${n(2)}</span><div class="t"><b>Team review</b><small>${st==='pending'?'In review · up to 24 hours. We email you the result.':approved?'Approved':'Takes up to 24 hours after you submit'}</small>
+        ${step===2?`<div class="act"><button class="btn sm ghost" data-act="apRefresh">Check status</button></div>`:''}</div></div>
+      <div class="vstep ${cls(3)}"><span class="n">${n(3)}</span><div class="t"><b>Write your mentor profile</b><small>${approved?'Publish it when you are ready':'You can write and save a draft now. Publishing opens after the review is approved.'}</small>
+        <div class="act mform">
+          ${ta('mfAct','Activities you took part in','e.g. Orientation buddy, hackathon, volunteering',d.act)}
+          ${ta('mfClub','Clubs and networking','e.g. Korean Students Association, consulting club',d.club)}
+          ${ta('mfLab','Research or lab work','e.g. Research assistant in a robotics lab (optional)',d.lab)}
+          ${ta('mfCourse','Courses that helped','e.g. Negotiation: real company cases',d.course)}
+          ${ta('mfOffer','What your mentoring covers','e.g. Course plan review and credit transfer check',d.offer)}
+          <div class="mrow">${pick('mfLen','Session length',['30 min','1 hour','2 hours'],d.length||'1 hour')}${pick('mfN','Sessions',['1','2','3','4'],d.sessions||'1','number')}${pick('mfFmt','Format',['Video call','Chat','In person'],d.format||'Video call')}</div>
+          <p class="hint">Price is agreed with each student in chat.${m.draft&&m.draft.savedAt?` · Draft saved ${fmtShort(new Date(m.draft.savedAt))}`:''}</p>
+          <div class="row" style="gap:8px"><button class="btn sm ghost" data-act="apDraft" ${A.busy?'disabled':''}>Save draft</button><button class="btn sm" data-act="apPublish" ${approved&&!A.busy?'':'disabled'}>${live?'Update profile':'Publish profile'}</button></div>
+          ${ferr}</div></div></div>
+      <div class="vstep ${cls(4)}"><span class="n">${live?ic('shield',16,2.4):5}</span><div class="t"><b>Get your verified badge</b><small>${live?'Your profile is live. Students can now chat with you.':'Students find you by your profile and chat with you'}</small></div></div>
     </div>`}
 };
 
@@ -2330,7 +2420,7 @@ function cBodyHTML(){
     :`${joined?`<div class="compose"><textarea class="input area" id="cText" rows="3" placeholder="Share a tip or ask a question"></textarea><div class="row" style="justify-content:flex-end;margin-top:8px"><button class="btn sm" data-act="cpost">Post</button></div></div>`:''}
     ${posts.length?'':`<div class="empty-state">${ic('doc',28)}<b>No posts yet</b><small>${joined?'Be the first to share a tip or ask a question.':'Join to write the first post.'}</small></div>`}
     <div>${posts.map((x,idx)=>{const lk=k+'#'+idx, st=statusOf(x.who);return `<article class="post">
-      <div class="who"><span class="ava">${x.who[0]}</span><span class="t"><b>${esc(x.who)} ${statPill(st)}</b><small>${x.meta} · ${x.time}</small></span></div>
+      <div class="who"><span class="ava">${esc(x.who[0])}</span><span class="t"><b>${esc(x.who)} ${statPill(st)}</b><small>${esc(x.meta)} · ${esc(x.time)}</small></span></div>
       <p class="txt"${x.who==='You'?' data-notr':''}>${esc(x.text)}</p>
       ${x.answer?`<div class="answer"><b>${x.answer.who} <span class="badge">${ic('shield',13,2.4)}Verified mentor</span></b>${x.answer.text}</div>`:''}
       <div class="foot"><button class="${S.liked.has(lk)?'on':''}" data-act="like" data-v="${esc(lk)}">${ic('heart',15)} Like ${(x.likes||0)+(S.liked.has(lk)?1:0)}</button><span>${ic('chat',15)} ${x.answer?1:(x.answers||0)} comments</span></div>
@@ -2392,8 +2482,9 @@ function meTab(){
   const h=host(),p=prog(),P=S.profile;
   return `<div class="bar main"><h2>Me</h2></div>
   <div class="scroll pad">
-    <div class="me"><span class="ava">J</span><span class="t"><b>Junmin L.</b><small>${esc(P.univ||'Home university not set')} · ${esc(P.major)} · ${P.year}</small></span></div>
-    <button class="apply-card" data-go="mentorApply"><span class="t"><b>${S.apply.step>=4?'You’re a verified mentor':'Become a mentor after you return'}</b><small>${S.apply.step>=4?'Manage your mentor profile':'Verify with your university email and proof of completion'}</small></span>${ic(S.apply.step>=4?'shield':'chev',22)}</button>
+    ${AUTH.user?`<div class="me"><span class="ava">${esc((AUTH.user.name||'?')[0])}</span><span class="t"><b data-notr>${esc(AUTH.user.name)}</b><small><span data-notr>${esc(AUTH.user.email)}</span><br>${esc(P.univ||'Home university not set')} · ${esc(P.major)} · ${esc(P.year)}</small></span></div>`
+      :`<div class="me"><span class="ava">${ic('user',22)}</span><span class="t"><b>Browsing as a guest</b><small>Log in to apply as a mentor and keep your account.</small></span><button class="btn sm" data-go="login">Log in</button></div>`}
+    <button class="apply-card" data-go="mentorApply"><span class="t"><b>${mStat()==='published'?'You’re a verified mentor':'Become a mentor after you return'}</b><small>${mStat()==='published'?'Manage your mentor profile':mStat()==='pending'?'In review · up to 24 hours':'Verify with your university email and proof of completion'}</small></span>${ic(mStat()==='published'?'shield':'chev',22)}</button>
     <div class="menu">
       <div class="m">${ic('globe',20)}<span class="t">My program<br><small>${esc(h.name)} · ${p.type} ${p.term}</small></span></div>
       <button data-act="changeProg">${ic('swap',20)}<span class="t">Change program</span>${ic('chev',18)}</button>
@@ -2401,7 +2492,9 @@ function meTab(){
       <button data-act="toast" data-v="${S.remind.size} reminders are on">${ic('bell',20)}<span class="t">Deadline reminders<br><small>${S.remind.size} on</small></span>${ic('chev',18)}</button>
       <button data-act="tab" data-v="mentor">${ic('chat',20)}<span class="t">Mentor chats</span><small>${Object.keys(S.chats).length}</small></button>
       <button data-act="openLang">${ic('globe',20)}<span class="t">Language<br><small>${LANG==='ko'?'한국어':'English'}</small></span>${ic('chev',18)}</button>
-      <button data-go="splash">${ic('back',20)}<span class="t">Back to start (demo)</span></button>
+      <a href="/privacy" target="_blank" rel="noopener">${ic('shield',20)}<span class="t">Privacy Policy</span>${ic('ext',16)}</a>
+      <a href="/terms" target="_blank" rel="noopener">${ic('doc',20)}<span class="t">Terms of Service</span>${ic('ext',16)}</a>
+      ${AUTH.user?`<button data-act="logout">${ic('back',20)}<span class="t">Log out</span></button>`:`<button data-go="splash">${ic('back',20)}<span class="t">Back to start</span></button>`}
     </div>
   </div>`;
 }
@@ -2452,7 +2545,7 @@ const propHTML=(x,id)=>{const r=S.reqs[id]||{};const booked=r.status==='booked'&
   return `<div class="prop"><small class="rq">Mentoring proposal</small><b data-notr>${esc(x.title)}</b>
     <div class="ometa"><span>${ic('clock',14)} ${x.len}</span><span>${x.n} sessions</span><span>${x.fmt}</span></div>
     <div class="pay"><div class="tot"><span>Price</span><span class="num">₩${x.price}</span></div><p>You pay only when you confirm. Free cancellation up to 24 hours before the first session.</p></div>
-    ${booked?'<span class="pill ok">Confirmed and paid</span>':`<div class="row"><button class="btn sm" data-act="confirmProp" data-v="${x.pid}">Confirm and pay</button><button class="btn sm ghost" data-act="toast" data-v="Tell the mentor what to change in the chat">Ask to change</button></div>`}</div>`};
+    ${booked?'<span class="pill ok">Confirmed</span>':`<p class="hint">Payments are not connected yet. Confirming records the agreement only; no money is charged.</p><div class="row"><button class="btn sm" data-act="confirmProp" data-v="${x.pid}">Confirm</button><button class="btn sm ghost" data-act="toast" data-v="Tell the mentor what to change in the chat">Ask to change</button></div>`}</div>`};
 const msgHTML=x=>x.prop?`<div class="msg them wide">${propHTML(x,S.chatWith)}<time>${x.time}</time></div>`
   :x.sys?`<p class="sysmsg">${x.sys}</p>`
   :`<div class="msg ${x.me?'me':'them'}"><p data-notr>${esc(x.me?x.text:(LANG==='ko'?x.ko:x.en))}</p><time>${x.time}</time></div>`;
@@ -2463,6 +2556,18 @@ function sendMsg(){
     if(n===1){const m=mentorsFor()[id], o=m.offer[0]; c.push({prop:true,pid:'p'+Date.now(),title:tx(o.t,host()),len:o.len,n:o.n,fmt:o.fmt,price:id===1?'40,000':id===2?'25,000':'30,000',time:hm(new Date())})}
     S.typing=null; if(S.screen==='chat'&&S.chatWith===id){const v=$('#chatInput').value; render(); const ni=$('#chatInput'); ni.value=v; ni.focus()}},1300);
 }
+// read every field first: re-rendering for the busy state would otherwise wipe what the student typed
+const formSnap=()=>{const F={}; view.querySelectorAll('input[id],textarea[id],select[id]').forEach(el=>{F[el.id]=el.type==='checkbox'?el.checked:el.type==='file'?null:el.value}); return F};
+async function authRun(fn){const F=formSnap(); S.auth.busy=true; S.auth.err=''; render(true); try{await fn(F)}catch(e){S.auth.err=trText(errMsg(e))+(e.left?` (${e.left})`:'')} S.auth.busy=false; if(S.screen==='login') render(true)}
+async function apRun(fn,where='top'){const F=formSnap(); S.apply.busy=true; S.apply.err=''; S.apply.errAt=where; render(true); try{await fn(F)}catch(e){S.apply.err=trText(errMsg(e))+(e.left?` (${e.left})`:'')} S.apply.busy=false; render(true)}
+function signedIn(u){AUTH.user=u; S.auth={mode:'login',step:0,email:'',busy:false,err:''}; const p=u.profile||{}; if(p.home) S.profile.univ=p.home; if(p.major) S.profile.major=p.major; if(p.year) S.profile.year=p.year; toast('Signed in'); go('profile')}
+// read the mentor form: preset choice or the student's own value
+function mentorForm(F){const g=id=>String(F[id]||'').trim(), pickV=id=>F[id+'Sel']==='__custom'?g(id):String(F[id+'Sel']||'');
+  const raw=pickV('mfN'), n=Number(raw);
+  const pf={act:g('mfAct'),club:g('mfClub'),lab:g('mfLab'),course:g('mfCourse'),offer:g('mfOffer'),length:pickV('mfLen'),sessions:Number.isInteger(n)?n:raw,format:pickV('mfFmt')};
+  S.apply.form=pf; // keep the text on screen even if validation fails
+  if(!/^\d+$/.test(String(raw))||n<1||n>20) throw {code:'bad_sessions'};
+  return pf}
 function closeSheet(){ $('#sheet').classList.remove('on'); $('#scrim').classList.remove('on'); S.mentorSheet=null; }
 
 /* ---------------- toast ---------------- */
@@ -2521,7 +2626,7 @@ document.addEventListener('click',e=>{
     case 'pick': {const u=DATA.unis.find(x=>x[0]===v&&x[1]===a.dataset.cc); S.pick=makeHost(u); S.pickDep=null; S.pickRet=null; ($('#schoolList').innerHTML=schoolListHTML(),translate($('#schoolList'))); const b=view.querySelector('[data-act="toProgram"]'); b.disabled=false; b.textContent='Next: choose program'; break}
     case 'toProgram': if(S.pick){S.pickProg=(S.pick.name===host().name?S.progId:'exS'); go('program')} break;
     case 'pickProg': if(S.pickProg!==v){S.pickProg=v; S.pickDep=null; S.pickRet=null} render(true); break;
-    case 'build': S.host=S.pick||S.host; S.progId=S.pickProg; S.depOverride=(S.pickDep&&S.pickDep!==depOf(prog(),S.host))?S.pickDep:null; S.retOverride=(S.pickRet&&S.pickRet>iso(depDate()))?S.pickRet:null; S.cv=null; S.filter='All'; resetDone(); S.screen='building'; render(); setTimeout(()=>{S.screen='app';S.tab='home';render()},1100); break;
+    case 'build': if(AUTH.user) api('me',{profile:{home:S.profile.univ,major:S.profile.major,year:S.profile.year}}).then(j=>{AUTH.user=j.user}).catch(()=>{}); S.host=S.pick||S.host; S.progId=S.pickProg; S.depOverride=(S.pickDep&&S.pickDep!==depOf(prog(),S.host))?S.pickDep:null; S.retOverride=(S.pickRet&&S.pickRet>iso(depDate()))?S.pickRet:null; S.cv=null; S.filter='All'; resetDone(); S.screen='building'; render(); setTimeout(()=>{S.screen='app';S.tab='home';render()},1100); break;
     case 'tab': S.tab=v; S.screen='app'; S.detail=null; closeSheet(); render(); break;
     case 'filter': S.filter=v; render(true); break;
     case 'showDone': S.showDone=!S.showDone; render(true); break;
@@ -2558,11 +2663,20 @@ document.addEventListener('click',e=>{
     case 'resetDep': S.depOverride=null; S.retOverride=null; closeSheet(); render(true); toast('Using the suggested travel dates'); break;
     case 'bcat': S.bcat=S.bcat===v?'All':v; render(true); break;
     case 'changeProg': S.pick=host(); S.region=host().region; go('school'); break;
-    case 'ap0': {const em=$('#apEmail').value.trim(); if(!/^[^@\s]+@[^@\s]+\.(ac\.kr|edu)$/.test(em)){toast('Enter a university email ending in .ac.kr or .edu');return} S.apply.email=em; S.apply.step=1; render(true); toast('University email verified'); break}
-    case 'ap1': S.apply.step=2; render(true); toast('Proof of completion submitted'); break;
-    case 'ap2': S.apply.step=3; render(true); toast('Review passed. Write your mentor profile'); break;
-    case 'ap3': {const f=k=>($('#'+k)||{}).value||''; if(!f('mfOffer').trim()){toast('Describe what your mentoring covers'); $('#mfOffer').focus(); return}
-      S.apply.profile={act:f('mfAct'),club:f('mfClub'),lab:f('mfLab'),course:f('mfCourse'),offer:f('mfOffer'),len:f('mfLen'),n:f('mfN'),fmt:f('mfFmt')}; S.apply.step=4; render(true); toast('Your verified badge is live'); break}
+    case 'authMode': S.auth={mode:v,step:0,email:S.auth.email,busy:false,err:''}; render(); break;
+    case 'authSend': authRun(async F=>{const email=F.auEmail||S.auth.email; S.auth.email=email.trim(); await api('auth/request-code',{email:S.auth.email,purpose:S.auth.mode==='reset'?'reset':'signup'}); S.auth.step=1; toast('We sent a code to your email')}); break;
+    case 'authVerify': authRun(async F=>{const g=id=>F[id]||''; const j=await api('auth/verify',{email:S.auth.email,code:String(g('auCode')).trim(),password:g('auPw'),name:g('auName'),agree:!!F.auAgree,purpose:S.auth.mode==='reset'?'reset':'signup'}); signedIn(j.user)}); break;
+    case 'authLogin': authRun(async F=>{const g=id=>F[id]||''; S.auth.email=g('auEmail').trim(); const j=await api('auth/login',{email:S.auth.email,password:g('auPw')}); signedIn(j.user)}); break;
+    case 'logout': api('auth/logout',{}).catch(()=>{}).then(()=>{AUTH.user=null; S.auth={mode:'login',step:0,email:'',busy:false,err:''}; render(); toast('Logged out')}); break;
+    case 'apSend': apRun(async F=>{const em=F.apEmail; if(em!==undefined) S.apply.email=em.trim(); await api('mentor/uni-code',{uniEmail:S.apply.email}); S.apply.sent=true; toast('We sent a code to your university email')}); break;
+    case 'apVerify': apRun(async F=>{const j=await api('mentor/uni-verify',{code:String(F.apCode||'').trim()}); AUTH.user=j.user; S.apply.sent=false; toast('University email verified')}); break;
+    case 'apUpload': apRun(async()=>{const f=S.apply.fileObj; if(!f) return; if(f.size>3*1024*1024) throw {code:'file_too_large'};
+      const data=await new Promise((ok,no)=>{const r=new FileReader(); r.onload=()=>ok(String(r.result).split(',')[1]||''); r.onerror=no; r.readAsDataURL(f)});
+      const j=await api('mentor/apply',{file:{name:f.name,data}}); AUTH.user=j.user; S.apply.file=''; S.apply.fileObj=null; toast('Submitted. The review takes up to 24 hours')}); break;
+    case 'apRefresh': apRun(async()=>{await loadMe(); toast(mStat()==='approved'?'Review approved':'Still in review')}); break;
+    case 'apDraft': case 'apPublish': apRun(async F=>{const pf=mentorForm(F); if(act==='apPublish'&&!pf.offer){throw {code:'profile_incomplete'}}
+      S.apply.form=pf; try{localStorage.setItem('gg_mentor_draft',JSON.stringify(pf))}catch(e){}
+      const j=await api('mentor/profile',{action:act==='apPublish'?'publish':'draft',profile:pf}); AUTH.user=j.user; toast(act==='apPublish'?'Your profile is live':'Draft saved')},'form'); break
   }
 });
 document.addEventListener('input',e=>{
@@ -2579,9 +2693,10 @@ document.addEventListener('change',e=>{
   if(e.target.id==='depInput'&&e.target.value){S.pickDep=e.target.value; if(!S.pickRet){const r=$('#retInput'); if(r){r.value=iso(addDays(D(S.pickDep),STAY[S.pickProg])); r.parentElement.querySelector('.dv').textContent=fmtY(D(r.value))}} updStay('depInput','retInput','stayInfo',S.pick||host())}
   if(e.target.id==='retInput'&&e.target.value){S.pickRet=e.target.value; updStay('depInput','retInput','stayInfo',S.pick||host())}
   if(e.target.id==='depSheetInput'||e.target.id==='retSheetInput') updStay('depSheetInput','retSheetInput','staySheetInfo',host());
-  if(e.target.id==='apFile'&&e.target.files[0]){S.apply.file=e.target.files[0].name; render(true)}
+  if(e.target.id==='apFile'&&e.target.files[0]){S.apply.fileObj=e.target.files[0]; S.apply.file=e.target.files[0].name; render(true)}
+  if(e.target.dataset&&e.target.dataset.custom){const inp=$('#'+e.target.dataset.custom); if(inp){inp.classList.toggle('hide',e.target.value!=='__custom'); if(e.target.value==='__custom') inp.focus()}}
 });
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet(); if(e.key==='Enter'&&e.target.id==='qInput') document.querySelector('[data-act="ask"]').click(); if(e.key==='Enter'&&!e.isComposing&&e.target.id==='chatInput'){e.preventDefault(); sendMsg()} if(e.key==='Enter'&&!e.isComposing&&e.target.id==='cMsg'){e.preventDefault(); document.querySelector('[data-act="csend"]').click()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet(); if(e.key==='Enter'&&S.screen==='login'&&e.target.tagName==='INPUT'&&e.target.type!=='checkbox'){const b=document.querySelector('.cta .btn'); if(b&&!b.disabled) b.click()} if(e.key==='Enter'&&e.target.id==='qInput') document.querySelector('[data-act="ask"]').click(); if(e.key==='Enter'&&!e.isComposing&&e.target.id==='chatInput'){e.preventDefault(); sendMsg()} if(e.key==='Enter'&&!e.isComposing&&e.target.id==='cMsg'){e.preventDefault(); document.querySelector('[data-act="csend"]').click()}});
 
 /* fit the true-size phone into short browser windows */
 function fit(){
