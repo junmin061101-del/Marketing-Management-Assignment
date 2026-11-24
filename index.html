@@ -2872,25 +2872,38 @@ function openDoc(k){ if(k!=='privacy'&&k!=='terms') return; S.doc=k; go('doc') }
 /* Every screen change is a browser history entry, so the back arrow, the browser's back button
    and a left-to-right swipe all return to the page the student was actually on. */
 const NAVK=['screen','tab','detail','chatWith','chatC','cv','doc'];
-const NAV={key:'',d:0,pop:false,prev:''}; const KEEP={};
+const NAV={key:'',d:0,pop:false,prev:'',floor:null,sid:Math.random().toString(36).slice(2)}; const KEEP={};
+/* Once the student reaches the app, home is the floor: back never returns to the setup screens
+   (start, login, school, program), so a finished setup can't be undone by pressing back. */
+const SETUP=new Set(['boot','splash','lang','login','profile','school','program','building']);
+const atFloor=()=>NAV.floor!==null&&NAV.d<=NAV.floor;
 const PARENT={detail:{screen:'app'},chat:{screen:'app',tab:'chat'},mentorApply:{screen:'app',tab:'me'},doc:{screen:'app',tab:'me'},program:{screen:'school'},school:{screen:'profile'},profile:{screen:'login'},login:{screen:'splash'}};
 const parentOf=()=>PARENT[S.screen]||(S.screen==='app'&&S.tab!=='home'?{screen:'app',tab:'home'}:null);
-const canBack=()=>NAV.d>0||!!parentOf();
+const canBack=()=>!!parentOf()||NAV.d>0&&!atFloor();
 function navSync(){
   const snap={}; NAVK.forEach(k=>snap[k]=S[k]===undefined?null:S[k]);
   const key=JSON.stringify(snap); if(key===NAV.key) return false;
   let kind='push';
   if(NAV.pop){NAV.pop=false; kind='pop'}
-  else if(!NAV.key||NAV.replaceNext||NAV.prev==='building'||NAV.prev==='boot'||NAV.prev==='lang'&&S.screen==='splash'){ NAV.replaceNext=false; history.replaceState({gg:snap,d:NAV.d},'') }
-  else { KEEP[NAV.key]=formSnap(); NAV.d++; history.pushState({gg:snap,d:NAV.d},'') }
+  else if(!NAV.key||NAV.replaceNext||NAV.prev==='building'||NAV.prev==='boot'||NAV.prev==='lang'&&S.screen==='splash'){ NAV.replaceNext=false; history.replaceState({gg:snap,d:NAV.d,sid:NAV.sid},'') }
+  else { KEEP[NAV.key]=formSnap(); NAV.d++; history.pushState({gg:snap,d:NAV.d,sid:NAV.sid},'') }
+  // arriving in the app from setup (first time, after a program change, after editing the profile) raises the floor
+  if(S.screen==='app'&&(NAV.floor===null||SETUP.has(NAV.prev))) NAV.floor=NAV.d;
   NAV.key=key; NAV.prev=S.screen; return kind;
 }
 function navBack(){
   if($('#sheet').classList.contains('on')){closeSheet(); return}
-  if(NAV.d>0){history.back(); return}
+  if(NAV.d>0&&!atFloor()){history.back(); return}
   const p=parentOf(); if(p){Object.assign(S,p); if(S.screen!=='detail') S.detail=null; render()}
 }
 addEventListener('popstate',e=>{const st=e.state&&e.state.gg; if(!st) return;
+  // trying to step back below home into setup (or into a setup page from an earlier visit): stay on home
+  if(NAV.floor!==null&&SETUP.has(st.screen)&&(e.state.sid!==NAV.sid||(e.state.d||0)<NAV.floor)){
+    closeSheet(); Object.assign(S,{screen:'app',tab:'home',detail:null}); NAV.d=NAV.floor;
+    const snap={}; NAVK.forEach(k=>snap[k]=S[k]===undefined?null:S[k]);
+    history.pushState({gg:snap,d:NAV.d,sid:NAV.sid},''); NAV.key=JSON.stringify(snap); NAV.prev='app'; render(); return}
+  // a page left over from before a reload: stay where we are
+  if(e.state.sid!==NAV.sid){ const snap={}; NAVK.forEach(k=>snap[k]=S[k]===undefined?null:S[k]); history.pushState({gg:snap,d:NAV.d,sid:NAV.sid},''); return}
   closeSheet(); NAV.d=e.state.d||0; Object.assign(S,st);
   if(S.screen==='detail'&&!items().some(i=>i.id===S.detail)) S.screen='app';
   NAV.pop=true; render()});
