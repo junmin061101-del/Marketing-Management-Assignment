@@ -96,8 +96,7 @@ function applyLang() {
   $('#regions').innerHTML = ['asia', 'europe', 'na', 'oceania'].filter(r => S.regions[r]).map(r => `<span>${t.region[r]} <b class="num">${S.regions[r]}</b>${LANG === 'ko' ? '개국' : ''}</span>`).join('');
   $('#checkedAt').textContent = t.checked(new Date(S.checkedAt));
   document.title = L('교환가자 · 합격 그다음, 출국까지의 모든 준비', '교환가자 · You got in. Now, everything until you fly.');
-  renderPhone(); renderMarquee();
-  updateDday();
+  renderPhone(); renderTour();
 }
 function fillStats() {
   $$('[data-stat]').forEach(el => { const v = S[el.dataset.stat]; if (v != null && !el.dataset.counted) el.textContent = fmtN(v); });
@@ -230,48 +229,59 @@ function renderPhone() {
   $('#pane').innerHTML = SCREENS[screen]();
   const cur = SCREEN_TAB[screen];
   $('#tabbar').innerHTML = TABS.map(([k, i, ko, en]) => `<button type="button" data-tab="${k}" class="${k === cur ? 'on' : ''}" aria-current="${k === cur ? 'page' : 'false'}">${ic(i, 22)}${L(ko, en)}</button>`).join('');
-  $$('.fchip').forEach(c => c.classList.toggle('on', c.dataset.screen === screen));
 }
-function show(s) { if (s === screen) return; screen = s; renderPhone(); }
-$('#tabbar').addEventListener('click', e => { const b = e.target.closest('[data-tab]'); if (b) show(b.dataset.tab); });
+function show(s) { if (s === screen) return; screen = s; const p = $('#pane'); p.style.opacity = '0'; setTimeout(() => { renderPhone(); p.style.opacity = '1'; }, reduced ? 0 : 180); }
+$('#tabbar').addEventListener('click', e => { const b = e.target.closest('[data-tab]'); if (!b) return; const i = TOUR.findIndex(t => t.s === b.dataset.tab); if (i >= 0) goTour(i, true); else show(b.dataset.tab); });
 
-/* ---------------- feature chips: tap one and the phone switches to it ---------------- */
-const CHIPS = [
-  [['✈️ 비자·입국 조건 자동 계산', '✈️ Visa and entry rules worked out', 'checklist'], ['✅ 출국 D-day 맞춤 체크리스트', '✅ Checklist counted down to your D-day', 'home'], ['💬 같은 파견교·출국기 커뮤니티', '💬 Communities for your host and term', 'community'], ['🎓 증빙 인증 선배 1:1 멘토', '🎓 1:1 mentors with verified proof', 'mentor'], ['🎁 유심·송금·보험 출국 혜택', '🎁 eSIM, money transfer and insurance perks', 'perks'], ['📨 커뮤니티·멘토 채팅을 한 탭에', '📨 Every chat in one tab', 'chat']],
-  [['🗓️ 출국일 바꾸면 마감일 자동 재계산', '🗓️ Change your dates, deadlines follow', 'home'], [`🔎 ${fmtN(S.unis)}개 대학 한글·영문 검색`, `🔎 Search ${fmtN(S.unis)} universities in Korean or English`, 'search'], ['📄 어학 최소 점수와 공식 출처', '📄 English minimums with official sources', 'checklist'], ['🏫 같은 학교·학과 멘토 먼저', '🏫 Mentors from your school and major first', 'mentor'], ['🌐 한국어 · English · 다크 모드', '🌐 Korean, English and dark mode', 'me']],
+/* ---------------- feature tour: advances on its own like Apple's highlights; tap to jump, button to pause ---------------- */
+const TOUR = [
+  { s: 'home', ko: ['출국 D-day 대시보드', '파견교와 출국일만 고르면 출국까지 남은 날과 다음 할 일을 한 문장으로 알려줘요. 출국일을 바꾸면 마감일도 같이 다시 계산돼요.'], en: ['Your departure dashboard', 'Pick your host and dates and it tells you, in one sentence, how long until you fly and what to do next. Change the dates and every deadline follows.'] },
+  { s: 'checklist', ko: ['맞춤 비자·지원 체크리스트', '파견교 포털 로그인부터 비자 인터뷰까지, 해야 할 일이 마감일 순서로 정리돼요. 체류 기간에 맞춰 필요한 비자 단계가 바뀌어요.'], en: ['Visa and application checklist', 'From the host portal login to the visa interview, every step in deadline order. The visa steps change with your length of stay.'] },
+  { s: 'community', ko: ['파견교 한인 커뮤니티', '같은 학교로 가는 학생, 지금 현지에 있는 학생, 다녀온 학생이 게시판에서 만나요. 가입하면 그룹 채팅도 열려요.'], en: ['Korean communities per host', 'Students going soon, there now or back home meet on one board. Joining opens the group chat too.'] },
+  { s: 'mentor', ko: ['수료 증빙을 확인한 선배 멘토', '같은 학교·학과 선배를 먼저 보여줘요. 프로필을 보고 채팅으로 멘토링 내용과 시간, 금액을 정해요.'], en: ['Mentors with verified proof', 'Seniors from your own school and major come first. Read the profile, then agree on what, how long and the price in chat.'] },
+  { s: 'chat', ko: ['모든 대화를 한 탭에', '커뮤니티 그룹 채팅과 멘토 1:1 채팅이 채팅 탭 하나에 최근 순으로 모여요.'], en: ['Every chat in one tab', 'Community group chats and 1:1 mentor chats, together and newest first.'] },
+  { s: 'perks', ko: ['내 일정에 맞춘 출국 혜택', '항공권, 숙소, eSIM, 보험, 송금까지 출국 일정에 맞춰 각 업체 공식 사이트로 바로 연결해요.'], en: ['Perks for your trip', 'Flights, housing, eSIM, insurance and money transfer, matched to your dates and linked to each provider’s official site.'] },
 ];
-function renderMarquee() {
-  $('#marquee').innerHTML = CHIPS.map((row, r) => {
-    const chips = row.map(([ko, en, s]) => `<button type="button" class="fchip" data-screen="${s}">${L(ko, en)}</button>`).join('');
-    return `<div class="mrow${r ? ' rev' : ''}">${chips}<span class="dup" aria-hidden="true" style="display:contents">${chips.replaceAll('<button', '<button tabindex="-1"')}</span></div>`;
-  }).join('');
-  $$('.fchip').forEach(c => c.classList.toggle('on', c.dataset.screen === screen));
+const DUR = 5500, tourList = $('#tourList'), tourNow = $('#tourNow'), tourPlay = $('#tourPlay');
+let tIdx = 0, tProg = 0, tPlaying = !reduced, tVisible = false, tLast = performance.now();
+const PLAY_IC = { pause: '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>', play: '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.6-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg>' };
+function renderTour() {
+  tourList.setAttribute('aria-label', L('교환가자 주요 기능', 'What 교환가자 does'));
+  tourList.innerHTML = TOUR.map((t, i) => `<li><button type="button" data-i="${i}"><span class="tt"><span class="no num">0${i + 1}</span><span>${L(t.ko[0], t.en[0])}</span></span><span class="desc"><span>${L(t.ko[1], t.en[1])}</span></span><span class="pbar" aria-hidden="true"><i></i></span></button></li>`).join('');
+  syncTour();
 }
-$('#marquee').addEventListener('click', e => {
-  const c = e.target.closest('.fchip'); if (!c) return;
-  show(c.dataset.screen);
-  const z = $('#deviceZone').getBoundingClientRect();
-  if (z.top < -200 || z.top > innerHeight * .5) $('#deviceZone').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
-});
+function syncTour() {
+  $$('li', tourList).forEach((li, i) => { li.classList.toggle('on', i === tIdx); li.style.setProperty('--p', i < tIdx ? 1 : i === tIdx ? tProg : 0); $('button', li).setAttribute('aria-current', i === tIdx ? 'true' : 'false'); });
+  const t = TOUR[tIdx]; tourNow.innerHTML = `<b>${L(t.ko[0], t.en[0])}</b><span>${L(t.ko[1], t.en[1])}</span>`;
+  tourPlay.innerHTML = (tPlaying ? PLAY_IC.pause : PLAY_IC.play) + `<span>${tPlaying ? L('일시정지', 'Pause') : L('자동 재생', 'Play')}</span>`;
+  tourPlay.setAttribute('aria-pressed', String(!tPlaying));
+}
+function goTour(i, byUser) { tIdx = (i + TOUR.length) % TOUR.length; tProg = 0; show(TOUR[tIdx].s); syncTour(); if (byUser) tLast = performance.now(); }
+tourList.addEventListener('click', e => { const b = e.target.closest('[data-i]'); if (b) goTour(+b.dataset.i, true); });
+tourPlay.addEventListener('click', () => { tPlaying = !tPlaying; tLast = performance.now(); syncTour(); });
+new IntersectionObserver(es => { tVisible = es[0].isIntersecting; tLast = performance.now(); }, { threshold: .35 }).observe($('#tour'));
+(function tick(t) {
+  const dt = t - tLast; tLast = t;
+  if (tPlaying && tVisible && !document.hidden) {
+    tProg += dt / DUR;
+    if (tProg >= 1) goTour(tIdx + 1); else { const li = tourList.children[tIdx]; li && li.style.setProperty('--p', tProg.toFixed(4)); }
+  }
+  requestAnimationFrame(tick);
+})(performance.now());
 
-function updateDday() { $('#badgeDday').textContent = `D-${DEP_OFFSET}`; }
-
-/* ---------------- motion: phone tilt + floating badges follow pointer and scroll ---------------- */
+/* ---------------- motion: the phone floats calmly and leans a little toward the pointer ---------------- */
 const phone = $('#phone'), zone = $('#deviceZone');
-let mx = 0, my = 0, tx = 0, ty = 0, scrollP = 0;
+let mx = 0, my = 0, tx = 0, ty = 0;
 addEventListener('pointermove', e => { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; }, { passive: true });
-function fitPhone() { phone.dataset.scale = Math.min(1, (zone.clientWidth - 24) / 360, zone.clientHeight / 760).toFixed(3); if (reduced) phone.style.transform = `scale(${phone.dataset.scale})`; }
+function fitPhone() { phone.dataset.scale = Math.min(1.15, (zone.clientWidth - 24) / 360, (zone.clientHeight - 24) / 740).toFixed(3); if (reduced) phone.style.transform = `scale(${phone.dataset.scale})`; }
 fitPhone(); addEventListener('resize', fitPhone);
-function tiltLoop() {
-  const r = zone.getBoundingClientRect();
-  scrollP = Math.max(-1, Math.min(1, (r.top + r.height / 2 - innerHeight / 2) / innerHeight));
-  tx += (mx - tx) * .06; ty += (my - ty) * .06;
+function floatLoop(t) {
+  tx += (mx - tx) * .05; ty += (my - ty) * .05;
   const sc = +phone.dataset.scale || 1;
-  phone.style.transform = `scale(${sc}) rotateX(${(scrollP * 10 - ty * 8).toFixed(2)}deg) rotateY(${(tx * 14).toFixed(2)}deg) rotateZ(${(tx * -1.2).toFixed(2)}deg)`;
-  $$('.badge3d').forEach(b => { const d = +b.dataset.depth; b.style.transform = `translate3d(${(tx * 40 * d).toFixed(1)}px,${(ty * 30 * d + scrollP * 60 * d).toFixed(1)}px,0)`; });
-  requestAnimationFrame(tiltLoop);
+  phone.style.transform = `translateY(${(Math.sin(t / 1400) * 6).toFixed(2)}px) scale(${sc}) rotateY(${(tx * 7).toFixed(2)}deg) rotateX(${(-ty * 5).toFixed(2)}deg)`;
+  requestAnimationFrame(floatLoop);
 }
-if (!reduced) requestAnimationFrame(tiltLoop); else phone.style.transform = `scale(${phone.dataset.scale || 1})`;
+if (!reduced) requestAnimationFrame(floatLoop); else phone.style.transform = `scale(${phone.dataset.scale || 1})`;
 
 /* ---------------- nav, reveal, count-up ---------------- */
 const nav = $('#nav');
