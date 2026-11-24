@@ -1,5 +1,5 @@
 {
- "checkedAt": "2026-11-24T01:17:24.879Z",
+ "checkedAt": "2026-11-24T05:15:17.277Z",
  "links": {
   "http://www.washington.edu/": {
    "s": "ok",
@@ -99,8 +99,9 @@
    "since": "2026-11-19"
   },
   "https://dofi.ibz.be": {
-   "s": "down",
-   "code": "ETIMEDOUT",
+   "s": "ok",
+   "code": 200,
+   "final": "https://dofi.ibz.be/",
    "since": "2026-11-24"
   },
   "https://eap.ucsb.edu/students/reciprocity-students": {
@@ -301,13 +302,13 @@
    "since": "2026-11-24"
   },
   "https://housing.umn.edu/": {
-   "s": "blocked",
-   "code": 403,
+   "s": "ok",
+   "code": 200,
    "since": "2026-11-24"
   },
   "https://housing.unc.edu/": {
-   "s": "blocked",
-   "code": 403,
+   "s": "ok",
+   "code": 200,
    "since": "2026-11-24"
   },
   "https://housing.usc.edu/": {
@@ -449,8 +450,8 @@
    "since": "2026-11-19"
   },
   "https://internationalservices.gwu.edu/": {
-   "s": "blocked",
-   "code": 403,
+   "s": "ok",
+   "code": 200,
    "since": "2026-11-24"
   },
   "https://intlaffairs.hku.hk/": {
@@ -544,13 +545,13 @@
    "since": "2026-11-19"
   },
   "https://isss.umn.edu/": {
-   "s": "blocked",
-   "code": 403,
+   "s": "ok",
+   "code": 200,
    "since": "2026-11-24"
   },
   "https://isss.umn.edu/students/exchange/guide": {
-   "s": "blocked",
-   "code": 403,
+   "s": "ok",
+   "code": 200,
    "since": "2026-11-24"
   },
   "https://isss.unc.edu/": {
@@ -564,8 +565,8 @@
    "since": "2026-11-19"
   },
   "https://kr.usembassy.gov/visas/": {
-   "s": "blocked",
-   "code": 405,
+   "s": "ok",
+   "code": 200,
    "since": "2026-11-24"
   },
   "https://learningabroad.utoronto.ca/inbound-visiting/inbound-exchange/": {
@@ -621,7 +622,7 @@
   },
   "https://manoa.hawaii.edu/mix/inbound/how-to-apply-undergraduate-students/": {
    "s": "down",
-   "code": "TimeoutError",
+   "code": "UND_ERR_CONNECT_TIMEOUT",
    "since": "2026-11-24"
   },
   "https://migri.fi/en": {
@@ -825,13 +826,13 @@
    "since": "2026-11-24"
   },
   "https://student.kedge.edu/about-kedge/international/partner-universities": {
-   "s": "down",
-   "code": "UND_ERR_CONNECT_TIMEOUT",
+   "s": "ok",
+   "code": 200,
    "since": "2026-11-24"
   },
   "https://student.kedge.edu/programmes/summer-schools/summer-schools-in-paris": {
-   "s": "down",
-   "code": "UND_ERR_CONNECT_TIMEOUT",
+   "s": "ok",
+   "code": 200,
    "since": "2026-11-24"
   },
   "https://studentaffairs.temple.edu/housing": {
@@ -877,8 +878,8 @@
    "since": "2026-11-19"
   },
   "https://studyabroad.gwu.edu/inbound-exchange-programs": {
-   "s": "blocked",
-   "code": 403,
+   "s": "ok",
+   "code": 200,
    "since": "2026-11-24"
   },
   "https://studyabroad.hkust.edu.hk/": {
@@ -897,8 +898,8 @@
    "since": "2026-11-24"
   },
   "https://studyabroad.unc.edu/": {
-   "s": "blocked",
-   "code": 403,
+   "s": "ok",
+   "code": 200,
    "since": "2026-11-24"
   },
   "https://studyabroad.unc.edu/incoming-exchange/how-to-apply/": {
@@ -957,8 +958,8 @@
    "since": "2026-11-19"
   },
   "https://summer.gwu.edu/international-summer": {
-   "s": "blocked",
-   "code": 403,
+   "s": "ok",
+   "code": 200,
    "since": "2026-11-24"
   },
   "https://summer.harvard.edu/": {
@@ -1292,13 +1293,13 @@
    "since": "2026-11-19"
   },
   "https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada/study-permit.html": {
-   "s": "down",
-   "code": "TimeoutError",
+   "s": "ok",
+   "code": 200,
    "since": "2026-11-24"
   },
   "https://www.canada.ca/en/immigration-refugees-citizenship/services/visit-canada/eta.html": {
-   "s": "down",
-   "code": "TimeoutError",
+   "s": "ok",
+   "code": 200,
    "since": "2026-11-24"
   },
   "https://www.cbs.dk/en/study-programmes/international-students": {
@@ -1348,8 +1349,8 @@
    "since": "2026-11-19"
   },
   "https://www.cps.gwu.edu/international-student-admissions": {
-   "s": "blocked",
-   "code": 403,
+   "s": "ok",
+   "code": 200,
    "since": "2026-11-24"
   },
   "https://www.directdb.co.kr/": {
@@ -1380,7 +1381,7 @@
   "https://www.exteriores.gob.es": {
    "s": "ok",
    "code": 200,
-   "final": "https://www.exteriores.gob.es/es/Paginas/index.aspx",
+   "final": "https://www.exteriores.gob.es/en/Paginas/index.aspx",
    "since": "2026-11-24"
   },
   "https://www.fmjfee.com/i901fee/index.html": {
@@ -1467,7 +1468,7 @@
   },
   "https://www.hawaii.edu/issmanoa/": {
    "s": "down",
-   "code": "TimeoutError",
+   "code": "UND_ERR_CONNECT_TIMEOUT",
    "since": "2026-11-24"
   },
   "https://www.helsinki.fi/en/admissions-and-education/apply-exchange-and-visiting-studies": {
@@ -1888,23 +1889,23 @@
    "since": "2026-11-19"
   },
   "https://www.nyu.edu/admissions/visiting-students/apply.html": {
-   "s": "ok",
-   "code": 202,
+   "s": "blocked",
+   "code": 405,
    "since": "2026-11-24"
   },
   "https://www.nyu.edu/students/student-information-and-resources/housing-and-dining.html": {
-   "s": "ok",
-   "code": 202,
+   "s": "blocked",
+   "code": 405,
    "since": "2026-11-24"
   },
   "https://www.nyu.edu/students/student-information-and-resources/student-visa-and-immigration.html": {
-   "s": "ok",
-   "code": 202,
+   "s": "blocked",
+   "code": 405,
    "since": "2026-11-24"
   },
   "https://www.nyu.edu/students/student-information-and-resources/student-visa-and-immigration/newly-admitted/short-term-international-student-FAQ.html": {
-   "s": "ok",
-   "code": 202,
+   "s": "blocked",
+   "code": 405,
    "since": "2026-11-24"
   },
   "https://www.oalglobal.cuhk.edu.hk/": {
@@ -2115,12 +2116,13 @@
   },
   "https://www.tcd.ie/study/international/": {
    "s": "ok",
-   "code": 202,
+   "code": 200,
    "since": "2026-11-19"
   },
   "https://www.tcd.ie/study/visiting/": {
-   "s": "ok",
-   "code": 202,
+   "s": "broken",
+   "code": 200,
+   "final": "https://www.tcd.ie/study/404/index.php",
    "since": "2026-11-24"
   },
   "https://www.thaievisa.go.th": {
@@ -2345,18 +2347,18 @@
    "since": "2026-11-24"
   },
   "https://www.uu.se/en/study/exchange-studies/application": {
-   "s": "down",
-   "code": "TimeoutError",
+   "s": "broken",
+   "code": 404,
    "since": "2026-11-24"
   },
   "https://www.uu.se/en/study/exchange-studies/faq": {
-   "s": "down",
-   "code": "TimeoutError",
+   "s": "ok",
+   "code": 200,
    "since": "2026-11-24"
   },
   "https://www.uu.se/en/study/exchange-studies/living-in-sweden/housing": {
-   "s": "down",
-   "code": "TimeoutError",
+   "s": "ok",
+   "code": 200,
    "since": "2026-11-24"
   },
   "https://www.uva.nl/en/education/exchange/global-exchange-programme/entry-requirements-and-course-selection/entry-requirements-and-course-selection.html": {
@@ -2479,8 +2481,7 @@
    "s": "ok"
   },
   "London School of Economics and Political Science, University of London|ss": {
-   "s": "unchecked",
-   "why": "pdf reader missing"
+   "s": "ok"
   },
   "Lund University|ex": {
    "s": "ok"
@@ -2496,7 +2497,7 @@
   },
   "New York University|ss": {
    "s": "unchecked",
-   "why": "page 202"
+   "why": "page 405"
   },
   "Singapore Management University|ex": {
    "s": "ok"
@@ -2519,8 +2520,7 @@
    "s": "ok"
   },
   "The University of Hong Kong|ex": {
-   "s": "unchecked",
-   "why": "pdf reader missing"
+   "s": "ok"
   },
   "The University of Sheffield|ex": {
    "s": "ok"
@@ -2566,8 +2566,11 @@
    "s": "ok"
   },
   "University of Minnesota|ex": {
-   "s": "unchecked",
-   "why": "page 403"
+   "s": "changed",
+   "missing": [
+    "TOEFL iBT 79",
+    "IELTS 6.5"
+   ]
   },
   "University of North Carolina at Chapel Hill|ex": {
    "s": "unchecked",
@@ -2588,24 +2591,23 @@
   "University of Washington|ex": {
    "s": "ok"
   },
-  "Universit\u00e4t Z\u00fcrich|ex": {
+  "Universität Zürich|ex": {
    "s": "ok"
   },
-  "Universit\u00e4t Z\u00fcrich|ss": {
+  "Universität Zürich|ss": {
    "s": "ok"
   },
-  "Universit\u00e9 Paris-Dauphine (Paris IX)|ex": {
+  "Université Paris-Dauphine (Paris IX)|ex": {
    "s": "ok"
   },
-  "Universit\u00e9 Paris-Sorbonne (Paris IV)|ex": {
+  "Université Paris-Sorbonne (Paris IV)|ex": {
    "s": "ok"
   },
-  "Universit\u00e9 de Montr\u00e9al|ex": {
+  "Université de Montréal|ex": {
    "s": "ok"
   },
   "Uppsala University|ex": {
-   "s": "unchecked",
-   "why": "page TypeError"
+   "s": "ok"
   },
   "Waseda University|ex": {
    "s": "unchecked",
