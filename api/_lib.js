@@ -3,7 +3,8 @@
 //
 // Required environment variables (set them in Vercel → Project → Settings → Environment Variables):
 //   UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN  (or KV_REST_API_URL / KV_REST_API_TOKEN from the Vercel integration)
-//   RESEND_API_KEY      email delivery (resend.com)
+//   RESEND_API_KEY      email delivery (resend.com); needs a verified domain to mail anyone but the Resend account owner
+//   SMTP_USER / SMTP_PASS  or send through Gmail instead: the Gmail address and a Google app password (SMTP_HOST optional)
 //   MAIL_FROM           sender, e.g. "교환가자 <no-reply@your-domain.com>" (domain verified in Resend)
 //   APP_SECRET          long random string; signs codes, sessions and review links
 //   REVIEW_EMAIL        inbox of the operations team that reviews mentor applications
@@ -14,7 +15,8 @@ const R_URL = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
 const R_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
 const MAIL_URL = process.env.MAIL_API_URL || 'https://api.resend.com/emails';
 
-export const configured = () => !!(R_URL && R_TOKEN && process.env.RESEND_API_KEY && process.env.MAIL_FROM && process.env.APP_SECRET && process.env.APP_SECRET.length >= 32);
+const SMTP = () => !!(process.env.SMTP_USER && process.env.SMTP_PASS);
+export const configured = () => !!(R_URL && R_TOKEN && (SMTP() || (process.env.RESEND_API_KEY && process.env.MAIL_FROM)) && process.env.APP_SECRET && process.env.APP_SECRET.length >= 32);
 
 /* ---------- storage (Upstash Redis REST) ---------- */
 export async function redis(...cmd) {
@@ -132,7 +134,25 @@ export const publicUser = u => u && ({
 });
 
 /* ---------- email ---------- */
+let smtp = null;
+async function sendSmtp({ to, subject, html, attachments }) {
+  if (!smtp) {
+    const { default: nodemailer } = await import('nodemailer');
+    smtp = nodemailer.createTransport({ host: process.env.SMTP_HOST || 'smtp.gmail.com', port: Number(process.env.SMTP_PORT || 465), secure: Number(process.env.SMTP_PORT || 465) === 465,
+      auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS } });
+  }
+  // Gmail always sends from the signed-in account; keep only the display name from MAIL_FROM
+  const name = (String(process.env.MAIL_FROM || '').match(/^\s*"?([^"<]+?)"?\s*</) || [])[1] || '교환가자';
+  try {
+    await smtp.sendMail({ from: { name, address: process.env.SMTP_USER }, to, subject, html,
+      attachments: (attachments || []).map(a => ({ filename: a.filename, content: Buffer.from(a.content, 'base64') })) });
+  } catch (e) {
+    console.error('mail failed smtp', e.responseCode || '', String(e.response || e.message).slice(0, 500));
+    throw Object.assign(new Error('mail failed'), { code: 'mail_failed' });
+  }
+}
 export async function sendMail({ to, subject, html, attachments }) {
+  if (SMTP()) return sendSmtp({ to, subject, html, attachments });
   const r = await fetch(MAIL_URL, {
     method: 'POST',
     headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
