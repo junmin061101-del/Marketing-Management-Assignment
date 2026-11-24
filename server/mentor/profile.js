@@ -1,5 +1,5 @@
 // POST {action:'draft'|'publish', profile} → saves a draft any time; publishing needs an approved review.
-import { guard, body, send, currentUser, saveUser, publicUser, cleanText, redis, hmac } from '../../api/_lib.js';
+import { guard, body, send, currentUser, saveUser, publicUser, cleanText, redis, hmac, uid } from '../../api/_lib.js';
 
 function clean(p = {}) {
   const n = Number(p.sessions);
@@ -19,8 +19,8 @@ export default async function handler(req, res) {
   if (b.action === 'publish') {
     if (user.mentor.status !== 'approved') return send(res, 403, { error: 'review_not_approved' });
     if (!p.home || !p.major || !p.offer || !p.length || !p.format || !p.sessions) return send(res, 400, { error: 'profile_incomplete' });
-    const key = 'm-' + hmac('mentor|' + user.email).slice(0, 16); // public id for reviews; does not reveal the email
-    await redis('SET', 'mkey:' + key, user.email);
+    const key = 'm-' + hmac('mentor|' + uid(user)).slice(0, 16); // public id for reviews; does not reveal the email
+    await redis('SET', 'mkey:' + key, uid(user));
     user.mentor.profile = { ...p, key, publishedAt: new Date().toISOString() };
   }
   user.mentor.draft = { ...p, savedAt: new Date().toISOString() };

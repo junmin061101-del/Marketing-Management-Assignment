@@ -8,6 +8,7 @@
 //   MAIL_FROM           sender, e.g. "교환가자 <no-reply@your-domain.com>" (domain verified in Resend)
 //   APP_SECRET          long random string; signs codes, sessions and review links
 //   REVIEW_EMAIL        inbox of the operations team that reviews mentor applications
+//   SOLAPI_API_KEY / SOLAPI_API_SECRET / SMS_FROM   text-message login codes (solapi.com; SMS_FROM is the registered sender number)
 //   ADMIN_EMAIL         addresses that can sign in to /admin, comma-separated (REVIEW_EMAIL can always sign in too)
 import crypto from 'node:crypto';
 
@@ -54,6 +55,13 @@ export const clientIp = req => String(req.headers['x-forwarded-for'] || '').spli
 /* ---------- validation ---------- */
 export const normEmail = e => (typeof e === 'string' ? e.trim().toLowerCase() : '');
 export const validEmail = e => e.length >= 6 && e.length <= 254 && /^[a-z0-9._%+-]+@[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(e);
+// Korean mobile numbers only: 010-1234-5678, 01012345678, +82 10 1234 5678 → 01012345678
+export function normPhone(v) {
+  let d = String(v || '').replace(/[^\d+]/g, '');
+  if (d.startsWith('+82')) d = '0' + d.slice(3); else if (d.startsWith('82') && d.length >= 11) d = '0' + d.slice(2);
+  d = d.replace(/\D/g, '');
+  return /^01[016789]\d{7,8}$/.test(d) ? d : '';
+}
 export const isUniEmail = e => /\.(ac\.kr|edu)$/.test(e) || /\.edu\.[a-z]{2}$/.test(e);
 // Plain text only: strip control characters and angle brackets, trim, cap length. The page also escapes on render.
 export const cleanText = (v, max) => (typeof v === 'string' ? v.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f<>]/g, '').trim().slice(0, max) : '');
@@ -104,12 +112,17 @@ export async function useCode(purpose, email, code) {
 }
 
 /* ---------- sessions: random id in an HttpOnly cookie, only its HMAC is stored ---------- */
-const COOKIE = 'gg_sid', DAYS = 30;
+const COOKIE = 'gg_sid', DAYS = 365; // students stay signed in; every visit extends it
 const cookieOf = req => Object.fromEntries(String(req.headers.cookie || '').split(';').map(c => c.trim().split('=')).filter(p => p[0]).map(([k, ...v]) => [k, decodeURIComponent(v.join('='))]));
 export async function startSession(res, user) {
   const sid = crypto.randomBytes(32).toString('base64url');
-  await redis('SET', 'sess:' + hmac(sid), `${user.email}|${user.created || ''}`, 'EX', DAYS * 86400);
+  await redis('SET', 'sess:' + hmac(sid), `${uid(user)}|${user.created || ''}`, 'EX', DAYS * 86400);
   res.setHeader('Set-Cookie', `${COOKIE}=${sid}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${DAYS * 86400}`);
+}
+export async function refreshSession(req, res) {
+  const sid = cookieOf(req)[COOKIE];
+  if (!sid || sid.length > 100) return;
+  if (await redis('EXPIRE', 'sess:' + hmac(sid), DAYS * 86400)) res.setHeader('Set-Cookie', `${COOKIE}=${sid}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${DAYS * 86400}`);
 }
 export async function endSession(req, res) {
   const sid = cookieOf(req)[COOKIE];
@@ -125,13 +138,34 @@ export async function currentUser(req) {
   const user = await getJSON('user:' + email);
   return user && (created === undefined || created === (user.created || '')) ? user : null;
 }
-export const saveUser = u => setJSON('user:' + u.email, u);
+// Accounts are keyed by phone number (u.key); accounts made before phone login are keyed by email.
+export const uid = u => u.key || u.email;
+export const contactEmail = u => u.email || u.mentor?.uniEmail || '';
+export const saveUser = u => setJSON('user:' + uid(u), u);
 // What the page may see. Never the password hash.
 export const publicUser = u => u && ({
-  email: u.email, name: u.name, profile: u.profile || {},
+  key: uid(u), phone: u.phone || '', email: u.email || '', name: u.name, profile: u.profile || {}, plan: u.plan || null,
   mentor: { uniEmail: u.mentor?.uniEmail || '', uniVerified: !!u.mentor?.uniVerified, status: u.mentor?.status || 'none',
     submittedAt: u.mentor?.submittedAt || null, draft: u.mentor?.draft || null, profile: u.mentor?.profile || null },
 });
+
+/* ---------- text messages (SOLAPI) ---------- */
+export const smsConfigured = () => !!(process.env.SOLAPI_API_KEY && process.env.SOLAPI_API_SECRET && process.env.SMS_FROM);
+export async function sendSms(to, text) {
+  const date = new Date().toISOString(), salt = crypto.randomBytes(16).toString('hex');
+  const sig = crypto.createHmac('sha256', process.env.SOLAPI_API_SECRET).update(date + salt).digest('hex');
+  const r = await fetch(process.env.SMS_API_URL || 'https://api.solapi.com/messages/v4/send', {
+    method: 'POST',
+    headers: { Authorization: `HMAC-SHA256 apiKey=${process.env.SOLAPI_API_KEY}, date=${date}, salt=${salt}, signature=${sig}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: { to, from: normPhone(process.env.SMS_FROM) || String(process.env.SMS_FROM).replace(/\D/g, ''), text } }),
+  });
+  const j = await r.json().catch(() => ({}));
+  // SOLAPI answers 200 with statusCode 2000 when the message is accepted
+  if (!r.ok || (j.statusCode && !String(j.statusCode).startsWith('2'))) {
+    console.error('sms failed', r.status, JSON.stringify(j).slice(0, 500));
+    throw Object.assign(new Error('sms failed'), { code: 'sms_failed' });
+  }
+}
 
 /* ---------- email ---------- */
 let smtp = null;
@@ -214,9 +248,10 @@ export async function decideMentor(user, d, reason = '') {
   m.reason = reason || '';
   user.mentor = m;
   await saveUser(user);
-  await expireProof(user.email);
+  await expireProof(uid(user));
   const [subject, title, text] = DECISION[d];
-  await sendMail({ to: user.email, subject, html: mailLayout(title, `<p>${text}</p>${reason ? `<p style="background:#F2F4F6;padding:12px;border-radius:8px">운영팀 메모: ${escHtml(reason)}</p>` : ''}`) }).catch(() => {});
+  if (user.phone && smsConfigured()) await sendSms(user.phone, `[교환가자] ${title}. ${reason ? '메모: ' + reason.slice(0, 40) + ' ' : ''}자세한 내용은 앱에서 확인하세요.`).catch(() => {});
+  if (contactEmail(user)) await sendMail({ to: contactEmail(user), subject, html: mailLayout(title, `<p>${text}</p>${reason ? `<p style="background:#F2F4F6;padding:12px;border-radius:8px">운영팀 메모: ${escHtml(reason)}</p>` : ''}`) }).catch(() => {});
 }
 
 /* ---------- admin: one address, email code sign-in, a separate short cookie that only /api/admin receives ---------- */

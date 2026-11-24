@@ -505,6 +505,8 @@ p{margin:0}
 #view.surf .has-chatbar~.cta{background:var(--surface)}
 .phone:has(.chatbar) .toast{bottom:calc(170px + var(--sab))}
 .empty-state{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:36px 16px;margin-top:12px;border-radius:20px;background:var(--card);color:var(--ink-3)}
+.phrow{display:flex;gap:8px;align-items:center}.phrow .input{flex:1;min-width:0}.phrow .btn{flex:none}
+.empty-acts{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;width:100%;margin-top:10px}.empty-acts .btn{white-space:nowrap;flex:0 0 auto;width:auto}
 .empty-state b{color:var(--ink);font-size:15px}.empty-state small{font-size:13px;line-height:1.5}
 .mintro{font-size:14px;line-height:1.6;color:var(--ink-2);margin-top:4px}
 .dids{display:flex;flex-direction:column;gap:12px}.did{display:flex;gap:10px;align-items:flex-start}.did .ic{color:var(--primary);margin-top:2px}
@@ -1339,7 +1341,7 @@ let STATUS=null;
 const linkState=u=>STATUS&&STATUS.links[u]?STATUS.links[u].s:'';
 const checkedDay=()=>STATUS?new Date(STATUS.checkedAt):null;
 /* ---------------- accounts: real sign-up and login through /api (see api/_lib.js) ---------------- */
-const AUTH={ready:false,configured:false,user:null};
+const AUTH={ready:false,configured:false,sms:false,user:null};
 async function api(path,data){
   const opt=data===undefined?{credentials:'same-origin'}:{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)};
   let r; try{r=await fetch('/api/'+path,opt)}catch(e){throw Object.assign(new Error('network'),{code:'network'})}
@@ -1354,7 +1356,7 @@ const ERR={bad_email:'Enter a valid email address.',wait_a_minute:'Please wait a
   invalid_login:'The email or password is not right.',login_required:'Please log in first.',not_university_email:'Use a university email ending in .ac.kr or .edu.',
   verify_university_email_first:'Verify your university email first.',file_too_large:'The file must be 3 MB or smaller.',pdf_jpg_png_only:'Upload a PDF, JPG or PNG file.',
   review_not_approved:'You can publish after the review is approved.',profile_incomplete:'Fill in your school, major, what you offer, the session length, number of sessions and format.',bad_rating:'Choose a star rating.',review_too_short:'Write at least 10 characters.',own_profile:'You cannot review your own profile.',unknown_mentor:'This mentor could not be found.',
-  already_approved:'Your review is already approved.',bad_sessions:'Sessions must be a whole number from 1 to 20.',not_configured:'Accounts are not connected yet. You can keep browsing without one.',network:'Could not reach the server. Check your connection.',mail_failed:'We could not send the email. Please try again in a moment.'};
+  already_approved:'Your review is already approved.',bad_sessions:'Sessions must be a whole number from 1 to 20.',not_configured:'Accounts are not connected yet. You can keep browsing without one.',network:'Could not reach the server. Check your connection.',bad_phone:'Enter a mobile number like 010-1234-5678.',sms_failed:'We could not send the text message. Please try again in a moment.',sms_not_configured:'Text message sign-in is being set up.',mail_failed:'We could not send the email. Please try again in a moment.'};
 Object.assign(KO,{
 // accounts
 "Sign in":"로그인","Accounts are not connected yet. You can keep browsing without one.":"아직 계정 기능이 연결되지 않았어요. 로그인 없이 계속 둘러볼 수 있어요.","Continue without an account":"로그인 없이 둘러보기",
@@ -1392,6 +1394,14 @@ Object.assign(KO,{
 });
 T_('Draft saved {D}','{D} 임시저장됨');
 Object.assign(KO,{
+"Start with your":"휴대폰 번호로","phone number":"시작해요","Phone number":"휴대폰 번호","Get code":"인증번호 받기","Confirm":"확인","Change":"변경","Get started":"시작하기",
+"We text you a 6-digit code. You only do this once; after that you stay signed in on this phone.":"6자리 인증번호를 문자로 보내드려요. 처음 한 번만 인증하면 이 휴대폰에서는 계속 로그인돼요.",
+"6-digit code from the text message":"문자로 받은 6자리 인증번호","Send the code again":"인증번호 다시 받기","Your number is verified. Just one more step.":"번호 인증이 끝났어요. 한 단계만 더 하면 돼요.",
+"Almost done":"거의 다 됐어요","We texted you a code":"문자로 인증번호를 보냈어요",
+"Text message sign-in is being set up. You can keep browsing without an account.":"문자 인증을 준비하고 있어요. 지금은 로그인 없이 둘러볼 수 있어요.",
+"Enter a mobile number like 010-1234-5678.":"010-1234-5678 같은 휴대폰 번호를 입력하세요.","We could not send the text message. Please try again in a moment.":"문자를 보내지 못했어요. 잠시 후 다시 시도해 주세요.","Text message sign-in is being set up.":"문자 인증을 준비하고 있어요.",
+});
+Object.assign(KO,{
 "Chats":"채팅","Booked":"확정","Chat started":"채팅을 시작했어요","Group":"그룹","Mentor":"멘토","All":"전체","Communities":"커뮤니티","Screen index":"화면 목록","Mentor booking":"멘토 프로필",
 "No chats yet":"아직 채팅이 없어요","Join a community or message a mentor. Every chat shows up here.":"커뮤니티에 가입하거나 멘토에게 메시지를 보내 보세요. 모든 채팅이 여기에 모여요.",
 "Find a community":"커뮤니티 찾기","See mentors":"멘토 보기","Join a community to open its group chat.":"커뮤니티에 가입하면 그룹 채팅이 열려요.","Open a mentor’s profile and start a chat.":"멘토 프로필을 열고 채팅을 시작해 보세요.",
@@ -1421,7 +1431,7 @@ T_('{N} reviews','후기 {N}개');
 
 T_('e.g. {X}','예: {X}');
 const errMsg=e=>ERR[e.code]||ERR.network;
-async function loadMe(){try{const j=await api('me');AUTH.configured=j.configured!==false;AUTH.user=j.user||null}catch(e){AUTH.configured=false}AUTH.ready=true}
+async function loadMe(){try{const j=await api('me');AUTH.configured=j.configured!==false;AUTH.sms=!!j.sms;AUTH.user=j.user||null}catch(e){AUTH.configured=false}AUTH.ready=true}
 async function loadData(){
   const me=loadMe();
   const st=fetch('data/status.json',{cache:'no-cache'}).then(r=>r.json()).then(j=>{STATUS=j}).catch(()=>{});
@@ -1429,6 +1439,10 @@ async function loadData(){
     const r=await fetch('data/universities.json',{cache:'no-cache'}); DATA=await r.json(); COUNTRIES=DATA.countries; buildNameKo(COUNTRIES);
   }catch(e){ DATA={unis:[],kr:[],countries:COUNTRIES,error:true}; }
   await st; await me;
+  if(['boot','lang','splash','login'].includes(S.screen)){
+    if(AUTH.user){ const had=restoreUser(AUTH.user); NAV.replaceNext=true; S.screen=had?'app':'profile'; S.tab='home'; }
+    else if(S.screen==='boot'){ hintIn(false); NAV.replaceNext=true; S.screen='splash' }
+  }
   render(true);
 }
 
@@ -2157,7 +2171,7 @@ function perkGroups(){
 }
 /* ---------------- state ---------------- */
 const S={
-  screen:'lang', tab:'home', detail:null, filter:'All',
+  screen:(()=>{try{return localStorage.getItem('gg_in')?'boot':'lang'}catch(e){return 'lang'}})(), tab:'home', detail:null, filter:'All',
   email:'sungkyunkwan@g.skku.edu',
   profile:{univ:'Sungkyunkwan University',major:'Business Administration',year:'3rd year'},
   homeQ:'',
@@ -2171,7 +2185,7 @@ const S={
   joined:new Set(), cv:null, cq:'', cposts:{}, cinfo:{}, cchat:{}, jstatus:{}, joining:null,
   reviews:{}, rv:{key:null,open:false,rating:0,text:'',busy:false,err:''}, chatC:null, chf:'all', doc:null,
   apply:{step:0,email:'',file:'',sent:false,busy:false,err:''},
-  auth:{mode:'login',step:0,email:'',busy:false,err:''},
+  auth:{step:0,phone:'',ticket:'',busy:false,err:''},
 };
 const host=()=>S.host;
 const prog=()=>PROGRAMS.find(p=>p.id===S.progId);
@@ -2241,28 +2255,25 @@ const SCREENS={
 
   login(){const A=S.auth, err=A.err?`<p class="aerr" role="alert">${esc(A.err)}</p>`:'';
     const guest=`<button class="linkbtn guestbtn" data-go="profile">Continue without an account</button>`;
-    if(AUTH.ready&&!AUTH.configured) return `${bar('')}<div class="scroll pad"><h2 class="ob-title">Sign in</h2>
-      <div class="pnote" style="margin-top:16px">${ic('flag',14)}<span>Accounts are not connected yet. You can keep browsing without one.</span></div></div>
+    if(AUTH.ready&&(!AUTH.configured||!AUTH.sms)) return `${bar('')}<div class="scroll pad"><h2 class="ob-title">Start with your<br>phone number</h2>
+      <div class="pnote" style="margin-top:16px">${ic('flag',14)}<span>Text message sign-in is being set up. You can keep browsing without an account.</span></div></div>
       <div class="cta"><button class="btn" data-go="profile">Continue without an account</button></div>`;
-    const tabs=`<div class="seg" style="--n:2;margin:6px 0 20px" role="tablist"><button class="${A.mode!=='signup'?'on':''}" data-act="authMode" data-v="login">Log in</button><button class="${A.mode==='signup'?'on':''}" data-act="authMode" data-v="signup">Sign up</button></div>`;
-    const email=(lock)=>`<div class="field"><label for="auEmail">Email</label><input class="input" id="auEmail" type="email" autocomplete="email" value="${esc(A.email)}" ${lock?'readonly':''}></div>`;
-    const pw=(id,label,auto)=>`<div class="field"><label for="${id}">${label}</label><input class="input" id="${id}" type="password" autocomplete="${auto}" maxlength="72"></div>`;
-    const code=`<div class="field"><label for="auCode">6-digit code from your email</label><input class="input num" id="auCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*"></div>`;
+    const phone=lock=>`<div class="field"><label for="auPhone">Phone number</label><div class="phrow"><input class="input" id="auPhone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="010-1234-5678" maxlength="16" value="${esc(fmtPhone(A.phone))}" ${lock?'readonly':''}>${lock?'<button class="btn sm ghost" data-act="authEdit">Change</button>':''}</div></div>`;
     let body='', cta='';
-    if(A.mode==='login'){ body=email()+pw('auPw','Password','current-password')+`<button class="linkbtn" data-act="authMode" data-v="reset">Forgot your password?</button>`; cta=`<button class="btn" data-act="authLogin" ${A.busy?'disabled':''}>Log in</button>`; }
-    else if(A.mode==='signup'&&A.step===0){ body=email()+`<p class="hint">We send a 6-digit code to confirm the address. It expires in 10 minutes.</p>`; cta=`<button class="btn" data-act="authSend" ${A.busy?'disabled':''}>Send code</button>`; }
-    else if(A.mode==='signup'){ body=email(true)+code+`<div class="field"><label for="auName">Name</label><input class="input" id="auName" autocomplete="name" maxlength="40"></div>`+pw('auPw','Password','new-password')+`<p class="hint">8–72 characters with at least one letter and one number.</p>
-        <label class="agree"><input type="checkbox" id="auAgree"><span>I am 14 or older and agree to the <a href="/terms" data-doc="terms">Terms of Service</a> and <a href="/privacy" data-doc="privacy">Privacy Policy</a>, including storage on servers outside Korea.</span></label>
-        <button class="linkbtn" data-act="authSend">Send the code again</button>`; cta=`<button class="btn" data-act="authVerify" ${A.busy?'disabled':''}>Create account</button>`; }
-    else if(A.step===0){ body=`<p class="ob-sub" style="margin-bottom:12px">Enter your account email. We send a code to reset your password.</p>`+email(); cta=`<button class="btn" data-act="authSend" ${A.busy?'disabled':''}>Send code</button>`; }
-    else { body=email(true)+code+pw('auPw','New password','new-password')+`<p class="hint">8–72 characters with at least one letter and one number.</p>`; cta=`<button class="btn" data-act="authVerify" ${A.busy?'disabled':''}>Set new password</button>`; }
+    if(A.step===0){ body=phone()+`<p class="hint">We text you a 6-digit code. You only do this once; after that you stay signed in on this phone.</p>`; cta=`<button class="btn" data-act="authSend" ${A.busy?'disabled':''}>Get code</button>`; }
+    else if(A.step===1){ body=phone(true)+`<div class="field"><label for="auCode">6-digit code from the text message</label><input class="input num" id="auCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*"></div>
+        <button class="linkbtn" data-act="authSend">Send the code again</button>`; cta=`<button class="btn" data-act="authVerify" ${A.busy?'disabled':''}>Confirm</button>`; }
+    else { body=`<p class="ob-sub" style="margin:8px 0 18px">Your number is verified. Just one more step.</p><div class="field"><label for="auName">Name</label><input class="input" id="auName" autocomplete="name" maxlength="40" value="${esc(A.name||'')}"></div>
+        <label class="agree"><input type="checkbox" id="auAgree"><span>I am 14 or older and agree to the <a href="/terms" data-doc="terms">Terms of Service</a> and <a href="/privacy" data-doc="privacy">Privacy Policy</a>, including storage on servers outside Korea.</span></label>`;
+      cta=`<button class="btn" data-act="authSignup" ${A.busy?'disabled':''}>Get started</button>`; }
     return `${bar('')}
     <div class="scroll pad">
-      <h2 class="ob-title">${A.mode==='reset'?'Reset your password':A.mode==='signup'?'Create your account':'Welcome back'}</h2>
-      ${A.mode==='reset'?'<div style="height:16px"></div>':tabs}
-      ${body}${err}${guest}
+      <h2 class="ob-title">${A.step===2?'Almost done':'Start with your<br>phone number'}</h2>
+      ${body}${err}${A.step===2?'':guest}
     </div>
     <div class="cta">${cta}</div>`},
+
+  boot(){return `<div class="splash"><div class="appicon">${ic('plane',56,1.8)}</div></div>`},
 
   profile(){const P=S.profile;return `${bar('')}
     <div class="scroll pad">
@@ -2554,7 +2565,7 @@ function chatsTab(){
     <div class="chips" style="margin-bottom:6px">${[['all','All'],['c','Communities'],['m','Mentors']].map(([v,l])=>`<button class="chip sm${S.chf===v?' on':''}" data-act="chf" data-v="${v}">${l}</button>`).join('')}</div>
     ${list.length?list.map(x=>`<button class="srow chatrow" data-act="openConv" data-v="${esc(x.v)}">${x.ava}<span class="t"><span class="ctitle"><b data-notr>${esc(x.title)}</b><span class="pill ${x.kind==='c'?'cat':'ok'}">${x.kind==='c'?'Group':x.booked?'Booked':'Mentor'}</span></span>${x.school?`<small class="cs" data-notr>${esc(x.school)}</small>`:''}${x.sub?`<small data-notr>${esc(x.sub.slice(0,60))}</small>`:`<small>${x.empty}</small>`}</span><time class="ct">${x.time}</time></button>`).join('')
       :`<div class="empty-state">${ic('chat',28)}<b>No chats yet</b><small>${S.chf==='m'?'Open a mentor’s profile and start a chat.':S.chf==='c'?'Join a community to open its group chat.':'Join a community or message a mentor. Every chat shows up here.'}</small>
-        <div class="row" style="gap:8px;margin-top:8px">${S.chf!=='m'?'<button class="btn sm ghost" data-act="tab" data-v="community">Find a community</button>':''}${S.chf!=='c'?'<button class="btn sm ghost" data-act="tab" data-v="mentor">See mentors</button>':''}</div></div>`}
+        <div class="empty-acts">${S.chf!=='m'?'<button class="btn sm ghost" data-act="tab" data-v="community">Find a community</button>':''}${S.chf!=='c'?'<button class="btn sm ghost" data-act="tab" data-v="mentor">See mentors</button>':''}</div></div>`}
   </div>`}
 function mentorTab(){
   const h=host(), list=mentorsFor().sort((a,b)=>mScore(b)-mScore(a));
@@ -2597,7 +2608,7 @@ function meTab(){
   const h=host(),p=prog(),P=S.profile;
   return `${mainBar('Me')}
   <div class="scroll pad">
-    ${AUTH.user?`<div class="me"><span class="ava">${esc((AUTH.user.name||'?')[0])}</span><span class="t"><b data-notr>${esc(AUTH.user.name)}</b><small><span data-notr>${esc(AUTH.user.email)}</span><br>${esc(P.univ||'Home university not set')} · ${esc(P.major)} · ${esc(P.year)}</small></span></div>`
+    ${AUTH.user?`<div class="me"><span class="ava">${esc((AUTH.user.name||'?')[0])}</span><span class="t"><b data-notr>${esc(AUTH.user.name)}</b><small><span data-notr>${esc(AUTH.user.phone?fmtPhone(AUTH.user.phone):AUTH.user.email)}</span><br>${esc(P.univ||'Home university not set')} · ${esc(P.major)} · ${esc(P.year)}</small></span></div>`
       :`<div class="me"><span class="ava">${ic('user',22)}</span><span class="t"><b>Browsing as a guest</b><small>Log in to apply as a mentor and keep your account.</small></span><button class="btn sm" data-go="login">Log in</button></div>`}
     <button class="apply-card" data-go="mentorApply"><span class="t"><b>${mStat()==='published'?'You’re a verified mentor':'Become a mentor after you return'}</b><small>${mStat()==='published'?'Manage your mentor profile':mStat()==='pending'?'In review · up to 24 hours':'Verify with your university email and proof of completion'}</small></span>${ic(mStat()==='published'?'shield':'chev',22)}</button>
     <div class="menu">
@@ -2687,7 +2698,16 @@ function sendMsg(){
 const formSnap=()=>{const F={}; view.querySelectorAll('input[id],textarea[id],select[id]').forEach(el=>{F[el.id]=el.type==='checkbox'?el.checked:el.type==='file'?null:el.value}); return F};
 async function authRun(fn){const F=formSnap(); S.auth.busy=true; S.auth.err=''; render(true); try{await fn(F)}catch(e){S.auth.err=trText(errMsg(e))+(e.left?` (${e.left})`:'')} S.auth.busy=false; if(S.screen==='login') render(true)}
 async function apRun(fn,where='top'){const F=formSnap(); S.apply.busy=true; S.apply.err=''; S.apply.errAt=where; render(true); try{await fn(F)}catch(e){S.apply.err=trText(errMsg(e))+(e.left?` (${e.left})`:'')} S.apply.busy=false; render(true)}
-function signedIn(u){AUTH.user=u; S.auth={mode:'login',step:0,email:'',busy:false,err:''}; const p=u.profile||{}; if(p.home) S.profile.univ=p.home; if(p.major) S.profile.major=p.major; if(p.year) S.profile.year=p.year; toast('Signed in'); go('profile')}
+const fmtPhone=v=>{const d=String(v||'').replace(/\D/g,''); return /^01\d{8,9}$/.test(d)?d.replace(/^(\d{3})(\d{3,4})(\d{4})$/,'$1-$2-$3'):String(v||'')};
+// bring back what the student set up last time: home university, host, program, dates and finished tasks
+function restoreUser(u){const p=u.profile||{}; if(p.home) S.profile.univ=p.home; if(p.major) S.profile.major=p.major; if(p.year) S.profile.year=p.year;
+  const pl=u.plan; if(!pl||!pl.host) return false;
+  const row=(DATA&&DATA.unis.find(x=>x[0]===pl.host[0]&&x[1]===pl.host[1]))||pl.host;
+  S.host=makeHost(row); S.pick=S.host; S.progId=S.pickProg=pl.progId||'exS'; S.depOverride=pl.dep||null; S.retOverride=pl.ret||null; S.done=new Set(pl.done||[]); return true}
+let planT; function savePlan(){ if(!AUTH.user) return; clearTimeout(planT); planT=setTimeout(()=>{const h=host();
+  api('me',{plan:{host:[h.name,h.cc,h.url],progId:S.progId,dep:S.depOverride,ret:S.retOverride,done:[...S.done]}}).then(j=>{AUTH.user=j.user}).catch(()=>{})},600)}
+const hintIn=v=>{try{v?localStorage.setItem('gg_in','1'):localStorage.removeItem('gg_in')}catch(e){}};
+function signedIn(u){AUTH.user=u; hintIn(true); S.auth={step:0,phone:'',ticket:'',busy:false,err:''}; const had=restoreUser(u); toast('Signed in'); NAV.replaceNext=true; if(had){S.screen='app';S.tab='home';S.detail=null;render()} else go('profile')}
 // read the mentor form: preset choice or the student's own value
 function mentorForm(F){const g=id=>String(F[id]||'').trim(), pickV=id=>F[id+'Sel']==='__custom'?g(id):String(F[id+'Sel']||'');
   const raw=pickV('mfN'), n=Number(raw);
@@ -2748,7 +2768,7 @@ function navSync(){
   const key=JSON.stringify(snap); if(key===NAV.key) return false;
   let kind='push';
   if(NAV.pop){NAV.pop=false; kind='pop'}
-  else if(!NAV.key||NAV.prev==='building'||NAV.prev==='lang'&&S.screen==='splash'){ history.replaceState({gg:snap,d:NAV.d},'') }
+  else if(!NAV.key||NAV.replaceNext||NAV.prev==='building'||NAV.prev==='boot'||NAV.prev==='lang'&&S.screen==='splash'){ NAV.replaceNext=false; history.replaceState({gg:snap,d:NAV.d},'') }
   else { KEEP[NAV.key]=formSnap(); NAV.d++; history.pushState({gg:snap,d:NAV.d},'') }
   NAV.key=key; NAV.prev=S.screen; return kind;
 }
@@ -2818,12 +2838,12 @@ document.addEventListener('click',e=>{
     case 'pick': {const u=DATA.unis.find(x=>x[0]===v&&x[1]===a.dataset.cc); S.pick=makeHost(u); S.pickDep=null; S.pickRet=null; ($('#schoolList').innerHTML=schoolListHTML(),translate($('#schoolList'))); const b=view.querySelector('[data-act="toProgram"]'); b.disabled=false; b.textContent='Next: choose program'; break}
     case 'toProgram': if(S.pick){S.pickProg=(S.pick.name===host().name?S.progId:'exS'); go('program')} break;
     case 'pickProg': if(S.pickProg!==v){S.pickProg=v; S.pickDep=null; S.pickRet=null} render(true); break;
-    case 'build': if(AUTH.user) api('me',{profile:{home:S.profile.univ,major:S.profile.major,year:S.profile.year}}).then(j=>{AUTH.user=j.user}).catch(()=>{}); S.host=S.pick||S.host; S.progId=S.pickProg; S.depOverride=(S.pickDep&&S.pickDep!==depOf(prog(),S.host))?S.pickDep:null; S.retOverride=(S.pickRet&&S.pickRet>iso(depDate()))?S.pickRet:null; S.cv=null; S.filter='All'; resetDone(); S.screen='building'; render(); setTimeout(()=>{S.screen='app';S.tab='home';render()},1100); break;
+    case 'build': if(AUTH.user) api('me',{profile:{home:S.profile.univ,major:S.profile.major,year:S.profile.year}}).then(j=>{AUTH.user=j.user}).catch(()=>{}); S.host=S.pick||S.host; S.progId=S.pickProg; S.depOverride=(S.pickDep&&S.pickDep!==depOf(prog(),S.host))?S.pickDep:null; S.retOverride=(S.pickRet&&S.pickRet>iso(depDate()))?S.pickRet:null; S.cv=null; S.filter='All'; resetDone(); savePlan(); S.screen='building'; render(); setTimeout(()=>{S.screen='app';S.tab='home';render()},1100); break;
     case 'tab': S.tab=v; S.screen='app'; S.detail=null; closeSheet(); render(); break;
     case 'filter': S.filter=v; render(true); break;
     case 'showDone': S.showDone=!S.showDone; render(true); break;
     case 'open': S.detail=v; go('detail'); break;
-    case 'toggleDone': {const was=S.done.has(v); was?S.done.delete(v):S.done.add(v); render(true); if(!was) toast('Marked as done'); break}
+    case 'toggleDone': {const was=S.done.has(v); was?S.done.delete(v):S.done.add(v); savePlan(); render(true); if(!was) toast('Marked as done'); break}
     case 'remind': S.remind.has(v)?S.remind.delete(v):S.remind.add(v); render(true); toast(S.remind.has(v)?'Reminders on':'Reminders off'); break;
     case 'flag': toast('Thanks! Our team will check and update it'); break;
     case 'toast': toast(v); break;
@@ -2850,16 +2870,16 @@ document.addEventListener('click',e=>{
       if(!r2||r2<=v2){toast('Return date must be after departure');return}
       const before=items().map(i=>i.title).join();
       S.depOverride=v2===depOf(prog(),host())?null:v2; S.retOverride=r2===iso(addDays(D(v2),STAY[S.progId]))?null:r2;
-      closeSheet(); render(true);
+      closeSheet(); savePlan(); render(true);
       toast(items().map(i=>i.title).join()!==before?`Stay: ${stayShort(stayDays())}. Visa steps updated`:`Stay: ${stayShort(stayDays())}. Deadlines updated`); break}
-    case 'resetDep': S.depOverride=null; S.retOverride=null; closeSheet(); render(true); toast('Using the suggested travel dates'); break;
+    case 'resetDep': S.depOverride=null; S.retOverride=null; savePlan(); closeSheet(); render(true); toast('Using the suggested travel dates'); break;
     case 'bcat': S.bcat=S.bcat===v?'All':v; render(true); break;
     case 'changeProg': S.pick=host(); S.region=regGroup(host().region); go('school'); break;
-    case 'authMode': S.auth={mode:v,step:0,email:S.auth.email,busy:false,err:''}; render(); break;
-    case 'authSend': authRun(async F=>{const email=F.auEmail||S.auth.email; S.auth.email=email.trim(); await api('auth/request-code',{email:S.auth.email,purpose:S.auth.mode==='reset'?'reset':'signup'}); S.auth.step=1; toast('We sent a code to your email')}); break;
-    case 'authVerify': authRun(async F=>{const g=id=>F[id]||''; const j=await api('auth/verify',{email:S.auth.email,code:String(g('auCode')).trim(),password:g('auPw'),name:g('auName'),agree:!!F.auAgree,purpose:S.auth.mode==='reset'?'reset':'signup'}); signedIn(j.user)}); break;
-    case 'authLogin': authRun(async F=>{const g=id=>F[id]||''; S.auth.email=g('auEmail').trim(); const j=await api('auth/login',{email:S.auth.email,password:g('auPw')}); signedIn(j.user)}); break;
-    case 'logout': api('auth/logout',{}).catch(()=>{}).then(()=>{AUTH.user=null; S.auth={mode:'login',step:0,email:'',busy:false,err:''}; render(); toast('Logged out')}); break;
+    case 'authEdit': S.auth.step=0; S.auth.err=''; render(); setTimeout(()=>{const x=$('#auPhone'); x&&x.focus()},30); break;
+    case 'authSend': authRun(async F=>{if(F.auPhone!==undefined) S.auth.phone=String(F.auPhone).replace(/\D/g,''); if(!/^01\d{8,9}$/.test(S.auth.phone)) throw {code:'bad_phone'}; await api('auth/phone-code',{phone:S.auth.phone}); S.auth.step=1; toast('We texted you a code')}); break;
+    case 'authVerify': authRun(async F=>{const j=await api('auth/phone-verify',{phone:S.auth.phone,code:String(F.auCode||'').trim()}); if(j.signup){S.auth.ticket=j.ticket; S.auth.step=2} else signedIn(j.user)}); break;
+    case 'authSignup': authRun(async F=>{S.auth.name=String(F.auName||''); const j=await api('auth/phone-signup',{ticket:S.auth.ticket,name:S.auth.name,agree:!!F.auAgree}); signedIn(j.user)}); break;
+    case 'logout': api('auth/logout',{}).catch(()=>{}).then(()=>{AUTH.user=null; hintIn(false); S.auth={step:0,phone:'',ticket:'',busy:false,err:''}; render(); toast('Logged out')}); break;
     case 'apSend': apRun(async F=>{const em=F.apEmail; if(em!==undefined) S.apply.email=em.trim(); await api('mentor/uni-code',{uniEmail:S.apply.email}); S.apply.sent=true; toast('We sent a code to your university email')}); break;
     case 'apVerify': apRun(async F=>{const j=await api('mentor/uni-verify',{code:String(F.apCode||'').trim()}); AUTH.user=j.user; S.apply.sent=false; toast('University email verified')}); break;
     case 'apUpload': apRun(async()=>{const f=S.apply.fileObj; if(!f) return; if(f.size>3*1024*1024) throw {code:'file_too_large'};

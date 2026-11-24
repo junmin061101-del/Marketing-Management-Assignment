@@ -1,4 +1,4 @@
-// GET ?e=<email> → the proof file a mentor applicant uploaded, for the admin only.
+// GET ?e=<account key> → the proof file a mentor applicant uploaded, for the admin only.
 // Only PDF, JPEG or PNG (checked by file signature on upload) is ever stored or served.
 import { send, configured, isAdmin, normEmail, loadProof } from '../../api/_lib.js';
 
