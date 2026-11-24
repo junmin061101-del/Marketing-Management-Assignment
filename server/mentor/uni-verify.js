@@ -1,5 +1,5 @@
 // POST {code} → marks the university email as verified.
-import { guard, body, send, currentUser, useCode, saveUser, publicUser } from '../_lib.js';
+import { guard, body, send, currentUser, useCode, saveUser, publicUser } from '../../api/_lib.js';
 
 export default async function handler(req, res) {
   if (!guard(req, res, ['POST'])) return;

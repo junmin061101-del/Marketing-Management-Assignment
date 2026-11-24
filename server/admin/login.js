@@ -1,6 +1,6 @@
 // POST {email} → emails a 6-digit sign-in code, but only when the address is ADMIN_EMAIL.
 // The answer is the same either way, so nobody can find out which address is the admin.
-import { guard, body, send, normEmail, adminEmail, issueCode, sendMail, codeMail, allow, clientIp, redis } from '../_lib.js';
+import { guard, body, send, normEmail, adminEmail, issueCode, sendMail, codeMail, allow, clientIp, redis } from '../../api/_lib.js';
 
 export default async function handler(req, res) {
   if (!guard(req, res, ['POST'])) return;

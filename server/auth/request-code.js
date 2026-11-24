@@ -1,5 +1,5 @@
 // POST {email, purpose: 'signup'|'reset'} → emails a 6-digit code. Always answers the same way so it does not reveal who has an account.
-import { guard, body, send, normEmail, validEmail, allow, clientIp, getJSON, issueCode, sendMail, codeMail, mailLayout, redis } from '../_lib.js';
+import { guard, body, send, normEmail, validEmail, allow, clientIp, getJSON, issueCode, sendMail, codeMail, mailLayout, redis } from '../../api/_lib.js';
 
 export default async function handler(req, res) {
   if (!guard(req, res, ['POST'])) return;

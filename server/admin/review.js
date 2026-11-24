@@ -1,6 +1,6 @@
 // GET ?e=&d=approve|reject&x=&s= → opened from the review email. The link is signed with APP_SECRET and expires,
 // so nobody can approve themselves by guessing a URL. The same decision can be made in /admin.
-import { send, configured, hmac, safeEqual, normEmail, getJSON, escHtml, decideMentor, adminLog } from '../_lib.js';
+import { send, configured, hmac, safeEqual, normEmail, getJSON, escHtml, decideMentor, adminLog } from '../../api/_lib.js';
 
 const page = (res, code, msg) => { res.statusCode = code; res.setHeader('Content-Type', 'text/html; charset=utf-8'); res.setHeader('Cache-Control', 'no-store');
   res.end(`<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>심사</title><body style="font-family:sans-serif;padding:32px"><p>${escHtml(msg)}</p></body>`); };

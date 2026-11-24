@@ -1,6 +1,6 @@
 // GET ?e=<email> → the proof file a mentor applicant uploaded, for the admin only.
 // Only PDF, JPEG or PNG (checked by file signature on upload) is ever stored or served.
-import { send, configured, isAdmin, normEmail, loadProof } from '../_lib.js';
+import { send, configured, isAdmin, normEmail, loadProof } from '../../api/_lib.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') return send(res, 405, { error: 'method_not_allowed' });

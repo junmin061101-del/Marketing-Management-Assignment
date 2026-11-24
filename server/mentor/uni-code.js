@@ -1,5 +1,5 @@
 // POST {uniEmail} → sends a code to the mentor's university email (.ac.kr / .edu).
-import { guard, body, send, currentUser, normEmail, validEmail, isUniEmail, allow, redis, issueCode, sendMail, codeMail } from '../_lib.js';
+import { guard, body, send, currentUser, normEmail, validEmail, isUniEmail, allow, redis, issueCode, sendMail, codeMail } from '../../api/_lib.js';
 
 export default async function handler(req, res) {
   if (!guard(req, res, ['POST'])) return;

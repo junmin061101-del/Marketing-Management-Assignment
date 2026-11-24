@@ -1,4 +1,4 @@
-import { guard, send, endAdmin } from '../_lib.js';
+import { guard, send, endAdmin } from '../../api/_lib.js';
 export default async function handler(req, res) {
   if (!guard(req, res, ['POST'])) return;
   await endAdmin(req, res);

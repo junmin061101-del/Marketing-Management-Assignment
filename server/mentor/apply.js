@@ -1,7 +1,7 @@
 // POST {file:{name, data(base64)}} → checks the proof of completion really is a PDF, JPG or PNG (by its bytes, not its name),
 // keeps it for the admin dashboard (deleted after 30 days), emails it to the operations team with signed
 // approve / reject links, and sets the status to "pending".
-import { guard, body, send, currentUser, saveUser, publicUser, allow, sendMail, mailLayout, escHtml, hmac, cleanText, saveProof } from '../_lib.js';
+import { guard, body, send, currentUser, saveUser, publicUser, allow, sendMail, mailLayout, escHtml, hmac, cleanText, saveProof } from '../../api/_lib.js';
 
 const MAX = 3 * 1024 * 1024; // Vercel functions accept about 4.5 MB per request; base64 adds a third
 const kind = buf => buf.subarray(0, 5).toString('latin1') === '%PDF-' ? ['pdf', 'application/pdf']

@@ -1,5 +1,5 @@
 // POST {email, code} → starts a 12-hour admin session (cookie only sent to /api/admin).
-import { guard, body, send, normEmail, adminEmail, useCode, startAdmin, allow, clientIp, adminLog } from '../_lib.js';
+import { guard, body, send, normEmail, adminEmail, useCode, startAdmin, allow, clientIp, adminLog } from '../../api/_lib.js';
 
 export default async function handler(req, res) {
   if (!guard(req, res, ['POST'])) return;

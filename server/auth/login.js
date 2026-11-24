@@ -1,5 +1,5 @@
 // POST {email, password}. 10 attempts per address per 15 minutes; the same error for a wrong email or password.
-import { guard, body, send, normEmail, allow, clientIp, getJSON, checkPassword, startSession, publicUser } from '../_lib.js';
+import { guard, body, send, normEmail, allow, clientIp, getJSON, checkPassword, startSession, publicUser } from '../../api/_lib.js';
 
 export default async function handler(req, res) {
   if (!guard(req, res, ['POST'])) return;

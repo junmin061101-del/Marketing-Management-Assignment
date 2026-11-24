@@ -1,5 +1,5 @@
 // POST {email, code, purpose, password, name?, agree?} → signup: creates the account; reset: sets a new password. Starts a session.
-import { guard, body, send, normEmail, validEmail, useCode, validPassword, hashPassword, getJSON, saveUser, startSession, publicUser, cleanText, allow, clientIp } from '../_lib.js';
+import { guard, body, send, normEmail, validEmail, useCode, validPassword, hashPassword, getJSON, saveUser, startSession, publicUser, cleanText, allow, clientIp } from '../../api/_lib.js';
 
 export default async function handler(req, res) {
   if (!guard(req, res, ['POST'])) return;

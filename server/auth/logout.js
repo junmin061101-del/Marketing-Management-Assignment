@@ -1,4 +1,4 @@
-import { guard, send, endSession } from '../_lib.js';
+import { guard, send, endSession } from '../../api/_lib.js';
 export default async function handler(req, res) {
   if (!guard(req, res, ['POST'])) return;
   await endSession(req, res);

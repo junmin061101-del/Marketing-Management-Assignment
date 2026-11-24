@@ -3,7 +3,7 @@
 //   revoke {email, reason?}             take back an approved mentor and their public profile
 //   delete_user {email, confirm}        account deletion request (privacy policy §5); confirm must repeat the email
 //   delete_review {mentor, email}       remove a review
-import { guard, body, send, isAdmin, normEmail, getJSON, redis, cleanText, decideMentor, deleteProof, adminLog, scanKeys } from '../_lib.js';
+import { guard, body, send, isAdmin, normEmail, getJSON, redis, cleanText, decideMentor, deleteProof, adminLog, scanKeys } from '../../api/_lib.js';
 
 export default async function handler(req, res) {
   if (!guard(req, res, ['POST'])) return;

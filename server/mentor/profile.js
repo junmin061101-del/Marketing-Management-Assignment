@@ -1,5 +1,5 @@
 // POST {action:'draft'|'publish', profile} → saves a draft any time; publishing needs an approved review.
-import { guard, body, send, currentUser, saveUser, publicUser, cleanText, redis, hmac } from '../_lib.js';
+import { guard, body, send, currentUser, saveUser, publicUser, cleanText, redis, hmac } from '../../api/_lib.js';
 
 function clean(p = {}) {
   const n = Number(p.sessions);

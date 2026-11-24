@@ -1,6 +1,6 @@
 // GET → everything the dashboard shows: counts, members, the review queue, reviews and the action log.
 // Password hashes, consent details and session data never leave the server.
-import { guard, send, isAdmin, redis, scanKeys } from '../_lib.js';
+import { guard, send, isAdmin, redis, scanKeys } from '../../api/_lib.js';
 
 const SAMPLE = { 'sample-yeon': 'Yeon L. (예시)', 'sample-woo': 'Woo J. (예시)', 'sample-seo': 'Seo H. (예시)' };
 async function mget(keys) {
