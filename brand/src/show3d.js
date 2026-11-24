@@ -1,4 +1,4 @@
-// Behind the phone mock-up: a few clay objects and a soft mint halo that drift with the pointer and scroll.
+// Behind the phone mock-up: a few clay objects and a soft blue halo that drift with the pointer and scroll.
 import * as THREE from 'three';
 import { C, environment, lights, paperPlane, stamp, ddayCube, toyGlobe, passport, pebble, capsule, loop, lowPower } from './objects.js';
 
@@ -12,11 +12,11 @@ export default function init(canvas, { reduced, dday }) {
   environment(renderer, scene); lights(scene);
   const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 80); camera.position.set(0, 0, 18);
 
-  // a glowing mint disc behind the phone
+  // a soft blue glow behind the phone
   const halo = new THREE.Mesh(new THREE.PlaneGeometry(14, 14), new THREE.ShaderMaterial({
     transparent: true, depthWrite: false, uniforms: { uT: { value: 0 } },
     vertexShader: 'varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }',
-    fragmentShader: 'uniform float uT; varying vec2 vUv; void main(){ float d=length(vUv-.5); float a=smoothstep(.5,.0,d)*(.55+.1*sin(uT*.8)); gl_FragColor=vec4(vec3(.078,.859,.729),a*.55); }',
+    fragmentShader: 'uniform float uT; varying vec2 vUv; void main(){ float d=length(vUv-.5); float a=smoothstep(.5,.0,d)*(.55+.1*sin(uT*.8)); gl_FragColor=vec4(vec3(.306,.525,.969),a*.55); }',
   }));
   halo.position.z = -6; scene.add(halo);
 
@@ -26,7 +26,7 @@ export default function init(canvas, { reduced, dday }) {
     { o: stamp(), at: [-.82, -.48, -1], s: .8 },
     { o: ddayCube(dday, document.documentElement.lang === 'en' ? 'DEPARTURE' : '출국'), at: [.78, -.5, 1.5], s: .8, cube: true },
     { o: passport(), at: [-.45, .95, -6], s: .7 },
-    { o: pebble(C.mint, .4), at: [.42, -.95, -4], s: 1 },
+    { o: pebble(C.blue, .4), at: [.42, -.95, -4], s: 1 },
     { o: capsule(C.soft), at: [.55, 1.0, -7], s: 1 },
   ];
   items.forEach((it, i) => { it.phase = i * 1.3; it.o.scale.setScalar(it.s); scene.add(it.o); });

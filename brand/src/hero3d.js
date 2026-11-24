@@ -1,4 +1,4 @@
-// Hero: a mint stage with rolling hills, drifting light motes and clay objects floating at different depths.
+// Hero: a soft blue-gray stage with rolling hills, drifting light motes and clay objects floating at different depths.
 // Pointer moves the camera a little (parallax); scrolling lifts the objects away.
 import * as THREE from 'three';
 import { C, environment, lights, paperPlane, passport, stamp, ddayCube, toyGlobe, pebble, capsule, loop, isDark, lowPower } from './objects.js';
@@ -15,8 +15,8 @@ export default function init(canvas, { reduced, dday }) {
   camera.position.set(0, 0.3, 17);
   const fog = new THREE.Fog(C.stage, 15, 34); scene.fog = fog;
 
-  /* hills: a wide displaced plane, mint gradient fading into the fog */
-  const hillU = { uTime: { value: 0 }, uA: { value: new THREE.Color(0xbfeee4) }, uB: { value: new THREE.Color(0xf4fbf9) }, uFog: { value: new THREE.Color(C.stage) }, uNear: { value: fog.near }, uFar: { value: fog.far } };
+  /* hills: a wide displaced plane, pale blue gradient fading into the fog */
+  const hillU = { uTime: { value: 0 }, uA: { value: new THREE.Color(0xcadafb) }, uB: { value: new THREE.Color(0xffffff) }, uFog: { value: new THREE.Color(C.stage) }, uNear: { value: fog.near }, uFar: { value: fog.far } };
   const hills = new THREE.Mesh(new THREE.PlaneGeometry(90, 40, low ? 90 : 180, low ? 40 : 80), new THREE.ShaderMaterial({
     uniforms: hillU, transparent: true,   // fogs itself (three's fog uniforms would override the dark-mode colour)
     vertexShader: `uniform float uTime; varying float vH; varying vec2 vUv; varying float vFogDepth;
@@ -53,10 +53,10 @@ export default function init(canvas, { reduced, dday }) {
     { o: stamp(), wide: [-.7, -.44, .4], tall: [-.55, -.6, -.5], s: .95, spin: [0, .35, 0] },
     { o: ddayCube(dday, document.documentElement.lang === 'en' ? 'DEPARTURE' : '출국'), wide: [.6, -.5, 1.6], tall: [.48, -.56, .6], s: 1, spin: [.1, .3, 0], cube: true },
     { o: toyGlobe(!low), wide: [.34, .6, -7], tall: [-.2, .74, -8], s: 1.2, spin: [0, .15, 0] },
-    { o: pebble(C.mint, .45), wide: [-.32, -.82, -3], tall: [.1, -.9, -3], s: 1, spin: [0, 0, 0] },
+    { o: pebble(C.blue, .45), wide: [-.32, -.82, -3], tall: [.1, -.9, -3], s: 1, spin: [0, 0, 0] },
     { o: capsule(C.soft), wide: [.9, .82, -9], tall: [.9, .3, -10], s: 1.2, spin: [.2, .2, .2] },
     { o: pebble(C.navy2, .32), wide: [-.9, .9, -8], tall: [-.9, .2, -9], s: 1, spin: [0, 0, 0] },
-    { o: capsule(C.mint), wide: [.05, -.95, 4], tall: [-.05, -.98, 3], s: .7, spin: [.3, .2, .4] },
+    { o: capsule(C.blue), wide: [.05, -.95, 4], tall: [-.05, -.98, 3], s: .7, spin: [.3, .2, .4] },
   ];
   items.forEach((it, i) => { it.phase = i * 1.7; it.o.scale.setScalar(it.s); scene.add(it.o); });
 
@@ -76,9 +76,9 @@ export default function init(canvas, { reduced, dday }) {
   }
   function colors() {
     const dark = isDark();
-    fog.color.set(dark ? 0x0b1a1c : C.stage); hillU.uFog.value.copy(fog.color);
-    hillU.uA.value.set(dark ? 0x0c2422 : 0xbfeee4); hillU.uB.value.set(dark ? 0x10302c : 0xf4fbf9);
-    motesU.uColor.value.set(dark ? 0x7ff0dc : 0xffffff);
+    fog.color.set(dark ? 0x0f1013 : C.stage); hillU.uFog.value.copy(fog.color);
+    hillU.uA.value.set(dark ? 0x0f1013 : 0xcadafb); hillU.uB.value.set(dark ? 0x1d2840 : 0xffffff);
+    motesU.uColor.value.set(dark ? 0x8db1fa : 0xffffff);
     if (reduced) run.once();
   }
 

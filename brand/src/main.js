@@ -168,7 +168,7 @@ const SCREENS = {
         <p class="lead">${L(`출국까지 <em class="num">${DEP_OFFSET}일</em> 남았어요`, `<em class="num">${DEP_OFFSET} days</em> until you fly`)}</p>
         <div class="trip"><span class="num">${dShort(depDate)} – ${dShort(retDate)} · ${L('4.6개월', '4.6 months')}</span><b>${L('날짜 변경', 'Change dates')}</b></div>
         <div class="prog"><div class="row"><span>${L('준비 현황', 'Prep progress')}</span><b class="num">${done} / ${TASKS.length}</b></div><div class="meter"><i style="width:${Math.round(done / TASKS.length * 100)}%"></i></div></div></section>
-      <div class="a-next"><span style="flex:1"><span class="lbl">${L('다음 할 일', 'UP NEXT')} · <span class="num">${dWeek(next.date)} · ${leftTxt(next.left)}</span></span><b>${L(next.ko, next.en)}</b></span>${ic('chev', 18)}</div>
+      <div class="a-next"><span style="flex:1"><span class="lbl" style="display:flex;justify-content:space-between"><span>${L('다음 할 일', 'Up next')}</span><span class="num${next.left <= 14 ? ' soon' : ''}">${dWeek(next.date)} · ${leftTxt(next.left)}</span></span><b>${L(next.ko, next.en)}</b></span>${ic('chev', 18)}</div>
       <div class="a-head"><h4>${L('체크리스트', 'Checklist')}</h4><span>${L('마감일 순', 'By deadline')}</span></div>
       <div class="a-list">${TASKS.filter(t => !t.done).slice(0, 4).map(task).join('')}</div></div>`;
   },
@@ -191,7 +191,7 @@ const SCREENS = {
   community() {
     return bar(L('커뮤니티', 'Community')) + `<div class="app-body">
       <div class="a-row" style="box-shadow:inset 0 0 0 1px var(--line)">${ic('search', 18)}<span class="t" style="color:var(--ink-3);font-size:13px">${L('파견교 한인 학생 커뮤니티 찾기', 'Find your university’s Korean student community')}</span></div>
-      <div class="a-card"><div class="ctop"><span class="mono" style="background:var(--surface);color:var(--navy)">UW</span><span><b>University of Washington</b><small>${L('한인 학생 커뮤니티 · 같은 학교로 가는 학생들', 'Korean student community · students going there')}</small></span></div>
+      <div class="a-card"><div class="ctop"><span class="mono" style="background:var(--surface);color:var(--ink-2)">UW</span><span><b>University of Washington</b><small>${L('한인 학생 커뮤니티 · 같은 학교로 가는 학생들', 'Korean student community · students going there')}</small></span></div>
         <div class="a-btn">${L('이 커뮤니티 가입하기', 'Join this community')}</div>
         <p style="font-size:11.5px;color:var(--ink-3);margin-top:8px;text-align:center">${L('출국 예정 · 현지 재학 중 · 수료 중에서 골라 가입해요', 'Join as going soon, there now, or completed')}</p></div>
       <div class="a-head"><h4>${L('게시판', 'Board')}</h4><span>${L('그룹 채팅은 채팅 탭에 있어요', 'Group chat is in the Chats tab')}</span></div>
@@ -199,16 +199,16 @@ const SCREENS = {
   },
   mentor() {
     return bar(L('멘토링', 'Mentors')) + `<div class="app-body">
-      <div class="a-card" style="padding:14px"><b style="font-size:14px">${L('University of Washington를 수료한 인증 선배와 1:1로 이야기해요', 'Talk 1:1 with verified seniors who completed UW')}</b></div>
+      <div class="a-navy"><b>${L('University of Washington를 수료한 인증 선배와 1:1로 이야기해요', 'Talk 1:1 with verified seniors who completed UW')}</b><small>${L('프로필 보기 → 채팅으로 조율 → 확정', 'View profile → agree in chat → confirm')}</small></div>
       <div class="a-head"><h4>${L('인증 멘토', 'Verified mentors')}</h4><span>${L('같은 학교·학과 멘토 먼저', 'Your school and major first')}</span></div>
       ${MENTORS.map(([a, n, sk, se, pk, pe, r, c, same]) => `<div class="a-mentor"><span class="a-ava">${a}</span><span style="flex:1;min-width:0"><span class="name">${n}<span class="vf">${ic('shield', 13, 2.4)}${L('인증', 'Verified')}</span></span>
         <span class="school">${L(sk, se)}${same ? `<span class="pill ok">${L('같은 학교', 'Same school')}</span><span class="pill ok">${L('같은 학과', 'Same major')}</span>` : ''}</span>
-        <span class="prog" style="display:block">${L(pk, pe)}</span><span class="rate">★ <b class="num">${r}</b> <span class="num">(${c})</span></span></span></div>`).join('')}</div>`;
+        <span class="prog" style="display:block">${L(pk, pe)}</span><span class="rate" style="display:flex;justify-content:space-between;align-items:center">★ <b class="num">${r}</b> <span class="num" style="flex:1;margin-left:3px">(${c})</span><span class="a-cta">${L('프로필 보기', 'View profile')}</span></span></span></div>`).join('')}</div>`;
   },
   chat() {
     return bar(L('채팅', 'Chats')) + `<div class="app-body">
       <div class="a-chips">${[L('전체', 'All'), L('커뮤니티', 'Communities'), L('멘토링', 'Mentors')].map((c, i) => `<span class="a-chip${i === 0 ? ' on' : ''}">${c}</span>`).join('')}</div>
-      <div class="a-row"><span class="mono" style="background:var(--surface);color:var(--navy)">UW</span><span class="t"><b>University of Washington <span class="pill cat">${L('그룹', 'Group')}</span></b><small>${L('다음 주에 같이 비자 인터뷰 가실 분 있나요?', 'Anyone doing the visa interview next week?')}</small></span><time class="num">21:04</time></div>
+      <div class="a-row"><span class="mono" style="background:var(--surface);color:var(--ink-2)">UW</span><span class="t"><b>University of Washington <span class="pill cat">${L('그룹', 'Group')}</span></b><small>${L('다음 주에 같이 비자 인터뷰 가실 분 있나요?', 'Anyone doing the visa interview next week?')}</small></span><time class="num">21:04</time></div>
       <div class="a-row"><span class="a-ava" style="width:40px;height:40px">Y</span><span class="t"><b>Yeon L. <span class="pill ok">${L('확정', 'Booked')}</span></b><small style="color:var(--ink-2)">${L('성균관대학교 경영학과', 'Sungkyunkwan University · Business')}</small><small>${L('DS-2019 서명할 곳 같이 봐 드릴게요', 'I’ll check where to sign your DS-2019')}</small></span><time class="num">18:30</time></div>
       <p style="text-align:center;font-size:11.5px;color:var(--ink-3);margin-top:4px">${L('커뮤니티 그룹 채팅과 멘토 1:1 채팅이 한곳에 모여요', 'Community group chats and mentor chats in one place')}</p></div>`;
   },
@@ -222,7 +222,7 @@ const SCREENS = {
   me() {
     return bar(L('마이', 'Me')) + `<div class="app-body">
       <div class="a-row"><span class="a-ava">${ic('user', 22)}</span><span class="t"><b>${L('게스트로 둘러보는 중', 'Browsing as a guest')}</b><small>${L('아이디로 가입하면 계획이 저장돼요', 'Sign up to save your plan')}</small></span></div>
-      <div class="a-card" style="display:flex;gap:10px;align-items:center;background:var(--primary-soft)">${ic('shield', 22)}<span><b style="font-size:14px">${L('다녀온 뒤 멘토가 되어 보세요', 'Become a mentor after you return')}</b><small style="display:block;font-size:12px;color:var(--ink-2)">${L('수료 증빙 제출 · 운영팀 심사 최대 24시간', 'Proof of completion · team review within 24 hours')}</small></span></div>
+      <div class="a-navy" style="display:flex;gap:10px;align-items:center">${ic('shield', 22)}<span><b>${L('다녀온 뒤 멘토가 되어 보세요', 'Become a mentor after you return')}</b><small>${L('수료 증빙 제출 · 운영팀 심사 최대 24시간', 'Proof of completion · team review within 24 hours')}</small></span></div>
       <div class="a-list">${[[ic('globe', 18), L('언어', 'Language'), L('한국어 · English', 'Korean · English')], [ic('plane', 18), L('출국 일정', 'Travel dates'), `${dShort(depDate)} → ${dShort(retDate)}`], [ic('bell', 18), L('마감 알림', 'Deadline reminders'), L('켜짐', 'On')]].map(([i, a, b]) => `<div class="a-task">${i}<span style="flex:1"><b style="font-size:13.5px">${a}</b><span class="meta">${b}</span></span>${ic('chev', 16)}</div>`).join('')}</div></div>`;
   },
 };

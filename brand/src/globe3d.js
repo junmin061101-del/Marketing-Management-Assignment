@@ -1,4 +1,4 @@
-// Deep-navy globe: land as mint dots (from the public 1:110m world map, baked at build time),
+// Deep-navy globe: land as blue dots (from the public 1:110m world map, baked at build time),
 // a neon rim, and flight arcs from Seoul to host-university cities that appear in the app.
 import * as THREE from 'three';
 import { loop, lowPower } from './objects.js';
@@ -25,16 +25,16 @@ export default function init(canvas, { reduced, land }) {
   const globe = new THREE.Group(); scene.add(globe);
   const px = renderer.getPixelRatio();
 
-  // ocean sphere with a mint fresnel rim
+  // ocean sphere with a blue fresnel rim
   globe.add(new THREE.Mesh(new THREE.SphereGeometry(1, 64, 48), new THREE.ShaderMaterial({
     vertexShader: 'varying vec3 vN; varying vec3 vV; void main(){ vN=normalize(normalMatrix*normal); vec4 mv=modelViewMatrix*vec4(position,1.); vV=normalize(-mv.xyz); gl_Position=projectionMatrix*mv; }',
-    fragmentShader: 'varying vec3 vN; varying vec3 vV; void main(){ float f=pow(1.-max(dot(vN,vV),0.),2.6); vec3 base=mix(vec3(.004,.153,.263),vec3(.043,.227,.361),vN.y*.5+.5); gl_FragColor=vec4(base+vec3(.078,.859,.729)*f*.55,1.); }',
+    fragmentShader: 'varying vec3 vN; varying vec3 vV; void main(){ float f=pow(1.-max(dot(vN,vV),0.),2.6); vec3 base=mix(vec3(.098,.122,.157),vec3(.114,.157,.251),vN.y*.5+.5); gl_FragColor=vec4(base+vec3(.306,.525,.969)*f*.55,1.); }',
   })));
   // outer glow
   const atm = new THREE.Mesh(new THREE.SphereGeometry(1.22, 64, 48), new THREE.ShaderMaterial({
     side: THREE.BackSide, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
     vertexShader: 'varying vec3 vN; varying vec3 vV; void main(){ vN=normalize(normalMatrix*normal); vec4 mv=modelViewMatrix*vec4(position,1.); vV=normalize(-mv.xyz); gl_Position=projectionMatrix*mv; }',
-    fragmentShader: 'varying vec3 vN; varying vec3 vV; void main(){ float f=pow(max(dot(vN,vV),0.),3.2); gl_FragColor=vec4(.078,.859,.729,f*.9); }',
+    fragmentShader: 'varying vec3 vN; varying vec3 vV; void main(){ float f=pow(max(dot(vN,vV),0.),3.2); gl_FragColor=vec4(.306,.525,.969,f*.9); }',
   }));
   scene.add(atm);
 
@@ -45,7 +45,7 @@ export default function init(canvas, { reduced, land }) {
   globe.add(new THREE.Points(lg, new THREE.ShaderMaterial({
     transparent: true, depthWrite: false, uniforms: { uPx: { value: px } },
     vertexShader: 'uniform float uPx; varying float vF; void main(){ vec4 mv=modelViewMatrix*vec4(position,1.); vec3 n=normalize(normalMatrix*position); vF=smoothstep(-.15,.45,n.z); gl_PointSize=2.6*uPx; gl_Position=projectionMatrix*mv; }',
-    fragmentShader: 'varying float vF; void main(){ float d=length(gl_PointCoord-.5); if(d>.5) discard; gl_FragColor=vec4(.42,.95,.86,(.25+.65*vF)*smoothstep(.5,.2,d)); }',
+    fragmentShader: 'varying float vF; void main(){ float d=length(gl_PointCoord-.5); if(d>.5) discard; gl_FragColor=vec4(.553,.694,.98,(.25+.65*vF)*smoothstep(.5,.2,d)); }',
   })));
 
   // cities and Seoul
@@ -57,7 +57,7 @@ export default function init(canvas, { reduced, land }) {
   globe.add(new THREE.Points(dotGeo, new THREE.ShaderMaterial({
     transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, uniforms: dotU,
     vertexShader: 'uniform float uPx; uniform float uT; attribute float size; varying float vF; void main(){ vec4 mv=modelViewMatrix*vec4(position,1.); vec3 n=normalize(normalMatrix*position); vF=smoothstep(-.1,.3,n.z); gl_PointSize=(7.+size*5.+sin(uT*2.+position.x*9.)*1.5)*uPx; gl_Position=projectionMatrix*mv; }',
-    fragmentShader: 'varying float vF; void main(){ float d=length(gl_PointCoord-.5); float a=smoothstep(.5,.0,d); gl_FragColor=vec4(vec3(.078,.859,.729)+a*a*.6,a*vF); }',
+    fragmentShader: 'varying float vF; void main(){ float d=length(gl_PointCoord-.5); float a=smoothstep(.5,.0,d); gl_FragColor=vec4(vec3(.306,.525,.969)+a*a*.6,a*vF); }',
   })));
 
   // arcs: great-circle paths lifted off the surface, with a bright pulse travelling from Seoul
@@ -67,7 +67,7 @@ export default function init(canvas, { reduced, land }) {
     vertexShader: 'attribute float off; varying vec2 vUv; varying float vOff; void main(){ vUv=uv; vOff=off; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }',
     fragmentShader: `uniform float uT; varying vec2 vUv; varying float vOff;
       void main(){ float head=fract(uT*.18+vOff); float x=vUv.x; float trail=smoothstep(head-.35,head,x)*step(x,head);
-        float a=.16+trail*.95; gl_FragColor=vec4(vec3(.078,.859,.729)+trail*.35,a); }`,
+        float a=.16+trail*.95; gl_FragColor=vec4(vec3(.306,.525,.969)+trail*.35,a); }`,
   });
   const a0 = seoul.clone().normalize();
   cityPos.forEach((c, i) => {
