@@ -1,9 +1,10 @@
 // POST {action:'draft'|'publish', profile} → saves a draft any time; publishing needs an approved review.
-import { guard, body, send, currentUser, saveUser, publicUser, cleanText } from '../_lib.js';
+import { guard, body, send, currentUser, saveUser, publicUser, cleanText, redis, hmac } from '../_lib.js';
 
 function clean(p = {}) {
   const n = Number(p.sessions);
   return {
+    home: cleanText(p.home, 100), major: cleanText(p.major, 60),
     act: cleanText(p.act, 2000), club: cleanText(p.club, 2000), lab: cleanText(p.lab, 2000), course: cleanText(p.course, 2000), offer: cleanText(p.offer, 2000),
     length: cleanText(p.length, 30), format: cleanText(p.format, 30),
     sessions: Number.isInteger(n) && n >= 1 && n <= 20 ? n : null, // no zero, negative or fractional counts
@@ -17,8 +18,10 @@ export default async function handler(req, res) {
   user.mentor = { ...(user.mentor || { status: 'none' }) };
   if (b.action === 'publish') {
     if (user.mentor.status !== 'approved') return send(res, 403, { error: 'review_not_approved' });
-    if (!p.offer || !p.length || !p.format || !p.sessions) return send(res, 400, { error: 'profile_incomplete' });
-    user.mentor.profile = { ...p, publishedAt: new Date().toISOString() };
+    if (!p.home || !p.major || !p.offer || !p.length || !p.format || !p.sessions) return send(res, 400, { error: 'profile_incomplete' });
+    const key = 'm-' + hmac('mentor|' + user.email).slice(0, 16); // public id for reviews; does not reveal the email
+    await redis('SET', 'mkey:' + key, user.email);
+    user.mentor.profile = { ...p, key, publishedAt: new Date().toISOString() };
   }
   user.mentor.draft = { ...p, savedAt: new Date().toISOString() };
   await saveUser(user);

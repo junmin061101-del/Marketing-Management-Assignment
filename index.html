@@ -373,7 +373,23 @@ p{margin:0}
 .mentor .ava{width:56px;height:56px;background:var(--primary-soft);color:var(--primary-ink)}
 .mentor .t{flex:1;min-width:0}
 .mentor .name{display:flex;align-items:center;gap:6px;font-weight:800;font-size:16px;flex-wrap:wrap}
-.mentor .prog{display:block;font-size:13px;color:var(--ink-2);margin-top:2px}
+.mentor .prog{display:flex;align-items:center;gap:4px;font-size:13px;color:var(--ink-3);margin-top:3px}
+.mentor .school{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:4px;font-size:14px}.mentor .school b{font-weight:700;color:var(--ink)}
+.stars{color:#F5B400;letter-spacing:1px;font-size:13px}.stars i{font-style:normal;color:var(--line)}
+.rvavg{display:inline-flex;align-items:center;gap:3px;font-size:14px;font-weight:600;color:var(--ink-2);margin-left:6px}.rvavg .ic{color:#F5B400}
+.rvlist{margin-top:10px}.rv{padding:12px 0;border-top:1px solid var(--line)}.rv:first-child{border-top:0}
+.rvh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px}.rvh time{margin-left:auto;color:var(--ink-3);font-size:12px}
+.rvs{display:block;font-size:12px;color:var(--ink-3);margin-top:2px}.rv p{font-size:14px;line-height:1.55;margin-top:6px;color:var(--ink)}
+.rvform{background:var(--surface);border-radius:16px;padding:12px;margin-top:6px}.rvstars{display:flex;gap:4px;margin-bottom:8px}
+.rvstars button{font-size:28px;line-height:1;color:var(--line);padding:2px}.rvstars button.on{color:#F5B400}
+.chatrow .mono{flex:none}.chatrow .ct{font-size:11px;color:var(--ink-3);align-self:flex-start;margin-top:4px}.chatrow .cs{color:var(--ink-2)!important}
+.ctitle{display:flex;align-items:center;gap:6px;min-width:0}.ctitle b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ctitle .pill{flex:none}.chatwho{text-align:center;font-size:12px;color:var(--ink-3);margin:-4px 0 8px}
+.mform .mrow.two{grid-template-columns:1fr 1fr}
+.bar.main{padding-left:8px}.bar.main h2:first-child{padding-left:12px}
+.legal{font-size:14px;line-height:1.65;color:var(--ink)}.legal .meta{font-size:12px;color:var(--ink-3);margin-bottom:10px}.legal h2{font-size:16px;font-weight:700;margin:22px 0 6px}
+.legal p,.legal li{color:var(--ink-2);margin:6px 0}.legal ul,.legal ol{padding-left:18px}.legal table{width:100%;border-collapse:collapse;font-size:12.5px;margin:10px 0}
+.legal th,.legal td{border:1px solid var(--line);padding:6px;text-align:left;vertical-align:top}.legal th{background:var(--surface)}.legal .card{background:none;padding:0;border:0;box-shadow:none}
+#view,#view .scroll,.sheet,.sheet .scroll{touch-action:pan-y pinch-zoom}
 .mentor .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .mentor .bottom{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:13px}
 .mentor .rate{color:var(--ink-2);display:flex;align-items:center;gap:4px}
@@ -545,7 +561,7 @@ p{margin:0}
 .file input{position:absolute;width:1px;height:1px;opacity:0}
 
 /* tab bar */
-.tabbar{flex:none;display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line);background:var(--bg);padding:6px 6px var(--sab)}
+.tabbar{flex:none;display:grid;grid-template-columns:repeat(6,1fr);border-top:1px solid var(--line);background:var(--bg);padding:6px 6px var(--sab)}
 .tabbar button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0 4px;font-size:11px;font-weight:600;color:var(--ink-3)}
 .tabbar button.on{color:var(--ink)}
 .tabbar button.on .ic{color:var(--primary-ink)}
@@ -1225,6 +1241,7 @@ KO_RE.push([/^(Exchange|Visiting student|Summer school|Winter school) (Academic 
 const I={
   list:'<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/>',
   chat:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/>',
+  users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 13.8c2.1.8 3.5 3 3.5 6.2"/>',
   mentor:'<circle cx="9" cy="8" r="4"/><path d="M2 21c0-3.9 3.1-7 7-7 1.5 0 2.9.4 4 1.2"/><path d="m15 18 2 2 4-4"/>',
   gift:'<rect x="3" y="8" width="18" height="5" rx="1"/><path d="M5 13v8h14v-8M12 8v13M12 8S10.5 3 8 4s-.5 4 4 4Zm0 0s1.5-5 4-4 .5 4-4 4Z"/>',
   user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>',
@@ -1288,7 +1305,9 @@ const ddHTML=n=>n===0?'<span class="dd-n">D-DAY</span>':`<span class="dd-pre">${
 /* ---------------- university data ---------------- */
 let DATA=null;
 let COUNTRIES={US:['United States','us'],CA:['Canada','ca']};
-const REGIONS=[['asia','Asia'],['us','USA'],['ca','Canada · Mexico'],['europe','Europe'],['oceania','Oceania']];
+const REGIONS=[['asia','Asia'],['na','North America'],['europe','Europe'],['oceania','Oceania']];
+// the picker groups the U.S., Canada and Mexico; visa rules still follow each host's own country
+const regGroup=r=>r==='us'||r==='ca'?'na':r;
 // Popular with Korean students: Seoul-area exchange favourites plus top summer/winter schools (100). Names match data/universities.json exactly.
 const FEATURED={
   us:["State University of New York at Stony Brook", "University of Hawaii at Manoa", "University of California, Berkeley", "University of Minnesota", "University of Georgia", "American University", "The University of Texas at Austin", "University of California, Irvine", "University of Florida", "Florida State University", "Purdue University", "Michigan State University", "George Washington University", "Temple University", "San Francisco State University", "University of Washington", "University of Wisconsin - Madison", "University of Illinois Urbana-Champaign", "Pennsylvania State University", "University of California, San Diego", "University of California, Los Angeles", "Harvard University", "Stanford University", "Yale University", "Columbia University", "Cornell University", "University of Pennsylvania", "New York University", "University of Chicago", "Boston University", "University of Southern California", "University of California, Santa Barbara"],
@@ -1334,7 +1353,7 @@ const ERR={bad_email:'Enter a valid email address.',wait_a_minute:'Please wait a
   code_expired:'The code has expired. Ask for a new one.',too_many_attempts:'Too many wrong codes. Ask for a new one.',code_wrong:'That code is not right.',already_registered:'This email already has an account. Log in instead.',
   invalid_login:'The email or password is not right.',login_required:'Please log in first.',not_university_email:'Use a university email ending in .ac.kr or .edu.',
   verify_university_email_first:'Verify your university email first.',file_too_large:'The file must be 3 MB or smaller.',pdf_jpg_png_only:'Upload a PDF, JPG or PNG file.',
-  review_not_approved:'You can publish after the review is approved.',profile_incomplete:'Fill in what you offer, the session length, number of sessions and format.',
+  review_not_approved:'You can publish after the review is approved.',profile_incomplete:'Fill in your school, major, what you offer, the session length, number of sessions and format.',bad_rating:'Choose a star rating.',review_too_short:'Write at least 10 characters.',own_profile:'You cannot review your own profile.',unknown_mentor:'This mentor could not be found.',
   already_approved:'Your review is already approved.',bad_sessions:'Sessions must be a whole number from 1 to 20.',not_configured:'Accounts are not connected yet. You can keep browsing without one.',network:'Could not reach the server. Check your connection.'};
 Object.assign(KO,{
 // accounts
@@ -1372,6 +1391,34 @@ Object.assign(KO,{
 "Your review is already approved.":"이미 심사가 승인됐어요.","Sessions must be a whole number from 1 to 20.":"횟수는 1부터 20 사이의 정수로 입력하세요.","Could not reach the server. Check your connection.":"서버에 연결할 수 없어요. 인터넷 연결을 확인하세요.",
 });
 T_('Draft saved {D}','{D} 임시저장됨');
+Object.assign(KO,{
+"Chats":"채팅","Booked":"확정","Chat started":"채팅을 시작했어요","Group":"그룹","Mentor":"멘토","All":"전체","Communities":"커뮤니티","Screen index":"화면 목록","Mentor booking":"멘토 프로필",
+"No chats yet":"아직 채팅이 없어요","Join a community or message a mentor. Every chat shows up here.":"커뮤니티에 가입하거나 멘토에게 메시지를 보내 보세요. 모든 채팅이 여기에 모여요.",
+"Find a community":"커뮤니티 찾기","See mentors":"멘토 보기","Join a community to open its group chat.":"커뮤니티에 가입하면 그룹 채팅이 열려요.","Open a mentor’s profile and start a chat.":"멘토 프로필을 열고 채팅을 시작해 보세요.",
+"Messages go to everyone in this community.":"이 커뮤니티의 모든 멤버에게 보내져요.","Message everyone":"모두에게 메시지 보내기","Group chat is in the Chats tab":"그룹 채팅은 채팅 탭에 있어요",
+"Joined. The group chat is in the Chats tab":"가입했어요. 그룹 채팅은 채팅 탭에 있어요","Board":"게시판",
+"Your school and major first":"같은 학교·학과 멘토 먼저","Same school":"같은 학교","Same major":"같은 학과","No reviews yet":"아직 후기가 없어요","No reviews yet.":"아직 후기가 없어요.",
+"Reviews":"후기","Log in to write a review":"로그인하고 후기 쓰기","Write a review":"후기 쓰기","Edit my review":"내 후기 수정","My review":"내 후기","Cancel":"취소","Post review":"후기 올리기","Rating":"별점",
+"What helped you most? At least 10 characters.":"어떤 점이 가장 도움이 됐나요? 10자 이상 적어 주세요.","Review posted":"후기를 올렸어요","Reviews open once accounts are connected.":"계정 기능이 연결되면 후기를 쓸 수 있어요.",
+"Choose a star rating.":"별점을 선택하세요.","Write at least 10 characters.":"10자 이상 적어 주세요.","You cannot review your own profile.":"내 프로필에는 후기를 쓸 수 없어요.","This mentor could not be found.":"멘토를 찾을 수 없어요.",
+"Fill in your school, major, what you offer, the session length, number of sessions and format.":"학교, 학과, 멘토링 내용, 세션 길이, 횟수, 형식을 모두 입력하세요.",
+"Home university":"본교","Students see your school and major first. Many look for a mentor from their own school and major.":"학생들은 멘토의 학교와 학과를 가장 먼저 봐요. 같은 학교·학과 멘토를 찾는 학생이 많아요.",
+"Could not load the page. Check your connection.":"페이지를 불러오지 못했어요. 인터넷 연결을 확인하세요.","Loading…":"불러오는 중…","Back to start":"처음으로","North America":"북아메리카",
+"Find the nomination email":"추천 안내 메일 찾기","Create your login":"로그인 계정 만들기","Save your applicant number":"지원자 번호 저장하기","Log in to the portal":"포털에 로그인하기",
+"Register with your English name exactly as in your passport and an email you check every day. Some hosts ask you to use your home university email.":"여권과 똑같은 영문 이름과 매일 확인하는 이메일로 가입하세요. 본교 이메일을 쓰라고 하는 학교도 있어요.",
+"You need it for housing, course registration and visa forms. Add the host’s email address to your contacts so messages do not go to spam.":"숙소, 수강신청, 비자 서류에 필요해요. 파견교 이메일 주소를 연락처에 추가해 스팸함으로 가지 않게 하세요.",
+"Log in with the account you created and open the incoming exchange application.":"만든 계정으로 로그인해 교환학생 지원서를 여세요.",
+"Right after the nomination email":"추천 메일을 받은 직후","Login ID, password and applicant number":"로그인 ID, 비밀번호, 지원자 번호","Your name exactly as in your passport":"여권과 똑같은 이름",
+});
+T_('Create your {X} portal login','{X} 포털 로그인 계정 만들기');
+T_('{X} incoming student portal','{X} 교환학생 포털');
+T_('After your home university nominates you, {X} emails you a link to create a login for its incoming student portal. The application, course choices, housing and visa documents all happen after you log in, so set it up first.','본교가 추천하면 {X}에서 교환학생 포털 계정을 만드는 링크를 이메일로 보내요. 지원서, 수강 선택, 숙소, 비자 서류가 모두 로그인 후에 진행되니 먼저 만들어 두세요.');
+T_('The email from {X} has the portal link and sometimes a one-time PIN. Check your spam folder.','{X}에서 온 메일에 포털 링크와 일회용 PIN이 들어 있기도 해요. 스팸함도 확인하세요.');
+T_('Korean students at {X}','{X} 한인 학생');
+T_('Say hello to students going to {X}.','{X}에 가는 학생들에게 인사해 보세요.');
+T_('You can review {X} after you confirm a mentoring in chat.','채팅에서 멘토링을 확정한 뒤 {X} 멘토에게 후기를 남길 수 있어요.');
+T_('{N} reviews','후기 {N}개');
+
 T_('e.g. {X}','예: {X}');
 const errMsg=e=>ERR[e.code]||ERR.network;
 async function loadMe(){try{const j=await api('me');AUTH.configured=j.configured!==false;AUTH.user=j.user||null}catch(e){AUTH.configured=false}AUTH.ready=true}
@@ -1748,8 +1795,9 @@ function buildChecklist(h,p,stay=STAY[p.id],dep=D(depOf(p,h)),ret=addDays(dep,st
   for(const [id,cat,off,t,,sum,,url] of FLOW){const src=L(`${h.short} · Official guide`,url);
     add({id,cat,title:t,off,sum,flow:true,rows:[['Where',h.short],['Source','Official host page']],
       steps:[{t:'Open the official page',d:'Check the current dates and documents before you act. Hosts update them every term.',link:src}],links:[lk(src)]})}
+  const appOff=(it.find(x=>x.id==='app')||{}).off, acctOff=d=>appOff?appOff+8:d;
   if(short){
-    add(ov('acct',{id:'acct',cat:'Apply',title:`Create your ${shortName(h,p)} applicant account`,off:75,
+    add(ov('acct',{id:'acct',cat:'Apply',title:`Create your ${shortName(h,p)} applicant account`,off:acctOff(75),
       sum:'Every later step, from course registration to visa documents, happens in this account. Set it up first.',
       rows:[['Where',shortName(h,p)+' website'],['Use','Your name exactly as in your passport'],['Keep','Login email and password']],
       steps:[
@@ -1781,11 +1829,19 @@ function buildChecklist(h,p,stay=STAY[p.id],dep=D(depOf(p,h)),ret=addDays(dep,st
         {t:'Pay and save the receipt',d:'Download the receipt PDF. A late payment can cancel your registration.'}],
       links:[lk(appPage)]}));
   } else {
+    add(ov('acct',{id:'acct',cat:'Apply',title:`Create your ${h.short} portal login`,off:acctOff(98),
+      sum:`After your home university nominates you, ${h.short} emails you a link to create a login for its incoming student portal. The application, course choices, housing and visa documents all happen after you log in, so set it up first.`,
+      rows:[['Where',`${h.short} incoming student portal`],['When','Right after the nomination email'],['Use','Your name exactly as in your passport'],['Keep','Login ID, password and applicant number']],
+      steps:[
+        {t:'Find the nomination email',d:`The email from ${h.short} has the portal link and sometimes a one-time PIN. Check your spam folder.`,link:appPage},
+        {t:'Create your login',d:'Register with your English name exactly as in your passport and an email you check every day. Some hosts ask you to use your home university email.'},
+        {t:'Save your applicant number',d:'You need it for housing, course registration and visa forms. Add the host’s email address to your contacts so messages do not go to spam.'}],
+      links:[lk(appPage),lk(pg.intl)]}));
     add(ov('app',{id:'app',cat:'Apply',title:`Submit ${h.short} application`,off:90,
       sum:`Once your home university has nominated you, ${h.short} emails you a link to its online application for incoming students. Check your spam folder if nothing has arrived.`,
       rows:[['Where',`${h.short} incoming student portal`],['Prerequisite','Home university nomination'],['Documents','Passport copy, English transcript, study plan']],
       steps:[
-        {t:'Watch for the application email',d:`${h.short} emails you a link to its incoming exchange application, sometimes within days, sometimes weeks.`,link:appPage},
+        {t:'Log in to the portal',d:`Log in with the account you created and open the incoming exchange application.`,link:appPage},
         {t:'Complete the application',d:'Fill out the online form and choose your semester.',need:['Passport bio page','English transcript','Study plan or course list','English test score']},
         {t:'Wait for the acceptance letter',d:'You need the acceptance letter for your visa and housing.'}],
       links:[lk(appPage),lk(pg.intl)]}));
@@ -1961,7 +2017,7 @@ function buildChecklist(h,p,stay=STAY[p.id],dep=D(depOf(p,h)),ret=addDays(dep,st
 /* Sample mentor profiles. Mentors write these in the "Become a mentor" flow: what they did on site, then what they offer.
    Price, schedule and details are agreed in the 1:1 chat. {X} = host university short name. */
 const MENTORS=[
- {name:'Yeon L.',major:'Business Administration',rate:'4.9',reviews:31,topics:['Visa documents','Course registration','Campus life'],
+ {key:'sample-yeon',name:'Yeon L.',home:'Sungkyunkwan University',major:'Business Administration',topics:['Visa documents','Course registration','Campus life'],
   intro:{en:'I went through the visa and course registration step by step, and stayed busy outside class. Ask me about both.',ko:'비자와 수강신청을 하나하나 직접 해봤고, 수업 밖 활동도 많이 했어요. 둘 다 물어보세요.'},
   did:{act:{en:'Volunteered as an orientation buddy for new international students',ko:'신입 국제학생 오리엔테이션 버디로 봉사했어요'},
        club:{en:'Joined the Korean Students Association and a case-competition club at {X}',ko:'{X} 한인학생회와 케이스 경진대회 동아리에서 활동했어요'},
@@ -1969,7 +2025,7 @@ const MENTORS=[
        course:{en:'Negotiation and an intro marketing course: both used real local companies as cases',ko:'협상론, 마케팅원론: 둘 다 현지 기업 사례로 수업해서 유용했어요'}},
   offer:[{t:{en:'Visa and pre-departure document review',ko:'비자·출국 전 서류 점검'},len:'1 hour',n:1,fmt:'Video call'},
          {t:{en:'Course plan and credit transfer check',ko:'수강 계획·학점 인정 점검'},len:'1 hour',n:1,fmt:'Video call'}]},
- {name:'Woo J.',major:'Computer Science',rate:'5.0',reviews:18,topics:['Research lab','Housing','First week'],
+ {key:'sample-woo',name:'Woo J.',home:'Yonsei University',major:'Computer Science',topics:['Research lab','Housing','First week'],
   intro:{en:'I worked in a research lab during my exchange and found housing off campus. Happy to share how I got in.',ko:'교환 기간에 연구실에서 일했고 학교 밖 숙소를 구했어요. 어떻게 들어갔는지 알려드릴게요.'},
   did:{act:{en:'Took part in a weekend hackathon with local students',ko:'현지 학생들과 주말 해커톤에 참가했어요'},
        club:{en:'Member of the computing society; went to its weekly industry talks',ko:'컴퓨팅 학회 회원으로 매주 업계 초청 강연에 갔어요'},
@@ -1977,7 +2033,7 @@ const MENTORS=[
        course:{en:'Algorithms and a project-based software engineering course',ko:'알고리즘, 프로젝트 기반 소프트웨어공학 수업'}},
   offer:[{t:{en:'How to contact professors and join a lab',ko:'교수님 컨택과 연구실 합류 방법'},len:'1 hour',n:2,fmt:'Video call'},
          {t:{en:'Off-campus housing and first-week setup',ko:'학교 밖 숙소 구하기와 첫 주 정착'},len:'30 min',n:1,fmt:'Chat'}]},
- {name:'Seo H.',major:'Economics',rate:'4.8',reviews:9,topics:['Credit transfer','Summer school','Networking'],
+ {key:'sample-seo',name:'Seo H.',home:'Korea University',major:'Economics',topics:['Credit transfer','Summer school','Networking'],
   intro:{en:'I did a summer school and later an exchange. I can help you pick courses that count and meet people fast.',ko:'서머스쿨에 다녀온 뒤 교환도 갔어요. 학점 인정되는 수업 고르기와 빠르게 친구 사귀는 법을 도와드릴게요.'},
   did:{act:{en:'Joined the international student buddy program and weekend trips',ko:'국제학생 버디 프로그램과 주말 여행 프로그램에 참여했어요'},
        club:{en:'Economics society and a Korean-language exchange meetup I helped run',ko:'경제학회, 직접 운영을 도운 한국어 언어교환 모임'},
@@ -1987,6 +2043,40 @@ const MENTORS=[
          {t:{en:'Making friends and networking in the first month',ko:'첫 달에 친구 사귀고 네트워킹하기'},len:'30 min',n:2,fmt:'Chat'}]}
 ];
 const tx=(o,h)=>(LANG==='ko'?o.ko:o.en).replace(/\{X\}/g,h.short);
+// Sample reviews for the sample mentors. Real reviews come from /api/reviews.
+const SAMPLE_REVIEWS={
+ 'sample-yeon':[
+  {who:'박**',home:'Sungkyunkwan University',major:'Business Administration',rating:5,at:'2026-10-14',text:{en:'She checked my I-20 and DS-160 line by line. I fixed two mistakes before my interview.',ko:'I-20이랑 DS-160을 한 줄씩 같이 봐 주셔서 인터뷰 전에 실수 두 개를 고쳤어요.'}},
+  {who:'이**',home:'Hanyang University',major:'Business Administration',rating:5,at:'2026-09-02',text:{en:'Very practical course advice. I knew which classes would transfer before I left.',ko:'수강 조언이 정말 현실적이었어요. 출국 전에 어떤 수업이 학점 인정되는지 알 수 있었어요.'}},
+  {who:'최**',home:'Sungkyunkwan University',major:'Economics',rating:4,at:'2026-08-21',text:{en:'Helpful, though the session ran a bit short for all my questions.',ko:'도움이 많이 됐는데, 질문이 많아서 시간이 조금 부족했어요.'}}],
+ 'sample-woo':[
+  {who:'정**',home:'Yonsei University',major:'Computer Science',rating:5,at:'2026-10-03',text:{en:'He showed me the exact email he sent to professors. I got a lab reply in a week.',ko:'교수님께 보냈던 메일을 그대로 보여 주셨어요. 일주일 만에 연구실 답장을 받았어요.'}},
+  {who:'강**',home:'KAIST',major:'Electrical Engineering',rating:5,at:'2026-07-28',text:{en:'Great tips on off-campus housing and what to avoid in the lease.',ko:'학교 밖 숙소 구하는 팁과 계약서에서 피해야 할 조항을 잘 알려 주셨어요.'}}],
+ 'sample-seo':[
+  {who:'윤**',home:'Korea University',major:'Economics',rating:5,at:'2026-09-19',text:{en:'Same school and major, so she knew exactly which courses our department accepts.',ko:'같은 학교 같은 과라서 우리 학과에서 인정해 주는 수업을 정확히 알고 계셨어요.'}},
+  {who:'한**',home:'Sogang University',major:'Sociology',rating:4,at:'2026-08-05',text:{en:'Friendly and quick to reply in chat.',ko:'친절하고 채팅 답장도 빨랐어요.'}}]
+};
+const uniKo=n=>LANG==='ko'?(krKo(n)||n):n;
+const majorTxt=x=>LANG==='ko'?(KO[x]||x):x;
+const majorNorm=x=>String(x||'').trim().toLowerCase().replace(/\s*(학과|학부|전공)$/,'');
+const sameSchool=m=>!!S.profile.univ&&m.home===S.profile.univ;
+const sameMajor=m=>{const p=majorNorm(S.profile.major); return !!p&&[m.major,KO[m.major]].some(x=>x&&majorNorm(x)===p)};
+const mScore=m=>(sameSchool(m)?2:0)+(sameMajor(m)?1:0);
+const mSchool=m=>LANG==='ko'?`${uniKo(m.home)} ${majorTxt(m.major)}`:`${m.home} · ${m.major}`;
+const matchPills=m=>(sameSchool(m)?'<span class="pill ok">Same school</span>':'')+(sameMajor(m)?'<span class="pill ok">Same major</span>':'');
+const reviewsOf=m=>[...((S.reviews[m.key]||{}).list||[]),...(SAMPLE_REVIEWS[m.key]||[])];
+const ratingOf=m=>{const l=reviewsOf(m); return {n:l.length,avg:l.length?(l.reduce((a,x)=>a+x.rating,0)/l.length).toFixed(1):''}};
+const stars=n=>`<span class="stars" aria-label="${n} / 5">${'★'.repeat(n)}<i>${'★'.repeat(5-n)}</i></span>`;
+async function loadReviews(m){
+  S.reviews[m.key]=S.reviews[m.key]||{list:[]};
+  if(!AUTH.configured) return;
+  try{const j=await api('reviews?m='+encodeURIComponent(m.key)); S.reviews[m.key]={list:j.reviews||[],loaded:true}}catch(e){S.reviews[m.key]={list:[],loaded:true}}
+  if(S.mentorSheet===m.id) openMentorSheet(m.id,true); else if(S.screen==='app'&&S.tab==='mentor') render(true);
+}
+function reviewHTML(x){const t=typeof x.text==='string'?x.text:(LANG==='ko'?x.text.ko:x.text.en);
+  return `<div class="rv"><div class="rvh">${stars(x.rating)}<b data-notr>${esc(x.who)}</b>${x.mine?'<span class="pill cat">My review</span>':''}<time>${fmtY(new Date(x.at))}</time></div>
+    ${x.home?`<small class="rvs" data-notr>${esc(LANG==='ko'?`${uniKo(x.home)} ${majorTxt(x.major||'')}`:`${x.home}${x.major?' · '+x.major:''}`)}</small>`:''}
+    <p data-notr>${esc(t)}</p></div>`}
 const PEERS=[['M','Minjun P.',72,'Visa docs'],['E','Eunji K.',64,'Housing set'],['S','Seoa S.',45,'Applied'],['R','Rin C.',38,'Test scores'],['J','Jiho Y.',30,'Applied'],['J','Jimin J.',18,'Just started']];
 /* ---------------- real booking services (deep links prefilled with the student's city and dates) ---------------- */
 // university → [city, airport code (Skyscanner), city code (Trip.com)]
@@ -2071,7 +2161,7 @@ const S={
   email:'sungkyunkwan@g.skku.edu',
   profile:{univ:'Sungkyunkwan University',major:'Business Administration',year:'3rd year'},
   homeQ:'',
-  region:'us', sq:'', scountry:'All', slimit:40,
+  region:'na', sq:'', scountry:'All', slimit:40,
   pick:null,
   host:makeHost(['University of Washington','US','http://www.washington.edu/']),
   progId:'exS', pickProg:'exS', depOverride:null, pickDep:null, retOverride:null, pickRet:null,
@@ -2079,6 +2169,7 @@ const S={
   ctab:'feed', liked:new Set(), bcat:'All', showDone:false,
   reqs:{}, chats:{}, chatWith:null, typing:null, reqNote:'', slot:null, mentorSheet:null,
   joined:new Set(), cv:null, cq:'', cposts:{}, cinfo:{}, cchat:{}, jstatus:{}, joining:null,
+  reviews:{}, rv:{key:null,open:false,rating:0,text:'',busy:false,err:''}, chatC:null, chf:'all', doc:null,
   apply:{step:0,email:'',file:'',sent:false,busy:false,err:''},
   auth:{mode:'login',step:0,email:'',busy:false,err:''},
 };
@@ -2128,8 +2219,10 @@ function stayInfoHTML(h,dep,ret){
 function linkHTML(l,mini){let [label,url,ver]=l; const st=linkState(url);
   if(st==='broken'||st==='moved'){ver=false; url='https://www.google.com/search?q='+encodeURIComponent('site:'+domainOf(url)+' '+label.replace(/^.*·\s*/,''))}
   return `<a class="src${mini?' mini':''}${ver===false?' guess':''}" href="${esc(url)}" target="_blank" rel="noopener"><span class="t"><b>${esc(label)}</b><small>${esc(prettyUrl(url))}</small></span>${ic(ver===false?'search':'ext',mini?16:18)}</a>`}
-const bar=(title,back='back',right='')=>`<div class="bar"><button class="iconbtn" data-act="${back}" aria-label="Back">${ic('back')}</button><h2>${title}</h2>${right}</div>`;
-const regionHosts=()=>DATA?DATA.unis.filter(u=>(COUNTRIES[u[1]]||[])[1]===S.region):[];
+const backBtn=(act='back')=>`<button class="iconbtn" data-act="${act}" aria-label="Back">${ic('back')}</button>`;
+const bar=(title,back='back',right='')=>`<div class="bar">${backBtn(back)}<h2>${title}</h2>${right}</div>`;
+const mainBar=title=>`<div class="bar main">${canBack()?backBtn():''}<h2>${title}</h2></div>`;
+const regionHosts=()=>DATA?DATA.unis.filter(u=>regGroup((COUNTRIES[u[1]]||[])[1])===S.region):[];
 
 /* ---------------- screens ---------------- */
 const SCREENS={
@@ -2148,7 +2241,7 @@ const SCREENS={
 
   login(){const A=S.auth, err=A.err?`<p class="aerr" role="alert">${esc(A.err)}</p>`:'';
     const guest=`<button class="linkbtn guestbtn" data-go="profile">Continue without an account</button>`;
-    if(AUTH.ready&&!AUTH.configured) return `${bar('','go:splash')}<div class="scroll pad"><h2 class="ob-title">Sign in</h2>
+    if(AUTH.ready&&!AUTH.configured) return `${bar('')}<div class="scroll pad"><h2 class="ob-title">Sign in</h2>
       <div class="pnote" style="margin-top:16px">${ic('flag',14)}<span>Accounts are not connected yet. You can keep browsing without one.</span></div></div>
       <div class="cta"><button class="btn" data-go="profile">Continue without an account</button></div>`;
     const tabs=`<div class="seg" style="--n:2;margin:6px 0 20px" role="tablist"><button class="${A.mode!=='signup'?'on':''}" data-act="authMode" data-v="login">Log in</button><button class="${A.mode==='signup'?'on':''}" data-act="authMode" data-v="signup">Sign up</button></div>`;
@@ -2159,11 +2252,11 @@ const SCREENS={
     if(A.mode==='login'){ body=email()+pw('auPw','Password','current-password')+`<button class="linkbtn" data-act="authMode" data-v="reset">Forgot your password?</button>`; cta=`<button class="btn" data-act="authLogin" ${A.busy?'disabled':''}>Log in</button>`; }
     else if(A.mode==='signup'&&A.step===0){ body=email()+`<p class="hint">We send a 6-digit code to confirm the address. It expires in 10 minutes.</p>`; cta=`<button class="btn" data-act="authSend" ${A.busy?'disabled':''}>Send code</button>`; }
     else if(A.mode==='signup'){ body=email(true)+code+`<div class="field"><label for="auName">Name</label><input class="input" id="auName" autocomplete="name" maxlength="40"></div>`+pw('auPw','Password','new-password')+`<p class="hint">8–72 characters with at least one letter and one number.</p>
-        <label class="agree"><input type="checkbox" id="auAgree"><span>I am 14 or older and agree to the <a href="/terms" target="_blank" rel="noopener">Terms of Service</a> and <a href="/privacy" target="_blank" rel="noopener">Privacy Policy</a>, including storage on servers outside Korea.</span></label>
+        <label class="agree"><input type="checkbox" id="auAgree"><span>I am 14 or older and agree to the <a href="/terms" data-doc="terms">Terms of Service</a> and <a href="/privacy" data-doc="privacy">Privacy Policy</a>, including storage on servers outside Korea.</span></label>
         <button class="linkbtn" data-act="authSend">Send the code again</button>`; cta=`<button class="btn" data-act="authVerify" ${A.busy?'disabled':''}>Create account</button>`; }
     else if(A.step===0){ body=`<p class="ob-sub" style="margin-bottom:12px">Enter your account email. We send a code to reset your password.</p>`+email(); cta=`<button class="btn" data-act="authSend" ${A.busy?'disabled':''}>Send code</button>`; }
     else { body=email(true)+code+pw('auPw','New password','new-password')+`<p class="hint">8–72 characters with at least one letter and one number.</p>`; cta=`<button class="btn" data-act="authVerify" ${A.busy?'disabled':''}>Set new password</button>`; }
-    return `${bar('','go:splash')}
+    return `${bar('')}
     <div class="scroll pad">
       <h2 class="ob-title">${A.mode==='reset'?'Reset your password':A.mode==='signup'?'Create your account':'Welcome back'}</h2>
       ${A.mode==='reset'?'<div style="height:16px"></div>':tabs}
@@ -2171,7 +2264,7 @@ const SCREENS={
     </div>
     <div class="cta">${cta}</div>`},
 
-  profile(){const P=S.profile;return `${bar('','go:login')}
+  profile(){const P=S.profile;return `${bar('')}
     <div class="scroll pad">
       <div class="steps"><i class="on"></i><i></i><i></i></div>
       <h2 class="ob-title">Tell us about<br>your home university</h2>
@@ -2191,7 +2284,7 @@ const SCREENS={
     const list=regionHosts();
     const counts={}; list.forEach(u=>counts[u[1]]=(counts[u[1]]||0)+1);
     const top=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
-    return `${bar('','go:profile')}
+    return `${bar('')}
     <div class="scroll pad">
       <div class="steps"><i class="on"></i><i class="on"></i><i></i></div>
       <h2 class="ob-title">Which university<br>accepted you?</h2>
@@ -2206,7 +2299,7 @@ const SCREENS={
   program(){
     const h=S.pick||host(); const ps=programsOf(h);
     if(!ps.some(p=>p.id===S.pickProg)) S.pickProg=ps[0].id;
-    return `${bar('','go:school')}
+    return `${bar('')}
     <div class="scroll pad">
       <div class="steps"><i class="on"></i><i class="on"></i><i class="on"></i></div>
       <div class="school-card"><span class="mono">${esc(h.mono)}</span><span class="t"><b>${esc(h.name)}</b><small>${esc(h.country)}</small></span><button data-go="school">Change</button></div>
@@ -2231,17 +2324,26 @@ const SCREENS={
       <p class="ob-sub">Collecting official sources and the latest notes from past students</p></div>`},
 
   chat(){
+    if(S.chatC){const c=S.cinfo[S.chatC], msgs=S.cchat[S.chatC]||[];
+      if(!c){S.screen='app';S.tab='chat';S.chatC=null;return SCREENS.app()}
+      return `${bar(esc(c.h.short)+' <span class="pill cat">Group</span>')}
+      <div class="scroll pad chat" id="chatScroll">
+        <div class="chat-info">${ic('users',18)}<span><b>Korean students at ${esc(c.h.short)}</b><br><small>Messages go to everyone in this community.</small></span></div>
+        ${msgs.length?msgs.map(x=>`<div class="msg me"><p data-notr>${esc(x.text)}</p><time>${x.time}</time></div>`).join(''):`<div class="empty-state">${ic('chat',28)}<b>No messages yet</b><small>Say hello to students going to ${esc(c.h.short)}.</small></div>`}
+      </div>
+      <div class="cta chatbar"><input class="input" id="chatInput" placeholder="Message everyone" autocomplete="off" aria-label="Message"><button class="btn sm" data-act="sendMsg" aria-label="Send">${ic('send',18)}</button></div>`}
     const id=S.chatWith, m=mentorsFor()[id], r=S.reqs[id], msgs=S.chats[id]||[];
-    if(!m){S.screen='app';S.tab='mentor';return SCREENS.app()}
+    if(!m){S.screen='app';S.tab='chat';return SCREENS.app()}
     return `${bar(esc(m.name)+' <span class="badge">'+ic('shield',13,2.4)+'Verified</span>','back')}
     <div class="scroll pad chat" id="chatScroll">
+      <p class="chatwho" data-notr>${esc(mSchool(m))}</p>
       <div class="chat-info">${ic('mentor',18)}<span><b>${r&&r.status==='booked'?'Mentoring confirmed':'Agree on what, how long and the price here'}</b><br><small>The mentor sends a proposal. You pay only when you confirm it. Keep payments inside the app.</small></span></div>
       ${msgs.map(msgHTML).join('')}
       ${S.typing===id?'<div class="msg them typing"><p>•••</p></div>':''}
     </div>
     <div class="cta chatbar"><input class="input" id="chatInput" placeholder="Write a message" autocomplete="off" aria-label="Message"><button class="btn sm" data-act="sendMsg" aria-label="Send">${ic('send',18)}</button></div>`;
   },
-  app(){return ({home:homeTab,community:communityTab,mentor:mentorTab,perks:perksTab,me:meTab})[S.tab]()},
+  app(){return ({home:homeTab,community:communityTab,mentor:mentorTab,chat:chatsTab,perks:perksTab,me:meTab}[S.tab]||homeTab)()},
 
   detail(){
     const i=items().find(x=>x.id===S.detail)||items()[0]; const n=dd(i.date); const done=S.done.has(i.id);
@@ -2268,6 +2370,9 @@ const SCREENS={
     </div>
     <div class="cta"><button class="btn${done?' ghost':''}" data-act="toggleDone" data-v="${i.id}">${done?'Mark as not done':ic('check',20)+'Mark as done'}</button></div>`},
 
+  doc(){const d=DOCS[S.doc];
+    if(!d&&S.doc) loadDoc(S.doc);
+    return `${bar(d?esc(d.title):'')}<div class="scroll pad legal" data-notr>${d?d.html:'<p class="loadmsg">Loading…</p>'}</div>`},
   mentorApply(){
     const u=AUTH.user, m=u?u.mentor:null, A=S.apply, ferr=A.err&&A.errAt==='form'?`<p class="aerr" role="alert">${esc(A.err)}</p>`:'', err=A.err&&A.errAt!=='form'?`<p class="aerr" role="alert">${esc(A.err)}</p>`:'';
     const head=`${bar('Become a mentor','back')}<div class="scroll pad">
@@ -2295,6 +2400,8 @@ const SCREENS={
         ${step===2?`<div class="act"><button class="btn sm ghost" data-act="apRefresh">Check status</button></div>`:''}</div></div>
       <div class="vstep ${cls(3)}"><span class="n">${n(3)}</span><div class="t"><b>Write your mentor profile</b><small>${approved?'Publish it when you are ready':'You can write and save a draft now. Publishing opens after the review is approved.'}</small>
         <div class="act mform">
+          <div class="mrow two"><label>Home university<input class="input" id="mfHome" maxlength="100" value="${esc(d.home||(u.profile&&u.profile.home)||S.profile.univ||'')}"></label><label>Major<input class="input" id="mfMajor" maxlength="60" value="${esc(d.major||(u.profile&&u.profile.major)||S.profile.major||'')}"></label></div>
+          <p class="hint" style="margin-top:-4px">Students see your school and major first. Many look for a mentor from their own school and major.</p>
           ${ta('mfAct','Activities you took part in','e.g. Orientation buddy, hackathon, volunteering',d.act)}
           ${ta('mfClub','Clubs and networking','e.g. Korean Students Association, consulting club',d.club)}
           ${ta('mfLab','Research or lab work','e.g. Research assistant in a robotics lab (optional)',d.lab)}
@@ -2323,13 +2430,6 @@ function schoolListHTML(){
     return `<p class="sect-label">Results<span class="num">${m.length.toLocaleString()}</span></p>${m.length?m.slice(0,S.slimit).map(row).join(''):'<p class="loadmsg">No universities match. Try another spelling or region.</p>'}${m.length>S.slimit?'<button class="more" data-act="more">Show more</button>':''}`;
   }
   let out='';
-  if(S.scountry==='All'){
-    const fAll=(FEATURED[S.region]||[]).map(n=>list.find(u=>u[0]===n)).filter(Boolean), f=S.featAll?fAll:fAll.slice(0,8);
-    const pAll=list.filter(u=>partnerOf(u)&&!(FEATURED[S.region]||[]).includes(u[0])), pf=S.partAll?pAll:pAll.slice(0,6);
-    const partHTML=pAll.length?`<p class="sect-label">Partners of Korean universities<span class="num">${pAll.length}</span></p><div class="grid2">${pf.map(u=>{const h=makeHost(u);const on=S.pick&&S.pick.name===u[0];return `<button class="uni${on?' on':''}" data-act="pick" data-v="${esc(u[0])}" data-cc="${u[1]}"><span class="mono">${esc(h.mono)}</span><span class="t"><small>${esc(h.country)}</small><b>${esc(uniLabel(u[0],u[3]))}</b><em class="via">${partnerOf(u).map(x=>`<span>${x}</span>`).join('')}</em></span></button>`}).join('')}</div>${pAll.length>6?`<button class="more" data-act="partAll" aria-expanded="${!!S.partAll}">${S.partAll?'Show fewer':`Show all ${pAll.length}`}</button>`:''}`:'';
-    out+=`<p class="sect-label">Popular with Korean students<span class="num">${fAll.length}</span></p><div class="grid2">${f.map(u=>{const h=makeHost(u);const on=S.pick&&S.pick.name===u[0];return `<button class="uni${on?' on':''}" data-act="pick" data-v="${esc(u[0])}" data-cc="${u[1]}"><span class="mono">${esc(h.mono)}</span><span class="t"><small>${esc(h.country)}</small><b>${esc(uniLabel(u[0],u[3]))}</b></span></button>`}).join('')}</div>${fAll.length>8?`<button class="more" data-act="featAll" aria-expanded="${!!S.featAll}">${S.featAll?'Show fewer':`Show all ${fAll.length}`}</button>`:''}`;
-    out+=partHTML;
-  }
   out+=`<p class="sect-label">All universities<span class="num">${list.length.toLocaleString()}</span></p>${list.slice(0,S.slimit).map(row).join('')}${list.length>S.slimit?'<button class="more" data-act="more">Show more</button>':''}`;
   return out;
 }
@@ -2354,7 +2454,7 @@ function homeTab(){
   const next=list.find(i=>!S.done.has(i.id));
   const cats=['All','Apply','Visa','Health','Living','Academics','Arrival'].filter(c=>c==='All'||list.some(i=>i.cat===c));
   const shown=S.filter==='All'?list:list.filter(i=>i.cat===S.filter);
-  return `<div class="bar main"><h2>Dashboard</h2><button class="iconbtn" data-act="toast" data-v="${S.remind.size} reminders are on" aria-label="Notifications">${ic('bell')}</button></div>
+  return `<div class="bar main">${canBack()?backBtn():''}<h2>Dashboard</h2><button class="iconbtn" data-act="toast" data-v="${S.remind.size} reminders are on" aria-label="Notifications">${ic('bell')}</button></div>
   <div class="scroll pad">
     <section class="hero">
       <div class="top"><span class="mono">${esc(h.mono)}</span><span class="t"><b>${esc(h.name)}</b><small>${p.type} · ${p.term}</small></span></div>
@@ -2393,11 +2493,11 @@ function cResultsHTML(){
     return `<button class="srow" data-act="cpick" data-v="${esc(u[0])}" data-cc="${u[1]}"><span class="mono">${esc(h.mono)}</span><span class="t"><b>${hi(u[0],q)}</b><small>${esc(h.country)}</small></span>${ic('chev',18)}</button>`}).join(''):'<p class="loadmsg">No universities match. Try another spelling.</p>'}`;
 }
 function communityTab(){
-  return `<div class="bar main"><h2>Community</h2></div>
-  <div class="scroll pad${S.ctab==='chat'&&S.joined.has(ckey(cview().h))&&!S.cq.trim()?' has-chatbar':''}" id="cScroll">
+  return `${mainBar('Community')}
+  <div class="scroll pad" id="cScroll">
     <label class="csearch">${ic('search',18)}<input class="input" id="cQ" type="search" placeholder="Find your university’s Korean student community" value="${esc(S.cq)}" autocomplete="off" aria-label="Search communities"></label>
     <div id="cBody">${cBodyHTML()}</div>
-  </div>${S.ctab==='chat'&&S.joined.has(ckey(cview().h))&&!S.cq.trim()?`<div class="cta chatbar"><input class="input" id="cMsg" placeholder="Message everyone" autocomplete="off" aria-label="Message"><button class="btn sm" data-act="csend" aria-label="Send">${ic('send',18)}</button></div>`:''}`;
+  </div>`;
 }
 const statPill=st=>`<span class="pill ${st==='now'?'ok':st==='done'?'cat':'warn'} mst">${MSTAT[st]}</span>`;
 function cBodyHTML(){
@@ -2413,18 +2513,15 @@ function cBodyHTML(){
       ${joined?'':S.joining===k?`<div class="jopt"><p>How are you connected to ${esc(h.short)}?</p><div class="chips">${Object.entries(MSTAT).map(([v,l])=>`<button class="chip sm" data-act="cjoin" data-v="${v}">${l}</button>`).join('')}</div></div>`
         :`<button class="btn cjoinbtn" data-act="cjoinask">Join this community</button><p class="cnote">For Korean students going to, studying at or back from ${esc(h.short)}.</p>`}
     </section>
-    <div style="margin-top:14px;--n:2" class="seg" role="tablist"><button class="${S.ctab!=='chat'?'on':''}" data-act="ctab" data-v="feed">Board</button><button class="${S.ctab==='chat'?'on':''}" data-act="ctab" data-v="chat">Chat</button></div>
-    ${S.ctab==='chat'?(joined?(cChat(c).length?`<div class="gchat">${cChat(c).map(m=>`<div class="msg me"><p data-notr>${esc(m.text)}</p><time>${m.time}</time></div>`).join('')}</div>`
-        :`<div class="empty-state">${ic('chat',28)}<b>No messages yet</b><small>Say hello to students going to ${esc(h.short)}.</small></div>`)
-      :`<div class="compose clock"><p>Join to open the chat</p><small>The group chat is only for members of this community.</small></div>`)
-    :`${joined?`<div class="compose"><textarea class="input area" id="cText" rows="3" placeholder="Share a tip or ask a question"></textarea><div class="row" style="justify-content:flex-end;margin-top:8px"><button class="btn sm" data-act="cpost">Post</button></div></div>`:''}
+    <div class="list-head" style="margin-top:18px"><h3>Board</h3>${joined?'<span>Group chat is in the Chats tab</span>':''}</div>
+    ${joined?`<div class="compose"><textarea class="input area" id="cText" rows="3" placeholder="Share a tip or ask a question"></textarea><div class="row" style="justify-content:flex-end;margin-top:8px"><button class="btn sm" data-act="cpost">Post</button></div></div>`:''}
     ${posts.length?'':`<div class="empty-state">${ic('doc',28)}<b>No posts yet</b><small>${joined?'Be the first to share a tip or ask a question.':'Join to write the first post.'}</small></div>`}
     <div>${posts.map((x,idx)=>{const lk=k+'#'+idx, st=statusOf(x.who);return `<article class="post">
       <div class="who"><span class="ava">${esc(x.who[0])}</span><span class="t"><b>${esc(x.who)} ${statPill(st)}</b><small>${esc(x.meta)} · ${esc(x.time)}</small></span></div>
       <p class="txt"${x.who==='You'?' data-notr':''}>${esc(x.text)}</p>
       ${x.answer?`<div class="answer"><b>${x.answer.who} <span class="badge">${ic('shield',13,2.4)}Verified mentor</span></b>${x.answer.text}</div>`:''}
       <div class="foot"><button class="${S.liked.has(lk)?'on':''}" data-act="like" data-v="${esc(lk)}">${ic('heart',15)} Like ${(x.likes||0)+(S.liked.has(lk)?1:0)}</button><span>${ic('chat',15)} ${x.answer?1:(x.answers||0)} comments</span></div>
-    </article>`}).join('')}</div>`}`;
+    </article>`}).join('')}</div>`;
 }
 
 // a mentor finished the same program in an earlier year: "Spring 2027" -> "Spring 2026"
@@ -2435,29 +2532,47 @@ function mentorsFor(){
     prog:`${h.short} · ${k===2&&p.season!=='summer'?'Summer school 2025':p.type+' '+pastTerm(p.term,k===0?1:2)}`}));
 }
 const hm=d=>`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-function chatListHTML(){
+function chatListHTML_unused(){
   const ids=Object.keys(S.chats).map(Number); if(!ids.length) return '';
   const M=mentorsFor();
   return `<div class="list-head"><h3>My mentor chats</h3></div>${ids.map(id=>{const m=M[id],r=S.reqs[id]||{},c=S.chats[id]||[],last=c[c.length-1];
     const prev=last?(last.me?last.text:last.prop?(LANG==='ko'?'멘토링 제안서':'Mentoring proposal'):(LANG==='ko'?last.ko:last.en)):'';
     return `<button class="srow chatrow" data-act="chat" data-v="${id}"><span class="ava">${m.name[0]}</span><span class="t"><b>${m.name}</b><small data-notr>${esc(prev.slice(0,60))}</small></span>${r.status==='booked'?'<span class="pill ok">Booked</span>':'<span class="pill cat">In chat</span>'}</button>`}).join('')}`;
 }
+function convList(){
+  const out=[], M=mentorsFor();
+  for(const k of S.joined){const c=S.cinfo[k]; if(!c) continue; const l=(S.cchat[k]||[]).slice(-1)[0];
+    out.push({v:'c:'+k,kind:'c',ava:`<span class="mono">${esc(c.h.mono)}</span>`,title:c.h.short,sub:l?l.text:'',empty:'No messages yet',time:l?l.time:'',ts:l?l.ts||0:0})}
+  for(const id of Object.keys(S.chats).map(Number)){const m=M[id]; if(!m) continue; const c=S.chats[id], l=c[c.length-1], r=S.reqs[id]||{};
+    const sub=!l?'':l.me?l.text:l.prop?(LANG==='ko'?'멘토링 제안서':'Mentoring proposal'):l.sys?'':(LANG==='ko'?l.ko:l.en);
+    out.push({v:'m:'+id,kind:'m',ava:`<span class="ava">${m.name[0]}</span>`,title:m.name,school:mSchool(m),booked:r.status==='booked',sub,empty:'Chat started',time:l&&l.time||'',ts:l&&l.ts||0})}
+  return out.sort((a,b)=>b.ts-a.ts)}
+function chatsTab(){
+  const all=convList(), list=all.filter(x=>S.chf==='all'||x.kind===S.chf);
+  return `${mainBar('Chats')}
+  <div class="scroll pad">
+    <div class="chips" style="margin-bottom:6px">${[['all','All'],['c','Communities'],['m','Mentors']].map(([v,l])=>`<button class="chip sm${S.chf===v?' on':''}" data-act="chf" data-v="${v}">${l}</button>`).join('')}</div>
+    ${list.length?list.map(x=>`<button class="srow chatrow" data-act="openConv" data-v="${esc(x.v)}">${x.ava}<span class="t"><span class="ctitle"><b data-notr>${esc(x.title)}</b><span class="pill ${x.kind==='c'?'cat':'ok'}">${x.kind==='c'?'Group':x.booked?'Booked':'Mentor'}</span></span>${x.school?`<small class="cs" data-notr>${esc(x.school)}</small>`:''}${x.sub?`<small data-notr>${esc(x.sub.slice(0,60))}</small>`:`<small>${x.empty}</small>`}</span><time class="ct">${x.time}</time></button>`).join('')
+      :`<div class="empty-state">${ic('chat',28)}<b>No chats yet</b><small>${S.chf==='m'?'Open a mentor’s profile and start a chat.':S.chf==='c'?'Join a community to open its group chat.':'Join a community or message a mentor. Every chat shows up here.'}</small>
+        <div class="row" style="gap:8px;margin-top:8px">${S.chf!=='m'?'<button class="btn sm ghost" data-act="tab" data-v="community">Find a community</button>':''}${S.chf!=='c'?'<button class="btn sm ghost" data-act="tab" data-v="mentor">See mentors</button>':''}</div></div>`}
+  </div>`}
 function mentorTab(){
-  const h=host();
-  return `<div class="bar main"><h2>Mentors</h2></div>
+  const h=host(), list=mentorsFor().sort((a,b)=>mScore(b)-mScore(a));
+  setTimeout(()=>list.forEach(m=>{if(!S.reviews[m.key]) loadReviews(m)}));
+  return `${mainBar('Mentors')}
   <div class="scroll pad">
     <section class="mhero"><b>Talk 1:1 with verified students who completed ${esc(h.short)}</b>
       <div class="flow"><span>View the profile</span><span>Chat to agree on details</span><span>Confirm and pay</span></div></section>
-    ${chatListHTML()}
-    <div class="list-head"><h3>Verified mentors</h3><span>Price agreed in chat</span></div>
-    ${mentorsFor().map(m=>`<button class="mentor" data-act="mentor" data-v="${m.id}">
+    <div class="list-head"><h3>Verified mentors</h3><span>Your school and major first</span></div>
+    ${list.map(m=>{const rt=ratingOf(m); return `<button class="mentor" data-act="mentor" data-v="${m.id}">
       <span class="ava">${m.name[0]}</span>
       <span class="t"><span class="name">${m.name}<span class="badge">${ic('shield',14,2.4)}Verified</span>${S.reqs[m.id]&&S.reqs[m.id].status==='booked'?'<span class="pill ok">Booked</span>':S.chats[m.id]?'<span class="pill cat">In chat</span>':''}</span>
-        <span class="prog">${esc(m.prog)} · ${m.major}</span>
+        <span class="school"><b data-notr>${esc(mSchool(m))}</b>${matchPills(m)}</span>
+        <span class="prog">${ic('plane',13)} ${esc(m.prog)}</span>
         <span class="tags">${m.topics.map(t=>`<span class="pill cat">${t}</span>`).join('')}</span>
         <span class="intro" data-notr>${esc(tx(m.intro,h))}</span>
-        <span class="bottom"><span class="pr"><span class="rate">${ic('star',13)}<b>${m.rate}</b><span class="num">(${m.reviews})</span></span><span class="offer-n">${m.offer.length} mentoring offers</span></span><span class="mcta${S.chats[m.id]?' ghost':''}">${S.chats[m.id]?'Open chat':'View profile'}</span></span></span>
-    </button>`).join('')}
+        <span class="bottom"><span class="pr">${rt.n?`<span class="rate">${ic('star',13)}<b>${rt.avg}</b><span class="num">(${rt.n})</span></span>`:'<span class="rate">No reviews yet</span>'}<span class="offer-n">${m.offer.length} mentoring offers</span></span><span class="mcta${S.chats[m.id]?' ghost':''}">${S.chats[m.id]?'Open chat':'View profile'}</span></span></span>
+    </button>`}).join('')}
     <p class="why">Read a mentor’s profile, then chat to agree on what you’ll cover, how long and the price. You pay only when you confirm the mentor’s proposal. Only students who completed the program can become mentors. Mentors receive the fee minus a platform commission.</p>
   </div>`;
 }
@@ -2465,7 +2580,7 @@ function mentorTab(){
 function perksTab(){
   const G=perkGroups(), {dep,ret,dest}=trip();
   const show=S.bcat==='All'?G:G.filter(g=>g.key===S.bcat);
-  return `<div class="bar main"><h2>Perks</h2></div>
+  return `${mainBar('Perks')}
   <div class="scroll pad">
     <button class="tripcard" data-act="editDep"><span class="ico">${ic('plane',20)}</span><span class="t"><small>Your trip</small><b>Seoul → ${esc(dest)}</b><span class="num">${fmtShort(dep)} – ${fmtY(ret)} · ${stayShort(stayDays())}</span></span><span class="edit">Edit</span></button>
     <div class="cat-row five" style="margin-top:14px">${G.map(g=>`<button class="${S.bcat===g.key?'on':''}" data-act="bcat" data-v="${g.key}" aria-pressed="${S.bcat===g.key}"><span class="ico">${ic(g.icon)}</span>${g.key}</button>`).join('')}</div>
@@ -2480,7 +2595,7 @@ function perksTab(){
 
 function meTab(){
   const h=host(),p=prog(),P=S.profile;
-  return `<div class="bar main"><h2>Me</h2></div>
+  return `${mainBar('Me')}
   <div class="scroll pad">
     ${AUTH.user?`<div class="me"><span class="ava">${esc((AUTH.user.name||'?')[0])}</span><span class="t"><b data-notr>${esc(AUTH.user.name)}</b><small><span data-notr>${esc(AUTH.user.email)}</span><br>${esc(P.univ||'Home university not set')} · ${esc(P.major)} · ${esc(P.year)}</small></span></div>`
       :`<div class="me"><span class="ava">${ic('user',22)}</span><span class="t"><b>Browsing as a guest</b><small>Log in to apply as a mentor and keep your account.</small></span><button class="btn sm" data-go="login">Log in</button></div>`}
@@ -2490,24 +2605,24 @@ function meTab(){
       <button data-act="changeProg">${ic('swap',20)}<span class="t">Change program</span>${ic('chev',18)}</button>
       <button data-act="editDep">${ic('plane',20)}<span class="t">Travel dates<br><small>${fmtShort(depDate())} → ${fmtY(retDate())} · ${stayShort(stayDays())}</small></span>${ic('chev',18)}</button>
       <button data-act="toast" data-v="${S.remind.size} reminders are on">${ic('bell',20)}<span class="t">Deadline reminders<br><small>${S.remind.size} on</small></span>${ic('chev',18)}</button>
-      <button data-act="tab" data-v="mentor">${ic('chat',20)}<span class="t">Mentor chats</span><small>${Object.keys(S.chats).length}</small></button>
       <button data-act="openLang">${ic('globe',20)}<span class="t">Language<br><small>${LANG==='ko'?'한국어':'English'}</small></span>${ic('chev',18)}</button>
-      <a href="/privacy" target="_blank" rel="noopener">${ic('shield',20)}<span class="t">Privacy Policy</span>${ic('ext',16)}</a>
-      <a href="/terms" target="_blank" rel="noopener">${ic('doc',20)}<span class="t">Terms of Service</span>${ic('ext',16)}</a>
+      <button data-act="doc" data-v="privacy">${ic('shield',20)}<span class="t">Privacy Policy</span>${ic('chev',18)}</button>
+      <button data-act="doc" data-v="terms">${ic('doc',20)}<span class="t">Terms of Service</span>${ic('chev',18)}</button>
       ${AUTH.user?`<button data-act="logout">${ic('back',20)}<span class="t">Log out</span></button>`:`<button data-go="splash">${ic('back',20)}<span class="t">Back to start</span></button>`}
     </div>
   </div>`;
 }
 
 /* ---------------- mentor profile sheet: profile first, then chat ---------------- */
-function openMentorSheet(id){
-  const m=mentorsFor()[id], h=host(); S.mentorSheet=id;
+function openMentorSheet(id,keep){
+  const m=mentorsFor()[id], h=host(); S.mentorSheet=id; if(!S.reviews[m.key]) loadReviews(m);
+  const prevSc=$('#sheet .scroll'), top=keep&&prevSc?prevSc.scrollTop:0, rt=ratingOf(m), rv=S.rv.key===m.key?S.rv:null, booked=(S.reqs[id]||{}).status==='booked', mine=reviewsOf(m).find(x=>x.mine);
   const row=(icn,label,o)=>tx(o,h)==='—'?'':`<div class="did">${ic(icn,18)}<span><small>${label}</small><b data-notr>${esc(tx(o,h))}</b></span></div>`;
   const sheet=$('#sheet');
   sheet.innerHTML=`<div class="grab"></div>
     <div class="scroll">
-      <div class="mentor" style="border:0;box-shadow:none;padding-top:6px"><span class="ava">${m.name[0]}</span><span class="t"><span class="name">${m.name}<span class="badge">${ic('shield',14,2.4)}Verified mentor</span></span><span class="prog">${esc(m.prog)} · ${m.major}</span>
-        <span class="rate" style="margin-top:6px">${ic('star',14)}<b>${m.rate}</b> · ${m.reviews} reviews</span></span></div>
+      <div class="mentor" style="border:0;box-shadow:none;padding-top:6px"><span class="ava">${m.name[0]}</span><span class="t"><span class="name">${m.name}<span class="badge">${ic('shield',14,2.4)}Verified mentor</span></span><span class="school"><b data-notr>${esc(mSchool(m))}</b>${matchPills(m)}</span><span class="prog">${ic('plane',13)} ${esc(m.prog)}</span>
+        <span class="rate" style="margin-top:6px">${rt.n?`${ic('star',14)}<b>${rt.avg}</b> · ${rt.n} reviews`:'No reviews yet'}</span></span></div>
       <p class="mintro" data-notr>${esc(tx(m.intro,h))}</p>
       <div class="d-sec"><h3>What I did there</h3><div class="dids">
         ${row('globe','Activities',m.did.act)}${row('chat','Clubs and networking',m.did.club)}${row('doc','Research or lab work',m.did.lab)}${row('star','Courses that helped',m.did.course)}</div></div>
@@ -2517,9 +2632,20 @@ function openMentorSheet(id){
         <div class="vitem">${ic('mail',18)}<span>University email verified<small>Enrollment confirmed</small></span></div>
         <div class="vitem">${ic('doc',18)}<span>${esc(h.short)} transcript checked<small>Matched by our team</small></span></div>
         <div class="vitem">${ic('shield',18)}<span>Team review passed<small>Approved Dec 2025</small></span></div></div></div>
+      <div class="d-sec" style="padding-bottom:8px" id="rvSec"><h3>Reviews${rt.n?` <span class="rvavg">${ic('star',15)} ${rt.avg} · ${rt.n}</span>`:''}</h3>
+        ${rv&&rv.open?`<div class="rvform"><div class="rvstars" role="radiogroup" aria-label="Rating">${[1,2,3,4,5].map(k=>`<button class="${k<=rv.rating?'on':''}" data-act="rvStar" data-v="${k}" aria-label="${k} / 5">★</button>`).join('')}</div>
+          <textarea class="input area" id="rvText" rows="4" maxlength="500" placeholder="What helped you most? At least 10 characters.">${esc(rv.text)}</textarea>
+          ${rv.err?`<p class="aerr" role="alert">${esc(rv.err)}</p>`:''}
+          <div class="row" style="gap:8px;justify-content:flex-end;margin-top:8px"><button class="btn sm ghost" data-act="rvCancel">Cancel</button><button class="btn sm" data-act="rvSubmit" data-v="${id}" ${rv.busy?'disabled':''}>Post review</button></div></div>`
+        :!booked&&!mine?`<p class="hint">You can review ${esc(m.name)} after you confirm a mentoring in chat.</p>`
+        :AUTH.ready&&!AUTH.configured?'<p class="hint">Reviews open once accounts are connected.</p>'
+        :!AUTH.user?'<button class="btn sm ghost" data-go="login">Log in to write a review</button>'
+        :`<button class="btn sm ghost" data-act="rvOpen" data-v="${id}">${mine?'Edit my review':'Write a review'}</button>`}
+        <div class="rvlist">${reviewsOf(m).map(reviewHTML).join('')||'<p class="hint">No reviews yet.</p>'}</div></div>
     </div>
     <div class="cta"><button class="btn" data-act="startChat" data-v="${id}">${ic('chat',18)}<span>${S.chats[id]?'Open chat':`Chat with ${m.name}`}</span></button></div>`;
   translate(sheet); sheet.classList.add('on'); $('#scrim').classList.add('on');
+  const ns=sheet.querySelector('.scroll'); if(ns) ns.scrollTop=top;
 }
 function openDepSheet(){
   const sug=depOf(prog(),host()); const sheet=$('#sheet');
@@ -2540,7 +2666,7 @@ const REPLIES=[
   {en:'Thanks for reaching out! What are you most worried about right now? I can shape the session around it.',ko:'연락 주셔서 고마워요! 지금 가장 걱정되는 게 뭐예요? 그걸 중심으로 세션을 구성할게요.'},
   {en:'Got it. Here’s what I’d suggest. Take a look at the proposal below and tell me if you want to change anything.',ko:'알겠어요. 이렇게 진행하면 좋을 것 같아요. 아래 제안서를 보고 바꾸고 싶은 게 있으면 말해 주세요.'},
   {en:'Sure, we can adjust that. Just let me know.',ko:'네, 조정할 수 있어요. 편하게 말해 주세요.'}];
-function openChat(id){ closeSheet(); S.chatWith=id; S.screen='chat'; render(); setTimeout(()=>{const i=$('#chatInput'); i&&i.focus()},50) }
+function openChat(id){ closeSheet(); S.chatC=null; S.chatWith=id; S.screen='chat'; render(); setTimeout(()=>{const i=$('#chatInput'); i&&i.focus()},50) }
 const propHTML=(x,id)=>{const r=S.reqs[id]||{};const booked=r.status==='booked'&&r.prop===x.pid;
   return `<div class="prop"><small class="rq">Mentoring proposal</small><b data-notr>${esc(x.title)}</b>
     <div class="ometa"><span>${ic('clock',14)} ${x.len}</span><span>${x.n} sessions</span><span>${x.fmt}</span></div>
@@ -2551,10 +2677,11 @@ const msgHTML=x=>x.prop?`<div class="msg them wide">${propHTML(x,S.chatWith)}<ti
   :`<div class="msg ${x.me?'me':'them'}"><p data-notr>${esc(x.me?x.text:(LANG==='ko'?x.ko:x.en))}</p><time>${x.time}</time></div>`;
 function sendMsg(){
   const i=$('#chatInput'); const t=i&&i.value.trim(); if(!t){i&&i.focus();return}
-  const id=S.chatWith, c=S.chats[id]; c.push({me:true,text:t,time:hm(new Date())}); S.typing=id; render(); $('#chatInput').focus();
-  setTimeout(()=>{const n=c.filter(x=>!x.me&&!x.sys&&!x.prop).length; c.push({...REPLIES[Math.min(n,REPLIES.length-1)],me:false,time:hm(new Date())});
+  if(S.chatC){(S.cchat[S.chatC]=S.cchat[S.chatC]||[]).push({me:true,text:t,time:hm(new Date()),ts:Date.now()}); render(); const n=$('#chatInput'); n&&n.focus(); return}
+  const id=S.chatWith, c=S.chats[id]; c.push({me:true,text:t,time:hm(new Date()),ts:Date.now()}); S.typing=id; render(); $('#chatInput').focus();
+  setTimeout(()=>{const n=c.filter(x=>!x.me&&!x.sys&&!x.prop).length; c.push({...REPLIES[Math.min(n,REPLIES.length-1)],me:false,time:hm(new Date()),ts:Date.now()});
     if(n===1){const m=mentorsFor()[id], o=m.offer[0]; c.push({prop:true,pid:'p'+Date.now(),title:tx(o.t,host()),len:o.len,n:o.n,fmt:o.fmt,price:id===1?'40,000':id===2?'25,000':'30,000',time:hm(new Date())})}
-    S.typing=null; if(S.screen==='chat'&&S.chatWith===id){const v=$('#chatInput').value; render(); const ni=$('#chatInput'); ni.value=v; ni.focus()}},1300);
+    S.typing=null; if(S.screen==='chat'&&!S.chatC&&S.chatWith===id){const v=$('#chatInput').value; render(); const ni=$('#chatInput'); ni.value=v; ni.focus()}},1300);
 }
 // read every field first: re-rendering for the busy state would otherwise wipe what the student typed
 const formSnap=()=>{const F={}; view.querySelectorAll('input[id],textarea[id],select[id]').forEach(el=>{F[el.id]=el.type==='checkbox'?el.checked:el.type==='file'?null:el.value}); return F};
@@ -2564,7 +2691,7 @@ function signedIn(u){AUTH.user=u; S.auth={mode:'login',step:0,email:'',busy:fals
 // read the mentor form: preset choice or the student's own value
 function mentorForm(F){const g=id=>String(F[id]||'').trim(), pickV=id=>F[id+'Sel']==='__custom'?g(id):String(F[id+'Sel']||'');
   const raw=pickV('mfN'), n=Number(raw);
-  const pf={act:g('mfAct'),club:g('mfClub'),lab:g('mfLab'),course:g('mfCourse'),offer:g('mfOffer'),length:pickV('mfLen'),sessions:Number.isInteger(n)?n:raw,format:pickV('mfFmt')};
+  const pf={home:g('mfHome'),major:g('mfMajor'),act:g('mfAct'),club:g('mfClub'),lab:g('mfLab'),course:g('mfCourse'),offer:g('mfOffer'),length:pickV('mfLen'),sessions:Number.isInteger(n)?n:raw,format:pickV('mfFmt')};
   S.apply.form=pf; // keep the text on screen even if validation fails
   if(!/^\d+$/.test(String(raw))||n<1||n>20) throw {code:'bad_sessions'};
   return pf}
@@ -2575,16 +2702,18 @@ let tt;
 function toast(msg){const t=$('#toast');t.innerHTML=ic('check',18,2.6)+'<span>'+esc(trText(msg))+'</span>';t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2200)}
 
 /* ---------------- render ---------------- */
-const TABS=[['home','list','Home'],['community','chat','Community'],['mentor','mentor','Mentors'],['perks','gift','Perks'],['me','user','Me']];
+const TABS=[['home','list','Home'],['community','users','Community'],['mentor','mentor','Mentors'],['chat','chat','Chats'],['perks','gift','Perks'],['me','user','Me']];
 let lastKey='';
 function render(keepScroll){
-  const key=S.screen+S.tab+S.detail;
+  const restore=navSync()==='pop'?KEEP[NAV.key]:null;
+  const key=S.screen+S.tab+S.detail+S.chatWith+S.chatC+S.doc;
   const sc=view.querySelector('.scroll'); const top=sc&&keepScroll&&key===lastKey?sc.scrollTop:0;
   const focusId=document.activeElement&&view.contains(document.activeElement)?document.activeElement.id:null;
   view.classList.toggle('surf',S.screen==='app'||S.screen==='detail');
   view.innerHTML=SCREENS[S.screen]();
   const ns=view.querySelector('.scroll'); if(ns) ns.scrollTop=S.screen==='chat'?ns.scrollHeight:top;
   if(S.screen==='profile'&&$('#homeList')) ($('#homeList').innerHTML=homeListHTML(),translate($('#homeList')));
+  if(restore){ Object.entries(restore).forEach(([id,v])=>{const el=document.getElementById(id); if(!el||el.type==='file'||v===null) return; if(el.type==='checkbox') el.checked=v; else el.value=v}); delete KEEP[NAV.key] }
   if(focusId&&document.getElementById(focusId)){const el=document.getElementById(focusId);el.focus();if(el.setSelectionRange&&el.type!=='email')el.setSelectionRange(el.value.length,el.value.length)}
   lastKey=key;
   const tb=$('#tabbar'); const showTabs=S.screen==='app';
@@ -2594,12 +2723,62 @@ function render(keepScroll){
   renderJump();
   translate(view); translate($('#tabbar')); translate($('#side'));
 }
-const JUMPS=[['Language',{screen:'lang'}],['Splash',{screen:'splash'}],['Home university',{screen:'profile'}],['Host university',{screen:'school'}],['Program',{screen:'program'}],['Checklist',{screen:'app',tab:'home'}],['Checklist item',{screen:'detail'}],['Community',{screen:'app',tab:'community'}],['Verified mentors',{screen:'app',tab:'mentor'}],['Perks',{screen:'app',tab:'perks'}],['Mentor verification',{screen:'mentorApply'}]];
+const JUMPS=[['Language',{screen:'lang'}],['Splash',{screen:'splash'}],['Home university',{screen:'profile'}],['Host university',{screen:'school'}],['Program',{screen:'program'}],['Checklist',{screen:'app',tab:'home'}],['Checklist item',{screen:'detail'}],['Community',{screen:'app',tab:'community'}],['Verified mentors',{screen:'app',tab:'mentor'}],['Chats',{screen:'app',tab:'chat'}],['Perks',{screen:'app',tab:'perks'}],['Mentor verification',{screen:'mentorApply'}]];
 function renderJump(){
   const c=JUMPS.findIndex(([,j])=>j.screen===S.screen&&(!j.tab||j.tab===S.tab));
   $('#jump').innerHTML=JUMPS.map(([l],k)=>`<button class="${k===c?'on':''}" data-jump="${k}"><span class="n">${k+1}</span>${l}</button>`).join('');
 }
 function go(screen){S.screen=screen; if(screen!=='detail')S.detail=null; closeSheet(); render()}
+const DOCS={};
+function loadDoc(k){ if(DOCS[k]!==undefined) return; DOCS[k]=null;
+  fetch('/'+k,{cache:'no-cache'}).then(r=>{if(!r.ok) throw 0; return r.text()}).then(t=>{const m=new DOMParser().parseFromString(t,'text/html').querySelector('main'); if(!m) throw 0;
+    m.querySelectorAll('.back,script').forEach(x=>x.remove()); const h=m.querySelector('h1'); const title=h?h.textContent:''; if(h) h.remove(); DOCS[k]={title,html:m.innerHTML}})
+  .catch(()=>{DOCS[k]={title:'',html:`<p class="loadmsg">${trText('Could not load the page. Check your connection.')}</p>`}})
+  .then(()=>{if(S.screen==='doc'&&S.doc===k) render(true)})}
+function openDoc(k){ if(k!=='privacy'&&k!=='terms') return; S.doc=k; go('doc') }
+/* Every screen change is a browser history entry, so the back arrow, the browser's back button
+   and a left-to-right swipe all return to the page the student was actually on. */
+const NAVK=['screen','tab','detail','chatWith','chatC','cv','doc'];
+const NAV={key:'',d:0,pop:false,prev:''}; const KEEP={};
+const PARENT={detail:{screen:'app'},chat:{screen:'app',tab:'chat'},mentorApply:{screen:'app',tab:'me'},doc:{screen:'app',tab:'me'},program:{screen:'school'},school:{screen:'profile'},profile:{screen:'login'},login:{screen:'splash'}};
+const parentOf=()=>PARENT[S.screen]||(S.screen==='app'&&S.tab!=='home'?{screen:'app',tab:'home'}:null);
+const canBack=()=>NAV.d>0||!!parentOf();
+function navSync(){
+  const snap={}; NAVK.forEach(k=>snap[k]=S[k]===undefined?null:S[k]);
+  const key=JSON.stringify(snap); if(key===NAV.key) return false;
+  let kind='push';
+  if(NAV.pop){NAV.pop=false; kind='pop'}
+  else if(!NAV.key||NAV.prev==='building'||NAV.prev==='lang'&&S.screen==='splash'){ history.replaceState({gg:snap,d:NAV.d},'') }
+  else { KEEP[NAV.key]=formSnap(); NAV.d++; history.pushState({gg:snap,d:NAV.d},'') }
+  NAV.key=key; NAV.prev=S.screen; return kind;
+}
+function navBack(){
+  if($('#sheet').classList.contains('on')){closeSheet(); return}
+  if(NAV.d>0){history.back(); return}
+  const p=parentOf(); if(p){Object.assign(S,p); if(S.screen!=='detail') S.detail=null; render()}
+}
+addEventListener('popstate',e=>{const st=e.state&&e.state.gg; if(!st) return;
+  closeSheet(); NAV.d=e.state.d||0; Object.assign(S,st);
+  if(S.screen==='detail'&&!items().some(i=>i.id===S.detail)) S.screen='app';
+  NAV.pop=true; render()});
+// swipe from left to right anywhere on a page to go back
+(()=>{const box=view.parentElement; let g=null;
+  const hScroll=t=>{for(let e=t;e&&e!==box;e=e.parentElement){if(e.scrollWidth>e.clientWidth+2&&/(auto|scroll)/.test(getComputedStyle(e).overflowX)) return true} return false};
+  const target=()=>$('#sheet').classList.contains('on')?$('#sheet'):view;
+  const reset=el=>{el.style.transition='transform .2s ease'; el.style.transform=''; setTimeout(()=>{el.style.transition=''},220)};
+  box.addEventListener('pointerdown',e=>{
+    if(!e.isPrimary||e.button>0||e.target.closest('input,textarea,select,[contenteditable],.tabbar')||hScroll(e.target)) return;
+    if(!canBack()&&!$('#sheet').classList.contains('on')) return;
+    g={x:e.clientX,y:e.clientY,drag:false,el:target()}});
+  box.addEventListener('pointermove',e=>{ if(!g) return; const dx=e.clientX-g.x, dy=e.clientY-g.y;
+    if(!g.drag){ if(Math.abs(dy)>12&&Math.abs(dy)>Math.abs(dx)){g=null; return} if(dx>14&&dx>Math.abs(dy)*1.5){ if(e.pointerType==='mouse'&&String(getSelection())) {g=null;return} g.drag=true } }
+    if(g&&g.drag){ g.el.style.transform=`translateX(${Math.max(0,dx)*.6}px)` } });
+  const end=e=>{ if(!g) return; const G=g; g=null; if(!G.drag) return; const dx=e.clientX-G.x; reset(G.el);
+    // the drag must not also click the card it started on
+    const stop=ev=>{ev.stopPropagation(); ev.preventDefault()}; addEventListener('click',stop,{capture:true,once:true}); setTimeout(()=>removeEventListener('click',stop,{capture:true}),50);
+    if(e.type==='pointerup'&&dx>70) navBack() };
+  box.addEventListener('pointerup',end); box.addEventListener('pointercancel',end);
+})();
 
 /* ---------------- events ---------------- */
 document.addEventListener('click',e=>{
@@ -2608,13 +2787,26 @@ document.addEventListener('click',e=>{
     if(t.screen==='detail'){const v=items().find(i=>i.cat==='Visa'&&!S.done.has(i.id))||items()[2]; S.detail=v.id} else S.detail=null;
     if(t.screen==='program'&&!S.pick) S.pick=host();
     closeSheet(); render(); return}
+  const dl=e.target.closest('[data-doc]'); if(dl){e.preventDefault(); openDoc(dl.dataset.doc); return}
   const g=e.target.closest('[data-go]');
   if(g){ go(g.dataset.go); return}
   const a=e.target.closest('[data-act]'); if(!a) return;
   const v=a.dataset.v, act=a.dataset.act;
   if(act.startsWith('go:')) return go(act.slice(3));
   switch(act){
-    case 'back': go('app'); break;
+    case 'back': navBack(); break;
+    case 'doc': openDoc(v); break;
+    case 'chf': S.chf=v; render(true); break;
+    case 'openConv': {const [t,id]=[v.slice(0,1),v.slice(2)]; if(t==='m') openChat(+id); else {closeSheet(); S.chatWith=null; S.chatC=id; S.screen='chat'; render(); setTimeout(()=>{const i=$('#chatInput'); i&&i.focus()},50)} break}
+    case 'rvOpen': {const m=mentorsFor()[+v], mine=reviewsOf(m).find(x=>x.mine); S.rv={key:m.key,open:true,rating:mine?mine.rating:0,text:mine?mine.text:'',busy:false,err:''}; openMentorSheet(+v,true); setTimeout(()=>{const t=$('#rvText'); t&&t.focus()},30); break}
+    case 'rvStar': {const t=$('#rvText'); if(t) S.rv.text=t.value; S.rv.rating=+v; S.rv.err=''; openMentorSheet(S.mentorSheet,true); break}
+    case 'rvCancel': S.rv={key:null,open:false,rating:0,text:'',busy:false,err:''}; openMentorSheet(S.mentorSheet,true); break;
+    case 'rvSubmit': {const id=+v, m=mentorsFor()[id], t=$('#rvText'); S.rv.text=t?t.value.trim():S.rv.text;
+      const fail=code=>{S.rv.err=trText(ERR[code]||ERR.network); S.rv.busy=false; openMentorSheet(id,true)};
+      if(!S.rv.rating) return fail('bad_rating'); if(S.rv.text.length<10) return fail('review_too_short');
+      S.rv.busy=true; S.rv.err=''; openMentorSheet(id,true);
+      api('reviews',{m:m.key,rating:S.rv.rating,text:S.rv.text}).then(j=>{const L=(S.reviews[m.key]||{list:[]}).list.filter(x=>!x.mine); S.reviews[m.key]={list:[j.review,...L],loaded:true};
+        S.rv={key:null,open:false,rating:0,text:'',busy:false,err:''}; openMentorSheet(id,true); toast('Review posted')}).catch(e=>fail(e.code)); break}
     case 'year': S.profile.year=v; render(true); break;
     case 'pickHome': S.profile.univ=v; S.homeQ=''; render(true); break;
     case 'unpickHome': S.profile.univ=''; S.homeQ=''; render(true); setTimeout(()=>$('#homeQ')&&$('#homeQ').focus()); break;
@@ -2638,7 +2830,7 @@ document.addEventListener('click',e=>{
     case 'ctab': S.ctab=v; render(true); break;
     case 'like': {if(!S.joined.has(v.split('#')[0])) return toast('Join this community first'); S.liked.has(v)?S.liked.delete(v):S.liked.add(v); render(true); break}
     case 'cjoinask': S.joining=ckey(cview().h); render(true); break;
-    case 'cjoin': {const c=cview(),k=ckey(c.h); S.joined.add(k); S.jstatus[k]=v; S.cinfo[k]=c; S.joining=null; render(true); toast(`Joined the ${c.h.short} community`); break}
+    case 'cjoin': {const c=cview(),k=ckey(c.h); S.joined.add(k); S.jstatus[k]=v; S.cinfo[k]=c; S.joining=null; render(true); toast('Joined. The group chat is in the Chats tab'); break}
     case 'cleave': {const c=cview(),k=ckey(c.h); S.joined.delete(k); render(true); toast('You left this community'); break}
     case 'cpick': {const u=DATA.unis.find(x=>x[0]===v&&x[1]===a.dataset.cc); const h=makeHost(u); S.cv=ckey(h)===myCKey()?null:{h}; S.cq=''; S.ctab='feed'; S.joining=null; render(); break}
     case 'cgo': S.cv=v&&v!==myCKey()?S.cinfo[v]:null; S.joining=null; render(); break;
@@ -2646,7 +2838,7 @@ document.addEventListener('click',e=>{
     case 'csend': {const c=cview(), i=$('#cMsg'), x=i&&i.value.trim(); if(!x){i&&i.focus();return} cChat(c).push({me:true,text:x,time:hm(new Date())}); render(true); const sc=$('#cScroll'); if(sc) sc.scrollTop=sc.scrollHeight; $('#cMsg').focus(); break}
     case 'chat': openChat(+v); break;
     case 'sendMsg': sendMsg(); break;
-    case 'startChat': {const id=+v; if(!S.chats[id]) S.chats[id]=[{sys:LANG==='ko'?'채팅이 시작됐어요. 멘토링 내용, 시간, 금액을 편하게 상의하세요.':'Chat started. Talk through the content, length and price.'}]; openChat(id); break}
+    case 'startChat': {const id=+v; if(!S.chats[id]) S.chats[id]=[{sys:LANG==='ko'?'채팅이 시작됐어요. 멘토링 내용, 시간, 금액을 편하게 상의하세요.':'Chat started. Talk through the content, length and price.',ts:Date.now()}]; openChat(id); break}
     case 'confirmProp': {const id=S.chatWith; S.reqs[id]={status:'booked',prop:v}; S.chats[id].push({sys:LANG==='ko'?'멘토링이 확정됐어요. 일정은 이 채팅에서 정해요.':'Mentoring confirmed. Settle the schedule in this chat.'}); render(); toast('Mentoring confirmed'); break}
     case 'mentor': openMentorSheet(+v); break;
     case 'closeSheet': closeSheet(); break;
@@ -2662,7 +2854,7 @@ document.addEventListener('click',e=>{
       toast(items().map(i=>i.title).join()!==before?`Stay: ${stayShort(stayDays())}. Visa steps updated`:`Stay: ${stayShort(stayDays())}. Deadlines updated`); break}
     case 'resetDep': S.depOverride=null; S.retOverride=null; closeSheet(); render(true); toast('Using the suggested travel dates'); break;
     case 'bcat': S.bcat=S.bcat===v?'All':v; render(true); break;
-    case 'changeProg': S.pick=host(); S.region=host().region; go('school'); break;
+    case 'changeProg': S.pick=host(); S.region=regGroup(host().region); go('school'); break;
     case 'authMode': S.auth={mode:v,step:0,email:S.auth.email,busy:false,err:''}; render(); break;
     case 'authSend': authRun(async F=>{const email=F.auEmail||S.auth.email; S.auth.email=email.trim(); await api('auth/request-code',{email:S.auth.email,purpose:S.auth.mode==='reset'?'reset':'signup'}); S.auth.step=1; toast('We sent a code to your email')}); break;
     case 'authVerify': authRun(async F=>{const g=id=>F[id]||''; const j=await api('auth/verify',{email:S.auth.email,code:String(g('auCode')).trim(),password:g('auPw'),name:g('auName'),agree:!!F.auAgree,purpose:S.auth.mode==='reset'?'reset':'signup'}); signedIn(j.user)}); break;
@@ -2674,7 +2866,7 @@ document.addEventListener('click',e=>{
       const data=await new Promise((ok,no)=>{const r=new FileReader(); r.onload=()=>ok(String(r.result).split(',')[1]||''); r.onerror=no; r.readAsDataURL(f)});
       const j=await api('mentor/apply',{file:{name:f.name,data}}); AUTH.user=j.user; S.apply.file=''; S.apply.fileObj=null; toast('Submitted. The review takes up to 24 hours')}); break;
     case 'apRefresh': apRun(async()=>{await loadMe(); toast(mStat()==='approved'?'Review approved':'Still in review')}); break;
-    case 'apDraft': case 'apPublish': apRun(async F=>{const pf=mentorForm(F); if(act==='apPublish'&&!pf.offer){throw {code:'profile_incomplete'}}
+    case 'apDraft': case 'apPublish': apRun(async F=>{const pf=mentorForm(F); if(act==='apPublish'&&(!pf.offer||!pf.home||!pf.major)){throw {code:'profile_incomplete'}}
       S.apply.form=pf; try{localStorage.setItem('gg_mentor_draft',JSON.stringify(pf))}catch(e){}
       const j=await api('mentor/profile',{action:act==='apPublish'?'publish':'draft',profile:pf}); AUTH.user=j.user; toast(act==='apPublish'?'Your profile is live':'Draft saved')},'form'); break
   }
