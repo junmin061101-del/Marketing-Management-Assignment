@@ -91,7 +91,7 @@ await pool(urls, 12, async url => {
 // ---- 3. check each English minimum still appears on its source page
 const strip = t => t.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi, ' ').replace(/<[^>]+>/g, ' ')
   .replace(/&nbsp;|&#160;/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, ' ');
-const NAME = { 'TOEFL iBT': /TOEFL/i, IELTS: /IELTS/i, DET: /Duolingo|DET\b/i, Cambridge: /Cambridge|CAE|C1 Advanced/i };
+const NAME = { 'TOEFL iBT': /TOEFL/i, IELTS: /IELTS|IETLS/i, DET: /Duolingo|DET\b/i, Cambridge: /Cambridge|CAE|C1 Advanced/i };
 const english = {};
 await pool(Object.entries(ENGLISH).flatMap(([uni, v]) => Object.entries(v).map(([k, e]) => [uni, k, e])), 6, async ([uni, k, e]) => {
   const id = uni + '|' + k;
@@ -100,9 +100,10 @@ await pool(Object.entries(ENGLISH).flatMap(([uni, v]) => Object.entries(v).map((
   const text = strip(r.text);
   const missing = e.t.filter(([test, min]) => {
     if (!/\d/.test(min)) return false; // "Not required", Cambridge grade letters
-    if (!NAME[test]?.test(text)) return true;
+    if (!NAME[test]) return false; // CEFR levels, JLPT, French etc. are not machine-checked
+    if (!NAME[test].test(text)) return true;
     const n = min.replace(/\.0$/, '');
-    return !new RegExp(`(^|[^\\d.])${n.replace('.', '\\.')}(\\.0)?(?![\\d])`).test(text);
+    return !new RegExp(`(^|[^\\d.,])${n.replace('.', '[.,]')}([.,]0)?(?![\\d])`).test(text); // 6,5 as well as 6.5
   }).map(([test, min]) => `${test} ${min}`);
   english[id] = missing.length ? { s: 'changed', missing } : { s: 'ok' };
 });
