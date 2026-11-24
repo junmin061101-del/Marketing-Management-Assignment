@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>운영 대시보드 · 교환가자</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{--bg:#F2F4F6;--card:#fff;--ink:#191F28;--ink-2:#4E5968;--ink-3:#8B95A1;--line:#E5E8EB;--primary:#2F6FED;--primary-soft:#EAF1FE;--warn:#C2410C;--warn-soft:#FFF1E7;--ok:#0E7A4B;--ok-soft:#E6F6EE}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0F1013;--card:#1E1F24;--ink:#ECEEF1;--ink-2:#AEB5BE;--ink-3:#6E7682;--line:#2B2E35;--primary:#4E86F7;--primary-soft:#1C2A45;--warn:#FB923C;--warn-soft:#3A2416;--ok:#34D399;--ok-soft:#12301F}}
+:root[data-theme="dark"]{--bg:#0F1013;--card:#1E1F24;--ink:#ECEEF1;--ink-2:#AEB5BE;--ink-3:#6E7682;--line:#2B2E35;--primary:#4E86F7;--primary-soft:#1C2A45;--warn:#FB923C;--warn-soft:#3A2416;--ok:#34D399;--ok-soft:#12301F}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo',sans-serif;line-height:1.5;word-break:keep-all;overflow-wrap:break-word;-webkit-font-smoothing:antialiased}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+main{max-width:1080px;margin:0 auto;padding:20px 16px 64px}
+header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+header h1{font-size:22px;letter-spacing:-.03em;margin:0;flex:1}
+header small{color:var(--ink-3);font-size:13px}
+.btn{height:40px;padding:0 16px;border-radius:12px;background:var(--primary);color:#fff;font-weight:700;font-size:14px;white-space:nowrap}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.ghost{background:var(--card);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+.btn.warn{background:var(--warn-soft);color:var(--warn)}
+.btn.sm{height:34px;padding:0 12px;font-size:13px;border-radius:10px}
+.input{width:100%;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);padding:0 14px;font-size:15px}
+textarea.input{height:auto;padding:10px 14px;resize:vertical;min-height:64px}
+.input:focus{outline:2px solid var(--primary);outline-offset:-1px}
+.card{background:var(--card);border-radius:20px;padding:20px}
+.login{max-width:400px;margin:12vh auto 0}
+.login h1{font-size:24px;margin:0 0 6px;letter-spacing:-.03em}
+.login p{color:var(--ink-2);font-size:14px;margin:0 0 16px}
+.login .row{display:flex;gap:8px;margin-top:10px}
+.err{color:var(--warn);font-size:13px;margin:8px 0 0}
+.tabs{display:flex;gap:4px;background:var(--card);border-radius:14px;padding:4px;margin-bottom:16px;overflow-x:auto}
+.tabs button{height:38px;padding:0 14px;border-radius:10px;font-weight:600;font-size:14px;color:var(--ink-2);white-space:nowrap;display:flex;align-items:center;gap:6px}
+.tabs button.on{background:var(--primary-soft);color:var(--primary)}
+.count{min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--line);color:var(--ink-2);font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+.count.hot{background:var(--warn);color:#fff}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stat{background:var(--card);border-radius:16px;padding:16px}
+.stat small{display:block;color:var(--ink-3);font-size:13px}
+.stat b{display:block;font-size:28px;letter-spacing:-.03em;font-variant-numeric:tabular-nums;margin-top:2px}
+.stat em{font-style:normal;font-size:12px;color:var(--warn);font-weight:600}
+h2{font-size:17px;margin:24px 0 10px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
+h2 span{font-size:13px;color:var(--ink-3);font-weight:500}
+.empty{color:var(--ink-3);font-size:14px;padding:20px;text-align:center;background:var(--card);border-radius:16px}
+.todo{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--card);border-radius:14px;margin-bottom:8px}
+.todo .t{flex:1;min-width:0}.todo b{font-size:15px}.todo small{display:block;color:var(--ink-3);font-size:13px}
+.pill{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:7px;font-size:12px;font-weight:700;background:var(--bg);color:var(--ink-2);white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}.pill.warn{background:var(--warn-soft);color:var(--warn)}.pill.blue{background:var(--primary-soft);color:var(--primary)}
+.app{display:grid;grid-template-columns:1fr 280px;gap:16px;background:var(--card);border-radius:20px;padding:20px;margin-bottom:12px}
+.app h3{margin:0;font-size:18px;letter-spacing:-.02em;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.app dl{display:grid;grid-template-columns:96px 1fr;gap:6px 12px;font-size:14px;margin:12px 0}
+.app dt{color:var(--ink-3)}.app dd{margin:0}
+.app .acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.proof{border-radius:14px;background:var(--bg);display:flex;align-items:center;justify-content:center;min-height:200px;overflow:hidden}
+.proof img{width:100%;height:100%;max-height:360px;object-fit:contain;display:block}
+.proof .pdf{text-align:center;color:var(--ink-2);font-size:14px;padding:16px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.toolbar .input{max-width:320px;height:40px}
+.chip{height:34px;padding:0 12px;border-radius:17px;background:var(--card);font-size:13px;font-weight:600;color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--line)}
+.chip.on{background:var(--ink);color:var(--card);box-shadow:none}
+.tablewrap{background:var(--card);border-radius:16px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:820px}
+th{text-align:left;font-size:12px;color:var(--ink-3);font-weight:600;padding:12px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td small{display:block;color:var(--ink-3);font-size:12px}
+.rv{background:var(--card);border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;gap:12px}
+.rv .t{flex:1;min-width:0}.rv p{margin:6px 0 0;font-size:14px}.rv small{color:var(--ink-3);font-size:12px}
+.stars{color:#F5B400;letter-spacing:1px}.stars i{font-style:normal;color:var(--line)}
+.log{background:var(--card);border-radius:16px;padding:4px 16px}
+.log div{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}.log div:last-child{border-bottom:0}
+.log time{color:var(--ink-3);font-size:13px;width:130px;flex:none;font-variant-numeric:tabular-nums}
+.bars{display:flex;align-items:flex-end;gap:4px;height:90px;background:var(--card);border-radius:16px;padding:14px 16px 26px;position:relative}
+.bars span{flex:1;background:var(--primary);border-radius:4px 4px 0 0;min-height:2px;position:relative}
+.bars span i{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-style:normal;font-size:10px;color:var(--ink-3);white-space:nowrap}
+.bars span b{position:absolute;top:-17px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--ink-2)}
+.note{background:var(--warn-soft);color:var(--warn);border-radius:14px;padding:12px 16px;font-size:14px;margin-bottom:12px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--card);padding:10px 18px;border-radius:12px;font-size:14px;font-weight:600;opacity:0;transition:.2s;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%)}
+@media (max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.app{grid-template-columns:1fr}.app dl{grid-template-columns:84px 1fr}header h1{font-size:19px}}
+</style>
+</head>
+<body>
+<main id="root"><p style="color:var(--ink-3)">불러오는 중…</p></main>
+<div class="toast" id="toast" role="status"></div>
+<script>
+/* 교환가자 운영 대시보드. 관리자 이메일(ADMIN_EMAIL)로 받은 코드로만 들어올 수 있고, 모든 데이터와 처리는 /api/admin에서 다시 확인해요. */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const A={view:'loading',tab:'queue',data:null,email:'',sent:false,busy:false,err:'',q:'',f:'all',reason:{}};
+const ERR={admin_not_configured:'관리자 이메일(ADMIN_EMAIL 또는 REVIEW_EMAIL)이 설정되지 않았어요.',not_configured:'서버 환경변수가 아직 설정되지 않았어요.',code_wrong:'코드가 맞지 않아요.',code_expired:'코드가 만료됐어요. 다시 받아 주세요.',too_many_attempts:'잘못된 코드를 너무 많이 입력했어요. 다시 받아 주세요.',too_many_requests:'요청이 너무 많아요. 잠시 후 다시 시도하세요.',not_pending:'이미 처리된 신청이에요.',not_approved:'승인된 멘토가 아니에요.',confirm_mismatch:'입력한 이메일이 달라서 취소했어요.',user_not_found:'회원을 찾을 수 없어요.',network:'서버에 연결할 수 없어요.'};
+async function api(path,data){
+  const o=data===undefined?{credentials:'same-origin'}:{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)};
+  let r; try{r=await fetch('/api/admin/'+path,o)}catch(e){throw {code:'network'}}
+  let j={}; try{j=await r.json()}catch(e){}
+  if(!r.ok) throw {code:j.error||(r.status===404?'not_configured':'network'),left:j.left,status:r.status};
+  return j;
+}
+const errText=e=>(ERR[e.code]||ERR.network)+(e.left!=null?` (남은 시도 ${e.left}번)`:'');
+let tt; function toast(m){const t=$('#toast'); t.textContent=m; t.classList.add('on'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('on'),2200)}
+const fmt=iso=>{if(!iso) return '—'; const d=new Date(iso); return `${d.getMonth()+1}월 ${d.getDate()}일 ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`};
+const fmtDay=iso=>{if(!iso) return '—'; const d=new Date(iso); return `${d.getFullYear()}.${d.getMonth()+1}.${d.getDate()}`};
+const hoursSince=iso=>(Date.now()-Date.parse(iso))/36e5;
+const stars=n=>`<span class="stars">${'★'.repeat(n)}<i>${'★'.repeat(5-n)}</i></span>`;
+const STATUS={none:['신청 전',''],pending:['심사 대기','warn'],approved:['승인','ok'],rejected:['반려','']};
+const statusPill=u=>u.published?'<span class="pill ok">멘토 공개 중</span>':`<span class="pill ${STATUS[u.status]?.[1]||''}">${STATUS[u.status]?.[0]||esc(u.status)}</span>`;
+const LOGT={sign_in:'관리자 로그인',approve:'멘토 승인',reject:'멘토 반려',revoke:'멘토 자격 취소',delete_user:'회원 삭제',delete_review:'후기 삭제'};
+
+async function load(){
+  try{A.data=await api('data'); A.view='dash'}
+  catch(e){ if(e.status===401){A.view='login'} else {A.view='login'; A.err=errText(e)} }
+  render();
+}
+
+function loginHTML(){return `<div class="login card">
+  <h1>교환가자 운영</h1><p>관리자 이메일로 받은 6자리 코드로 로그인해요. 코드는 10분 동안 유효해요.</p>
+  ${A.sent?`<div class="row"><input class="input" id="code" inputmode="numeric" maxlength="6" placeholder="6자리 코드" autocomplete="one-time-code"><button class="btn" data-act="verify">로그인</button></div>
+    <p style="margin:10px 0 0;font-size:13px">관리자 이메일이 맞다면 코드를 보냈어요. <button data-act="resend" style="color:var(--primary);font-weight:600">다시 받기</button></p>`
+  :`<div class="row"><input class="input" id="email" type="email" placeholder="관리자 이메일" value="${esc(A.email)}" autocomplete="email"><button class="btn" data-act="send">코드 받기</button></div>`}
+  ${A.err?`<p class="err" role="alert">${esc(A.err)}</p>`:''}</div>`}
+
+function overviewHTML(){const s=A.data.stats, U=A.data.users;
+  const pend=U.filter(u=>u.status==='pending').sort((a,b)=>a.submittedAt<b.submittedAt?-1:1);
+  const days=[...Array(14)].map((_,i)=>{const d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()-13+i); return d});
+  const per=days.map(d=>U.filter(u=>{const c=new Date(u.created); return c>=d&&c<new Date(d.getTime()+864e5)}).length), max=Math.max(1,...per);
+  return `<div class="stats">
+    <div class="stat"><small>전체 회원</small><b>${s.users}</b></div>
+    <div class="stat"><small>오늘 / 7일 가입</small><b>${s.new1} / ${s.new7}</b></div>
+    <div class="stat"><small>멘토 심사 대기</small><b>${s.pending}</b>${s.overdue?`<em>24시간 초과 ${s.overdue}건</em>`:''}</div>
+    <div class="stat"><small>후기</small><b>${s.reviews}</b></div>
+    <div class="stat"><small>학교 이메일 인증</small><b>${s.uniVerified}</b></div>
+    <div class="stat"><small>승인된 멘토</small><b>${s.approved}</b></div>
+    <div class="stat"><small>프로필 공개 멘토</small><b>${s.published}</b></div>
+    <div class="stat"><small>마지막 새로고침</small><b style="font-size:18px;margin-top:8px">${fmt(A.data.now)}</b></div></div>
+  <h2>지금 할 일 <span>심사는 접수 후 24시간 안에 끝내기로 안내돼 있어요</span></h2>
+  ${pend.length?pend.map(u=>{const h=hoursSince(u.submittedAt), late=h>24;return `<div class="todo"><span class="t"><b>${esc(u.name)}</b> 멘토 신청 심사<small>${esc(u.email)} · ${fmt(u.submittedAt)} 접수</small></span><span class="pill ${late?'warn':h>18?'warn':'blue'}">${late?`${Math.floor(h-24)}시간 지연`:`${Math.ceil(24-h)}시간 남음`}</span><button class="btn sm" data-act="tab" data-v="queue">심사하기</button></div>`}).join('')
+    :'<div class="empty">처리할 심사가 없어요.</div>'}
+  <h2>최근 14일 가입</h2>
+  <div class="bars">${per.map((n,i)=>`<span style="height:${n/max*100}%" title="${n}명">${n?`<b>${n}</b>`:''}${i%2===0?`<i>${days[i].getMonth()+1}/${days[i].getDate()}</i>`:''}</span>`).join('')}</div>`}
+
+function queueHTML(){const U=A.data.users;
+  const pend=U.filter(u=>u.status==='pending').sort((a,b)=>a.submittedAt<b.submittedAt?-1:1);
+  const done=U.filter(u=>u.reviewedAt).sort((a,b)=>a.reviewedAt<b.reviewedAt?1:-1).slice(0,20);
+  return `<h2 style="margin-top:0">멘토 신청 심사 <span>오래된 신청부터 · 증빙 파일은 처리 후 30일 뒤 자동 삭제</span></h2>
+  ${pend.length?pend.map(u=>{const h=hoursSince(u.submittedAt), late=h>24, p=u.proof, src='/api/admin/proof?e='+encodeURIComponent(u.email);
+    return `<article class="app"><div>
+      <h3>${esc(u.name)} <span class="pill ${late?'warn':'blue'}">${late?`24시간 초과 (${Math.floor(h)}시간째)`:`${Math.ceil(24-h)}시간 남음`}</span></h3>
+      <dl><dt>계정</dt><dd>${esc(u.email)}</dd>
+        <dt>학교 이메일</dt><dd>${esc(u.uniEmail)} ${u.uniVerified?'<span class="pill ok">인증됨</span>':'<span class="pill warn">미인증</span>'}</dd>
+        <dt>본교·학과</dt><dd>${esc(u.home||'—')} ${esc(u.major||'')}</dd>
+        <dt>접수</dt><dd>${fmt(u.submittedAt)}</dd>
+        <dt>증빙 파일</dt><dd>${p?`${esc(p.name||'파일')} · ${p.size<1024*1024?Math.max(1,Math.round(p.size/1024))+'KB':(p.size/1048576).toFixed(1)+'MB'} · ${p.type==='application/pdf'?'PDF':p.type==='image/png'?'PNG':'JPG'}`:'저장된 파일 없음 (심사 메일 첨부를 확인하세요)'}</dd></dl>
+      <textarea class="input" id="reason-${esc(u.email)}" rows="2" maxlength="300" placeholder="신청자에게 보낼 메모 (선택). 반려할 때는 이유를 적어 주세요.">${esc(A.reason[u.email]||'')}</textarea>
+      <div class="acts"><button class="btn" data-act="decide" data-d="approve" data-e="${esc(u.email)}">승인</button><button class="btn warn" data-act="decide" data-d="reject" data-e="${esc(u.email)}">반려</button></div></div>
+      <div class="proof">${!p?'<div class="pdf">파일 없음</div>':p.type==='application/pdf'?`<div class="pdf">PDF 증빙<br><br><a class="btn sm ghost" href="${src}" target="_blank" rel="noopener">새 탭에서 열기</a></div>`:`<a href="${src}" target="_blank" rel="noopener" title="새 탭에서 크게 보기"><img src="${src}" alt="${esc(u.name)}의 수료 증빙"></a>`}</div>
+    </article>`}).join(''):'<div class="empty">심사 대기 중인 신청이 없어요.</div>'}
+  <h2>최근 처리</h2>
+  ${done.length?`<div class="tablewrap"><table><tr><th>이름</th><th>계정</th><th>결과</th><th>처리 시각</th><th>메모</th></tr>
+    ${done.map(u=>`<tr><td>${esc(u.name)}</td><td>${esc(u.email)}</td><td>${statusPill(u)}</td><td>${fmt(u.reviewedAt)}</td><td>${esc(u.reason||'')}</td></tr>`).join('')}</table></div>`:'<div class="empty">아직 처리한 심사가 없어요.</div>'}`}
+
+function usersHTML(){const q=A.q.trim().toLowerCase();
+  const F={all:()=>true,uni:u=>u.uniVerified,pending:u=>u.status==='pending',mentor:u=>u.status==='approved',rejected:u=>u.status==='rejected'};
+  const list=A.data.users.filter(F[A.f]).filter(u=>!q||[u.name,u.email,u.uniEmail,u.home,u.major].some(x=>String(x||'').toLowerCase().includes(q)));
+  return `<div class="toolbar"><input class="input" id="q" type="search" placeholder="이름, 이메일, 학교로 검색" value="${esc(A.q)}">
+    ${[['all','전체'],['uni','학교 인증'],['pending','심사 대기'],['mentor','멘토'],['rejected','반려']].map(([k,l])=>`<button class="chip${A.f===k?' on':''}" data-act="filter" data-v="${k}">${l}</button>`).join('')}
+    <span style="color:var(--ink-3);font-size:13px;margin-left:auto">${list.length}명</span></div>
+  ${list.length?`<div class="tablewrap"><table><tr><th>이름 · 계정</th><th>본교 · 학과</th><th>가입일</th><th>학교 이메일</th><th>멘토</th><th></th></tr>
+    ${list.map(u=>`<tr><td><b>${esc(u.name)}</b><small>${esc(u.email)}</small></td><td>${esc(u.home||'—')}<small>${esc([u.major,u.year].filter(Boolean).join(' · '))}</small></td><td>${fmtDay(u.created)}</td>
+      <td>${u.uniEmail?`${esc(u.uniEmail)}<small>${u.uniVerified?'인증됨':'인증 전'}</small>`:'—'}</td><td>${statusPill(u)}${u.mentorProfile?`<small>${esc(u.mentorProfile.length||'')} · ${esc(u.mentorProfile.sessions||'')}회 · ${esc(u.mentorProfile.format||'')}</small>`:''}</td>
+      <td style="white-space:nowrap">${u.status==='pending'?'<button class="btn sm ghost" data-act="tab" data-v="queue">심사</button> ':''}${u.status==='approved'?`<button class="btn sm ghost" data-act="revoke" data-e="${esc(u.email)}">자격 취소</button> `:''}<button class="btn sm warn" data-act="deluser" data-e="${esc(u.email)}">탈퇴 처리</button></td></tr>`).join('')}</table></div>`
+    :'<div class="empty">조건에 맞는 회원이 없어요.</div>'}`}
+
+function reviewsHTML(){const R=A.data.reviews;
+  return `<h2 style="margin-top:0">멘토 후기 <span>부적절한 후기는 삭제할 수 있어요. 작성자에게 보이는 이름은 가려져 있어요.</span></h2>
+  ${R.length?R.map(r=>`<div class="rv"><span class="t">${stars(r.rating)} <b>${esc(r.mentorName)}</b>
+    <p>${esc(r.text)}</p><small>${esc(r.who)} · ${esc(r.email)} · ${esc([r.home,r.major].filter(Boolean).join(' '))} · ${fmt(r.at)}</small></span>
+    <button class="btn sm warn" data-act="delreview" data-m="${esc(r.mentor)}" data-e="${esc(r.email)}">삭제</button></div>`).join('')
+  :'<div class="empty">아직 후기가 없어요.</div>'}`}
+
+function logHTML(){const L=A.data.log;
+  return `<h2 style="margin-top:0">작업 기록 <span>최근 100건</span></h2>
+  ${L.length?`<div class="log">${L.map(x=>`<div><time>${fmt(x.at)}</time><span><b>${esc(LOGT[x.type]||x.type)}</b> · ${esc(x.target)}${x.detail?` <span style="color:var(--ink-3)">— ${esc(x.detail)}</span>`:''}</span></div>`).join('')}</div>`:'<div class="empty">기록이 없어요.</div>'}`}
+
+function render(){
+  const r=$('#root');
+  if(A.view==='loading'){r.innerHTML='<p style="color:var(--ink-3)">불러오는 중…</p>'; return}
+  if(A.view==='login'){r.innerHTML=loginHTML(); const i=$('#code')||$('#email'); i&&i.focus(); return}
+  const s=A.data.stats, keepQ=document.activeElement&&document.activeElement.id==='q';
+  const TABS=[['overview','개요',''],['queue','멘토 심사',s.pending?`<span class="count hot">${s.pending}</span>`:''],['users','회원',`<span class="count">${s.users}</span>`],['reviews','후기',`<span class="count">${s.reviews}</span>`],['log','작업 기록','']];
+  r.innerHTML=`<header><h1>교환가자 운영</h1><small>${fmt(A.data.now)} 기준</small><button class="btn sm ghost" data-act="refresh">새로고침</button><button class="btn sm ghost" data-act="logout">로그아웃</button></header>
+    <nav class="tabs" role="tablist">${TABS.map(([k,l,c])=>`<button role="tab" aria-selected="${A.tab===k}" class="${A.tab===k?'on':''}" data-act="tab" data-v="${k}">${l}${c}</button>`).join('')}</nav>
+    <section>${({overview:overviewHTML,queue:queueHTML,users:usersHTML,reviews:reviewsHTML,log:logHTML})[A.tab]()}</section>`;
+  if(keepQ){const q=$('#q'); q.focus(); q.setSelectionRange(q.value.length,q.value.length)}
+}
+
+async function act(fn){ if(A.busy) return; A.busy=true; try{await fn()}catch(e){toast(errText(e))} A.busy=false }
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]'); if(!b) return;
+  const t=b.dataset.act, em=b.dataset.e;
+  if(t==='send'||t==='resend') return act(async()=>{A.email=($('#email')?$('#email').value:A.email).trim(); A.err=''; await api('login',{email:A.email}); A.sent=true; render()}).then(()=>{if(A.err) render()});
+  if(t==='verify') return act(async()=>{A.err=''; try{await api('verify',{email:A.email,code:$('#code').value.trim()}); A.sent=false; await load(); toast('로그인했어요')}catch(e){A.err=errText(e); render()}});
+  if(t==='logout') return act(async()=>{await api('logout',{}); A.data=null; A.view='login'; render()});
+  if(t==='refresh') return act(async()=>{await load(); toast('새로고침했어요')});
+  if(t==='tab'){A.tab=b.dataset.v; render(); scrollTo(0,0); return}
+  if(t==='filter'){A.f=b.dataset.v; render(); return}
+  if(t==='decide'){const d=b.dataset.d, reason=(document.getElementById('reason-'+em)||{}).value||'';
+    if(d==='reject'&&!reason.trim()&&!confirm('반려 사유 없이 반려할까요? 신청자에게는 기본 안내만 전달돼요.')) return;
+    if(d==='approve'&&!confirm(`${em} 님을 멘토로 승인할까요? 승인 메일이 바로 발송돼요.`)) return;
+    return act(async()=>{await api('action',{type:d,email:em,reason}); delete A.reason[em]; await load(); toast(d==='approve'?'승인했어요. 신청자에게 메일을 보냈어요':'반려했어요. 신청자에게 메일을 보냈어요')})}
+  if(t==='revoke'){const reason=prompt(`${em} 님의 멘토 자격과 공개 프로필을 내릴까요?\n신청자에게 보낼 사유를 적어 주세요 (선택).`); if(reason===null) return;
+    return act(async()=>{await api('action',{type:'revoke',email:em,reason}); await load(); toast('멘토 자격을 취소했어요')})}
+  if(t==='deluser'){const c=prompt(`회원 정보, 후기, 증빙 파일이 영구 삭제되고 되돌릴 수 없어요.\n삭제하려면 이메일을 그대로 입력하세요:\n${em}`); if(c===null) return;
+    return act(async()=>{await api('action',{type:'delete_user',email:em,confirm:c}); await load(); toast('회원을 삭제했어요')})}
+  if(t==='delreview'){ if(!confirm('이 후기를 삭제할까요? 되돌릴 수 없어요.')) return;
+    return act(async()=>{await api('action',{type:'delete_review',mentor:b.dataset.m,email:em}); await load(); toast('후기를 삭제했어요')})}
+});
+document.addEventListener('input',e=>{
+  if(e.target.id==='q'){A.q=e.target.value; render()}
+  if(e.target.id&&e.target.id.startsWith('reason-')) A.reason[e.target.id.slice(7)]=e.target.value;
+});
+document.addEventListener('keydown',e=>{ if(e.key!=='Enter'||e.isComposing) return;
+  if(e.target.id==='email') document.querySelector('[data-act=send]')?.click();
+  if(e.target.id==='code') document.querySelector('[data-act=verify]')?.click();
+});
+// keep the queue fresh while the tab is open
+setInterval(()=>{ if(A.view==='dash'&&document.visibilityState==='visible'&&!A.busy&&!document.activeElement?.matches('textarea,input')) load() },60000);
+load();
+</script>
+</body>
+</html>

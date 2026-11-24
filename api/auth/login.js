@@ -7,6 +7,6 @@ export default async function handler(req, res) {
   if (!(await allow(`login:${email}`, 10, 900)) || !(await allow(`login-ip:${clientIp(req)}`, 50, 900))) return send(res, 429, { error: 'too_many_requests' });
   const user = email ? await getJSON('user:' + email) : null;
   if (!user || typeof b.password !== 'string' || !checkPassword(b.password, user.pw)) return send(res, 401, { error: 'invalid_login' });
-  await startSession(res, email);
+  await startSession(res, user);
   send(res, 200, { user: publicUser(user) });
 }

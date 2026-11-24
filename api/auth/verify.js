@@ -23,6 +23,6 @@ export default async function handler(req, res) {
     user.pw = hashPassword(b.password);
   }
   await saveUser(user);
-  await startSession(res, email);
+  await startSession(res, user);
   send(res, 200, { user: publicUser(user) });
 }

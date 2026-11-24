@@ -1,6 +1,7 @@
 // POST {file:{name, data(base64)}} → checks the proof of completion really is a PDF, JPG or PNG (by its bytes, not its name),
-// emails it to the operations team with signed approve / reject links, and sets the status to "pending".
-import { guard, body, send, currentUser, saveUser, publicUser, allow, sendMail, mailLayout, escHtml, hmac, cleanText } from '../_lib.js';
+// keeps it for the admin dashboard (deleted after 30 days), emails it to the operations team with signed
+// approve / reject links, and sets the status to "pending".
+import { guard, body, send, currentUser, saveUser, publicUser, allow, sendMail, mailLayout, escHtml, hmac, cleanText, saveProof } from '../_lib.js';
 
 const MAX = 3 * 1024 * 1024; // Vercel functions accept about 4.5 MB per request; base64 adds a third
 const kind = buf => buf.subarray(0, 5).toString('latin1') === '%PDF-' ? ['pdf', 'application/pdf']
@@ -21,13 +22,14 @@ export default async function handler(req, res) {
   const k = kind(buf);
   if (!k) return send(res, 415, { error: 'pdf_jpg_png_only' });
   const filename = `proof-${user.email.replace(/[^a-z0-9]/g, '_')}.${k[0]}`;
+  await saveProof(user.email, buf, k[1], cleanText(f.name, 120));
   const exp = Date.now() + 7 * 86400 * 1000, base = `https://${req.headers.host}/api/admin/review`;
   const link = d => `${base}?e=${encodeURIComponent(user.email)}&d=${d}&x=${exp}&s=${hmac(`review|${user.email}|${d}|${exp}`)}`;
   await sendMail({
     to: process.env.REVIEW_EMAIL, subject: `[교환가자 심사] 멘토 신청 ${user.email}`,
     attachments: [{ filename, content: buf.toString('base64') }],
     html: mailLayout('멘토 신청 심사', `<p>이름: ${escHtml(user.name)}<br>계정: ${escHtml(user.email)}<br>학교 이메일(인증 완료): ${escHtml(user.mentor.uniEmail)}<br>원래 파일 이름: ${escHtml(cleanText(f.name, 120))}</p>
-      <p>첨부한 수료 증빙을 확인하고 24시간 안에 결정해 주세요. 링크는 7일 동안 유효해요.</p>
+      <p>첨부한 수료 증빙을 확인하고 24시간 안에 결정해 주세요. 관리자 대시보드(https://${req.headers.host}/admin)에서도 처리할 수 있어요. 링크는 7일 동안 유효해요.</p>
       <p><a href="${link('approve')}" style="background:#2F6FED;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none">승인</a>
       &nbsp; <a href="${link('reject')}" style="color:#C2410C">반려</a></p>`),
   });

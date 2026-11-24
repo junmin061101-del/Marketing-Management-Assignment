@@ -7,6 +7,7 @@
 //   MAIL_FROM           sender, e.g. "교환가자 <no-reply@your-domain.com>" (domain verified in Resend)
 //   APP_SECRET          long random string; signs codes, sessions and review links
 //   REVIEW_EMAIL        inbox of the operations team that reviews mentor applications
+//   ADMIN_EMAIL         the only address that can sign in to /admin (defaults to REVIEW_EMAIL)
 import crypto from 'node:crypto';
 
 const R_URL = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
@@ -103,9 +104,9 @@ export async function useCode(purpose, email, code) {
 /* ---------- sessions: random id in an HttpOnly cookie, only its HMAC is stored ---------- */
 const COOKIE = 'gg_sid', DAYS = 30;
 const cookieOf = req => Object.fromEntries(String(req.headers.cookie || '').split(';').map(c => c.trim().split('=')).filter(p => p[0]).map(([k, ...v]) => [k, decodeURIComponent(v.join('='))]));
-export async function startSession(res, email) {
+export async function startSession(res, user) {
   const sid = crypto.randomBytes(32).toString('base64url');
-  await redis('SET', 'sess:' + hmac(sid), email, 'EX', DAYS * 86400);
+  await redis('SET', 'sess:' + hmac(sid), `${user.email}|${user.created || ''}`, 'EX', DAYS * 86400);
   res.setHeader('Set-Cookie', `${COOKIE}=${sid}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${DAYS * 86400}`);
 }
 export async function endSession(req, res) {
@@ -116,8 +117,11 @@ export async function endSession(req, res) {
 export async function currentUser(req) {
   const sid = cookieOf(req)[COOKIE];
   if (!sid || sid.length > 100) return null;
-  const email = await redis('GET', 'sess:' + hmac(sid));
-  return email ? getJSON('user:' + email) : null;
+  const v = await redis('GET', 'sess:' + hmac(sid));
+  if (!v) return null;
+  const [email, created] = String(v).split('|');
+  const user = await getJSON('user:' + email);
+  return user && (created === undefined || created === (user.created || '')) ? user : null;
 }
 export const saveUser = u => setJSON('user:' + u.email, u);
 // What the page may see. Never the password hash.
@@ -141,3 +145,80 @@ export const mailLayout = (title, inner) => `<div style="font-family:-apple-syst
   <p style="color:#8B95A1;font-size:12px;margin-top:24px">교환가자 · 본인이 요청하지 않았다면 이 메일을 무시하세요.</p></div>`;
 export const codeMail = (title, code) => mailLayout(title, `<p>아래 인증 코드를 10분 안에 입력하세요.</p>
   <p style="font-size:32px;font-weight:800;letter-spacing:6px;margin:16px 0">${code}</p>`);
+
+/* ---------- proof files: kept for the review, deleted automatically 30 days after upload or decision ---------- */
+const PROOF_TTL = 30 * 86400, CHUNK = 600000;
+export async function saveProof(email, buf, type, name) {
+  const b64 = buf.toString('base64'), n = Math.ceil(b64.length / CHUNK);
+  for (let i = 0; i < n; i++) await redis('SET', `proof:${email}:${i}`, b64.slice(i * CHUNK, (i + 1) * CHUNK), 'EX', PROOF_TTL);
+  await setJSON(`proof:${email}:m`, { type, name, n, size: buf.length, at: new Date().toISOString() }, 'EX', PROOF_TTL);
+}
+export async function loadProof(email) {
+  const m = await getJSON(`proof:${email}:m`);
+  if (!m) return null;
+  let b64 = '';
+  for (let i = 0; i < m.n; i++) { const part = await redis('GET', `proof:${email}:${i}`); if (part == null) return null; b64 += part; }
+  return { ...m, buf: Buffer.from(b64, 'base64') };
+}
+export async function expireProof(email, seconds = PROOF_TTL) {
+  const m = await getJSON(`proof:${email}:m`);
+  if (!m) return;
+  for (let i = 0; i < m.n; i++) await redis('EXPIRE', `proof:${email}:${i}`, seconds);
+  await redis('EXPIRE', `proof:${email}:m`, seconds);
+}
+export async function deleteProof(email) {
+  const m = await getJSON(`proof:${email}:m`);
+  for (let i = 0; i < (m?.n || 0); i++) await redis('DEL', `proof:${email}:${i}`);
+  await redis('DEL', `proof:${email}:m`);
+}
+
+/* ---------- mentor review decision, shared by the email links and the admin dashboard ---------- */
+const DECISION = {
+  approve: ['[교환가자] 멘토 심사를 통과했어요', '멘토 심사를 통과했어요', '이제 멘토 프로필을 공개할 수 있어요. 앱에서 프로필을 확인하고 공개하세요.'],
+  reject: ['[교환가자] 멘토 심사 결과', '멘토 심사 결과', '제출한 증빙으로는 수료를 확인하지 못했어요. 수료증이나 파견교 성적증명서를 다시 제출해 주세요.'],
+  revoke: ['[교환가자] 멘토 자격 안내', '멘토 자격이 취소됐어요', '운영 정책에 따라 멘토 자격과 공개 프로필이 내려갔어요. 궁금한 점은 답장으로 문의해 주세요.'],
+};
+export async function decideMentor(user, d, reason = '') {
+  const m = { ...(user.mentor || {}) };
+  if (d === 'revoke') {
+    if (m.profile?.key) await redis('DEL', 'mkey:' + m.profile.key);
+    m.profile = null;
+  }
+  m.status = d === 'approve' ? 'approved' : 'rejected';
+  m.reviewedAt = new Date().toISOString();
+  m.reason = reason || '';
+  user.mentor = m;
+  await saveUser(user);
+  await expireProof(user.email);
+  const [subject, title, text] = DECISION[d];
+  await sendMail({ to: user.email, subject, html: mailLayout(title, `<p>${text}</p>${reason ? `<p style="background:#F2F4F6;padding:12px;border-radius:8px">운영팀 메모: ${escHtml(reason)}</p>` : ''}`) }).catch(() => {});
+}
+
+/* ---------- admin: one address, email code sign-in, a separate short cookie that only /api/admin receives ---------- */
+const ADM = 'gg_adm', ADM_HOURS = 12;
+export const adminEmail = () => normEmail(process.env.ADMIN_EMAIL || process.env.REVIEW_EMAIL || '');
+export async function startAdmin(res) {
+  const sid = crypto.randomBytes(32).toString('base64url');
+  await redis('SET', 'asess:' + hmac('adm|' + sid), adminEmail(), 'EX', ADM_HOURS * 3600);
+  res.setHeader('Set-Cookie', `${ADM}=${sid}; Path=/api/admin; HttpOnly; Secure; SameSite=Strict; Max-Age=${ADM_HOURS * 3600}`);
+}
+export async function endAdmin(req, res) {
+  const sid = cookieOf(req)[ADM];
+  if (sid) await redis('DEL', 'asess:' + hmac('adm|' + sid));
+  res.setHeader('Set-Cookie', `${ADM}=; Path=/api/admin; HttpOnly; Secure; SameSite=Strict; Max-Age=0`);
+}
+export async function isAdmin(req) {
+  const sid = cookieOf(req)[ADM], want = adminEmail();
+  if (!sid || sid.length > 100 || !want) return false;
+  const v = await redis('GET', 'asess:' + hmac('adm|' + sid));
+  return !!v && v === want;
+}
+export async function adminLog(type, target, detail = '') {
+  await redis('LPUSH', 'admin:log', JSON.stringify({ at: new Date().toISOString(), type, target, detail: String(detail).slice(0, 200) }));
+  await redis('LTRIM', 'admin:log', 0, 499);
+}
+export async function scanKeys(pattern, max = 20000) {
+  let cur = '0'; const keys = [];
+  do { const [next, k] = await redis('SCAN', cur, 'MATCH', pattern, 'COUNT', 500); cur = String(next); keys.push(...k); } while (cur !== '0' && keys.length < max);
+  return keys;
+}
