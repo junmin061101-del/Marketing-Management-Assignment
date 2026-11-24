@@ -1,7 +1,7 @@
 // GET → the signed-in user (or null); each visit extends the one-year login.
 // POST {name?, profile?:{home, major, year}, plan?:{host, progId, dep, ret, done}} → updates the user's own data only.
 // The user is always taken from the session cookie, never from an id in the request.
-import { guard, send, body, configured, smsConfigured, currentUser, refreshSession, saveUser, publicUser, cleanText } from './_lib.js';
+import { guard, send, body, configured, smsConfigured, currentUser, refreshSession, saveUser, publicUser, cleanText, allow, uid } from './_lib.js';
 
 const PROGS = new Set(['exS', 'exF', 'exY', 'visit', 'ss', 'ws']);
 const day = v => (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null);
@@ -26,6 +26,7 @@ export default async function handler(req, res) {
     return send(res, 200, { user: publicUser(user), configured: true, sms: smsConfigured() });
   }
   if (!user) return send(res, 401, { error: 'login_required' });
+  if (!(await allow(`me:${uid(user)}`, 600, 3600))) return send(res, 429, { error: 'too_many_requests' });
   const b = body(req), p = b.profile;
   if (b.name !== undefined) user.name = cleanText(b.name, 40) || user.name;
   if (p) user.profile = { home: cleanText(p.home, 80), major: cleanText(p.major, 60), year: cleanText(p.year, 20) };

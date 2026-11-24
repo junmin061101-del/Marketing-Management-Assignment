@@ -5,11 +5,12 @@
 //   reset_password {key}              returns a temporary password to pass on to the student
 //   delete_review {mentor, key}       remove a review
 import crypto from 'node:crypto';
-import { guard, body, send, isAdmin, hashPassword, saveUser, normEmail, normPhone, getJSON, redis, cleanText, decideMentor, deleteProof, adminLog, scanKeys } from '../../api/_lib.js';
+import { guard, body, send, isAdmin, hashPassword, saveUser, normEmail, normPhone, getJSON, redis, cleanText, decideMentor, deleteProof, adminLog, scanKeys, allow } from '../../api/_lib.js';
 
 export default async function handler(req, res) {
   if (!guard(req, res, ['POST'])) return;
   if (!(await isAdmin(req))) return send(res, 401, { error: 'admin_login_required' });
+  if (!(await allow('adm-action', 300, 3600))) return send(res, 429, { error: 'too_many_requests' });
   const b = body(req), type = b.type, email = normEmail(b.key ?? b.email), reason = cleanText(b.reason, 300);
   if (type === 'delete_review') {
     if (typeof b.mentor !== 'string' || !/^(sample-[a-z]{2,10}|m-[a-f0-9]{16})$/.test(b.mentor)) return send(res, 400, { error: 'bad_request' });

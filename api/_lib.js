@@ -50,7 +50,10 @@ export function guard(req, res, methods) {
   return true;
 }
 export const body = req => (req.body && typeof req.body === 'object' ? req.body : {});
-export const clientIp = req => String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown';
+// Client IP for rate limits. Vercel sets x-vercel-forwarded-for / x-real-ip itself (clients can't forge them);
+// x-forwarded-for is only a fallback for other hosts, and only its first entry is used.
+const ipHeader = v => String(Array.isArray(v) ? v[0] : v || '').split(',')[0].trim().slice(0, 64);
+export const clientIp = req => ipHeader(req.headers['x-vercel-forwarded-for']) || ipHeader(req.headers['x-real-ip']) || ipHeader(req.headers['x-forwarded-for']) || 'unknown';
 
 /* ---------- validation ---------- */
 export const normEmail = e => (typeof e === 'string' ? e.trim().toLowerCase() : '');

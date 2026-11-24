@@ -13,8 +13,14 @@ export default async function handler(req, res) {
   res.setHeader('Content-Type', p.type);
   res.setHeader('Content-Length', p.buf.length);
   res.setHeader('Cache-Control', 'private, no-store');
-  // images are fully sandboxed; Chrome's PDF viewer does not run inside a sandbox, and a verified PDF needs no scripts
-  res.setHeader('Content-Security-Policy', p.type === 'application/pdf' ? "frame-ancestors 'none'" : "sandbox; default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; frame-ancestors 'none'");
+  // Images are fully sandboxed. Chrome's PDF viewer does not render inside a CSP sandbox, so PDFs get the
+  // tightest policy that still displays: no scripts, no network, no forms, no base URL, never framed.
+  res.setHeader('Content-Security-Policy', p.type === 'application/pdf'
+    ? "script-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+    : "sandbox; default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; frame-ancestors 'none'");
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow');
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('Content-Disposition', `inline; filename="proof.${p.type.split('/')[1].replace('jpeg', 'jpg')}"`);
   res.end(p.buf);

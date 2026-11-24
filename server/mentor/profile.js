@@ -1,5 +1,5 @@
 // POST {action:'draft'|'publish', profile} → saves a draft any time; publishing needs an approved review.
-import { guard, body, send, currentUser, saveUser, publicUser, cleanText, redis, hmac, uid } from '../../api/_lib.js';
+import { guard, body, send, currentUser, saveUser, publicUser, cleanText, redis, hmac, uid, allow } from '../../api/_lib.js';
 
 function clean(p = {}) {
   const n = Number(p.sessions);
@@ -14,6 +14,7 @@ export default async function handler(req, res) {
   if (!guard(req, res, ['POST'])) return;
   const user = await currentUser(req);
   if (!user) return send(res, 401, { error: 'login_required' });
+  if (!(await allow(`mprofile:${uid(user)}`, 60, 3600))) return send(res, 429, { error: 'too_many_requests' });
   const b = body(req), p = clean(b.profile);
   user.mentor = { ...(user.mentor || { status: 'none' }) };
   if (b.action === 'publish') {

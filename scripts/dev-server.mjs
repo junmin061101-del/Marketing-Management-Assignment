@@ -45,7 +45,7 @@ http.createServer(async (req, res) => {
   if (u.pathname.startsWith('/api/')) {
     let f = path.join(ROOT, u.pathname + '.js'); if (!fs.existsSync(f)) f = path.join(ROOT, path.dirname(u.pathname), '[op].js');
     if (!fs.existsSync(f)) { res.statusCode = 404; return res.end('{}'); }
-    try { req.body = raw && String(req.headers['content-type'] || '').includes('json') ? JSON.parse(raw) : {}; } catch { req.body = {}; }
+    try { const ct = String(req.headers['content-type'] || ''); req.body = !raw ? {} : ct.includes('json') ? JSON.parse(raw) : ct.includes('x-www-form-urlencoded') ? Object.fromEntries(new URLSearchParams(raw)) : {}; } catch { req.body = {}; }
     try { await (await import(pathToFileURL(f).href)).default(req, res); } catch (e) { console.error(e); res.statusCode = 500; res.end('{"error":"crash"}'); }
     return;
   }
