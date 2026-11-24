@@ -132,8 +132,6 @@ img,svg{display:block}
 .tour-play{display:inline-flex;align-items:center;gap:8px;height:38px;margin:18px 0 0 22px;padding:0 16px 0 12px;border-radius:19px;background:var(--surface);font-size:13px;font-weight:700;color:var(--ink-2);transition:background .2s,color .2s}
 .tour-play:hover{color:var(--ink);background:var(--line)}
 .tour .device-zone{position:relative;height:min(84vh,860px);min-height:600px;perspective:1600px}
-.tour .device-zone canvas{position:absolute;inset:-6% -18%;width:136%;height:112%;z-index:0;pointer-events:none}
-.tour .phone{top:50%;margin-top:-370px;transform-origin:center}
 .screen-pane{transition:opacity .35s ease}
 @media (max-width:900px){
   .tour{grid-template-columns:1fr;margin-top:40px;gap:12px}
@@ -150,6 +148,22 @@ img,svg{display:block}
   .tour-now span{display:block;margin-top:8px;color:var(--ink-2);font-size:15px;line-height:1.6}
   .tour-play{margin:14px auto 0}
 }
+
+/* screen reel: app screens as soft cards that slide past like pages (no device frame) */
+.reel{position:absolute;inset:0;z-index:2;--w:clamp(300px,26vw,400px);--gap:calc(var(--w) * .84)}
+.shot{position:absolute;left:50%;top:50%;width:var(--w);height:calc(var(--w) * 1.62);margin:calc(var(--w) * -.81) 0 0 calc(var(--w) * -.5);
+  border-radius:30px;overflow:hidden;background:var(--surface);
+  box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 40px 90px -30px rgba(25,31,40,.32),0 12px 30px -12px rgba(25,31,40,.12),0 0 0 1px rgba(25,31,40,.04);
+  transform:translateX(calc(var(--d) * var(--gap))) scale(.86);opacity:0;pointer-events:none;
+  transition:transform .9s cubic-bezier(.22,.8,.2,1),opacity .7s ease,filter .7s ease;filter:saturate(.7)}
+.shot.near{opacity:.42;pointer-events:auto;cursor:pointer}
+.shot.on{transform:translateX(0);opacity:1;filter:none;z-index:3}
+.shot-in{height:100%;display:flex;flex-direction:column;padding-top:12px;-webkit-mask-image:linear-gradient(#000 86%,transparent);mask-image:linear-gradient(#000 86%,transparent)}
+.shot .app-body{flex:1}
+.stat.counting b span{color:#8DB1FA}
+.stat b span{transition:color .6s ease}
+@media (min-width:901px){.shot.prev{opacity:0;pointer-events:none}}   /* the feature list sits on the left: only the next screen peeks out */
+@media (max-width:900px){.reel{--w:min(76vw,360px);--gap:calc(var(--w) * .9)}}
 
 /* app screens inside the phone: the app's own components */
 .app-bar{height:52px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 18px 0 20px}

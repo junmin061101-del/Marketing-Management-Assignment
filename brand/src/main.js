@@ -96,7 +96,7 @@ function applyLang() {
   $('#regions').innerHTML = ['asia', 'europe', 'na', 'oceania'].filter(r => S.regions[r]).map(r => `<span>${t.region[r]} <b class="num">${S.regions[r]}</b>${LANG === 'ko' ? '개국' : ''}</span>`).join('');
   $('#checkedAt').textContent = t.checked(new Date(S.checkedAt));
   document.title = L('교환가자 · 합격 그다음, 출국까지의 모든 준비', '교환가자 · You got in. Now, everything until you fly.');
-  renderPhone(); renderTour();
+  renderTour();
 }
 function fillStats() {
   $$('[data-stat]').forEach(el => { const v = S[el.dataset.stat]; if (v != null && !el.dataset.counted) el.textContent = fmtN(v); });
@@ -225,13 +225,26 @@ const SCREENS = {
       <div class="a-list">${[[ic('globe', 18), L('언어', 'Language'), L('한국어 · English', 'Korean · English')], [ic('plane', 18), L('출국 일정', 'Travel dates'), `${dShort(depDate)} → ${dShort(retDate)}`], [ic('bell', 18), L('마감 알림', 'Deadline reminders'), L('켜짐', 'On')]].map(([i, a, b]) => `<div class="a-task">${i}<span style="flex:1"><b style="font-size:13.5px">${a}</b><span class="meta">${b}</span></span>${ic('chev', 16)}</div>`).join('')}</div></div>`;
   },
 };
-function renderPhone() {
-  $('#pane').innerHTML = SCREENS[screen]();
-  const cur = SCREEN_TAB[screen];
-  $('#tabbar').innerHTML = TABS.map(([k, i, ko, en]) => `<button type="button" data-tab="${k}" class="${k === cur ? 'on' : ''}" aria-current="${k === cur ? 'page' : 'false'}">${ic(i, 22)}${L(ko, en)}</button>`).join('');
+// the app screens, drawn at their real size (no scaling or tilt, so text stays sharp), sliding like pages
+const reel = $('#reel');
+function renderReel() {
+  reel.innerHTML = TOUR.map((t, i) => `<article class="shot" data-i="${i}"><div class="shot-in">${SCREENS[t.s]()}</div></article>`).join('');
+  placeShots();
 }
-function show(s) { if (s === screen) return; screen = s; const p = $('#pane'); p.style.opacity = '0'; setTimeout(() => { renderPhone(); p.style.opacity = '1'; }, reduced ? 0 : 180); }
-$('#tabbar').addEventListener('click', e => { const b = e.target.closest('[data-tab]'); if (!b) return; const i = TOUR.findIndex(t => t.s === b.dataset.tab); if (i >= 0) goTour(i, true); else show(b.dataset.tab); });
+function placeShots() {
+  const n = TOUR.length, h = Math.floor(n / 2);
+  $$('.shot', reel).forEach(el => {
+    const i = +el.dataset.i, d = ((i - tIdx + n + h) % n) - h;
+    el.style.setProperty('--d', d);
+    el.classList.toggle('on', d === 0);
+    el.classList.toggle('near', Math.abs(d) === 1);
+    el.classList.toggle('prev', d < 0);
+    el.setAttribute('aria-hidden', String(d !== 0));
+  });
+}
+reel.addEventListener('click', e => { const sh = e.target.closest('.shot.near'); if (sh) goTour(+sh.dataset.i, true); });
+// swipe between screens on touch
+(() => { let x0 = null; reel.addEventListener('pointerdown', e => { x0 = e.clientX; }); reel.addEventListener('pointerup', e => { if (x0 == null) return; const dx = e.clientX - x0; x0 = null; if (Math.abs(dx) > 40) goTour(tIdx + (dx < 0 ? 1 : -1), true); }); })();
 
 /* ---------------- feature tour: advances on its own like Apple's highlights; tap to jump, button to pause ---------------- */
 const TOUR = [
@@ -248,7 +261,7 @@ const PLAY_IC = { pause: '<svg width="16" height="16" viewBox="0 0 24 24" fill="
 function renderTour() {
   tourList.setAttribute('aria-label', L('교환가자 주요 기능', 'What 교환가자 does'));
   tourList.innerHTML = TOUR.map((t, i) => `<li><button type="button" data-i="${i}"><span class="tt"><span class="no num">0${i + 1}</span><span>${L(t.ko[0], t.en[0])}</span></span><span class="desc"><span>${L(t.ko[1], t.en[1])}</span></span><span class="pbar" aria-hidden="true"><i></i></span></button></li>`).join('');
-  syncTour();
+  renderReel(); syncTour();
 }
 function syncTour() {
   $$('li', tourList).forEach((li, i) => { li.classList.toggle('on', i === tIdx); li.style.setProperty('--p', i < tIdx ? 1 : i === tIdx ? tProg : 0); $('button', li).setAttribute('aria-current', i === tIdx ? 'true' : 'false'); });
@@ -256,7 +269,7 @@ function syncTour() {
   tourPlay.innerHTML = (tPlaying ? PLAY_IC.pause : PLAY_IC.play) + `<span>${tPlaying ? L('일시정지', 'Pause') : L('자동 재생', 'Play')}</span>`;
   tourPlay.setAttribute('aria-pressed', String(!tPlaying));
 }
-function goTour(i, byUser) { tIdx = (i + TOUR.length) % TOUR.length; tProg = 0; show(TOUR[tIdx].s); syncTour(); if (byUser) tLast = performance.now(); }
+function goTour(i, byUser) { tIdx = (i + TOUR.length) % TOUR.length; tProg = 0; placeShots(); syncTour(); if (byUser) tLast = performance.now(); }
 tourList.addEventListener('click', e => { const b = e.target.closest('[data-i]'); if (b) goTour(+b.dataset.i, true); });
 tourPlay.addEventListener('click', () => { tPlaying = !tPlaying; tLast = performance.now(); syncTour(); });
 new IntersectionObserver(es => { tVisible = es[0].isIntersecting; tLast = performance.now(); }, { threshold: .35 }).observe($('#tour'));
@@ -269,20 +282,6 @@ new IntersectionObserver(es => { tVisible = es[0].isIntersecting; tLast = perfor
   requestAnimationFrame(tick);
 })(performance.now());
 
-/* ---------------- motion: the phone floats calmly and leans a little toward the pointer ---------------- */
-const phone = $('#phone'), zone = $('#deviceZone');
-let mx = 0, my = 0, tx = 0, ty = 0;
-addEventListener('pointermove', e => { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; }, { passive: true });
-function fitPhone() { phone.dataset.scale = Math.min(1.15, (zone.clientWidth - 24) / 360, (zone.clientHeight - 24) / 740).toFixed(3); if (reduced) phone.style.transform = `scale(${phone.dataset.scale})`; }
-fitPhone(); addEventListener('resize', fitPhone);
-function floatLoop(t) {
-  tx += (mx - tx) * .05; ty += (my - ty) * .05;
-  const sc = +phone.dataset.scale || 1;
-  phone.style.transform = `translateY(${(Math.sin(t / 1400) * 6).toFixed(2)}px) scale(${sc}) rotateY(${(tx * 7).toFixed(2)}deg) rotateX(${(-ty * 5).toFixed(2)}deg)`;
-  requestAnimationFrame(floatLoop);
-}
-if (!reduced) requestAnimationFrame(floatLoop); else phone.style.transform = `scale(${phone.dataset.scale || 1})`;
-
 /* ---------------- nav, reveal, count-up ---------------- */
 const nav = $('#nav');
 const onScroll = () => nav.classList.toggle('solid', scrollY > 24);
@@ -290,15 +289,29 @@ addEventListener('scroll', onScroll, { passive: true }); onScroll();
 const io = new IntersectionObserver(es => es.forEach(e => {
   if (!e.isIntersecting) return;
   e.target.classList.add('in'); io.unobserve(e.target);
-  $$('[data-count]', e.target).forEach(el => countUp(el));
 }), { threshold: .15 });
 $$('.rv').forEach(el => io.observe(el));
-function countUp(el) {
-  const v = S[el.dataset.stat]; if (v == null || reduced) return;
-  el.dataset.counted = '1'; const t0 = performance.now(), dur = 1400;
-  const step = t => { const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 4); el.textContent = fmtN(Math.round(v * e)); if (k < 1) requestAnimationFrame(step); };
+const runs = new WeakMap();
+function countUp(el, delay) {
+  const v = S[el.dataset.stat]; if (v == null) return;
+  el.dataset.counted = '1';
+  if (reduced) { el.textContent = fmtN(v); return; }
+  const id = (runs.get(el) || 0) + 1; runs.set(el, id);
+  el.textContent = '0'; el.closest('.stat')?.classList.add('counting');
+  const t0 = performance.now() + delay, dur = 1700;
+  const step = t => {
+    if (runs.get(el) !== id) return;
+    const k = Math.max(0, Math.min(1, (t - t0) / dur)), e = 1 - Math.pow(1 - k, 4);
+    el.textContent = fmtN(Math.round(v * e));
+    if (k < 1) requestAnimationFrame(step); else el.closest('.stat')?.classList.remove('counting');
+  };
   requestAnimationFrame(step);
 }
+new IntersectionObserver(es => es.forEach(e => {
+  const nums = $$('[data-count]', e.target);
+  if (e.isIntersecting) nums.forEach((el, i) => countUp(el, i * 140));
+  else if (!reduced && e.intersectionRatio === 0) nums.forEach(el => { runs.set(el, (runs.get(el) || 0) + 1); el.textContent = '0'; });
+}), { threshold: [0, .45] }).observe($('.stats'));
 
 /* ---------------- 3D: loaded only when its section is near the screen ---------------- */
 function webgl() { try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); } catch { return false; } }
@@ -312,7 +325,6 @@ function lazy3d(canvas, load) {
 if (!lazy3d($('#hero3d'), () => import('./hero3d.js'))) {
   $('#hero3d').insertAdjacentHTML('afterend', `<div class="fallback" aria-hidden="true"><span>${ic('plane', 40, 2)}</span><span>${ic('globe', 40, 2)}</span><span>${ic('shield', 40, 2)}</span><span class="num">D-${DEP_OFFSET}</span></div>`);
 }
-lazy3d($('#show3d'), () => import('./show3d.js'));
 lazy3d($('#globe3d'), () => import('./globe3d.js'));
 
 $$('[data-app]').forEach(a => { a.href = APP; a.rel = 'noopener'; });
