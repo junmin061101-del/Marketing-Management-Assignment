@@ -9,11 +9,13 @@ export default async function handler(req, res) {
   if (!(await redis('SET', `cool:${purpose}:${email}`, '1', 'NX', 'EX', 60))) return send(res, 429, { error: 'wait_a_minute' });
   if (!(await allow(`code:${email}`, 5, 3600)) || !(await allow(`code-ip:${clientIp(req)}`, 20, 3600))) return send(res, 429, { error: 'too_many_requests' });
   const user = await getJSON('user:' + email);
+  try {
   if (purpose === 'signup' && user) {
     await sendMail({ to: email, subject: '[교환가자] 이미 가입된 이메일이에요', html: mailLayout('이미 가입된 이메일이에요', '<p>이 주소로 만든 계정이 있어요. 로그인하거나 비밀번호 찾기를 이용하세요.</p>') });
   } else if (purpose === 'signup' || user) {
     const code = await issueCode(purpose, email);
     await sendMail({ to: email, subject: `[교환가자] 인증 코드 ${code}`, html: codeMail(purpose === 'signup' ? '이메일 인증 코드' : '비밀번호 재설정 코드', code) });
   }
+  } catch (e) { return send(res, 502, { error: 'mail_failed' }); }
   send(res, 200, { ok: true });
 }

@@ -7,7 +7,7 @@
 //   MAIL_FROM           sender, e.g. "교환가자 <no-reply@your-domain.com>" (domain verified in Resend)
 //   APP_SECRET          long random string; signs codes, sessions and review links
 //   REVIEW_EMAIL        inbox of the operations team that reviews mentor applications
-//   ADMIN_EMAIL         the only address that can sign in to /admin (defaults to REVIEW_EMAIL)
+//   ADMIN_EMAIL         addresses that can sign in to /admin, comma-separated (REVIEW_EMAIL can always sign in too)
 import crypto from 'node:crypto';
 
 const R_URL = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
@@ -138,7 +138,12 @@ export async function sendMail({ to, subject, html, attachments }) {
     headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ from: process.env.MAIL_FROM, to: [to], subject, html, ...(attachments ? { attachments } : {}) }),
   });
-  if (!r.ok) throw new Error('mail failed');
+  if (!r.ok) {
+    // the reason (unverified sender domain, sandbox recipient limit, bad key…) shows up in the Vercel function logs
+    const detail = await r.text().catch(() => '');
+    console.error('mail failed', r.status, detail.slice(0, 500));
+    throw Object.assign(new Error('mail failed'), { code: 'mail_failed', status: r.status });
+  }
 }
 export const mailLayout = (title, inner) => `<div style="font-family:-apple-system,Segoe UI,sans-serif;max-width:480px;margin:auto;padding:24px;color:#191F28">
   <h2 style="font-size:20px;margin:0 0 16px">${escHtml(title)}</h2>${inner}
@@ -196,10 +201,11 @@ export async function decideMentor(user, d, reason = '') {
 
 /* ---------- admin: one address, email code sign-in, a separate short cookie that only /api/admin receives ---------- */
 const ADM = 'gg_adm', ADM_HOURS = 12;
-export const adminEmail = () => normEmail(process.env.ADMIN_EMAIL || process.env.REVIEW_EMAIL || '');
-export async function startAdmin(res) {
+export const adminEmails = () => [...new Set([...String(process.env.ADMIN_EMAIL || '').split(','), process.env.REVIEW_EMAIL || ''].map(normEmail).filter(Boolean))];
+export const isAdminEmail = e => !!e && adminEmails().includes(normEmail(e));
+export async function startAdmin(res, email) {
   const sid = crypto.randomBytes(32).toString('base64url');
-  await redis('SET', 'asess:' + hmac('adm|' + sid), adminEmail(), 'EX', ADM_HOURS * 3600);
+  await redis('SET', 'asess:' + hmac('adm|' + sid), normEmail(email), 'EX', ADM_HOURS * 3600);
   res.setHeader('Set-Cookie', `${ADM}=${sid}; Path=/api/admin; HttpOnly; Secure; SameSite=Strict; Max-Age=${ADM_HOURS * 3600}`);
 }
 export async function endAdmin(req, res) {
@@ -208,10 +214,10 @@ export async function endAdmin(req, res) {
   res.setHeader('Set-Cookie', `${ADM}=; Path=/api/admin; HttpOnly; Secure; SameSite=Strict; Max-Age=0`);
 }
 export async function isAdmin(req) {
-  const sid = cookieOf(req)[ADM], want = adminEmail();
-  if (!sid || sid.length > 100 || !want) return false;
+  const sid = cookieOf(req)[ADM];
+  if (!sid || sid.length > 100 || !adminEmails().length) return false;
   const v = await redis('GET', 'asess:' + hmac('adm|' + sid));
-  return !!v && v === want;
+  return isAdminEmail(v); // removing an address from ADMIN_EMAIL ends its sessions at once
 }
 export async function adminLog(type, target, detail = '') {
   await redis('LPUSH', 'admin:log', JSON.stringify({ at: new Date().toISOString(), type, target, detail: String(detail).slice(0, 200) }));

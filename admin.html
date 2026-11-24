@@ -91,7 +91,7 @@ td small{display:block;color:var(--ink-3);font-size:12px}
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const A={view:'loading',tab:'queue',data:null,email:'',sent:false,busy:false,err:'',q:'',f:'all',reason:{}};
-const ERR={admin_not_configured:'관리자 이메일(ADMIN_EMAIL 또는 REVIEW_EMAIL)이 설정되지 않았어요.',not_configured:'서버 환경변수가 아직 설정되지 않았어요.',code_wrong:'코드가 맞지 않아요.',code_expired:'코드가 만료됐어요. 다시 받아 주세요.',too_many_attempts:'잘못된 코드를 너무 많이 입력했어요. 다시 받아 주세요.',too_many_requests:'요청이 너무 많아요. 잠시 후 다시 시도하세요.',not_pending:'이미 처리된 신청이에요.',not_approved:'승인된 멘토가 아니에요.',confirm_mismatch:'입력한 이메일이 달라서 취소했어요.',user_not_found:'회원을 찾을 수 없어요.',network:'서버에 연결할 수 없어요.'};
+const ERR={admin_not_configured:'관리자 이메일(ADMIN_EMAIL 또는 REVIEW_EMAIL)이 설정되지 않았어요.',not_configured:'서버 환경변수가 아직 설정되지 않았어요.',code_wrong:'코드가 맞지 않아요.',code_expired:'코드가 만료됐어요. 다시 받아 주세요.',too_many_attempts:'잘못된 코드를 너무 많이 입력했어요. 다시 받아 주세요.',too_many_requests:'요청이 너무 많아요. 잠시 후 다시 시도하세요.',not_pending:'이미 처리된 신청이에요.',not_approved:'승인된 멘토가 아니에요.',confirm_mismatch:'입력한 이메일이 달라서 취소했어요.',user_not_found:'회원을 찾을 수 없어요.',wait_a_minute:'30초 뒤에 다시 요청하세요.',bad_email:'이메일 주소를 확인하세요.',mail_failed:'메일 발송에 실패했어요. Resend의 보내는 주소(MAIL_FROM) 도메인 인증을 확인하세요. 원인은 Vercel → Logs에 남아 있어요.',network:'서버에 연결할 수 없어요.'};
 async function api(path,data){
   const o=data===undefined?{credentials:'same-origin'}:{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)};
   let r; try{r=await fetch('/api/admin/'+path,o)}catch(e){throw {code:'network'}}
@@ -118,7 +118,8 @@ async function load(){
 function loginHTML(){return `<div class="login card">
   <h1>교환가자 운영</h1><p>관리자 이메일로 받은 6자리 코드로 로그인해요. 코드는 10분 동안 유효해요.</p>
   ${A.sent?`<div class="row"><input class="input" id="code" inputmode="numeric" maxlength="6" placeholder="6자리 코드" autocomplete="one-time-code"><button class="btn" data-act="verify">로그인</button></div>
-    <p style="margin:10px 0 0;font-size:13px">관리자 이메일이 맞다면 코드를 보냈어요. <button data-act="resend" style="color:var(--primary);font-weight:600">다시 받기</button></p>`
+    <p style="margin:10px 0 0;font-size:13px">관리자 이메일이 맞다면 코드를 보냈어요. <button data-act="resend" style="color:var(--primary);font-weight:600">다시 받기</button></p>
+    <p style="margin:10px 0 0;font-size:12px;color:var(--ink-3)">1분 안에 오지 않으면 스팸함을 확인하세요. 그래도 없다면 입력한 주소가 Vercel 환경변수 ADMIN_EMAIL 또는 REVIEW_EMAIL과 같은지 확인하세요.</p>`
   :`<div class="row"><input class="input" id="email" type="email" placeholder="관리자 이메일" value="${esc(A.email)}" autocomplete="email"><button class="btn" data-act="send">코드 받기</button></div>`}
   ${A.err?`<p class="err" role="alert">${esc(A.err)}</p>`:''}</div>`}
 
@@ -200,7 +201,7 @@ async function act(fn){ if(A.busy) return; A.busy=true; try{await fn()}catch(e){
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-act]'); if(!b) return;
   const t=b.dataset.act, em=b.dataset.e;
-  if(t==='send'||t==='resend') return act(async()=>{A.email=($('#email')?$('#email').value:A.email).trim(); A.err=''; await api('login',{email:A.email}); A.sent=true; render()}).then(()=>{if(A.err) render()});
+  if(t==='send'||t==='resend') return act(async()=>{A.email=($('#email')?$('#email').value:A.email).trim(); A.err=''; try{await api('login',{email:A.email}); A.sent=true}catch(e){A.err=errText(e)} render()});
   if(t==='verify') return act(async()=>{A.err=''; try{await api('verify',{email:A.email,code:$('#code').value.trim()}); A.sent=false; await load(); toast('로그인했어요')}catch(e){A.err=errText(e); render()}});
   if(t==='logout') return act(async()=>{await api('logout',{}); A.data=null; A.view='login'; render()});
   if(t==='refresh') return act(async()=>{await load(); toast('새로고침했어요')});
