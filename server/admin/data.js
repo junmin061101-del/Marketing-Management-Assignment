@@ -14,7 +14,7 @@ export default async function handler(req, res) {
   if (!(await isAdmin(req))) return send(res, 401, { error: 'admin_login_required' });
   const userKeys = await scanKeys('user:*');
   const users = (await mget(userKeys)).map(v => { try { return JSON.parse(v); } catch { return null; } }).filter(Boolean).map(u => ({
-    key: u.key || u.email, phone: u.phone || '', email: u.email || '', name: u.name, created: u.created, home: u.profile?.home || '', major: u.profile?.major || '', year: u.profile?.year || '',
+    key: u.key || u.email, username: u.username || '', phone: u.phone || '', email: u.email || '', name: u.name, created: u.created, home: u.profile?.home || '', major: u.profile?.major || '', year: u.profile?.year || '',
     uniEmail: u.mentor?.uniEmail || '', uniVerified: !!u.mentor?.uniVerified, status: u.mentor?.status || 'none',
     submittedAt: u.mentor?.submittedAt || null, reviewedAt: u.mentor?.reviewedAt || null, reason: u.mentor?.reason || '',
     published: !!u.mentor?.profile, mentorKey: u.mentor?.profile?.key || '',
@@ -38,7 +38,7 @@ export default async function handler(req, res) {
     overdue: users.filter(u => u.status === 'pending' && now - Date.parse(u.submittedAt) > day).length,
     approved: users.filter(u => u.status === 'approved').length,
     published: users.filter(u => u.published).length,
-    uniVerified: users.filter(u => u.uniVerified).length,
+    applied: users.filter(u => u.uniEmail).length,
     reviews: reviews.length,
   };
   send(res, 200, { stats, users, reviews, log, admin: true, now: new Date().toISOString() });

@@ -2,8 +2,10 @@
 //   approve | reject {key, reason?}   pending mentor applications only
 //   revoke {key, reason?}             take back an approved mentor and their public profile
 //   delete_user {key, confirm}          account deletion request (privacy policy §5); confirm must repeat the key
+//   reset_password {key}              returns a temporary password to pass on to the student
 //   delete_review {mentor, key}       remove a review
-import { guard, body, send, isAdmin, normEmail, normPhone, getJSON, redis, cleanText, decideMentor, deleteProof, adminLog, scanKeys } from '../../api/_lib.js';
+import crypto from 'node:crypto';
+import { guard, body, send, isAdmin, hashPassword, saveUser, normEmail, normPhone, getJSON, redis, cleanText, decideMentor, deleteProof, adminLog, scanKeys } from '../../api/_lib.js';
 
 export default async function handler(req, res) {
   if (!guard(req, res, ['POST'])) return;
@@ -23,6 +25,12 @@ export default async function handler(req, res) {
   } else if (type === 'revoke') {
     if (user.mentor?.status !== 'approved') return send(res, 409, { error: 'not_approved' });
     await decideMentor(user, 'revoke', reason);
+  } else if (type === 'reset_password') {
+    const temp = 'gg' + crypto.randomInt(10 ** 7, 10 ** 8);
+    user.pw = hashPassword(temp);
+    await saveUser(user);
+    await adminLog(type, email);
+    return send(res, 200, { ok: true, temp });
   } else if (type === 'delete_user') {
     if (normEmail(b.confirm) !== email && normPhone(b.confirm) !== email) return send(res, 400, { error: 'confirm_mismatch' });
     if (user.mentor?.profile?.key) await redis('DEL', 'mkey:' + user.mentor.profile.key);

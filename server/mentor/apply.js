@@ -1,7 +1,7 @@
-// POST {file:{name, data(base64)}} → checks the proof of completion really is a PDF, JPG or PNG (by its bytes, not its name),
+// POST {uniEmail, file:{name, data(base64)}} → records the university email (no code; the team checks the proof), checks the proof of completion really is a PDF, JPG or PNG (by its bytes, not its name),
 // keeps it for the admin dashboard (deleted after 30 days), emails it to the operations team with signed
 // approve / reject links, and sets the status to "pending".
-import { guard, body, send, currentUser, saveUser, publicUser, allow, sendMail, mailLayout, escHtml, hmac, cleanText, saveProof, uid, contactEmail, sendSms, smsConfigured } from '../../api/_lib.js';
+import { guard, body, send, normEmail, validEmail, isUniEmail, currentUser, saveUser, publicUser, allow, sendMail, mailLayout, escHtml, hmac, cleanText, saveProof, uid, contactEmail, sendSms, smsConfigured } from '../../api/_lib.js';
 
 const MAX = 3 * 1024 * 1024; // Vercel functions accept about 4.5 MB per request; base64 adds a third
 const kind = buf => buf.subarray(0, 5).toString('latin1') === '%PDF-' ? ['pdf', 'application/pdf']
@@ -12,7 +12,9 @@ export default async function handler(req, res) {
   if (!guard(req, res, ['POST'])) return;
   const user = await currentUser(req);
   if (!user) return send(res, 401, { error: 'login_required' });
-  if (!user.mentor?.uniVerified) return send(res, 400, { error: 'verify_university_email_first' });
+  const uni = normEmail(body(req).uniEmail) || user.mentor?.uniEmail || '';
+  if (!validEmail(uni) || !isUniEmail(uni)) return send(res, 400, { error: 'not_university_email' });
+  user.mentor = { ...(user.mentor || { status: 'none' }), uniEmail: uni, uniVerified: false };
   if (user.mentor.status === 'approved') return send(res, 400, { error: 'already_approved' });
   if (!(await allow(`apply:${uid(user)}`, 3, 86400))) return send(res, 429, { error: 'too_many_requests' });
   const f = body(req).file || {};
@@ -26,9 +28,9 @@ export default async function handler(req, res) {
   const exp = Date.now() + 7 * 86400 * 1000, base = `https://${req.headers.host}/api/admin/review`;
   const link = d => `${base}?e=${encodeURIComponent(id)}&d=${d}&x=${exp}&s=${hmac(`review|${id}|${d}|${exp}`)}`;
   await sendMail({
-    to: process.env.REVIEW_EMAIL, subject: `[교환가자 심사] 멘토 신청 ${user.name} (${user.phone || id})`,
+    to: process.env.REVIEW_EMAIL, subject: `[교환가자 심사] 멘토 신청 ${user.name} (${id})`,
     attachments: [{ filename, content: buf.toString('base64') }],
-    html: mailLayout('멘토 신청 심사', `<p>이름: ${escHtml(user.name)}<br>계정(휴대폰): ${escHtml(user.phone || id)}<br>학교 이메일(인증 완료): ${escHtml(user.mentor.uniEmail)}<br>원래 파일 이름: ${escHtml(cleanText(f.name, 120))}</p>
+    html: mailLayout('멘토 신청 심사', `<p>이름: ${escHtml(user.name)}<br>아이디: ${escHtml(id)}<br>학교 이메일(신청자 입력, 미인증): ${escHtml(user.mentor.uniEmail)}<br>원래 파일 이름: ${escHtml(cleanText(f.name, 120))}</p>
       <p>첨부한 수료 증빙을 확인하고 24시간 안에 결정해 주세요. 관리자 대시보드(https://${req.headers.host}/admin)에서도 처리할 수 있어요. 링크는 7일 동안 유효해요.</p>
       <p><a href="${link('approve')}" style="background:#2F6FED;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none">승인</a>
       &nbsp; <a href="${link('reject')}" style="color:#C2410C">반려</a></p>`),

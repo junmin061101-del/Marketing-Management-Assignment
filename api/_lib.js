@@ -62,6 +62,8 @@ export function normPhone(v) {
   d = d.replace(/\D/g, '');
   return /^01[016789]\d{7,8}$/.test(d) ? d : '';
 }
+// Login IDs: start with a letter, then letters, digits or _ (4–20). Case-insensitive.
+export const normUsername = v => { const u = typeof v === 'string' ? v.trim().toLowerCase() : ''; return /^[a-z][a-z0-9_]{3,19}$/.test(u) ? u : ''; };
 export const isUniEmail = e => /\.(ac\.kr|edu)$/.test(e) || /\.edu\.[a-z]{2}$/.test(e);
 // Plain text only: strip control characters and angle brackets, trim, cap length. The page also escapes on render.
 export const cleanText = (v, max) => (typeof v === 'string' ? v.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f<>]/g, '').trim().slice(0, max) : '');
@@ -138,13 +140,13 @@ export async function currentUser(req) {
   const user = await getJSON('user:' + email);
   return user && (created === undefined || created === (user.created || '')) ? user : null;
 }
-// Accounts are keyed by phone number (u.key); accounts made before phone login are keyed by email.
+// Accounts are keyed by their login ID (u.key = username). Older test accounts may be keyed by phone number or email.
 export const uid = u => u.key || u.email;
 export const contactEmail = u => u.email || u.mentor?.uniEmail || '';
 export const saveUser = u => setJSON('user:' + uid(u), u);
 // What the page may see. Never the password hash.
 export const publicUser = u => u && ({
-  key: uid(u), phone: u.phone || '', email: u.email || '', name: u.name, profile: u.profile || {}, plan: u.plan || null,
+  key: uid(u), username: u.username || '', phone: u.phone || '', email: u.email || '', name: u.name, profile: u.profile || {}, plan: u.plan || null,
   mentor: { uniEmail: u.mentor?.uniEmail || '', uniVerified: !!u.mentor?.uniVerified, status: u.mentor?.status || 'none',
     submittedAt: u.mentor?.submittedAt || null, draft: u.mentor?.draft || null, profile: u.mentor?.profile || null },
 });

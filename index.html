@@ -505,6 +505,7 @@ p{margin:0}
 #view.surf .has-chatbar~.cta{background:var(--surface)}
 .phone:has(.chatbar) .toast{bottom:calc(170px + var(--sab))}
 .empty-state{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:36px 16px;margin-top:12px;border-radius:20px;background:var(--card);color:var(--ink-3)}
+.ftip{font-size:12px;color:var(--ink-3);line-height:1.4}
 .phrow{display:flex;gap:8px;align-items:center}.phrow .input{flex:1;min-width:0}.phrow .btn{flex:none}
 .empty-acts{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;width:100%;margin-top:10px}.empty-acts .btn{white-space:nowrap;flex:0 0 auto;width:auto}
 .empty-state b{color:var(--ink);font-size:15px}.empty-state small{font-size:13px;line-height:1.5}
@@ -1351,12 +1352,12 @@ async function api(path,data){
 }
 const mStat=()=>{const m=AUTH.user&&AUTH.user.mentor; return !m?'none':m.profile?'published':m.status};
 const ERR={bad_email:'Enter a valid email address.',wait_a_minute:'Please wait a minute before asking for another code.',too_many_requests:'Too many tries. Please try again later.',
-  weak_password:'Use 8–72 characters with at least one letter and one number.',consent_required:'Please agree to the Terms and Privacy Policy.',name_required:'Enter your name.',
+  weak_password:'Use 8 or more characters with at least one letter and one number.',consent_required:'Please agree to the Terms and Privacy Policy.',name_required:'Enter your name.',
   code_expired:'The code has expired. Ask for a new one.',too_many_attempts:'Too many wrong codes. Ask for a new one.',code_wrong:'That code is not right.',already_registered:'This email already has an account. Log in instead.',
-  invalid_login:'The email or password is not right.',login_required:'Please log in first.',not_university_email:'Use a university email ending in .ac.kr or .edu.',
+  invalid_login:'The ID or password is not right.',login_required:'Please log in first.',not_university_email:'Use a university email ending in .ac.kr or .edu.',
   verify_university_email_first:'Verify your university email first.',file_too_large:'The file must be 3 MB or smaller.',pdf_jpg_png_only:'Upload a PDF, JPG or PNG file.',
   review_not_approved:'You can publish after the review is approved.',profile_incomplete:'Fill in your school, major, what you offer, the session length, number of sessions and format.',bad_rating:'Choose a star rating.',review_too_short:'Write at least 10 characters.',own_profile:'You cannot review your own profile.',unknown_mentor:'This mentor could not be found.',
-  already_approved:'Your review is already approved.',bad_sessions:'Sessions must be a whole number from 1 to 20.',not_configured:'Accounts are not connected yet. You can keep browsing without one.',network:'Could not reach the server. Check your connection.',bad_phone:'Enter a mobile number like 010-1234-5678.',sms_failed:'We could not send the text message. Please try again in a moment.',sms_not_configured:'Text message sign-in is being set up.',mail_failed:'We could not send the email. Please try again in a moment.'};
+  already_approved:'Your review is already approved.',bad_sessions:'Sessions must be a whole number from 1 to 20.',not_configured:'Accounts are not connected yet. You can keep browsing without one.',network:'Could not reach the server. Check your connection.',wrong_password:'The current password is not right.',bad_username:'Use 4–20 lowercase letters, numbers or _, starting with a letter.',username_taken:'This ID is already taken. Try another.',bad_phone:'Enter a mobile number like 010-1234-5678.',sms_failed:'We could not send the text message. Please try again in a moment.',sms_not_configured:'Text message sign-in is being set up.',mail_failed:'We could not send the email. Please try again in a moment.'};
 Object.assign(KO,{
 // accounts
 "Sign in":"로그인","Accounts are not connected yet. You can keep browsing without one.":"아직 계정 기능이 연결되지 않았어요. 로그인 없이 계속 둘러볼 수 있어요.","Continue without an account":"로그인 없이 둘러보기",
@@ -1393,6 +1394,14 @@ Object.assign(KO,{
 "Your review is already approved.":"이미 심사가 승인됐어요.","Sessions must be a whole number from 1 to 20.":"횟수는 1부터 20 사이의 정수로 입력하세요.","Could not reach the server. Check your connection.":"서버에 연결할 수 없어요. 인터넷 연결을 확인하세요.","We could not send the email. Please try again in a moment.":"메일을 보내지 못했어요. 잠시 후 다시 시도해 주세요.",
 });
 T_('Draft saved {D}','{D} 임시저장됨');
+Object.assign(KO,{
+"ID":"아이디","Change password":"비밀번호 변경","Current password":"현재 비밀번호","Save":"저장","Password changed":"비밀번호를 바꿨어요","The current password is not right.":"현재 비밀번호가 맞지 않아요.","4–20 characters: lowercase letters, numbers or _ , starting with a letter.":"영문 소문자로 시작하는 4~20자 (영문 소문자, 숫자, _ 사용 가능)",
+"8 or more characters with at least one letter and one number.":"8자 이상, 영문과 숫자를 하나 이상 넣어 주세요.",
+"Forgot your password? Ask the team at gyohwan.info@gmail.com and we will reset it.":"비밀번호를 잊으셨나요? gyohwan.info@gmail.com으로 문의하면 초기화해 드려요.",
+"Use 4–20 lowercase letters, numbers or _, starting with a letter.":"아이디는 영문 소문자로 시작하는 4~20자(영문 소문자, 숫자, _)로 정해 주세요.","This ID is already taken. Try another.":"이미 쓰고 있는 아이디예요. 다른 아이디를 입력하세요.",
+"The ID or password is not right.":"아이디 또는 비밀번호가 맞지 않아요.","Use 8 or more characters with at least one letter and one number.":"비밀번호는 8자 이상, 영문과 숫자를 섞어 주세요.",
+"Your university email":"학교 이메일","We send your review result here":"심사 결과를 이 주소로 보내드려요","Next":"다음",
+});
 Object.assign(KO,{
 "Start with your":"휴대폰 번호로","phone number":"시작해요","Phone number":"휴대폰 번호","Get code":"인증번호 받기","Confirm":"확인","Change":"변경","Get started":"시작하기",
 "We text you a 6-digit code. You only do this once; after that you stay signed in on this phone.":"6자리 인증번호를 문자로 보내드려요. 처음 한 번만 인증하면 이 휴대폰에서는 계속 로그인돼요.",
@@ -2185,7 +2194,7 @@ const S={
   joined:new Set(), cv:null, cq:'', cposts:{}, cinfo:{}, cchat:{}, jstatus:{}, joining:null,
   reviews:{}, rv:{key:null,open:false,rating:0,text:'',busy:false,err:''}, chatC:null, chf:'all', doc:null,
   apply:{step:0,email:'',file:'',sent:false,busy:false,err:''},
-  auth:{step:0,phone:'',ticket:'',busy:false,err:''},
+  auth:{mode:'login',id:'',name:'',busy:false,err:''},
 };
 const host=()=>S.host;
 const prog=()=>PROGRAMS.find(p=>p.id===S.progId);
@@ -2253,25 +2262,25 @@ const SCREENS={
       <div><h1>교환가자</h1><p>From acceptance to departure,<br>one step at a time.</p></div></div>
     <div class="cta"><button class="btn" data-go="login">Get started</button></div>`},
 
-  login(){const A=S.auth, err=A.err?`<p class="aerr" role="alert">${esc(A.err)}</p>`:'';
+  login(){const A=S.auth, err=A.err?`<p class="aerr" role="alert">${esc(A.err)}</p>`:'', su=A.mode==='signup';
     const guest=`<button class="linkbtn guestbtn" data-go="profile">Continue without an account</button>`;
-    if(AUTH.ready&&(!AUTH.configured||!AUTH.sms)) return `${bar('')}<div class="scroll pad"><h2 class="ob-title">Start with your<br>phone number</h2>
-      <div class="pnote" style="margin-top:16px">${ic('flag',14)}<span>Text message sign-in is being set up. You can keep browsing without an account.</span></div></div>
+    if(AUTH.ready&&!AUTH.configured) return `${bar('')}<div class="scroll pad"><h2 class="ob-title">Sign in</h2>
+      <div class="pnote" style="margin-top:16px">${ic('flag',14)}<span>Accounts are not connected yet. You can keep browsing without one.</span></div></div>
       <div class="cta"><button class="btn" data-go="profile">Continue without an account</button></div>`;
-    const phone=lock=>`<div class="field"><label for="auPhone">Phone number</label><div class="phrow"><input class="input" id="auPhone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="010-1234-5678" maxlength="16" value="${esc(fmtPhone(A.phone))}" ${lock?'readonly':''}>${lock?'<button class="btn sm ghost" data-act="authEdit">Change</button>':''}</div></div>`;
-    let body='', cta='';
-    if(A.step===0){ body=phone()+`<p class="hint">We text you a 6-digit code. You only do this once; after that you stay signed in on this phone.</p>`; cta=`<button class="btn" data-act="authSend" ${A.busy?'disabled':''}>Get code</button>`; }
-    else if(A.step===1){ body=phone(true)+`<div class="field"><label for="auCode">6-digit code from the text message</label><input class="input num" id="auCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*"></div>
-        <button class="linkbtn" data-act="authSend">Send the code again</button>`; cta=`<button class="btn" data-act="authVerify" ${A.busy?'disabled':''}>Confirm</button>`; }
-    else { body=`<p class="ob-sub" style="margin:8px 0 18px">Your number is verified. Just one more step.</p><div class="field"><label for="auName">Name</label><input class="input" id="auName" autocomplete="name" maxlength="40" value="${esc(A.name||'')}"></div>
-        <label class="agree"><input type="checkbox" id="auAgree"><span>I am 14 or older and agree to the <a href="/terms" data-doc="terms">Terms of Service</a> and <a href="/privacy" data-doc="privacy">Privacy Policy</a>, including storage on servers outside Korea.</span></label>`;
-      cta=`<button class="btn" data-act="authSignup" ${A.busy?'disabled':''}>Get started</button>`; }
+    const tabs=`<div class="seg" style="--n:2;margin:6px 0 20px" role="tablist"><button class="${su?'':'on'}" data-act="authMode" data-v="login">Log in</button><button class="${su?'on':''}" data-act="authMode" data-v="signup">Sign up</button></div>`;
+    const tip=t=>su?`<small class="ftip">${t}</small>`:'';
+    const id=`<div class="field"><label for="auId">ID</label><input class="input" id="auId" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="20" value="${esc(A.id||'')}">${tip('4–20 characters: lowercase letters, numbers or _ , starting with a letter.')}</div>`;
+    const pw=`<div class="field"><label for="auPw">Password</label><input class="input" id="auPw" type="password" autocomplete="${su?'new-password':'current-password'}" maxlength="72">${tip('8 or more characters with at least one letter and one number.')}</div>`;
+    const body=su?id+pw+`
+        <div class="field"><label for="auName">Name</label><input class="input" id="auName" autocomplete="name" maxlength="40" value="${esc(A.name||'')}"></div>
+        <label class="agree"><input type="checkbox" id="auAgree"><span>I am 14 or older and agree to the <a href="/terms" data-doc="terms">Terms of Service</a> and <a href="/privacy" data-doc="privacy">Privacy Policy</a>, including storage on servers outside Korea.</span></label>`
+      :id+pw+`<p class="hint">Forgot your password? Ask the team at gyohwan.info@gmail.com and we will reset it.</p>`;
     return `${bar('')}
     <div class="scroll pad">
-      <h2 class="ob-title">${A.step===2?'Almost done':'Start with your<br>phone number'}</h2>
-      ${body}${err}${A.step===2?'':guest}
+      <h2 class="ob-title">${su?'Create your account':'Welcome back'}</h2>
+      ${tabs}${body}${err}${guest}
     </div>
-    <div class="cta">${cta}</div>`},
+    <div class="cta">${su?`<button class="btn" data-act="authSignup" ${A.busy?'disabled':''}>Create account</button>`:`<button class="btn" data-act="authLogin" ${A.busy?'disabled':''}>Log in</button>`}</div>`},
 
   boot(){return `<div class="splash"><div class="appicon">${ic('plane',56,1.8)}</div></div>`},
 
@@ -2391,7 +2400,7 @@ const SCREENS={
       <p class="ob-sub" style="margin-bottom:22px">Mentoring is paid, so we verify that every mentor actually completed the program. The operations team reviews every application, which takes up to 24 hours.</p>`;
     if(AUTH.ready&&!AUTH.configured) return head+`<div class="pnote">${ic('flag',14)}<span>Accounts are not connected yet. You can keep browsing without one.</span></div></div>`;
     if(!u) return head+`<div class="compose clock"><p>Log in to apply</p><small>Your application and review status are saved to your account.</small><button class="btn sm" data-go="login">Log in or sign up</button></div></div>`;
-    const st=m.status, uniOK=m.uniVerified, approved=st==='approved', live=!!m.profile;
+    const st=m.status, uniOK=!!(m.uniEmail||A.uni), approved=st==='approved', live=!!m.profile;
     const step=!uniOK?0:(st==='none'||st==='rejected')?1:st==='pending'?2:live?4:3;
     const cls=k=>k<step?'done':k===step?'cur':'';
     const n=k=>k<step?ic('check',16,3):k+1;
@@ -2401,9 +2410,8 @@ const SCREENS={
         <input class="input${custom?'':' hide'}" id="${id}" ${type==='number'?'type="number" min="1" max="20" step="1" inputmode="numeric"':'maxlength="30"'} value="${custom?esc(val):''}" placeholder="${type==='number'?'1–20':'e.g. 90 min'}"></label>`};
     const ta=(id,label,ph,val)=>`<label>${label}<textarea class="input area big" rows="7" id="${id}" maxlength="2000" placeholder="${ph}">${esc(val||'')}</textarea></label>`;
     return head+`
-      <div class="vstep ${cls(0)}"><span class="n">${n(0)}</span><div class="t"><b>Verify your university email</b><small>${uniOK?`<span data-notr>${esc(m.uniEmail)}</span>`:'Confirms you are a current student or graduate'}</small>
-        ${step===0?`<div class="act">${A.sent?`<div class="row"><input class="input num" id="apCode" inputmode="numeric" maxlength="6" placeholder="6-digit code"><button class="btn sm" data-act="apVerify" ${A.busy?'disabled':''}>Verify</button></div><button class="linkbtn" data-act="apSend">Send the code again</button>`
-          :`<div class="row"><input class="input" id="apEmail" type="email" placeholder="name@university.ac.kr" value="${esc(A.email)}"><button class="btn sm" data-act="apSend" ${A.busy?'disabled':''}>Send code</button></div>`}${err}</div>`:''}</div></div>
+      <div class="vstep ${cls(0)}"><span class="n">${n(0)}</span><div class="t"><b>Your university email</b><small>${uniOK?`<span data-notr>${esc(A.uni||m.uniEmail)}</span>`:'We send your review result here'}</small>
+        ${step===0?`<div class="act"><div class="row"><input class="input" id="apEmail" type="email" placeholder="name@university.ac.kr" value="${esc(A.email)}"><button class="btn sm" data-act="apUni">Next</button></div>${err}</div>`:''}</div></div>
       <div class="vstep ${cls(1)}"><span class="n">${n(1)}</span><div class="t"><b>Upload proof of completion</b><small>${st==='rejected'?'The last proof could not be confirmed. Upload a certificate or host transcript.':'Host transcript or certificate of attendance · PDF, JPG or PNG up to 3 MB'}</small>
         ${step===1?`<div class="act"><label class="file">${ic('upload',18)}<span>${A.file?esc(A.file):'Choose a PDF, JPG or PNG'}</span><input type="file" id="apFile" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"></label>
           <button class="btn sm" data-act="apUpload" ${A.file&&!A.busy?'':'disabled'}>Submit for review</button>${err}</div>`:''}</div></div>
@@ -2608,7 +2616,7 @@ function meTab(){
   const h=host(),p=prog(),P=S.profile;
   return `${mainBar('Me')}
   <div class="scroll pad">
-    ${AUTH.user?`<div class="me"><span class="ava">${esc((AUTH.user.name||'?')[0])}</span><span class="t"><b data-notr>${esc(AUTH.user.name)}</b><small><span data-notr>${esc(AUTH.user.phone?fmtPhone(AUTH.user.phone):AUTH.user.email)}</span><br>${esc(P.univ||'Home university not set')} · ${esc(P.major)} · ${esc(P.year)}</small></span></div>`
+    ${AUTH.user?`<div class="me"><span class="ava">${esc((AUTH.user.name||'?')[0])}</span><span class="t"><b data-notr>${esc(AUTH.user.name)}</b><small><span data-notr>@${esc(AUTH.user.username||AUTH.user.key)}</span><br>${esc(P.univ||'Home university not set')} · ${esc(P.major)} · ${esc(P.year)}</small></span></div>`
       :`<div class="me"><span class="ava">${ic('user',22)}</span><span class="t"><b>Browsing as a guest</b><small>Log in to apply as a mentor and keep your account.</small></span><button class="btn sm" data-go="login">Log in</button></div>`}
     <button class="apply-card" data-go="mentorApply"><span class="t"><b>${mStat()==='published'?'You’re a verified mentor':'Become a mentor after you return'}</b><small>${mStat()==='published'?'Manage your mentor profile':mStat()==='pending'?'In review · up to 24 hours':'Verify with your university email and proof of completion'}</small></span>${ic(mStat()==='published'?'shield':'chev',22)}</button>
     <div class="menu">
@@ -2619,6 +2627,7 @@ function meTab(){
       <button data-act="openLang">${ic('globe',20)}<span class="t">Language<br><small>${LANG==='ko'?'한국어':'English'}</small></span>${ic('chev',18)}</button>
       <button data-act="doc" data-v="privacy">${ic('shield',20)}<span class="t">Privacy Policy</span>${ic('chev',18)}</button>
       <button data-act="doc" data-v="terms">${ic('doc',20)}<span class="t">Terms of Service</span>${ic('chev',18)}</button>
+      ${AUTH.user?`<button data-act="pwSheet">${ic('shield',20)}<span class="t">Change password</span>${ic('chev',18)}</button>`:''}
       ${AUTH.user?`<button data-act="logout">${ic('back',20)}<span class="t">Log out</span></button>`:`<button data-go="splash">${ic('back',20)}<span class="t">Back to start</span></button>`}
     </div>
   </div>`;
@@ -2658,6 +2667,14 @@ function openMentorSheet(id,keep){
   translate(sheet); sheet.classList.add('on'); $('#scrim').classList.add('on');
   const ns=sheet.querySelector('.scroll'); if(ns) ns.scrollTop=top;
 }
+function openPwSheet(err){const sheet=$('#sheet');
+  sheet.innerHTML=`<div class="grab"></div><div class="scroll">
+    <h2 class="ob-title" style="font-size:22px;margin-top:6px">Change password</h2>
+    <div class="field" style="margin-top:14px"><label for="pwCur">Current password</label><input class="input" id="pwCur" type="password" autocomplete="current-password" maxlength="72"></div>
+    <div class="field"><label for="pwNew">New password</label><input class="input" id="pwNew" type="password" autocomplete="new-password" maxlength="72"></div>
+    <p class="hint">8 or more characters with at least one letter and one number.</p>${err?`<p class="aerr" role="alert">${esc(err)}</p>`:''}</div>
+    <div class="cta"><button class="btn" data-act="pwSave">Save</button></div>`;
+  translate(sheet); sheet.classList.add('on'); $('#scrim').classList.add('on'); setTimeout(()=>{const i=$('#pwCur'); i&&i.focus()},50)}
 function openDepSheet(){
   const sug=depOf(prog(),host()); const sheet=$('#sheet');
   sheet.innerHTML=`<div class="grab"></div>
@@ -2707,7 +2724,7 @@ function restoreUser(u){const p=u.profile||{}; if(p.home) S.profile.univ=p.home;
 let planT; function savePlan(){ if(!AUTH.user) return; clearTimeout(planT); planT=setTimeout(()=>{const h=host();
   api('me',{plan:{host:[h.name,h.cc,h.url],progId:S.progId,dep:S.depOverride,ret:S.retOverride,done:[...S.done]}}).then(j=>{AUTH.user=j.user}).catch(()=>{})},600)}
 const hintIn=v=>{try{v?localStorage.setItem('gg_in','1'):localStorage.removeItem('gg_in')}catch(e){}};
-function signedIn(u){AUTH.user=u; hintIn(true); S.auth={step:0,phone:'',ticket:'',busy:false,err:''}; const had=restoreUser(u); toast('Signed in'); NAV.replaceNext=true; if(had){S.screen='app';S.tab='home';S.detail=null;render()} else go('profile')}
+function signedIn(u){AUTH.user=u; hintIn(true); S.auth={mode:'login',id:'',name:'',busy:false,err:''}; const had=restoreUser(u); toast('Signed in'); NAV.replaceNext=true; if(had){S.screen='app';S.tab='home';S.detail=null;render()} else go('profile')}
 // read the mentor form: preset choice or the student's own value
 function mentorForm(F){const g=id=>String(F[id]||'').trim(), pickV=id=>F[id+'Sel']==='__custom'?g(id):String(F[id+'Sel']||'');
   const raw=pickV('mfN'), n=Number(raw);
@@ -2875,16 +2892,18 @@ document.addEventListener('click',e=>{
     case 'resetDep': S.depOverride=null; S.retOverride=null; savePlan(); closeSheet(); render(true); toast('Using the suggested travel dates'); break;
     case 'bcat': S.bcat=S.bcat===v?'All':v; render(true); break;
     case 'changeProg': S.pick=host(); S.region=regGroup(host().region); go('school'); break;
-    case 'authEdit': S.auth.step=0; S.auth.err=''; render(); setTimeout(()=>{const x=$('#auPhone'); x&&x.focus()},30); break;
-    case 'authSend': authRun(async F=>{if(F.auPhone!==undefined) S.auth.phone=String(F.auPhone).replace(/\D/g,''); if(!/^01\d{8,9}$/.test(S.auth.phone)) throw {code:'bad_phone'}; await api('auth/phone-code',{phone:S.auth.phone}); S.auth.step=1; toast('We texted you a code')}); break;
-    case 'authVerify': authRun(async F=>{const j=await api('auth/phone-verify',{phone:S.auth.phone,code:String(F.auCode||'').trim()}); if(j.signup){S.auth.ticket=j.ticket; S.auth.step=2} else signedIn(j.user)}); break;
-    case 'authSignup': authRun(async F=>{S.auth.name=String(F.auName||''); const j=await api('auth/phone-signup',{ticket:S.auth.ticket,name:S.auth.name,agree:!!F.auAgree}); signedIn(j.user)}); break;
-    case 'logout': api('auth/logout',{}).catch(()=>{}).then(()=>{AUTH.user=null; hintIn(false); S.auth={step:0,phone:'',ticket:'',busy:false,err:''}; render(); toast('Logged out')}); break;
-    case 'apSend': apRun(async F=>{const em=F.apEmail; if(em!==undefined) S.apply.email=em.trim(); await api('mentor/uni-code',{uniEmail:S.apply.email}); S.apply.sent=true; toast('We sent a code to your university email')}); break;
-    case 'apVerify': apRun(async F=>{const j=await api('mentor/uni-verify',{code:String(F.apCode||'').trim()}); AUTH.user=j.user; S.apply.sent=false; toast('University email verified')}); break;
+    case 'pwSheet': openPwSheet(); break;
+    case 'pwSave': {const cur=$('#pwCur').value, nx=$('#pwNew').value; api('auth/password',{current:cur,next:nx}).then(()=>{closeSheet(); toast('Password changed')}).catch(e=>openPwSheet(trText(errMsg(e)))); break}
+    case 'authMode': S.auth={...S.auth,mode:v,busy:false,err:''}; render(); break;
+    case 'authLogin': authRun(async F=>{S.auth.id=String(F.auId||'').trim(); const j=await api('auth/login',{username:S.auth.id,password:F.auPw||''}); signedIn(j.user)}); break;
+    case 'authSignup': authRun(async F=>{S.auth.id=String(F.auId||'').trim(); S.auth.name=String(F.auName||''); const j=await api('auth/signup',{username:S.auth.id,password:F.auPw||'',name:S.auth.name,agree:!!F.auAgree}); signedIn(j.user)}); break;
+    case 'logout': api('auth/logout',{}).catch(()=>{}).then(()=>{AUTH.user=null; hintIn(false); S.auth={mode:'login',id:'',name:'',busy:false,err:''}; render(); toast('Logged out')}); break;
+    case 'apUni': {const em=String(($('#apEmail')||{}).value||'').trim().toLowerCase(); S.apply.email=em;
+      if(!/^[^\s@]+@[^\s@]+\.(ac\.kr|edu|edu\.[a-z]{2})$/.test(em)){S.apply.err=trText(ERR.not_university_email); S.apply.errAt='top'; render(true); break}
+      S.apply.uni=em; S.apply.err=''; render(true); break}
     case 'apUpload': apRun(async()=>{const f=S.apply.fileObj; if(!f) return; if(f.size>3*1024*1024) throw {code:'file_too_large'};
       const data=await new Promise((ok,no)=>{const r=new FileReader(); r.onload=()=>ok(String(r.result).split(',')[1]||''); r.onerror=no; r.readAsDataURL(f)});
-      const j=await api('mentor/apply',{file:{name:f.name,data}}); AUTH.user=j.user; S.apply.file=''; S.apply.fileObj=null; toast('Submitted. The review takes up to 24 hours')}); break;
+      const j=await api('mentor/apply',{uniEmail:S.apply.uni||(AUTH.user.mentor||{}).uniEmail,file:{name:f.name,data}}); AUTH.user=j.user; S.apply.file=''; S.apply.fileObj=null; toast('Submitted. The review takes up to 24 hours')}); break;
     case 'apRefresh': apRun(async()=>{await loadMe(); toast(mStat()==='approved'?'Review approved':'Still in review')}); break;
     case 'apDraft': case 'apPublish': apRun(async F=>{const pf=mentorForm(F); if(act==='apPublish'&&(!pf.offer||!pf.home||!pf.major)){throw {code:'profile_incomplete'}}
       S.apply.form=pf; try{localStorage.setItem('gg_mentor_draft',JSON.stringify(pf))}catch(e){}

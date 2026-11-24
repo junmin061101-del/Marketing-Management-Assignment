@@ -1,9 +1,7 @@
 // One function serves every /api/mentor/<op> route (the Hobby plan allows 12 functions per deployment).
 import h0 from '../../server/mentor/apply.js';
 import h1 from '../../server/mentor/profile.js';
-import h2 from '../../server/mentor/uni-code.js';
-import h3 from '../../server/mentor/uni-verify.js';
-const ROUTES = { 'apply': h0, 'profile': h1, 'uni-code': h2, 'uni-verify': h3, };
+const ROUTES = { 'apply': h0, 'profile': h1, };
 export default function handler(req, res) {
   const op = new URL(req.url, 'http://x').pathname.replace(/\/+$/, '').split('/').pop();
   const h = Object.hasOwn(ROUTES, op) ? ROUTES[op] : null;

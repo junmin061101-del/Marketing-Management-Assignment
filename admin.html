@@ -91,7 +91,7 @@ td small{display:block;color:var(--ink-3);font-size:12px}
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const A={view:'loading',tab:'queue',data:null,email:'',sent:false,busy:false,err:'',q:'',f:'all',reason:{}};
-const ERR={admin_not_configured:'관리자 이메일(ADMIN_EMAIL 또는 REVIEW_EMAIL)이 설정되지 않았어요.',not_configured:'서버 환경변수가 아직 설정되지 않았어요.',code_wrong:'코드가 맞지 않아요.',code_expired:'코드가 만료됐어요. 다시 받아 주세요.',too_many_attempts:'잘못된 코드를 너무 많이 입력했어요. 다시 받아 주세요.',too_many_requests:'요청이 너무 많아요. 잠시 후 다시 시도하세요.',not_pending:'이미 처리된 신청이에요.',not_approved:'승인된 멘토가 아니에요.',confirm_mismatch:'입력한 번호가 달라서 취소했어요.',user_not_found:'회원을 찾을 수 없어요.',wait_a_minute:'30초 뒤에 다시 요청하세요.',bad_email:'이메일 주소를 확인하세요.',mail_failed:'메일 발송에 실패했어요. Resend의 보내는 주소(MAIL_FROM) 도메인 인증을 확인하세요. 원인은 Vercel → Logs에 남아 있어요.',network:'서버에 연결할 수 없어요.'};
+const ERR={admin_not_configured:'관리자 이메일(ADMIN_EMAIL 또는 REVIEW_EMAIL)이 설정되지 않았어요.',not_configured:'서버 환경변수가 아직 설정되지 않았어요.',code_wrong:'코드가 맞지 않아요.',code_expired:'코드가 만료됐어요. 다시 받아 주세요.',too_many_attempts:'잘못된 코드를 너무 많이 입력했어요. 다시 받아 주세요.',too_many_requests:'요청이 너무 많아요. 잠시 후 다시 시도하세요.',not_pending:'이미 처리된 신청이에요.',not_approved:'승인된 멘토가 아니에요.',confirm_mismatch:'입력한 아이디가 달라서 취소했어요.',user_not_found:'회원을 찾을 수 없어요.',wait_a_minute:'30초 뒤에 다시 요청하세요.',bad_email:'이메일 주소를 확인하세요.',mail_failed:'메일 발송에 실패했어요. Resend의 보내는 주소(MAIL_FROM) 도메인 인증을 확인하세요. 원인은 Vercel → Logs에 남아 있어요.',network:'서버에 연결할 수 없어요.'};
 async function api(path,data){
   const o=data===undefined?{credentials:'same-origin'}:{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)};
   let r; try{r=await fetch('/api/admin/'+path,o)}catch(e){throw {code:'network'}}
@@ -105,11 +105,11 @@ const fmt=iso=>{if(!iso) return '—'; const d=new Date(iso); return `${d.getMon
 const fmtDay=iso=>{if(!iso) return '—'; const d=new Date(iso); return `${d.getFullYear()}.${d.getMonth()+1}.${d.getDate()}`};
 const hoursSince=iso=>(Date.now()-Date.parse(iso))/36e5;
 const fmtPhone=k=>/^01\d{8,9}$/.test(k||'')?k.replace(/^(\d{3})(\d{3,4})(\d{4})$/,'$1-$2-$3'):(k||'');
-const who=u=>u.phone?fmtPhone(u.phone):(u.email||u.key);
+const who=u=>u.username?'@'+u.username:u.phone?fmtPhone(u.phone):(u.email||u.key);
 const stars=n=>`<span class="stars">${'★'.repeat(n)}<i>${'★'.repeat(5-n)}</i></span>`;
 const STATUS={none:['신청 전',''],pending:['심사 대기','warn'],approved:['승인','ok'],rejected:['반려','']};
 const statusPill=u=>u.published?'<span class="pill ok">멘토 공개 중</span>':`<span class="pill ${STATUS[u.status]?.[1]||''}">${STATUS[u.status]?.[0]||esc(u.status)}</span>`;
-const LOGT={sign_in:'관리자 로그인',approve:'멘토 승인',reject:'멘토 반려',revoke:'멘토 자격 취소',delete_user:'회원 삭제',delete_review:'후기 삭제'};
+const LOGT={reset_password:'비밀번호 초기화',sign_in:'관리자 로그인',approve:'멘토 승인',reject:'멘토 반려',revoke:'멘토 자격 취소',delete_user:'회원 삭제',delete_review:'후기 삭제'};
 
 async function load(){
   try{A.data=await api('data'); A.view='dash'}
@@ -134,7 +134,7 @@ function overviewHTML(){const s=A.data.stats, U=A.data.users;
     <div class="stat"><small>오늘 / 7일 가입</small><b>${s.new1} / ${s.new7}</b></div>
     <div class="stat"><small>멘토 심사 대기</small><b>${s.pending}</b>${s.overdue?`<em>24시간 초과 ${s.overdue}건</em>`:''}</div>
     <div class="stat"><small>후기</small><b>${s.reviews}</b></div>
-    <div class="stat"><small>학교 이메일 인증</small><b>${s.uniVerified}</b></div>
+    <div class="stat"><small>멘토 신청 누계</small><b>${s.applied}</b></div>
     <div class="stat"><small>승인된 멘토</small><b>${s.approved}</b></div>
     <div class="stat"><small>프로필 공개 멘토</small><b>${s.published}</b></div>
     <div class="stat"><small>마지막 새로고침</small><b style="font-size:18px;margin-top:8px">${fmt(A.data.now)}</b></div></div>
@@ -151,8 +151,8 @@ function queueHTML(){const U=A.data.users;
   ${pend.length?pend.map(u=>{const h=hoursSince(u.submittedAt), late=h>24, p=u.proof, src='/api/admin/proof?e='+encodeURIComponent(u.key);
     return `<article class="app"><div>
       <h3>${esc(u.name)} <span class="pill ${late?'warn':'blue'}">${late?`24시간 초과 (${Math.floor(h)}시간째)`:`${Math.ceil(24-h)}시간 남음`}</span></h3>
-      <dl><dt>휴대폰</dt><dd>${esc(who(u))}</dd>
-        <dt>학교 이메일</dt><dd>${esc(u.uniEmail)} ${u.uniVerified?'<span class="pill ok">인증됨</span>':'<span class="pill warn">미인증</span>'}</dd>
+      <dl><dt>아이디</dt><dd>${esc(who(u))}</dd>
+        <dt>학교 이메일</dt><dd>${esc(u.uniEmail)} ${u.uniVerified?'<span class="pill ok">인증됨</span>':'<span class="pill">신청자 입력</span>'}</dd>
         <dt>본교·학과</dt><dd>${esc(u.home||'—')} ${esc(u.major||'')}</dd>
         <dt>접수</dt><dd>${fmt(u.submittedAt)}</dd>
         <dt>증빙 파일</dt><dd>${p?`${esc(p.name||'파일')} · ${p.size<1024*1024?Math.max(1,Math.round(p.size/1024))+'KB':(p.size/1048576).toFixed(1)+'MB'} · ${p.type==='application/pdf'?'PDF':p.type==='image/png'?'PNG':'JPG'}`:'저장된 파일 없음 (심사 메일 첨부를 확인하세요)'}</dd></dl>
@@ -165,15 +165,15 @@ function queueHTML(){const U=A.data.users;
     ${done.map(u=>`<tr><td>${esc(u.name)}</td><td>${esc(who(u))}</td><td>${statusPill(u)}</td><td>${fmt(u.reviewedAt)}</td><td>${esc(u.reason||'')}</td></tr>`).join('')}</table></div>`:'<div class="empty">아직 처리한 심사가 없어요.</div>'}`}
 
 function usersHTML(){const q=A.q.trim().toLowerCase();
-  const F={all:()=>true,uni:u=>u.uniVerified,pending:u=>u.status==='pending',mentor:u=>u.status==='approved',rejected:u=>u.status==='rejected'};
-  const list=A.data.users.filter(F[A.f]).filter(u=>!q||[u.name,u.key,u.phone,fmtPhone(u.phone),u.email,u.uniEmail,u.home,u.major].some(x=>String(x||'').toLowerCase().includes(q)));
-  return `<div class="toolbar"><input class="input" id="q" type="search" placeholder="이름, 휴대폰 번호, 학교로 검색" value="${esc(A.q)}">
-    ${[['all','전체'],['uni','학교 인증'],['pending','심사 대기'],['mentor','멘토'],['rejected','반려']].map(([k,l])=>`<button class="chip${A.f===k?' on':''}" data-act="filter" data-v="${k}">${l}</button>`).join('')}
+  const F={all:()=>true,uni:u=>!!u.uniEmail,pending:u=>u.status==='pending',mentor:u=>u.status==='approved',rejected:u=>u.status==='rejected'};
+  const list=A.data.users.filter(F[A.f]).filter(u=>!q||[u.name,u.key,'@'+u.key,u.phone,u.email,u.uniEmail,u.home,u.major].some(x=>String(x||'').toLowerCase().includes(q)));
+  return `<div class="toolbar"><input class="input" id="q" type="search" placeholder="이름, 아이디, 학교로 검색" value="${esc(A.q)}">
+    ${[['all','전체'],['uni','멘토 신청'],['pending','심사 대기'],['mentor','멘토'],['rejected','반려']].map(([k,l])=>`<button class="chip${A.f===k?' on':''}" data-act="filter" data-v="${k}">${l}</button>`).join('')}
     <span style="color:var(--ink-3);font-size:13px;margin-left:auto">${list.length}명</span></div>
-  ${list.length?`<div class="tablewrap"><table><tr><th>이름 · 휴대폰</th><th>본교 · 학과</th><th>가입일</th><th>학교 이메일</th><th>멘토</th><th></th></tr>
+  ${list.length?`<div class="tablewrap"><table><tr><th>이름 · 아이디</th><th>본교 · 학과</th><th>가입일</th><th>학교 이메일</th><th>멘토</th><th></th></tr>
     ${list.map(u=>`<tr><td><b>${esc(u.name)}</b><small>${esc(who(u))}</small></td><td>${esc(u.home||'—')}<small>${esc([u.major,u.year].filter(Boolean).join(' · '))}</small></td><td>${fmtDay(u.created)}</td>
-      <td>${u.uniEmail?`${esc(u.uniEmail)}<small>${u.uniVerified?'인증됨':'인증 전'}</small>`:'—'}</td><td>${statusPill(u)}${u.mentorProfile?`<small>${esc(u.mentorProfile.length||'')} · ${esc(u.mentorProfile.sessions||'')}회 · ${esc(u.mentorProfile.format||'')}</small>`:''}</td>
-      <td style="white-space:nowrap">${u.status==='pending'?'<button class="btn sm ghost" data-act="tab" data-v="queue">심사</button> ':''}${u.status==='approved'?`<button class="btn sm ghost" data-act="revoke" data-e="${esc(u.key)}">자격 취소</button> `:''}<button class="btn sm warn" data-act="deluser" data-e="${esc(u.key)}">탈퇴 처리</button></td></tr>`).join('')}</table></div>`
+      <td>${u.uniEmail?`${esc(u.uniEmail)}<small>${u.uniVerified?'인증됨':'신청자 입력'}</small>`:'—'}</td><td>${statusPill(u)}${u.mentorProfile?`<small>${esc(u.mentorProfile.length||'')} · ${esc(u.mentorProfile.sessions||'')}회 · ${esc(u.mentorProfile.format||'')}</small>`:''}</td>
+      <td style="white-space:nowrap">${u.status==='pending'?'<button class="btn sm ghost" data-act="tab" data-v="queue">심사</button> ':''}${u.status==='approved'?`<button class="btn sm ghost" data-act="revoke" data-e="${esc(u.key)}">자격 취소</button> `:''}<button class="btn sm ghost" data-act="resetpw" data-e="${esc(u.key)}">비밀번호 초기화</button> <button class="btn sm warn" data-act="deluser" data-e="${esc(u.key)}">탈퇴 처리</button></td></tr>`).join('')}</table></div>`
     :'<div class="empty">조건에 맞는 회원이 없어요.</div>'}`}
 
 function reviewsHTML(){const R=A.data.reviews;
@@ -215,7 +215,9 @@ document.addEventListener('click',e=>{
     return act(async()=>{await api('action',{type:d,key:em,reason}); delete A.reason[em]; await load(); toast(d==='approve'?'승인했어요. 신청자에게 결과를 보냈어요':'반려했어요. 신청자에게 결과를 보냈어요')})}
   if(t==='revoke'){const reason=prompt(`${fmtPhone(em)} 님의 멘토 자격과 공개 프로필을 내릴까요?\n신청자에게 보낼 사유를 적어 주세요 (선택).`); if(reason===null) return;
     return act(async()=>{await api('action',{type:'revoke',key:em,reason}); await load(); toast('멘토 자격을 취소했어요')})}
-  if(t==='deluser'){const c=prompt(`회원 정보, 후기, 증빙 파일이 영구 삭제되고 되돌릴 수 없어요.\n삭제하려면 휴대폰 번호(또는 이메일)를 그대로 입력하세요:\n${fmtPhone(em)}`); if(c===null) return;
+  if(t==='resetpw'){ if(!confirm(`${fmtPhone(em)} 님의 비밀번호를 임시 비밀번호로 바꿀까요? 본인 확인을 한 뒤에만 진행하세요.`)) return;
+    return act(async()=>{const j=await api('action',{type:'reset_password',key:em}); await load(); prompt('임시 비밀번호예요. 본인에게 전달하고 로그인 후 바꾸도록 안내하세요.',j.temp)})}
+  if(t==='deluser'){const c=prompt(`회원 정보, 후기, 증빙 파일이 영구 삭제되고 되돌릴 수 없어요.\n삭제하려면 아이디를 그대로 입력하세요:\n${fmtPhone(em)}`); if(c===null) return;
     return act(async()=>{await api('action',{type:'delete_user',key:em,confirm:c}); await load(); toast('회원을 삭제했어요')})}
   if(t==='delreview'){ if(!confirm('이 후기를 삭제할까요? 되돌릴 수 없어요.')) return;
     return act(async()=>{await api('action',{type:'delete_review',mentor:b.dataset.m,key:em}); await load(); toast('후기를 삭제했어요')})}
