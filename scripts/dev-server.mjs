@@ -2,6 +2,7 @@
 // Upstash Redis, email and text messages, so everything runs without real accounts or keys.
 //   node scripts/dev-server.mjs            → http://localhost:8790
 //   GET /__mails, /__sms                   → messages the app "sent"
+//   GET /__keys                            → keys currently in the fake Redis
 // Never deploy this file; Vercel only runs files under /api.
 import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path'; import { pathToFileURL, fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), PORT = Number(process.env.PORT || 8790);
@@ -40,6 +41,7 @@ http.createServer(async (req, res) => {
   if (u.pathname === '/__smsapi') { const m = JSON.parse(raw).message; sms.push({ to: m.to, from: m.from, text: m.text, auth: /^HMAC-SHA256 apiKey=/.test(req.headers.authorization || '') }); return json({ statusCode: '2000' }); }
   if (u.pathname === '/__mails') return json(mails.map(m => ({ to: m.to, subject: m.subject, html: m.html, att: (m.attachments || []).map(a => a.filename) })));
   if (u.pathname === '/__sms') return json(sms);
+  if (u.pathname === '/__keys') return json([...db.keys()].filter(alive));
   if (u.pathname.startsWith('/api/')) {
     let f = path.join(ROOT, u.pathname + '.js'); if (!fs.existsSync(f)) f = path.join(ROOT, path.dirname(u.pathname), '[op].js');
     if (!fs.existsSync(f)) { res.statusCode = 404; return res.end('{}'); }

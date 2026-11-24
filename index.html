@@ -493,6 +493,14 @@ p{margin:0}
 .empty-state{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:36px 16px;margin-top:12px;border-radius:20px;background:var(--card);color:var(--ink-3)}
 .ftip{font-size:12px;color:var(--ink-3);line-height:1.4}
 .phrow{display:flex;gap:8px;align-items:center}.phrow .input{flex:1;min-width:0}.phrow .btn{flex:none}
+.board-head{display:flex;align-items:center;justify-content:space-between}
+.writebtn{gap:6px;height:36px;padding:0 14px}
+.ccats{margin:10px -20px 4px;padding:0 20px;display:flex;gap:6px}
+.ccats .chip{background:var(--card);border-color:transparent;flex:none}
+.ccats .chip.on{background:var(--navy);border-color:var(--navy);color:var(--bg)}
+.post .who .pill{margin-left:auto;align-self:flex-start}
+.post .foot .foot-r{margin-left:auto;display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--ink-3)}
+.post .foot .foot-r:hover{color:var(--ink)}
 .empty-acts{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;width:100%;margin-top:10px}.empty-acts .btn{white-space:nowrap;flex:0 0 auto;width:auto}
 .empty-state b{color:var(--ink);font-size:15px}.empty-state small{font-size:13px;line-height:1.5}
 .mintro{font-size:14px;line-height:1.6;color:var(--ink-2);margin-top:4px}
@@ -1137,7 +1145,7 @@ Object.assign(KO,{
 "We match your documents against the program":"서류를 프로그램 정보와 대조해요","In review":"심사 중","results within 3 business days":"영업일 기준 3일 이내 결과 안내","Approve (demo)":"심사 통과 (데모)",
 "Get your verified badge":"인증 배지 받기","Set your own session price and availability":"세션 가격과 가능 시간을 직접 정해요","Your badge is live. You can now open mentoring slots.":"배지가 발급됐어요. 이제 멘토링 일정을 열 수 있어요.",
 // me
-"Home university not set":"본교 미입력","Become a mentor after you return":"귀국 후 멘토로 활동하기","Verify with your university email and proof of completion":"학교 이메일과 수료 증빙으로 인증해요","You’re a verified mentor":"인증 멘토예요","Manage your mentoring slots":"멘토링 일정을 관리하세요",
+"Home university not set":"본교 미입력","Become a mentor after you return":"귀국 후 멘토로 활동하기","School and major":"학교·학과 정보","Edit your school":"내 학교·학과","and major":"정보 수정","Saved":"저장했어요","Verify with your university email and proof of completion":"학교 이메일과 수료 증빙으로 인증해요","You’re a verified mentor":"인증 멘토예요","Manage your mentoring slots":"멘토링 일정을 관리하세요",
 "My program":"내 프로그램","Change program":"프로그램 변경","Travel dates":"여행 날짜","Mentoring bookings":"멘토링 예약 내역","Back to start (demo)":"처음으로 (데모)",
 // travel sheet
 "Your travel dates":"여행 날짜","Deadlines move with your departure date. Your length of stay decides which visa you need.":"마감일은 출발일에 맞춰 바뀌어요. 필요한 비자는 체류 기간에 따라 달라져요.","Departure date":"출발 날짜","Save travel dates":"여행 날짜 저장",
@@ -1400,13 +1408,25 @@ Object.assign(KO,{
 "Your review is already approved.":"이미 심사가 승인됐어요.","Sessions must be a whole number from 1 to 20.":"횟수는 1부터 20 사이의 정수로 입력하세요.","Could not reach the server. Check your connection.":"서버에 연결할 수 없어요. 인터넷 연결을 확인하세요.","We could not send the email. Please try again in a moment.":"메일을 보내지 못했어요. 잠시 후 다시 시도해 주세요.",
 });
 T_('Draft saved {D}','{D} 임시저장됨');
+Object.assign(KO,{"Visa & documents":"비자·서류","Application & courses":"지원·학사","Housing & daily life":"숙소·생활","Activities & clubs":"대외활동·동아리","Questions":"질문","Anything":"자유",
+"Write":"글쓰기","Write a post":"글쓰기","Category":"카테고리","Post anonymously. Your name, major and year are hidden.":"익명으로 올리기 (이름, 학과, 학년이 보이지 않아요)","Anonymous":"익명","Me":"나",
+"Choose a category.":"카테고리를 골라 주세요.","Write something first.":"내용을 입력해 주세요.","Posted anonymously":"익명으로 올렸어요","Delete":"삭제","Post deleted":"글을 삭제했어요","Report":"신고",
+"Report this post":"게시글 신고","Our team reviews every report. The post is hidden for you right away.":"운영팀이 모든 신고를 확인해요. 신고한 글은 바로 내 화면에서 숨겨져요.",
+"Spam or advertising":"스팸·광고","Insults or harassment":"욕설·비방","Shares personal information":"개인정보 노출","False information":"허위 정보","Something else":"기타",
+"Reported. Our team will review it":"신고했어요. 운영팀이 확인할게요","No posts in this category yet":"이 카테고리에는 아직 글이 없어요","Tap Write to share a tip or ask a question.":"글쓰기를 눌러 팁을 나누거나 질문해 보세요."});
+Object.assign(KO,{"Not confirmed yet":"아직 확인 전","Official requirement not confirmed":"공식 기준 확인 전","Cambridge English: results in about 2–3 weeks":"케임브리지 영어: 결과까지 약 2~3주",
+"Choose one of the tests the official page lists. Book early: results take from 2 days (DET) to about 2 weeks.":"공식 페이지에 나온 시험 중 하나를 고르세요. 결과는 2일(DET)부터 약 2주까지 걸리니 일찍 예약하세요."});
+T_('We have not confirmed {X}’s official English requirement yet. Accepted tests differ by university (TOEFL, IELTS, Cambridge, CEFR level, TOEIC and others), so check the official page before you book a test.','{X}의 공식 어학 기준은 아직 확인하지 못했어요. 학교마다 인정하는 시험(TOEFL, IELTS, 케임브리지, CEFR 등급, TOEIC 등)이 다르니 시험을 예약하기 전에 공식 페이지를 꼭 확인하세요.');
+T_('We have not confirmed {X}’s official English requirement yet. Open the official page and note which tests it accepts and the minimum for each.','{X}의 공식 어학 기준은 아직 확인하지 못했어요. 공식 페이지에서 인정하는 시험과 시험별 최소 점수를 확인하세요.');
+T_('{X} accepts any one of these. You only need one. Upload it with your application, or have the test agency send it directly.','{X}는 아래 시험 중 하나만 있으면 돼요. 지원서와 함께 올리거나 시험 기관에서 직접 보내게 하세요.');
+T_('{X} accepts: {X}. Book early: results take from 2 days (DET) to about 2 weeks.','{X} 인정 시험: {X}. 결과는 2일(DET)부터 약 2주까지 걸리니 일찍 예약하세요.');
 Object.assign(KO,{
 "ID":"아이디","Change password":"비밀번호 변경","Current password":"현재 비밀번호","Save":"저장","Password changed":"비밀번호를 바꿨어요","The current password is not right.":"현재 비밀번호가 맞지 않아요.","4–20 characters: lowercase letters, numbers or _ , starting with a letter.":"영문 소문자로 시작하는 4~20자 (영문 소문자, 숫자, _ 사용 가능)",
 "8 or more characters with at least one letter and one number.":"8자 이상, 영문과 숫자를 하나 이상 넣어 주세요.",
 "Forgot your password? Ask the team at gyohwan.info@gmail.com and we will reset it.":"비밀번호를 잊으셨나요? gyohwan.info@gmail.com으로 문의하면 초기화해 드려요.",
 "Use 4–20 lowercase letters, numbers or _, starting with a letter.":"아이디는 영문 소문자로 시작하는 4~20자(영문 소문자, 숫자, _)로 정해 주세요.","This ID is already taken. Try another.":"이미 쓰고 있는 아이디예요. 다른 아이디를 입력하세요.",
 "The ID or password is not right.":"아이디 또는 비밀번호가 맞지 않아요.","Use 8 or more characters with at least one letter and one number.":"비밀번호는 8자 이상, 영문과 숫자를 섞어 주세요.",
-"Your university email":"학교 이메일","We send your review result here":"심사 결과를 이 주소로 보내드려요","Next":"다음",
+"Your university email":"학교 이메일","We send your review result here":"심사 결과를 이 주소로 보내드려요","We send a 6-digit code to your school address to confirm it is you":"학교 메일로 6자리 인증번호를 보내 본인인지 확인해요","Host transcript or certificate · PDF, JPG or PNG up to 3 MB · destroyed after the review":"파견교 성적표 또는 수료증 · PDF, JPG, PNG 3MB 이하 · 심사 후 폐기","Next":"다음",
 });
 Object.assign(KO,{
 "Start with your":"휴대폰 번호로","phone number":"시작해요","Phone number":"휴대폰 번호","Get code":"인증번호 받기","Confirm":"확인","Change":"변경","Get started":"시작하기",
@@ -1454,6 +1474,7 @@ async function loadData(){
     const r=await fetch('data/universities.json',{cache:'no-cache'}); DATA=await r.json(); COUNTRIES=DATA.countries; buildNameKo(COUNTRIES);
   }catch(e){ DATA={unis:[],kr:[],countries:COUNTRIES,error:true}; }
   await st; await me;
+  if(!AUTH.user){ try{const g=JSON.parse(localStorage.getItem('gg_profile')||'null'); if(g&&g.univ){S.profile.univ=g.univ; if(g.major) S.profile.major=g.major; if(g.year) S.profile.year=g.year}}catch(e){} }
   if(['boot','lang','splash','login'].includes(S.screen)){
     if(AUTH.user){ const had=restoreUser(AUTH.user); NAV.replaceNext=true; S.screen=had?'app':'profile'; S.tab='home'; }
     else if(S.screen==='boot'){ hintIn(false); NAV.replaceNext=true; S.screen='splash' }
@@ -1748,16 +1769,61 @@ const ENGLISH={
   'Uppsala University':{ex:{t:[T("English","B2","self-assessed, no certificate")],scope:"Incoming exchange students",note:"Some departments, such as Law and Government, expect stronger English.",src:L("Uppsala University · FAQ for exchange students","https://www.uu.se/en/study/exchange-studies/faq")}},
   'Universität Zürich':{ex:{t:[T("Language of instruction","B2","recommended")],scope:"Incoming exchange students",note:"C1 is required for German or English literature and linguistics.",src:L("UZH · Exchange application","https://www.int.uzh.ch/en/in/program/erasmus/application.html")},ss:{t:[T("English","B2","or higher")],scope:"UZH International Summer Schools",note:"Applications for 2027 run from January 7 to April 22. The program runs July 3–23, 2027.",src:L("UZH International Summer Schools · How to apply","https://www.summerschools.uzh.ch/en/apply-now.html")}},
   'Griffith University':{ex:{t:[T("IELTS","6.0","no band below 5.5")],scope:"Undergraduate exchange students",note:"Postgraduates need IELTS 6.5. Tests must be under 2 years old.",src:L("Griffith · Exchange program","https://www.griffith.edu.au/international/global-mobility/inbound/how-to-apply/exchange-program")}},
-  'Australian National University':{ex:{t:[T("IELTS","6.5","6.0 in each band")],scope:"Exchange students (undergraduate)",note:"TOEFL and Cambridge cutoffs change for study from January 2027.",src:L("ANU Policy · English language admission requirements","https://policies.anu.edu.au/ppl/document/ANUP_000408")}}
+  'Australian National University':{ex:{t:[T("IELTS","6.5","6.0 in each band")],scope:"Exchange students (undergraduate)",note:"TOEFL and Cambridge cutoffs change for study from January 2027.",src:L("ANU Policy · English language admission requirements","https://policies.anu.edu.au/ppl/document/ANUP_000408")}},
+  'Cornell University':{ex:{t:[T('TOEFL iBT','100','or 5.0 on the 2026 scale'),T('IELTS','7.5'),T('DET','130')],scope:'Incoming international exchange students',note:'Native English speakers and students from universities where English is an official language are exempt. Cornell’s admissions policy lists 5.0 for TOEFL taken from January 2026.',src:L('Cornell Global Learning · International exchange','https://abroad.globallearning.cornell.edu/international-exchange')}},
+  'George Washington University':{ex:{t:[T('TOEFL iBT','4.5','new scale; 90 on the old scale'),T('IELTS','6.5','no band below 5.5'),T('DET','115'),T('PTE Academic','61')],scope:'Inbound exchange students (fact sheet, March 2026)',note:'Below TOEFL 5.0 / IELTS 7.5 / DET 125 you take an English for Academic Purposes course.',src:L('GW Study Abroad · Inbound exchange fact sheet 2026','https://studyabroad.gwu.edu/sites/g/files/zaxdzs5896/files/2026-03/inbound_exchange_fact_sheet_-_updated_3.2026.pdf')}},
+  'University of Hawaii at Manoa':{ex:{t:[T('TOEFL iBT','61','or 3.5 on the 2026 scale'),T('IELTS','5.5','Academic'),T('TOEFL Essentials','7.0')],scope:'Exchange, Hoakipa and independent visiting students',note:'Below TOEFL 100 / IELTS 7.0 you may have to take English Language Institute courses alongside your classes. Scores must be under 2 years old.',src:L('UH Mānoa International Exchange · English language requirements','https://manoa.hawaii.edu/mix/inbound/english-language-requirements/')}},
+  'Temple University':{ex:{t:[T('TOEFL iBT','79','or 4.0 on the 2026 scale'),T('IELTS','6.0'),T('DET','110'),T('CEFR','B2'),T('TOEIC','390 + 390','Listening and Reading'),T('TOEFL ITP','550')],scope:'Study abroad and exchange students at Temple',note:'Any one of these is enough.',src:L('Temple Global Programs · Application process','https://globalprograms.temple.edu/application-process-costs-and-aid/application-process-and-costs')}},
+  'University of California, Irvine':{ex:{t:[T('TOEFL iBT','80','or 4.5 on the 2026 scale'),T('IELTS','6.5'),T('DET','115')],scope:'UCI accepts TOEFL, IELTS, DET, AP or IB for inbound exchange; the minimums shown are UCI’s undergraduate admission minimums',note:'The inbound exchange page lists the accepted tests but no numbers, so confirm the cut-off with the UCI Study Abroad Center.',src:L('UCI Study Abroad Center · Inbound exchange','https://studyabroad.uci.edu/inbound-exchange/')}},
+  'University of Georgia':{ex:{t:[T('TOEFL iBT','80','20+ in speaking and writing'),T('IELTS','6.5')],scope:'Incoming exchange students',note:'Duolingo is not accepted (since July 2023) and no other tests are accepted. For TOEFL taken from 2026 UGA lists 4.5 with 4+ in speaking and writing; confirm with UGA StudyAway.',src:L('UGA StudyAway · Incoming exchange student resources','https://studyaway.uga.edu/index.cfm?FuseAction=Abroad.ViewLink&Link_ID=92F6628F-5056-BA1F-74E1A144EF51733C&Parent_ID=919B0C6F-5056-BA1F-74627E63B46F723C')}},
+  'Purdue University':{ex:{t:[T('TOEFL iBT','80','20+ each section; 4.5 with 4.0 each from Jan 2026'),T('IELTS','6.5','no section below 6.0'),T('DET','110','subscores sent directly by Duolingo')],scope:'Incoming exchange students',note:'Not needed if your home university teaches in English.',src:L('Purdue Study Abroad · Incoming exchange application','https://www.purdue.edu/gpp/sa/incoming/index.html')}},
+  'University of Wisconsin - Madison':{ex:{t:[T('TOEFL iBT','95','4.5 on the 2026 scale; Engineering 90'),T('IELTS','6.5'),T('DET','125')],scope:'IAP general exchange (Business and CALS exchanges also 95)',note:'Most students whose home studies are not in English must submit a score.',src:L('UW–Madison Study Abroad · Exchange application process','https://studyabroad.wisc.edu/exchange/application-process/')}},
+  'San Francisco State University':{ex:{t:[T('TOEFL iBT','61'),T('IELTS','6.0'),T('PTE Academic','45'),T('TOEFL Essentials','7.5'),T('TOEFL PBT/ITP','500')],scope:'Exchange students',note:'Proof of enrolment at an English-taught university can replace a score. Other evidence is reviewed case by case (exchange@sfsu.edu).',src:L('SF State · Applying to the exchange student program','https://international.sfsu.edu/exchange-application')}},
+  'Florida State University':{ex:{t:[T('TOEFL iBT','80','or 4.0 on the 2026 scale'),T('IELTS','6.5','Academic'),T('DET','125'),T('PTE Academic','55'),T('Cambridge C1/C2','180'),T('Michigan (MET)','55')],scope:'FSU’s university-wide English requirement (FSU has no separate exchange-student table)',note:'Scores older than 2 years are not accepted. Ask the Center for Global Engagement whether your exchange agreement sets a different level.',src:L('FSU Admissions · English language proficiency','https://admissions.fsu.edu/international/english-proficiency')}},
+  'University of Illinois Urbana-Champaign':{ex:{t:[T('TOEFL iBT','100','20+ each; 5.0 (4.5+ each) from Jan 2026'),T('IELTS','7.0','7+ on every module'),T('DET','130')],scope:'Incoming exchange students (Illinois Study Abroad Office)',note:'Colleges differ: Engineering accepts TOEFL 100 or IELTS 6.5; Liberal Arts & Sciences lists TOEFL 80 or IELTS 6.0 on all modules. Scores go directly from the test agency (code 1836).',src:L('Illinois Study Abroad · Incoming application instructions','https://studyabroad.illinois.edu/incoming-students/incoming-application-process/instructions-components/')}},
+  'Pennsylvania State University':{ex:{t:[T('TOEFL iBT','80','or 4.5 on the 2026 scale'),T('IELTS','6.5'),T('DET','120')],scope:'Penn State’s university-wide undergraduate requirement (no separate exchange table found)',note:'Scores must be under 2 years old. Confirm with Penn State Global Programs whether your exchange agreement differs.',src:L('Penn State · Requirements for international students','https://www.psu.edu/resources/international-students/admission-requirements')}},
+  'Michigan State University':{ex:{t:[T('TOEFL iBT','79','no subscore below 17; 4 (speaking 3.5) from Jan 2026'),T('IELTS','6.5','no band below 6.0'),T('DET','110')],scope:'Exchange students (American Semester Program & Exchanges)',note:'Not needed if your home university teaches in English. TOEFL Home Edition is accepted.',src:L('MSU American Semester Program & Exchanges · Exchange admission requirements','https://americansemester.isp.msu.edu/interested-students/apply-now/exchange-admissions-requirements/')}},
+  'State University of New York at Stony Brook':{ex:{t:[T('TOEFL iBT','80','for tests before Jan 21, 2026'),T('IELTS','6.5'),T('DET','105')],scope:'Exchange and visiting semester students',note:'Applicants from native English-speaking countries or English-medium universities are exempt. Ask the study abroad office for the 2026 TOEFL scale cut-off.',src:L('Stony Brook Study Abroad · Semester program','https://www.stonybrook.edu/commcms/studyabroad/incoming/semester-program.php')}},
+  'American University':{ex:{t:[T('TOEFL iBT','85'),T('IELTS','6.5'),T('DET','120','110+ subscores'),T('PTE Academic','60'),T('Cambridge','176'),T('CEFR','B2','certified by your home university')],scope:'International visiting students (Washington Semester)',note:'Scores older than 2 years are not accepted. Confirm your exchange agreement with AU’s exchange office.',src:L('American University · Washington Semester international admissions','https://www.american.edu/washington-semester-program/international-student-admissions.cfm')}},
+  'University of Southern California':{ex:{t:[T('TOEFL iBT','100','20+ each section'),T('IELTS','7.0','6.0+ each band')],scope:'Marshall School of Business incoming exchange',note:'Each USC school sets its own level: Dornsife and Viterbi list TOEFL 4.5 (4+ each) on the 2026 scale and IELTS 6.5. Check the school that hosts your exchange.',src:L('USC Marshall · Incoming exchange students','https://students.marshall.usc.edu/current-students/international-programs/international-exchange-program/incoming-students')}},
+  'University of Bristol':{ex:{t:[T('IELTS','6.5','no skill below 5.5 (Profile H)'),T('CEFR','B2','in all four skills, by letter from a partner university')],scope:'Study abroad and exchange students (English language Profile H)',note:'Partner-university students coming for one semester can send Bristol’s letter of attestation confirming B2 overall and in every skill instead of a test.',src:L('University of Bristol · English language Profile H','https://www.bristol.ac.uk/study/language-requirements/profile-h/')}},
+  'School of Oriental and African Studies, University of London':{ex:{t:[T('IELTS','6.5','6.0 in each subscore (Academic or UKVI)')],scope:'Direct entry study abroad and exchange students',note:'Scores are valid for 2 years. Another SOAS page lists 6.0 with 5.5 in each, so confirm the level with SOAS. Pre-sessional English is not covered by exchange agreements.',src:L('SOAS · Study abroad entry requirements','https://www.soas.ac.uk/study/study-abroad-and-exchange/inbound-students-study-abroad/study-abroad-entry-requirements')}},
+  'University of Oxford':{ex:{t:[T('IELTS','7.5','7.0+ in each component'),T('TOEFL iBT','110','L22 R24 S25 W24; tests from Jan 21, 2026 not accepted')],scope:'Visiting students (most subjects use Oxford’s higher level)',note:'Standard level is IELTS 7.0 with 6.5 in each component; each course says which level it needs. Colleges handle visiting-student applications.',src:L('University of Oxford · English language requirements','https://www.ox.ac.uk/admissions/undergraduate/applying-to-oxford/for-international-students/ELR')}},
+  'University of Cambridge':{ex:{t:[T('IELTS','7.0','L/W/S 7.0, reading 6.5'),T('TOEFL iBT','100','25 in each element')],scope:'Student visitors (departments such as Classics, Economics and Judge Business School ask IELTS 7.5)',note:'Tests must be within 2 years of your start date. Check the hosting department’s visitor page.',src:L('University of Cambridge · Student visitors','https://pgapp.ch.cam.ac.uk/student-visitors')}},
+  'University of Groningen':{ex:{t:[T('IELTS','6.5','6.0+ each section'),T('TOEFL iBT','92','21+ each section'),T('Cambridge','CAE / CPE','grade B2 or higher'),T('CEFR','B2/C1','Erasmus+ OLS or signed home-university statement')],scope:'Bachelor-level exchange (Faculty of Arts)',note:'Faculties differ: Spatial Sciences lists IELTS 6.0 / TOEFL 80, some MA courses TOEFL 100 / IELTS 7. Students from universities in the US, UK, Canada, Australia, New Zealand and Ireland are exempt.',src:L('University of Groningen · Exchange admission & application','https://www.rug.nl/let/studeren-bij-ons/exchange/admission-and-application/admission-application?lang=en')}},
+  'Utrecht University':{ex:{t:[T('IELTS','6.0','5.5+ writing (BA courses)'),T('TOEFL iBT','83','BA courses'),T('Cambridge C1 Advanced','169','162+ writing')],scope:'Bachelor-level courses for exchange students',note:'Master-level courses need IELTS 6.5 (6.0 writing), TOEFL 93 or C2 Proficiency 180. University College Utrecht asks IELTS 7.0 / TOEFL 100. Non-EU students must send IELTS, TOEFL or Cambridge.',src:L('Utrecht University · Erasmus / exchange application','https://www.uu.nl/en/education/exchange-students/application/erasmus-exchange-students')}},
+  'ETHZ - ETH Zurich':{ex:{t:[T('CEFR','B2','C1 strongly recommended'),T('Language','German (BA) / English (MA)','bachelor courses are mostly in German')],scope:'Exchange students (worldwide exchange fact sheet)',note:'No certificate has to be uploaded: ETH relies on your home university to nominate students at the required level. German is not required for English-taught master courses.',src:L('ETH Zurich · Fact sheet for worldwide exchange programmes','https://ethz.ch/en/studies/non-degree-courses/exchange/downloads/for-partners/factsheets/worldwide.html')}},
+  'Ruprecht-Karls-Universität Heidelberg':{ex:{t:[T('German (CEFR)','B2','for German-taught courses'),T('English','per programme','only some programmes are taught in English')],scope:'Exchange and Erasmus students',note:'Most lectures are in German; Heidelberg expects solid German (about two years at university level). Exchange students do not take the DSH entrance exam. A pre-semester language programme is offered.',src:L('Heidelberg University · Language skills for exchange students','https://www.uni-heidelberg.de/en/international-affairs/erasmus/incoming/language-skills')}},
+  'Ludwig-Maximilians-Universität München':{ex:{t:[T('German (CEFR)','B1 → B2','B1 at nomination, B2 by the start'),T('English (CEFR)','B2','only if you take English-taught courses'),T('Accepted proof','TOEFL, TOEIC, IELTS, Cambridge, Goethe, TestDaF, telc','or a confirmation from your home coordinator')],scope:'LMUexchange and Erasmus students',note:'English Philology and North American Studies require English C1. Certificates must be under 2 years old. Taking only English-taught courses means German is generally not required.',src:L('LMU Munich · Erasmus and LMUexchange FAQs','https://www.lmu.de/en/study/all-degrees-and-programs/programs-for-international-visiting-students/erasmus-and-lmuexchange/faqs/')}},
+  'Freie Universität Berlin':{ex:{t:[T('German (CEFR)','B1 / B2','recommended: B1 sciences, B2 humanities and social sciences'),T('English (CEFR)','B2','for English-taught exchange modules')],scope:'Direct exchange students',note:'FU does not ask for a certificate; your home university is expected to select students at the right level. Most undergraduate courses are taught in German.',src:L('Freie Universität Berlin · Direct exchange','https://www.fu-berlin.de/en/studium/international/studium_fu/auslandssemester/direktaustausch_in/index.html')}},
+  'Universität Mannheim':{ex:{t:[T('CEFR','B2','English or German'),T('TOEFL iBT','80','20+ each; 4.0 on the 2026 scale'),T('IELTS','6.5','6.0+ each')],scope:'Incoming exchange students',note:'Mannheim asks for B2 in the language of your courses; its exchange page says no certificate has to be uploaded, but some courses ask for C1. Certificates must be under 2 years old.',src:L('University of Mannheim · Applying as an exchange student','https://www.uni-mannheim.de/en/academics/coming-to-mannheim/exchange-students/application/')}},
+  'Technische Universität München':{ex:{t:[T('CEFR','B1','German or English, in the language of your courses'),T('CEFR (Management, Education, Weihenstephan)','B2')],scope:'TUMexchange students',note:'A certificate from your home university or a language school is accepted; unsigned self-assessments are not. Informatics asks English B2.',src:L('TUM International Center · TUMexchange','https://www.international.tum.de/en/coming-to-tum/exchange-students/tumexchange/')}},
+  'Johann Wolfgang Goethe Universität Frankfurt am Main':{ex:{t:[T('German (CEFR)','B1','or'),T('English (CEFR)','B2','proof required')],scope:'Exchange students (most faculties)',note:'Either German B1 or English B2 is enough for most subjects. Medicine asks German B2 (C1 recommended); Economics and Business only recommends B2. The English-taught Goethe Study Experience Program needs English B2.',src:L('Goethe University Frankfurt · Exchange application','https://www.uni-frankfurt.de/156219839/Application')}},
+  'Universiteit Leiden':{ex:{t:[T('IELTS','6.5','Academic'),T('TOEFL iBT','90','Spring 2027 (old scale); 5.0 from Fall 2027'),T('Cambridge','C1 Advanced 180 or C2 Proficiency'),T('LanguageCert Academic','70','test centre only')],scope:'Non-EU exchange students',note:'Tests must be under 2 years old. Duolingo, TOEFL Essentials, MyBest and ITP are not accepted. Students who finished school or university in an English-speaking country are exempt.',src:L('Leiden University · Exchange admission requirements','https://www.universiteitleiden.nl/en/education/admission-and-application/exchange/admission-requirements')}},
+  'Erasmus University Rotterdam':{ex:{t:[T('IELTS','6.5','Academic, test centre'),T('TOEFL iBT','90','4.5 on the 2026 scale'),T('Cambridge','C1 Advanced / C2 Proficiency')],scope:'Erasmus School of Economics exchange',note:'Faculties differ (Social and Behavioural Sciences: TOEFL 80 / IELTS 6.0; University College: IELTS 7.0 / TOEFL 100 / Cambridge 185). Online and home-edition tests are not accepted.',src:L('Erasmus School of Economics · Exchange application and requirements','https://www.eur.nl/en/ese/exchange/visiting-students/application-and-requirements')}},
+  'University of Twente':{ex:{t:[T('IELTS','6.0','no section below 5.5'),T('Cambridge C1 Advanced','169','no section below 162'),T('TOEFL iBT','4.0','2026 scale, speaking 3.5; 4.5 from Sept 2027'),T('PTE Academic / LanguageCert','accepted','in-person versions')],scope:'Exchange students (February 2027 intake)',note:'Certificates must be under 2 years old; online, Indicator and MyBest scores are not accepted. Students who already met the English requirement of a fully English-taught home programme can apply for an exception.',src:L('University of Twente · English language requirements for exchange','https://www.utwente.nl/en/education/electives/exchange/english-requirements/')}},
+  'KU Leuven':{ex:{t:[T('English (CEFR)','B2','bachelor courses; C1 for master courses'),T('IELTS','7.0','no subscore below 6.5 (Engineering, non-European students)'),T('Dutch (CEFR)','B2','only for Dutch-taught courses')],scope:'Exchange students (requirements set by each faculty)',note:'Economics and Business asks B2 for bachelor and C1 for master courses. Engineering Science accepts IELTS, TOEFL or CAE from non-European students.',src:L('KU Leuven Faculty of Engineering Science · Prerequisites for exchange students','https://eng.kuleuven.be/en/study/prospective-students/non-degree-seeking-students/exchange-procedure/prerequisites-for-exchange-students')}},
+  'The Hong Kong University of Science and Technology':{ex:{t:[T('IELTS','6.0','overall band'),T('TOEFL iBT','80'),T('TOEFL PBT','550')],scope:'Exchange students from non-English-medium universities',note:'Students whose home university teaches in English do not need a score.',src:L('HKUST International Student Programs · Eligibility','https://isp.hkust.edu.hk/application/eligibility')}},
+  'Nanyang Technological University':{ex:{t:[T('IELTS','6.0','and 6.0 in Writing'),T('TOEFL iBT','90','or 570 paper-based'),T('Home-university letter','Accepted','confirming you can follow classes in English')],scope:'GEM Trailblazer semester exchange',note:'Native speakers and students taught in English at home are exempt. Scores must be from the last 2 years; MyBest scores are not accepted.',src:L('NTU · GEM Trailblazer exchange (inbound)','https://www.ntu.edu.sg/education/student-exchanges/exchange-programmes/inbound-programmes')}},
+  'Meiji University':{ex:{t:[T('TOEFL iBT','61','or 3.5 on the new scale'),T('IELTS','5.5'),T('JLPT','N1–N4','only for Japanese-taught courses, level set by each school')],scope:'Meiji International Student Center default, when the partner agreement sets no requirement',note:'Some schools ask more: Business Administration needs TOEFL iBT 80 or IELTS 6.0. Scores must be recent (taken on or after September 2025 for the 2027 fall intake).',src:L('Meiji University · Exchange student application guidelines (2027 Fall)','https://www.meiji.ac.jp/cip/recruitment/lpcfhr000000gvxh-att/ENG_2027_Fall_Exchange_Bosyuyoko.pdf')}},
+  'Universidad Autónoma de Madrid':{ex:{t:[T('Spanish (CEFR)','B1','B2 strongly recommended; B2 in Economics and Business'),T('English (CEFR)','B2','recommended for English-taught courses')],scope:'Incoming exchange students',note:'Most courses are taught in Spanish. Usually your home university confirms your level, but Medicine, Law and Psychology (English courses) ask for a certificate.',src:L('UAM · Incoming exchange students: before you arrive','https://www.uam.es/uam/en/international/incoming/estudiantes-intercambio/antes-de-llegar')}},
+  'Universidad de Málaga':{ex:{t:[T('Spanish (CEFR)','B1','recommended, no certificate required')],scope:'Incoming exchange students',note:'The main teaching language is Spanish. English-taught subjects exist but fill quickly. A 40-hour Spanish course (A1–C2) is offered to exchange students.',src:L('Universidad de Málaga · Nomination and acceptance','https://www.uma.es/relaciones-internacionales/cms/menu/incoming-students/international-office/nomination-and-acceptance/?set_language=en')}},
+  'KEDGE Business School':{ex:{t:[T('English (CEFR)','B2','or one of the scores below'),T('TOEFL iBT','79','or 550 paper-based'),T('IELTS','6.0'),T('TOEIC','785'),T('French (CEFR)','B2','only for French-taught courses')],scope:'Exchange students taking English-taught courses',note:'Spring semester courses are all in English; fall courses are in English or French.',src:L('KEDGE Business School · Exchange students','https://student.kedge.edu/exchange-students')}},
+  'York University':{ex:{t:[T('Home-university letter','Accepted','from your international office, confirming your English'),T('TOEFL / IELTS','York minimums','used as a guideline if you send a score')],scope:'Incoming academic exchange (York International)',note:'Proof is needed only if your home university teaches in another language. Schulich School of Business asks more (graduate: IELTS 7.0).',src:L('York International · Incoming academic exchange','https://www.yorku.ca/international/global-learning/incoming-academic-exchange/')}},
+  'University of Calgary':{ex:{t:[T('TOEFL iBT','86','or 5.5 on the new scale'),T('IELTS','6.5','Academic'),T('DET','120'),T('PTE Academic','60')],scope:'Incoming exchange students (undergraduate minimums)',note:'Proof must be emailed before the application counts as complete. TOEFL ITP and MyBest scores are not accepted. Law asks for TOEFL 100 or IELTS 7.0.',src:L('University of Calgary · Incoming exchange FAQ','https://ucalgary.ca/international/study-abroad/incoming-exchange/FAQ')}},
+  'University of New South Wales':{ex:{t:[T('IELTS','6.5','overall only, Academic'),T('TOEFL iBT','90','overall only'),T('Cambridge C1 Advanced','Accepted','see UNSW table for the score')],scope:'Exchange and study abroad students',note:'Exchange students only need the overall score, not each section. Tests must be within 2 years of your start; MyBest scores are not accepted.',src:L('UNSW · English language requirements','https://www.unsw.edu.au/study/how-to-apply/english-language-requirements')}},
+  'Ritsumeikan University':{ex:{t:[T('TOEFL iBT','76','or 4.0 on the new scale'),T('IELTS','6.0','Academic'),T('Cambridge B2 First / C1 Advanced','170'),T('DET','100'),T('JLPT','N1','only for regular Japanese-taught courses')],scope:'Study in Kansai Program (SKP), English-taught track',note:'The Intensive Japanese track needs no Japanese. Students in a fully English-taught program at home can get a waiver. GPA 3.0/4.0 is also required.',src:L('Ritsumeikan SKP · English proficiency requirements','https://en.ritsumei.ac.jp/skp/apply/pdf/LanguageRequirementsENG.pdf')}},
+  'Chuo University':{ex:{t:[T('JLPT','N2','Commerce; N1 or N2 for Global Informatics, Science & Engineering'),T('JLPT','N3','suggested for Law, Economics, Letters'),T('English','No score required','Global Management and Policy Studies, but you must follow English classes')],scope:'Inbound exchange, undergraduate (by faculty)',note:'Most courses are taught in Japanese. Global Management teaches over 70% of its courses in English.',src:L('Chuo University · Fact sheet, student exchange program (inbound)','https://chuo-u.ac.jp/uploads/2024/12/english_admissions_exchange_semester-or-full-year_01_20241220.pdf')}},
+  'Nanjing University':{ex:{t:[T('IELTS','6.0','for English-taught courses'),T('TOEFL iBT','70–78','pages differ; confirm with NJU'),T('HSK','5','only for Chinese-taught courses')],scope:'Exchange students',note:'Chinese language courses have no requirement. A language letter from your home university may be accepted.',src:L('Nanjing University · Exchange students application','https://njunju.nju.edu.cn/EN/7b/c1/c5043a162753/page.htm')}}
 };
 function englishOf(h,p){
   const E=ENGLISH[h.name]; const key=p.long?'ex':'ss';
   if(E&&E[key]) return {...E[key],verified:true,check:STATUS&&STATUS.english[h.name+'|'+key]};
   const dom=domainOf(h.url);
-  return {verified:false,t:[T('TOEFL iBT','80–100','typical'),T('IELTS','6.0–7.0','typical'),T('DET','105–130','typical')],scope:'Typical range at partner universities',note:`We have not verified ${h.short}’s exact scores yet. Check the official page before you book a test.`,
+  return {verified:false,t:[],scope:'Not confirmed yet',note:`We have not confirmed ${h.short}’s official English requirement yet. Accepted tests differ by university (TOEFL, IELTS, Cambridge, CEFR level, TOEIC and others), so check the official page before you book a test.`,
     src:{label:`Search ${dom||h.short} for English requirements`,url:'https://www.google.com/search?q='+encodeURIComponent((dom?'site:'+dom+' ':h.name+' ')+'English language requirements '+(p.long?'exchange':'summer')),verified:false}};
 }
-const engLine=e=>e.none?'English test not required':e.t.filter(x=>x[0]!=='Cambridge').map(x=>`${x[0].replace(' iBT','')} ${x[1]}`).join(' · ');
+const engLine=e=>e.none?'English test not required':!e.t.length?'Not confirmed yet':e.t.slice(0,3).map(x=>`${x[0].replace(' iBT','')} ${x[1]}`).join(' · ');
 function engPill(e){
   if(!e.verified) return `<span class="pill cat">Not verified</span>`;
   const c=e.check&&e.check.s, d=checkedDay();
@@ -1765,9 +1831,9 @@ function engPill(e){
   if(c==='ok'&&d) return `<span class="pill ok">Checked ${fmtShort(d)}</span>`;
   return `<span class="pill ok">Verified Oct 2026</span>`;
 }
-function engCard(e){return `<div class="eng${e.verified?'':' est'}"><div class="eng-top"><b>${e.verified?'Minimum scores':'Typical scores'}</b>${engPill(e)}</div>
-  <div class="eng-grid">${e.t.map(x=>`<div><small>${x[0]}</small><b class="num">${x[1]}</b>${x[2]?`<em>${x[2]}</em>`:''}</div>`).join('')}</div>
-  <p>${esc(e.scope)}. ${esc(e.note)}${e.check&&e.check.s==='changed'?' <b>The official page no longer shows these exact numbers. Confirm there before you book a test.</b>':''}</p>${linkHTML(lk(e.src),true)}</div>`}
+function engCard(e){return `<div class="eng${e.verified?'':' est'}"><div class="eng-top"><b>${e.verified?'Minimum scores':'Official requirement not confirmed'}</b>${engPill(e)}</div>
+  ${e.t.length?'':''}<div class="eng-grid">${e.t.map(x=>`<div><small>${x[0]}</small><b class="num">${x[1]}</b>${x[2]?`<em>${x[2]}</em>`:''}</div>`).join('')}</div>
+  <p>${e.t.length?esc(e.scope)+'. ':''}${esc(e.note)}${e.check&&e.check.s==='changed'?' <b>The official page no longer shows these exact numbers. Confirm there before you book a test.</b>':''}</p>${linkHTML(lk(e.src),true)}</div>`}
 
 /* ---------------- immunizations ---------------- */
 const KDCA=L('KDCA Immunization Helper · English certificate (예방접종도우미)','https://nip.kdca.go.kr/irhp/mngm/goVcntMngm.do?menuLv=3&menuCd=341');
@@ -1886,11 +1952,11 @@ function buildChecklist(h,p,stay=STAY[p.id],dep=D(depOf(p,h)),ret=addDays(dep,st
   for(const x of HS.extra||[]) add(x);
   const en=englishOf(h,p);
   add(ov('eng',{id:'eng',cat:'Apply',title:en.none?'Confirm English proficiency':en.verified?`Meet English minimum (${engLine(en)})`:'Check English score requirement',off:long?92:68,eng:en,
-    sum:en.none?`${h.short} does not ask most exchange students for a test score. ${en.note}`:`${en.verified?h.short+' asks for':'Partner universities usually ask for'} one of these scores. You only need one test. Upload it with your application, or have the test agency send it directly.`,
+    sum:en.none?`${h.short} does not ask most exchange students for a test score. ${en.note}`:en.verified?`${h.short} accepts any one of these. You only need one. Upload it with your application, or have the test agency send it directly.`:`We have not confirmed ${h.short}’s official English requirement yet. Open the official page and note which tests it accepts and the minimum for each.`,
     rows:[['Applies to',en.scope],['Validity','Usually 2 years from the test date'],['New TOEFL scale','Since Jan 21, 2026 TOEFL also reports a 1–6 band score']],
     steps:[
       {t:'Confirm the exact minimum',d:'Open the official page. Some faculties and programs ask for more, including section minimums.',link:en.src},
-      {t:'Pick one test',d:'Choose TOEFL iBT, IELTS Academic or Duolingo (if accepted). Book early, because results take 2–13 days.',need:['TOEFL iBT: results in about 4–8 days','IELTS Academic: results in about 3–13 days','DET: results in about 2 days']},
+      {t:'Pick one test',d:en.verified&&en.t.length?`${h.short} accepts: ${en.t.map(x=>x[0]).join(', ')}. Book early: results take from 2 days (DET) to about 2 weeks.`:'Choose one of the tests the official page lists. Book early: results take from 2 days (DET) to about 2 weeks.',need:['TOEFL iBT: results in about 4–8 days','IELTS Academic: results in about 3–13 days','DET: results in about 2 days','Cambridge English: results in about 2–3 weeks']},
       {t:'Send official scores',d:'Have ETS send TOEFL scores to the host, upload your IELTS Test Report Form, or share DET results from your Duolingo account, as the host asks.'}],
     links:[lk(en.src),lk(appPage)]}));
 
@@ -2198,6 +2264,7 @@ const S={
   ctab:'feed', liked:new Set(), bcat:'All', showDone:false,
   reqs:{}, chats:{}, chatWith:null, typing:null, reqNote:'', slot:null, mentorSheet:null,
   joined:new Set(), cv:null, cq:'', cposts:{}, cinfo:{}, cchat:{}, jstatus:{}, joining:null,
+  ccat:'all', draftPost:null, reportIdx:null, hiddenPosts:new Set(),
   reviews:{}, rv:{key:null,open:false,rating:0,text:'',busy:false,err:''}, chatC:null, chf:'all', doc:null,
   apply:{step:0,email:'',file:'',sent:false,busy:false,err:''},
   auth:{mode:'login',id:'',name:'',busy:false,err:''},
@@ -2290,10 +2357,10 @@ const SCREENS={
 
   boot(){return `<div class="splash"><div class="appicon">${ic('plane',56,1.8)}</div></div>`},
 
-  profile(){const P=S.profile;return `${bar('')}
+  profile(){const P=S.profile, ed=S.editProfile;return `${bar('')}
     <div class="scroll pad">
-      <div class="steps"><i class="on"></i><i></i><i></i></div>
-      <h2 class="ob-title">Tell us about<br>your home university</h2>
+      ${ed?'':'<div class="steps"><i class="on"></i><i></i><i></i></div>'}
+      <h2 class="ob-title">${ed?'Edit your school<br>and major':'Tell us about<br>your home university'}</h2>
       <p class="ob-sub">We use this to match you with mentors and peers from your school.</p>
       <div class="field"><span class="lbl">Home university</span>
         ${P.univ&&!S.homeQ?`<div class="picked">${ic('school',20)}<span class="t"><span data-notr>${esc(P.univ)}</span><small>South Korea</small></span><button data-act="unpickHome">Change</button></div>`
@@ -2304,7 +2371,7 @@ const SCREENS={
       <div class="field"><span class="lbl">Year</span>
         <div class="chips">${['1st year','2nd year','3rd year','4th year','Graduate'].map(y=>`<button class="chip${y===P.year?' on':''}" data-act="year" data-v="${y}">${y}</button>`).join('')}</div></div>
     </div>
-    <div class="cta"><button class="btn" data-go="school" ${P.univ?'':'disabled'}>Next</button></div>`},
+    <div class="cta">${ed?`<button class="btn" data-act="saveProfile" ${P.univ&&String(P.major||'').trim()?'':'disabled'}>Save</button>`:`<button class="btn" data-go="school" ${P.univ?'':'disabled'}>Next</button>`}</div>`},
 
   school(){
     const list=regionHosts();
@@ -2335,7 +2402,7 @@ const SCREENS={
       ${ps.map(p=>`<button class="popt${p.id===S.pickProg?' on':''}" data-act="pickProg" data-v="${p.id}" aria-pressed="${p.id===S.pickProg}">
         <span class="h"><span class="t"><span class="pill ${p.ex?'ok':'cat'}">${p.type}</span><b style="margin-top:6px">${p.term}</b></span><span class="radio-dot"></span></span>
         <p>${p.what}</p>${hostNote(h,p)?`<p class="pnote">${ic('flag',14)}<span>${hostNote(h,p)}</span></p>`:''}
-        <dl><dt>Length</dt><dd>${p.len}</dd><dt>Credits</dt><dd>${p.credits}</dd><dt>Tuition</dt><dd>${p.cost}</dd><dt>English</dt><dd>${engLine(englishOf(h,p))}${englishOf(h,p).verified?'':' (typical)'}</dd><dt>Visa</dt><dd>${h.region==='us'?'F-1 student visa':h.cc==='CA'?(STAY[p.id]>183?'eTA + study permit':'eTA'):visaGuide(h,p).title.replace(/^(Apply for|Get|Check) (a |an |your )?/,'').replace(/^./,c=>c.toUpperCase())}</dd><dt>Departure</dt><dd class="num">${fmtY(D(depOf(p,h)))}</dd></dl>
+        <dl><dt>Length</dt><dd>${p.len}</dd><dt>Credits</dt><dd>${p.credits}</dd><dt>Tuition</dt><dd>${p.cost}</dd><dt>English</dt><dd>${engLine(englishOf(h,p))}</dd><dt>Visa</dt><dd>${h.region==='us'?'F-1 student visa':h.cc==='CA'?(STAY[p.id]>183?'eTA + study permit':'eTA'):visaGuide(h,p).title.replace(/^(Apply for|Get|Check) (a |an |your )?/,'').replace(/^./,c=>c.toUpperCase())}</dd><dt>Departure</dt><dd class="num">${fmtY(D(depOf(p,h)))}</dd></dl>
       </button>${p.id===S.pickProg?`<div class="plink">${linkHTML(lk(p.long?pagesOf(h).exch:pagesOf(h).summer),true)}
         <div class="depfield"><span class="dhead">Your travel dates</span>
           <div class="dates">${dateBox('depInput','Leave','plane',S.pickDep||depOf(p,h))}${dateBox('retInput','Return','home',S.pickRet||iso(addDays(D(S.pickDep||depOf(p,h)),STAY[p.id])))}</div>
@@ -2389,7 +2456,6 @@ const SCREENS={
       <div class="d-sec"><h3>Official links</h3>${i.links.map(l=>linkHTML(l)).join('')}
         <div class="verified">${ic('shield',18)}<span><b>Verified ${fmtY(D(i.ver))}</b> · ${i.by}${checkedDay()?`<br>Links checked ${fmtY(checkedDay())}`:''}<br>Details can change. Always confirm with the official source before you submit.</span></div></div>
       <div class="d-sec">
-        <div class="row-toggle"><span><b>Deadline reminders</b><small>3 days and 1 day before, 9 AM</small></span><button class="switch${S.remind.has(i.id)?' on':''}" role="switch" aria-checked="${S.remind.has(i.id)}" aria-label="Deadline reminders" data-act="remind" data-v="${i.id}"></button></div>
         <button class="linkbtn" data-act="tab" data-v="mentor">${ic('mentor',18)}<span>Ask a mentor who has done this step</span></button>
         <button class="linkbtn" data-act="flag" style="padding-top:0">${ic('flag',18)}<span>Something changed? Report it</span></button>
       </div>
@@ -2406,7 +2472,7 @@ const SCREENS={
       <p class="ob-sub" style="margin-bottom:22px">Mentoring is paid, so we verify that every mentor actually completed the program. The operations team reviews every application, which takes up to 24 hours.</p>`;
     if(AUTH.ready&&!AUTH.configured) return head+`<div class="pnote">${ic('flag',14)}<span>Accounts are not connected yet. You can keep browsing without one.</span></div></div>`;
     if(!u) return head+`<div class="compose clock"><p>Log in to apply</p><small>Your application and review status are saved to your account.</small><button class="btn sm" data-go="login">Log in or sign up</button></div></div>`;
-    const st=m.status, uniOK=!!(m.uniEmail||A.uni), approved=st==='approved', live=!!m.profile;
+    const st=m.status, uniOK=!!m.uniVerified, approved=st==='approved', live=!!m.profile;
     const step=!uniOK?0:(st==='none'||st==='rejected')?1:st==='pending'?2:live?4:3;
     const cls=k=>k<step?'done':k===step?'cur':'';
     const n=k=>k<step?ic('check',16,3):k+1;
@@ -2416,9 +2482,10 @@ const SCREENS={
         <input class="input${custom?'':' hide'}" id="${id}" ${type==='number'?'type="number" min="1" max="20" step="1" inputmode="numeric"':'maxlength="30"'} value="${custom?esc(val):''}" placeholder="${type==='number'?'1–20':'e.g. 90 min'}"></label>`};
     const ta=(id,label,ph,val)=>`<label>${label}<textarea class="input area big" rows="7" id="${id}" maxlength="2000" placeholder="${ph}">${esc(val||'')}</textarea></label>`;
     return head+`
-      <div class="vstep ${cls(0)}"><span class="n">${n(0)}</span><div class="t"><b>Your university email</b><small>${uniOK?`<span data-notr>${esc(A.uni||m.uniEmail)}</span>`:'We send your review result here'}</small>
-        ${step===0?`<div class="act"><div class="row"><input class="input" id="apEmail" type="email" placeholder="name@university.ac.kr" value="${esc(A.email)}"><button class="btn sm" data-act="apUni">Next</button></div>${err}</div>`:''}</div></div>
-      <div class="vstep ${cls(1)}"><span class="n">${n(1)}</span><div class="t"><b>Upload proof of completion</b><small>${st==='rejected'?'The last proof could not be confirmed. Upload a certificate or host transcript.':'Host transcript or certificate of attendance · PDF, JPG or PNG up to 3 MB'}</small>
+      <div class="vstep ${cls(0)}"><span class="n">${n(0)}</span><div class="t"><b>Verify your university email</b><small>${uniOK?`<span data-notr>${esc(m.uniEmail)}</span>`:'We send a 6-digit code to your school address to confirm it is you'}</small>
+        ${step===0?`<div class="act">${A.sent?`<div class="row"><input class="input num" id="apCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6-digit code"><button class="btn sm" data-act="apVerify" ${A.busy?'disabled':''}>Verify</button></div><button class="linkbtn" data-act="apSend">Send the code again</button>`
+          :`<div class="row"><input class="input" id="apEmail" type="email" placeholder="name@university.ac.kr" value="${esc(A.email)}"><button class="btn sm" data-act="apSend" ${A.busy?'disabled':''}>Send code</button></div>`}${err}</div>`:''}</div></div>
+      <div class="vstep ${cls(1)}"><span class="n">${n(1)}</span><div class="t"><b>Upload proof of completion</b><small>${st==='rejected'?'The last proof could not be confirmed. Upload a certificate or host transcript.':'Host transcript or certificate · PDF, JPG or PNG up to 3 MB · destroyed after the review'}</small>
         ${step===1?`<div class="act"><label class="file">${ic('upload',18)}<span>${A.file?esc(A.file):'Choose a PDF, JPG or PNG'}</span><input type="file" id="apFile" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"></label>
           <button class="btn sm" data-act="apUpload" ${A.file&&!A.busy?'':'disabled'}>Submit for review</button>${err}</div>`:''}</div></div>
       <div class="vstep ${cls(2)}"><span class="n">${n(2)}</span><div class="t"><b>Team review</b><small>${st==='pending'?'In review · up to 24 hours. We email you the result.':approved?'Approved':'Takes up to 24 hours after you submit'}</small>
@@ -2479,7 +2546,7 @@ function homeTab(){
   const next=list.find(i=>!S.done.has(i.id));
   const cats=['All','Apply','Visa','Health','Living','Academics','Arrival'].filter(c=>c==='All'||list.some(i=>i.cat===c));
   const shown=S.filter==='All'?list:list.filter(i=>i.cat===S.filter);
-  return `<div class="bar main">${canBack()?backBtn():''}<h2>Dashboard</h2><button class="iconbtn" data-act="toast" data-v="${S.remind.size} reminders are on" aria-label="Notifications">${ic('bell')}</button></div>
+  return `<div class="bar main">${canBack()?backBtn():''}<h2>Dashboard</h2></div>
   <div class="scroll pad">
     <section class="hero">
       <div class="top"><span class="mono">${esc(h.mono)}</span><span class="t"><b>${esc(h.name)}</b><small>${p.type} · ${p.term}</small></span></div>
@@ -2508,6 +2575,8 @@ const cview=()=>S.cv||{h:host()};
 const MSTAT={soon:'Going soon',now:'There now',done:'Completed'};
 const cMembers=h=>S.joined.has(ckey(h))?1:0;  // real member counts come from the server; none in this demo
 const statusOf=who=>who==='You'?(S.jstatus[ckey(cview().h)]||'soon'):['now','done','done','now','soon','done'][hash(who)%6];
+const CCATS=[['visa','Visa & documents'],['apply','Application & courses'],['life','Housing & daily life'],['activity','Activities & clubs'],['ask','Questions'],['free','Anything']];
+const ccatName=k=>(CCATS.find(x=>x[0]===k)||[,''])[1];
 function cPosts(c){const k=ckey(c.h); return S.cposts[k]||(S.cposts[k]=[])}
 function cChat(c){const k=ckey(c.h); return S.cchat[k]||(S.cchat[k]=[])}
 function cResultsHTML(){
@@ -2538,15 +2607,17 @@ function cBodyHTML(){
       ${joined?'':S.joining===k?`<div class="jopt"><p>How are you connected to ${esc(h.short)}?</p><div class="chips">${Object.entries(MSTAT).map(([v,l])=>`<button class="chip sm" data-act="cjoin" data-v="${v}">${l}</button>`).join('')}</div></div>`
         :`<button class="btn cjoinbtn" data-act="cjoinask">Join this community</button><p class="cnote">For Korean students going to, studying at or back from ${esc(h.short)}.</p>`}
     </section>
-    <div class="list-head" style="margin-top:18px"><h3>Board</h3>${joined?'<span>Group chat is in the Chats tab</span>':''}</div>
-    ${joined?`<div class="compose"><textarea class="input area" id="cText" rows="3" placeholder="Share a tip or ask a question"></textarea><div class="row" style="justify-content:flex-end;margin-top:8px"><button class="btn sm" data-act="cpost">Post</button></div></div>`:''}
-    ${posts.length?'':`<div class="empty-state">${ic('doc',28)}<b>No posts yet</b><small>${joined?'Be the first to share a tip or ask a question.':'Join to write the first post.'}</small></div>`}
-    <div>${posts.map((x,idx)=>{const lk=k+'#'+idx, st=statusOf(x.who);return `<article class="post">
-      <div class="who"><span class="ava">${esc(x.who[0])}</span><span class="t"><b>${esc(x.who)} ${statPill(st)}</b><small>${esc(x.meta)} · ${esc(x.time)}</small></span></div>
-      <p class="txt"${x.who==='You'?' data-notr':''}>${esc(x.text)}</p>
+    <div class="list-head board-head" style="margin-top:18px"><h3>Board</h3>${joined?`<button class="btn sm writebtn" data-act="cwrite">${ic('doc',16)}<span>Write</span></button>`:''}</div>
+    <div class="hscroll ccats">${[['all','All'],...CCATS].map(([v,l])=>`<button class="chip sm${(S.ccat||'all')===v?' on':''}" data-act="ccat" data-v="${v}">${l}</button>`).join('')}</div>
+    ${(()=>{const shown=posts.map((x,idx)=>[x,idx]).filter(([x,idx])=>!S.hiddenPosts.has(k+'#'+idx)&&((S.ccat||'all')==='all'||x.cat===S.ccat));
+      if(!shown.length) return `<div class="empty-state">${ic('doc',28)}<b>${posts.length?'No posts in this category yet':'No posts yet'}</b><small>${joined?'Tap Write to share a tip or ask a question.':'Join to write the first post.'}</small></div>`;
+      return `<div>${shown.map(([x,idx])=>{const lk=k+'#'+idx, st=statusOf(x.who), mine=x.who==='You';return `<article class="post">
+      <div class="who"><span class="ava">${x.anon?ic('user',18):esc(x.who[0])}</span><span class="t"><b>${x.anon?'Anonymous':esc(mine?'Me':x.who)} ${x.anon?'':statPill(st)}</b><small>${x.anon?'':esc(x.meta)+' · '}${esc(x.time)}</small></span>${x.cat?`<span class="pill cat">${ccatName(x.cat)}</span>`:''}</div>
+      <p class="txt"${mine?' data-notr':''}>${esc(x.text)}</p>
       ${x.answer?`<div class="answer"><b>${x.answer.who} <span class="badge">${ic('shield',13,2.4)}Verified mentor</span></b>${x.answer.text}</div>`:''}
-      <div class="foot"><button class="${S.liked.has(lk)?'on':''}" data-act="like" data-v="${esc(lk)}">${ic('heart',15)} Like ${(x.likes||0)+(S.liked.has(lk)?1:0)}</button><span>${ic('chat',15)} ${x.answer?1:(x.answers||0)} comments</span></div>
-    </article>`}).join('')}</div>`;
+      <div class="foot"><button class="${S.liked.has(lk)?'on':''}" data-act="like" data-v="${esc(lk)}">${ic('heart',15)} Like ${(x.likes||0)+(S.liked.has(lk)?1:0)}</button><span>${ic('chat',15)} ${x.answer?1:(x.answers||0)} comments</span>
+        ${mine?`<button class="foot-r" data-act="cdel" data-v="${idx}">Delete</button>`:`<button class="foot-r" data-act="creport" data-v="${idx}">${ic('flag',14)} Report</button>`}</div>
+    </article>`}).join('')}</div>`})()}`;
 }
 
 // a mentor finished the same program in an earlier year: "Spring 2027" -> "Spring 2026"
@@ -2581,6 +2652,7 @@ function chatsTab(){
       :`<div class="empty-state">${ic('chat',28)}<b>No chats yet</b><small>${S.chf==='m'?'Open a mentor’s profile and start a chat.':S.chf==='c'?'Join a community to open its group chat.':'Join a community or message a mentor. Every chat shows up here.'}</small>
         <div class="empty-acts">${S.chf!=='m'?'<button class="btn sm ghost" data-act="tab" data-v="community">Find a community</button>':''}${S.chf!=='c'?'<button class="btn sm ghost" data-act="tab" data-v="mentor">See mentors</button>':''}</div></div>`}
   </div>`}
+const applyCardHTML=()=>`<button class="apply-card" data-go="mentorApply"><span class="t"><b>${mStat()==='published'?'You’re a verified mentor':'Become a mentor after you return'}</b><small>${mStat()==='published'?'Manage your mentor profile':mStat()==='pending'?'In review · up to 24 hours':'Verify with your university email and proof of completion'}</small></span>${ic(mStat()==='published'?'shield':'chev',22)}</button>`;
 function mentorTab(){
   const h=host(), list=mentorsFor().sort((a,b)=>mScore(b)-mScore(a));
   setTimeout(()=>list.forEach(m=>{if(!S.reviews[m.key]) loadReviews(m)}));
@@ -2599,6 +2671,7 @@ function mentorTab(){
         <span class="bottom"><span class="pr">${rt.n?`<span class="rate">${ic('star',13)}<b>${rt.avg}</b><span class="num">(${rt.n})</span></span>`:'<span class="rate">No reviews yet</span>'}<span class="offer-n">${m.offer.length} mentoring offers</span></span><span class="mcta${S.chats[m.id]?' ghost':''}">${S.chats[m.id]?'Open chat':'View profile'}</span></span></span>
     </button>`}).join('')}
     <p class="why">Read a mentor’s profile, then chat to agree on what you’ll cover, how long and the price. You pay only when you confirm the mentor’s proposal. Only students who completed the program can become mentors. Mentors receive the fee minus a platform commission.</p>
+    <div style="margin-top:18px">${applyCardHTML()}</div>
   </div>`;
 }
 
@@ -2624,12 +2697,12 @@ function meTab(){
   <div class="scroll pad">
     ${AUTH.user?`<div class="me"><span class="ava">${esc((AUTH.user.name||'?')[0])}</span><span class="t"><b data-notr>${esc(AUTH.user.name)}</b><small><span data-notr>@${esc(AUTH.user.username||AUTH.user.key)}</span><br>${esc(P.univ||'Home university not set')} · ${esc(P.major)} · ${esc(P.year)}</small></span></div>`
       :`<div class="me"><span class="ava">${ic('user',22)}</span><span class="t"><b>Browsing as a guest</b><small>Log in to apply as a mentor and keep your account.</small></span><button class="btn sm" data-go="login">Log in</button></div>`}
-    <button class="apply-card" data-go="mentorApply"><span class="t"><b>${mStat()==='published'?'You’re a verified mentor':'Become a mentor after you return'}</b><small>${mStat()==='published'?'Manage your mentor profile':mStat()==='pending'?'In review · up to 24 hours':'Verify with your university email and proof of completion'}</small></span>${ic(mStat()==='published'?'shield':'chev',22)}</button>
+    ${applyCardHTML()}
     <div class="menu">
       <div class="m">${ic('globe',20)}<span class="t">My program<br><small>${esc(h.name)} · ${p.type} ${p.term}</small></span></div>
+      <button data-act="editProfile">${ic('school',20)}<span class="t">School and major<br><small>${esc([S.profile.univ||'Home university not set',S.profile.major,S.profile.year].filter(Boolean).join(' · '))}</small></span>${ic('chev',18)}</button>
       <button data-act="changeProg">${ic('swap',20)}<span class="t">Change program</span>${ic('chev',18)}</button>
       <button data-act="editDep">${ic('plane',20)}<span class="t">Travel dates<br><small>${fmtShort(depDate())} → ${fmtY(retDate())} · ${stayShort(stayDays())}</small></span>${ic('chev',18)}</button>
-      <button data-act="toast" data-v="${S.remind.size} reminders are on">${ic('bell',20)}<span class="t">Deadline reminders<br><small>${S.remind.size} on</small></span>${ic('chev',18)}</button>
       <button data-act="openLang">${ic('globe',20)}<span class="t">Language<br><small>${LANG==='ko'?'한국어':'English'}</small></span>${ic('chev',18)}</button>
       <button data-act="doc" data-v="privacy">${ic('shield',20)}<span class="t">Privacy Policy</span>${ic('chev',18)}</button>
       <button data-act="doc" data-v="terms">${ic('doc',20)}<span class="t">Terms of Service</span>${ic('chev',18)}</button>
@@ -2673,6 +2746,30 @@ function openMentorSheet(id,keep){
   translate(sheet); sheet.classList.add('on'); $('#scrim').classList.add('on');
   const ns=sheet.querySelector('.scroll'); if(ns) ns.scrollTop=top;
 }
+function openPostSheet(err){const d=S.draftPost||{cat:'',anon:false,text:''}, sheet=$('#sheet');
+  sheet.innerHTML=`<div class="grab"></div><div class="scroll">
+    <h2 class="ob-title" style="font-size:22px;margin-top:6px">Write a post</h2>
+    <p class="hint" style="margin:10px 0 8px">Category</p>
+    <div class="chips">${CCATS.map(([v,l])=>`<button class="chip sm${d.cat===v?' on':''}" data-act="cwcat" data-v="${v}">${l}</button>`).join('')}</div>
+    <textarea class="input area big" id="cText" rows="7" maxlength="2000" placeholder="Share a tip or ask a question" style="margin-top:14px" data-notr>${esc(d.text||'')}</textarea>
+    <label class="agree" style="margin-top:12px"><input type="checkbox" id="cAnon"${d.anon?' checked':''}><span>Post anonymously. Your name, major and year are hidden.</span></label>
+    ${err?`<p class="aerr" role="alert">${esc(err)}</p>`:''}</div>
+    <div class="cta"><button class="btn" data-act="cpost">Post</button></div>`;
+  translate(sheet); sheet.classList.add('on'); $('#scrim').classList.add('on'); setTimeout(()=>{const t=$('#cText'); t&&t.focus()},60)}
+function openReportSheet(){const sheet=$('#sheet');
+  sheet.innerHTML=`<div class="grab"></div><div class="scroll">
+    <h2 class="ob-title" style="font-size:22px;margin-top:6px">Report this post</h2>
+    <p class="ob-sub" style="margin-bottom:14px">Our team reviews every report. The post is hidden for you right away.</p>
+    <div class="menu">${[['spam','Spam or advertising'],['abuse','Insults or harassment'],['privacy','Shares personal information'],['false','False information'],['other','Something else']].map(([v,l])=>`<button data-act="creportSend" data-v="${v}"><span class="t">${l}</span>${ic('chev',18)}</button>`).join('')}</div></div>`;
+  translate(sheet); sheet.classList.add('on'); $('#scrim').classList.add('on')}
+function openLangSheet(){const sheet=$('#sheet');
+  sheet.innerHTML=`<div class="grab"></div><div class="scroll" data-notr>
+    <h2 class="ob-title" style="font-size:22px;margin-top:6px">${LANG==='ko'?'언어':'Language'}</h2>
+    <div class="langs" style="margin-top:16px">
+      <button class="langopt${LANG==='ko'?' on':''}" data-act="pickLang" data-v="ko"><b>한국어</b><small>Korean</small><span class="radio-dot"></span></button>
+      <button class="langopt${LANG==='en'?' on':''}" data-act="pickLang" data-v="en"><b>English</b><small>영어</small><span class="radio-dot"></span></button>
+    </div></div>`;
+  sheet.classList.add('on'); $('#scrim').classList.add('on')}
 function openPwSheet(err){const sheet=$('#sheet');
   sheet.innerHTML=`<div class="grab"></div><div class="scroll">
     <h2 class="ob-title" style="font-size:22px;margin-top:6px">Change password</h2>
@@ -2854,7 +2951,6 @@ document.addEventListener('click',e=>{
     case 'showDone': S.showDone=!S.showDone; render(true); break;
     case 'open': S.detail=v; go('detail'); break;
     case 'toggleDone': {const was=S.done.has(v); was?S.done.delete(v):S.done.add(v); savePlan(); render(true); if(!was) toast('Marked as done'); break}
-    case 'remind': S.remind.has(v)?S.remind.delete(v):S.remind.add(v); render(true); toast(S.remind.has(v)?'Reminders on':'Reminders off'); break;
     case 'flag': toast('Thanks! Our team will check and update it'); break;
     case 'toast': toast(v); break;
     case 'ctab': S.ctab=v; render(true); break;
@@ -2864,7 +2960,19 @@ document.addEventListener('click',e=>{
     case 'cleave': {const c=cview(),k=ckey(c.h); S.joined.delete(k); render(true); toast('You left this community'); break}
     case 'cpick': {const u=DATA.unis.find(x=>x[0]===v&&x[1]===a.dataset.cc); const h=makeHost(u); S.cv=ckey(h)===myCKey()?null:{h}; S.cq=''; S.ctab='feed'; S.joining=null; render(); break}
     case 'cgo': S.cv=v&&v!==myCKey()?S.cinfo[v]:null; S.joining=null; render(); break;
-    case 'cpost': {const c=cview(); if(!S.joined.has(ckey(c.h))) return toast('Join this community first'); const t=$('#cText'), x=t&&t.value.trim(); if(!x){t&&t.focus();return} const P=S.profile; cPosts(c).unshift({type:'q',who:'You',meta:`${P.major} · ${P.year}`,text:x,time:'Just now',likes:0,answers:0}); render(true); toast('Posted'); break}
+    case 'ccat': S.ccat=v; render(true); break;
+    case 'cwrite': {const c=cview(); if(!S.joined.has(ckey(c.h))) return toast('Join this community first'); S.draftPost={cat:S.ccat&&S.ccat!=='all'?S.ccat:'',anon:false,text:''}; openPostSheet(); break}
+    case 'cwcat': {const t=$('#cText'); if(t) S.draftPost.text=t.value; S.draftPost.cat=v; S.draftPost.anon=!!($('#cAnon')||{}).checked; openPostSheet(); break}
+    case 'cpost': {const c=cview(); if(!S.joined.has(ckey(c.h))) return toast('Join this community first'); const t=$('#cText'), x=t&&t.value.trim(), d=S.draftPost||{};
+      d.text=t?t.value:''; d.anon=!!($('#cAnon')||{}).checked;
+      if(!d.cat){openPostSheet('Choose a category.');return} if(!x){openPostSheet('Write something first.');return}
+      const P=S.profile; cPosts(c).unshift({type:'q',who:'You',anon:d.anon,cat:d.cat,meta:`${P.major} · ${P.year}`,text:x,time:'Just now',likes:0,answers:0});
+      S.draftPost=null; S.ccat='all'; closeSheet(); render(true); toast(d.anon?'Posted anonymously':'Posted'); break}
+    case 'cdel': {const c=cview(); cPosts(c).splice(+v,1); render(true); toast('Post deleted'); break}
+    case 'creport': {S.reportIdx=+v; openReportSheet(); break}
+    case 'creportSend': {const c=cview(), k=ckey(c.h), idx=S.reportIdx, x=cPosts(c)[idx]; if(!x) return closeSheet();
+      api('report',{where:c.h.name,cat:ccatName(x.cat),text:x.text,reason:v}).catch(()=>{});
+      S.hiddenPosts.add(k+'#'+idx); closeSheet(); render(true); toast('Reported. Our team will review it'); break}
     case 'csend': {const c=cview(), i=$('#cMsg'), x=i&&i.value.trim(); if(!x){i&&i.focus();return} cChat(c).push({me:true,text:x,time:hm(new Date())}); render(true); const sc=$('#cScroll'); if(sc) sc.scrollTop=sc.scrollHeight; $('#cMsg').focus(); break}
     case 'chat': openChat(+v); break;
     case 'sendMsg': sendMsg(); break;
@@ -2874,7 +2982,8 @@ document.addEventListener('click',e=>{
     case 'closeSheet': closeSheet(); break;
     case 'editDep': openDepSheet(); break;
     case 'setLang': setLang(v); render(true); break;
-    case 'openLang': setLang(LANG==='ko'?'en':'ko'); render(true); toast(LANG==='ko'?'언어를 한국어로 바꿨어요':'Language changed to English'); break;
+    case 'openLang': openLangSheet(); break;
+    case 'pickLang': {const was=LANG; closeSheet(); if(v!==was){ setLang(v); render(true); toast(LANG==='ko'?'언어를 한국어로 바꿨어요':'Language changed to English') } break}
     case 'saveDep': {const v2=$('#depSheetInput').value, r2=$('#retSheetInput').value;
       if(!v2||v2<MIN_DEP){toast('Pick a departure at least 2 weeks from today');return}
       if(!r2||r2<=v2){toast('Return date must be after departure');return}
@@ -2887,16 +2996,20 @@ document.addEventListener('click',e=>{
     case 'changeProg': S.pick=host(); S.region=regGroup(host().region); go('school'); break;
     case 'pwSheet': openPwSheet(); break;
     case 'pwSave': {const cur=$('#pwCur').value, nx=$('#pwNew').value; api('auth/password',{current:cur,next:nx}).then(()=>{closeSheet(); toast('Password changed')}).catch(e=>openPwSheet(trText(errMsg(e)))); break}
+    case 'editProfile': S.editProfile=true; S.homeQ=''; go('profile'); break;
+    case 'saveProfile': {S.editProfile=false; const P=S.profile; P.major=String(P.major||'').trim();
+      if(AUTH.user) api('me',{profile:{home:P.univ,major:P.major,year:P.year}}).then(j=>{AUTH.user=j.user}).catch(()=>toast('Could not reach the server. Check your connection.'));
+      try{localStorage.setItem('gg_profile',JSON.stringify({univ:P.univ,major:P.major,year:P.year}))}catch(e){}
+      toast('Saved'); S.screen='app'; S.tab='me'; render(); break}
     case 'authMode': S.auth={...S.auth,mode:v,busy:false,err:''}; render(); break;
     case 'authLogin': authRun(async F=>{S.auth.id=String(F.auId||'').trim(); const j=await api('auth/login',{username:S.auth.id,password:F.auPw||''}); signedIn(j.user)}); break;
     case 'authSignup': authRun(async F=>{S.auth.id=String(F.auId||'').trim(); S.auth.name=String(F.auName||''); const j=await api('auth/signup',{username:S.auth.id,password:F.auPw||'',name:S.auth.name,agree:!!F.auAgree}); signedIn(j.user)}); break;
     case 'logout': api('auth/logout',{}).catch(()=>{}).then(()=>{AUTH.user=null; hintIn(false); S.auth={mode:'login',id:'',name:'',busy:false,err:''}; render(); toast('Logged out')}); break;
-    case 'apUni': {const em=String(($('#apEmail')||{}).value||'').trim().toLowerCase(); S.apply.email=em;
-      if(!/^[^\s@]+@[^\s@]+\.(ac\.kr|edu|edu\.[a-z]{2})$/.test(em)){S.apply.err=trText(ERR.not_university_email); S.apply.errAt='top'; render(true); break}
-      S.apply.uni=em; S.apply.err=''; render(true); break}
+    case 'apSend': apRun(async F=>{const em=F.apEmail; if(em!==undefined) S.apply.email=String(em).trim(); await api('mentor/uni-code',{uniEmail:S.apply.email}); S.apply.sent=true; toast('We sent a code to your university email')}); break;
+    case 'apVerify': apRun(async F=>{const j=await api('mentor/uni-verify',{code:String(F.apCode||'').trim()}); AUTH.user=j.user; S.apply.sent=false; toast('University email verified')}); break;
     case 'apUpload': apRun(async()=>{const f=S.apply.fileObj; if(!f) return; if(f.size>3*1024*1024) throw {code:'file_too_large'};
       const data=await new Promise((ok,no)=>{const r=new FileReader(); r.onload=()=>ok(String(r.result).split(',')[1]||''); r.onerror=no; r.readAsDataURL(f)});
-      const j=await api('mentor/apply',{uniEmail:S.apply.uni||(AUTH.user.mentor||{}).uniEmail,file:{name:f.name,data}}); AUTH.user=j.user; S.apply.file=''; S.apply.fileObj=null; toast('Submitted. The review takes up to 24 hours')}); break;
+      const j=await api('mentor/apply',{file:{name:f.name,data}}); AUTH.user=j.user; S.apply.file=''; S.apply.fileObj=null; toast('Submitted. The review takes up to 24 hours')}); break;
     case 'apRefresh': apRun(async()=>{await loadMe(); toast(mStat()==='approved'?'Review approved':'Still in review')}); break;
     case 'apDraft': case 'apPublish': apRun(async F=>{const pf=mentorForm(F); if(act==='apPublish'&&(!pf.offer||!pf.home||!pf.major)){throw {code:'profile_incomplete'}}
       S.apply.form=pf; try{localStorage.setItem('gg_mentor_draft',JSON.stringify(pf))}catch(e){}

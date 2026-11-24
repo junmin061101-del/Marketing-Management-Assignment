@@ -207,7 +207,7 @@ export const mailLayout = (title, inner) => `<div style="font-family:-apple-syst
 export const codeMail = (title, code) => mailLayout(title, `<p>아래 인증 코드를 10분 안에 입력하세요.</p>
   <p style="font-size:32px;font-weight:800;letter-spacing:6px;margin:16px 0">${code}</p>`);
 
-/* ---------- proof files: kept for the review, deleted automatically 30 days after upload or decision ---------- */
+/* ---------- proof files: kept only until the review is decided (then destroyed); unreviewed uploads expire after 30 days ---------- */
 const PROOF_TTL = 30 * 86400, CHUNK = 600000;
 export async function saveProof(email, buf, type, name) {
   const b64 = buf.toString('base64'), n = Math.ceil(b64.length / CHUNK);
@@ -250,7 +250,7 @@ export async function decideMentor(user, d, reason = '') {
   m.reason = reason || '';
   user.mentor = m;
   await saveUser(user);
-  await expireProof(uid(user));
+  await deleteProof(uid(user));   // the proof is used for this review only and destroyed once it is decided
   const [subject, title, text] = DECISION[d];
   if (user.phone && smsConfigured()) await sendSms(user.phone, `[교환가자] ${title}. ${reason ? '메모: ' + reason.slice(0, 40) + ' ' : ''}자세한 내용은 앱에서 확인하세요.`).catch(() => {});
   if (contactEmail(user)) await sendMail({ to: contactEmail(user), subject, html: mailLayout(title, `<p>${text}</p>${reason ? `<p style="background:#F2F4F6;padding:12px;border-radius:8px">운영팀 메모: ${escHtml(reason)}</p>` : ''}`) }).catch(() => {});

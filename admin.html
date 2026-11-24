@@ -147,7 +147,7 @@ function overviewHTML(){const s=A.data.stats, U=A.data.users;
 function queueHTML(){const U=A.data.users;
   const pend=U.filter(u=>u.status==='pending').sort((a,b)=>a.submittedAt<b.submittedAt?-1:1);
   const done=U.filter(u=>u.reviewedAt).sort((a,b)=>a.reviewedAt<b.reviewedAt?1:-1).slice(0,20);
-  return `<h2 style="margin-top:0">멘토 신청 심사 <span>오래된 신청부터 · 증빙 파일은 처리 후 30일 뒤 자동 삭제</span></h2>
+  return `<h2 style="margin-top:0">멘토 신청 심사 <span>오래된 신청부터 · 승인·반려하면 증빙 파일은 즉시 폐기돼요</span></h2>
   ${pend.length?pend.map(u=>{const h=hoursSince(u.submittedAt), late=h>24, p=u.proof, src='/api/admin/proof?e='+encodeURIComponent(u.key);
     return `<article class="app"><div>
       <h3>${esc(u.name)} <span class="pill ${late?'warn':'blue'}">${late?`24시간 초과 (${Math.floor(h)}시간째)`:`${Math.ceil(24-h)}시간 남음`}</span></h3>
@@ -183,6 +183,12 @@ function reviewsHTML(){const R=A.data.reviews;
     <button class="btn sm warn" data-act="delreview" data-m="${esc(r.mentor)}" data-e="${esc(r.key)}">삭제</button></div>`).join('')
   :'<div class="empty">아직 후기가 없어요.</div>'}`}
 
+const REASON={spam:'스팸·광고',abuse:'욕설·비방',privacy:'개인정보 노출',false:'허위 정보',other:'기타'};
+function reportsHTML(){const R=A.data.reports||[];
+  return `<h2 style="margin-top:0">커뮤니티 신고 <span>최근 200건 · 게시글 일부만 보관해요</span></h2>
+  ${R.length?R.map(r=>`<div class="rv"><span class="t"><span class="pill warn">${esc(REASON[r.reason]||r.reason)}</span> <b>${esc(r.where||'')}</b>${r.cat?` · <small>${esc(r.cat)}</small>`:''}
+    <p>${esc(r.text)}</p><small>${fmt(r.at)}${r.by?' · 신고자 @'+esc(r.by):' · 비회원 신고'}</small></span></div>`).join('')
+  :'<div class="empty">신고가 없어요.</div>'}`}
 function logHTML(){const L=A.data.log;
   return `<h2 style="margin-top:0">작업 기록 <span>최근 100건</span></h2>
   ${L.length?`<div class="log">${L.map(x=>`<div><time>${fmt(x.at)}</time><span><b>${esc(LOGT[x.type]||x.type)}</b> · ${esc(x.target)}${x.detail?` <span style="color:var(--ink-3)">— ${esc(x.detail)}</span>`:''}</span></div>`).join('')}</div>`:'<div class="empty">기록이 없어요.</div>'}`}
@@ -192,10 +198,10 @@ function render(){
   if(A.view==='loading'){r.innerHTML='<p style="color:var(--ink-3)">불러오는 중…</p>'; return}
   if(A.view==='login'){r.innerHTML=loginHTML(); const i=$('#code')||$('#email'); i&&i.focus(); return}
   const s=A.data.stats, keepQ=document.activeElement&&document.activeElement.id==='q';
-  const TABS=[['overview','개요',''],['queue','멘토 심사',s.pending?`<span class="count hot">${s.pending}</span>`:''],['users','회원',`<span class="count">${s.users}</span>`],['reviews','후기',`<span class="count">${s.reviews}</span>`],['log','작업 기록','']];
+  const TABS=[['overview','개요',''],['queue','멘토 심사',s.pending?`<span class="count hot">${s.pending}</span>`:''],['users','회원',`<span class="count">${s.users}</span>`],['reviews','후기',`<span class="count">${s.reviews}</span>`],['reports','신고',(s.reports?`<span class="count hot">${s.reports}</span>`:'')],['log','작업 기록','']];
   r.innerHTML=`<header><h1>교환가자 운영</h1><small>${fmt(A.data.now)} 기준</small><button class="btn sm ghost" data-act="refresh">새로고침</button><button class="btn sm ghost" data-act="logout">로그아웃</button></header>
     <nav class="tabs" role="tablist">${TABS.map(([k,l,c])=>`<button role="tab" aria-selected="${A.tab===k}" class="${A.tab===k?'on':''}" data-act="tab" data-v="${k}">${l}${c}</button>`).join('')}</nav>
-    <section>${({overview:overviewHTML,queue:queueHTML,users:usersHTML,reviews:reviewsHTML,log:logHTML})[A.tab]()}</section>`;
+    <section>${({overview:overviewHTML,queue:queueHTML,users:usersHTML,reviews:reviewsHTML,reports:reportsHTML,log:logHTML})[A.tab]()}</section>`;
   if(keepQ){const q=$('#q'); q.focus(); q.setSelectionRange(q.value.length,q.value.length)}
 }
 

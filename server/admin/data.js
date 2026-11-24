@@ -28,6 +28,7 @@ export default async function handler(req, res) {
     for (let i = 0; i < flat.length; i += 2) { try { reviews.push({ mentor: m, mentorName: SAMPLE[m] || names[m] || m, key: flat[i], ...JSON.parse(flat[i + 1]) }); } catch {} }
   }
   reviews.sort((a, b) => (a.at < b.at ? 1 : -1));
+  const reports = ((await redis('LRANGE', 'admin:reports', 0, 199)) || []).map(v => { try { return JSON.parse(v); } catch { return null; } }).filter(Boolean);
   const log = ((await redis('LRANGE', 'admin:log', 0, 99)) || []).map(v => { try { return JSON.parse(v); } catch { return null; } }).filter(Boolean);
   const now = Date.now(), day = 864e5;
   const stats = {
@@ -40,6 +41,7 @@ export default async function handler(req, res) {
     published: users.filter(u => u.published).length,
     applied: users.filter(u => u.uniEmail).length,
     reviews: reviews.length,
+    reports: reports.length,
   };
-  send(res, 200, { stats, users, reviews, log, admin: true, now: new Date().toISOString() });
+  send(res, 200, { stats, users, reviews, reports, log, admin: true, now: new Date().toISOString() });
 }
