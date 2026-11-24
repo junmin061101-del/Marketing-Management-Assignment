@@ -2942,7 +2942,7 @@ document.addEventListener('click',e=>{
     case 'partAll': S.partAll=!S.partAll; render(true); break;
     case 'scountry': S.scountry=v; S.slimit=40; render(true); break;
     case 'more': S.slimit+=60; ($('#schoolList').innerHTML=schoolListHTML(),translate($('#schoolList'))); break;
-    case 'pick': {const u=DATA.unis.find(x=>x[0]===v&&x[1]===a.dataset.cc); S.pick=makeHost(u); S.pickDep=null; S.pickRet=null; ($('#schoolList').innerHTML=schoolListHTML(),translate($('#schoolList'))); const b=view.querySelector('[data-act="toProgram"]'); b.disabled=false; b.textContent='Next: choose program'; break}
+    case 'pick': {const u=DATA.unis.find(x=>x[0]===v&&x[1]===a.dataset.cc); S.pick=makeHost(u); S.pickDep=null; S.pickRet=null; ($('#schoolList').innerHTML=schoolListHTML(),translate($('#schoolList'))); const b=view.querySelector('[data-act="toProgram"]'); b.disabled=false; b.textContent=trText('Next: choose program'); break}
     case 'toProgram': if(S.pick){S.pickProg=(S.pick.name===host().name?S.progId:'exS'); go('program')} break;
     case 'pickProg': if(S.pickProg!==v){S.pickProg=v; S.pickDep=null; S.pickRet=null} render(true); break;
     case 'build': if(AUTH.user) api('me',{profile:{home:S.profile.univ,major:S.profile.major,year:S.profile.year}}).then(j=>{AUTH.user=j.user}).catch(()=>{}); S.host=S.pick||S.host; S.progId=S.pickProg; S.depOverride=(S.pickDep&&S.pickDep!==depOf(prog(),S.host))?S.pickDep:null; S.retOverride=(S.pickRet&&S.pickRet>iso(depDate()))?S.pickRet:null; S.cv=null; S.filter='All'; resetDone(); savePlan(); S.screen='building'; render(); setTimeout(()=>{S.screen='app';S.tab='home';render()},1100); break;
