@@ -22,7 +22,7 @@ async function mentorList(host) {
     if (!u || u.mentor?.status !== 'approved' || !p) continue;
     out.push({ key: p.key, name: mask(u.name), av: u.avatar?.id || '', home: p.home || '', major: p.major || '', host: u.plan?.host?.[0] || '',
       offer: p.offer || '', act: p.act || '', club: p.club || '', lab: p.lab || '', course: p.course || '', length: p.length || '', format: p.format || '', sessions: p.sessions || null,
-      mode: p.mode || '', area: p.area || '', price: Number.isInteger(p.price) ? p.price : null });
+      mode: p.mode || '' });
   }
   return out.sort((a, b) => (b.host === host) - (a.host === host));
 }

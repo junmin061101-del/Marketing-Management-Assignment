@@ -1,12 +1,15 @@
 // Mentoring sessions between a student and a verified mentor.
-// The mentor sets the format (in person / video) and the price. The student pays the mentor directly;
+// The mentor offers in person and/or video. Price and place are agreed in chat; the mentor enters the agreed
+// price when accepting (0 = free). The student pays the mentor directly;
 // the app never holds that money. When a mentor accepts a paid request they pay a 5% service fee by card
 // (Toss Payments, on the web page /pay). Free sessions have no fee. Until Toss keys are set, the fee is waived.
 //
 // GET  /api/sessions                                  → my sessions (as student and as mentor)
 // GET  /api/sessions?paytok=<t>                       → the fee order behind a payment link (used by /pay)
 // POST /api/sessions {action:'request', mentor, mode, date, time, note}   student
-// POST /api/sessions {action:'accept'|'decline', id}                       mentor
+// POST /api/sessions {action:'accept', id, price}     mentor; price = the agreed session fee in won (0 = free).
+//                                                     Also used to correct the price while the fee is still unpaid.
+// POST /api/sessions {action:'decline', id}           mentor
 // POST /api/sessions {action:'pay', id}               mentor → {url} of the payment page
 // POST /api/sessions {action:'confirm', t, paymentKey, orderId, amount}   /pay after Toss redirects back
 // POST /api/sessions {action:'cancel', id}            either side, before it is done
@@ -18,6 +21,7 @@ import { openDM, systemMessage } from './chat.js';
 
 export const FEE_RATE = 0.05;
 export const feeOf = price => (price > 0 ? Math.round(price * FEE_RATE) : 0);
+export const okPrice = v => Number.isInteger(v) && (v === 0 || (v >= 5000 && v <= 1000000));
 const SITE = 'https://gyohwan-gaja-application-development.vercel.app';
 const TOSS = () => process.env.TOSS_API_URL || 'https://api.tosspayments.com';
 export const payConfigured = () => !!(process.env.TOSS_CLIENT_KEY && process.env.TOSS_SECRET_KEY);
@@ -37,7 +41,7 @@ function view(b, me) {
   const role = b.s === me ? 'student' : 'mentor';
   return {
     id: b.id, role, status: b.status, mode: b.mode, date: b.date, time: b.time, note: b.note, price: b.price, fee: b.fee,
-    feePaid: !!b.pay?.paidAt, feeWaived: !!b.waived, feeRefunded: !!b.pay?.refundedAt, area: b.area, length: b.length,
+    feePaid: !!b.pay?.paidAt, feeWaived: !!b.waived, feeRefunded: !!b.pay?.refundedAt, length: b.length,
     peer: role === 'student' ? b.mName : b.sName, peerAv: role === 'student' ? b.mAv : b.sAv, mentorKey: b.mentorKey, room: b.room,
     at: b.at, by: b.cancelledBy === me ? 'me' : b.cancelledBy ? 'peer' : '', started: Date.now() >= startsAt(b), reviewed: !!b.reviewed,
   };
@@ -72,8 +76,7 @@ export async function refundFee(b, reason) {
 async function confirmed(b) {
   b.status = 'confirmed'; b.confirmedAt = new Date().toISOString();
   await save(b);
-  const where = b.mode === 'in_person' ? `대면 · ${b.area || '장소는 채팅으로'}` : '화상';
-  await systemMessage(b.room, `멘토링이 확정됐어요 · ${b.date} ${b.time} · ${where} · ${b.price ? won(b.price) + ' (멘토에게 직접 지급)' : '무료'}. 장소나 화상 링크는 이 채팅에서 정해 주세요.`);
+  await systemMessage(b.room, `멘토링이 확정됐어요 · ${b.date} ${b.time} · ${LABEL[b.mode]} · ${b.price ? '세션비 ' + won(b.price) + ' (학생이 멘토에게 직접 지급)' : '무료'}. ${b.mode === 'in_person' ? '만날 장소' : '화상 링크'}는 이 채팅에서 정해 주세요.`);
   await note(b, b.s, '교환가자 · 멘토링 확정', `${b.mName} 멘토와 ${b.date} ${b.time} 세션이 확정됐어요.`);
 }
 
@@ -128,8 +131,7 @@ export default async function handler(req, res) {
     const mentor = mid ? await getJSON('user:' + mid) : null, p = mentor?.mentor?.profile;
     if (!mentor || mentor.mentor?.status !== 'approved' || !p) return send(res, 404, { error: 'unknown_mentor' });
     if (mid === me) return send(res, 400, { error: 'own_profile' });
-    if (!Number.isInteger(p.price) || !p.mode) return send(res, 409, { error: 'mentor_not_booking' });
-    const mode = p.mode === 'both' ? b.mode : p.mode;
+    const mode = (p.mode || 'both') === 'both' ? b.mode : p.mode;
     if (!['in_person', 'video'].includes(mode)) return send(res, 400, { error: 'pick_mode' });
     if (!DAY.test(b.date || '') || !HM.test(b.time || '')) return send(res, 400, { error: 'pick_time' });
     const start = Date.parse(`${b.date}T${b.time}:00+09:00`);
@@ -141,12 +143,12 @@ export default async function handler(req, res) {
     const bk = {
       id: Date.now().toString(36) + crypto.randomBytes(3).toString('hex'),
       s: me, m: mid, mentorKey: b.mentor, sName: mask(user.name), mName: mask(mentor.name), sAv: user.avatar?.id || '', mAv: mentor.avatar?.id || '',
-      mode, area: mode === 'in_person' ? p.area || '' : '', length: p.length || '', date: b.date, time: b.time, note: cleanText(b.note, 500),
-      price: p.price, fee: feeOf(p.price), status: 'requested', room, at: new Date().toISOString(),
+      mode, length: p.length || '', date: b.date, time: b.time, note: cleanText(b.note, 500),
+      price: null, fee: 0, status: 'requested', room, at: new Date().toISOString(),
     };
     await save(bk);
     for (const u of [me, mid]) { await redis('LPUSH', 'mybk:' + u, bk.id); await redis('LTRIM', 'mybk:' + u, 0, 99); }
-    await systemMessage(room, `멘토링 신청 · ${bk.date} ${bk.time} · ${LABEL[mode]} · ${bk.price ? won(bk.price) : '무료'}${bk.note ? `\n“${bk.note}”` : ''}`);
+    await systemMessage(room, `멘토링 신청 · ${bk.date} ${bk.time} · ${LABEL[mode]}${bk.note ? `\n“${bk.note}”` : ''}\n세션비${mode === 'in_person' ? '와 장소' : ''}는 이 채팅에서 정하고, 멘토가 수락할 때 합의한 금액을 입력해요.`);
     await note(bk, mid, '교환가자 · 멘토링 신청', `${bk.sName} 학생이 ${bk.date} ${bk.time} ${LABEL[mode]} 멘토링을 신청했어요.`);
     return send(res, 200, { session: view(bk, me) });
   }
@@ -157,19 +159,26 @@ export default async function handler(req, res) {
 
   if (b.action === 'accept' || b.action === 'decline') {
     if (!isMentor) return send(res, 403, { error: 'mentor_only' });
-    if (bk.status !== 'requested') return send(res, 409, { error: 'not_requested' });
+    // accept again while the fee is unpaid = correct the agreed price
+    if (bk.status !== 'requested' && !(b.action === 'accept' && bk.status === 'awaiting_fee')) return send(res, 409, { error: 'not_requested' });
     if (b.action === 'decline') {
       bk.status = 'declined'; await save(bk);
       await systemMessage(bk.room, '멘토가 이번 신청을 거절했어요. 다른 시간으로 다시 신청할 수 있어요.');
       await note(bk, bk.s, '교환가자 · 멘토링', `${bk.mName} 멘토가 이번 신청을 거절했어요.`);
-    } else if (!bk.fee || !payConfigured()) {
-      // free session, or the fee is waived until card payments are set up
-      if (bk.fee) bk.waived = true;
-      await confirmed(bk);
     } else {
-      bk.status = 'awaiting_fee'; bk.pay = { orderId: 'gg-' + bk.id + '-' + crypto.randomBytes(3).toString('hex') };
-      await save(bk);
-      await systemMessage(bk.room, `멘토가 신청을 수락했어요. 멘토가 수수료(${won(bk.fee)})를 결제하면 세션이 확정돼요.`);
+      const price = Number(b.price);
+      if (!okPrice(price)) return send(res, 400, { error: 'bad_price' });
+      bk.price = price; bk.fee = feeOf(price);
+      if (!bk.fee || !payConfigured()) {
+        // free session, or the fee is waived until card payments are set up
+        if (bk.fee) bk.waived = true;
+        await confirmed(bk);
+      } else {
+        bk.status = 'awaiting_fee'; bk.pay = { orderId: 'gg-' + bk.id + '-' + crypto.randomBytes(3).toString('hex') };
+        await save(bk);
+        await systemMessage(bk.room, `멘토가 신청을 수락했어요 · 세션비 ${won(bk.price)}. 멘토가 앱 수수료(${won(bk.fee)})를 결제하면 세션이 확정돼요.`);
+        await note(bk, bk.s, '교환가자 · 멘토링', `${bk.mName} 멘토가 세션비 ${won(bk.price)}로 수락했어요.`);
+      }
     }
     return send(res, 200, { session: view(bk, me) });
   }
