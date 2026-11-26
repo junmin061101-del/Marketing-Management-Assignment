@@ -7,8 +7,9 @@
 // Opening or polling a room marks it read; each message shows how many members have not read it yet.
 // GET  /api/chat?room=<id>&after=<ISO time>          → messages (newest 100, or only those after a time for polling)
 // POST /api/chat {action:'open', mentor:<public key>} → the 1:1 room with that mentor
-// POST /api/chat {action:'notice', room, text}         → pins a notice at the top of the room (anyone in the room; empty text removes it)
-// POST /api/chat {action:'poll', room, q, opts, multi} → posts a poll (2–6 options; multi = several choices allowed)
+// POST /api/chat {action:'notice', room, text | poll}  → pins a notice (or a poll) at the top of the room (anyone in the room; empty removes it)
+// POST /api/chat {action:'poll', room, q, opts, multi, anon, notice} → posts a poll (2–6 options); it closes by itself after 24 hours;
+//      anon = only counts are shown (otherwise who chose what); notice = also pin it as the room notice
 // POST /api/chat {action:'vote', room, id, choice:[i]} → my choice in a poll ([] withdraws it) · {action:'closePoll', room, id} (its maker)
 // POST /api/chat {action:'send', room, text, file? | files?} → posts a message (files = up to 30 photos shown together) (1:1 rooms also send a push to the other member);
 //      file = {url, kind:'image'|'video', w, h, name} of a photo or video uploaded to Blob through /api/upload
@@ -28,7 +29,8 @@ async function mentorList(host) {
     const u = await getJSON('user:' + id);
     const p = u?.mentor?.profile;
     if (!u || u.mentor?.status !== 'approved' || !p) continue;
-    out.push({ key: p.key, name: fullName(u), av: u.avatar?.id || '', home: p.home || '', major: p.major || '', host: u.plan?.host?.[0] || '',
+    out.push({ key: p.key, name: fullName(u), av: u.avatar?.id || '', home: p.home || '', major: p.major || '', host: p.host || u.plan?.host?.[0] || '', hostCC: p.hostCC || u.plan?.host?.[1] || '',
+      year: p.year || (u.plan?.dep ? Number(u.plan.dep.slice(0, 4)) : null), prog: p.prog || '',
       offer: p.offer || '', act: p.act || '', club: p.club || '', lab: p.lab || '', course: p.course || '', length: p.length || '', format: p.format || '', sessions: p.sessions || null,
       mode: p.mode || '' });
   }
@@ -70,12 +72,19 @@ async function unreadOf(room, me, seen) {
   const read = (seen || await seenOf(room))[me] || '', mine = tag(me);
   return ((await redis('LRANGE', 'msgs:' + room, 0, 99)) || []).reduce((n, v) => { try { const m = JSON.parse(v); return n + (m.at > read && m.u !== mine ? 1 : 0); } catch { return n; } }, 0);
 }
-// polls: pollm:<room>:<id> = {q, opts, multi, by(tag), closed}; pollv:<room>:<id> = {account id: JSON [option indexes]}
+// polls: pollm:<room>:<id> = {q, opts, multi, anon, by(tag), at, closed}; pollv:<room>:<id> = {account id: JSON {c:[option indexes], w:name}}
+const POLL_HOURS = 24;
+const pollEnds = m => Date.parse(m.at) + POLL_HOURS * 3600e3;
+const pollClosed = m => !!m.closed || Date.now() >= pollEnds(m);
 async function pollView(room, id, me) {
   const m = await getJSON(`pollm:${room}:${id}`); if (!m) return null;
-  const f = (await redis('HGETALL', `pollv:${room}:${id}`)) || [], counts = m.opts.map(() => 0); let voters = 0, mine = [];
-  for (let i = 0; i < f.length; i += 2) { let c = []; try { c = JSON.parse(f[i + 1]); } catch {} if (!c.length) continue; voters++; c.forEach(x => counts[x]++); if (f[i] === me) mine = c; }
-  return { q: m.q, opts: m.opts, multi: !!m.multi, closed: !!m.closed, counts, voters, mine, maker: m.by === tag(me) };
+  const f = (await redis('HGETALL', `pollv:${room}:${id}`)) || [], counts = m.opts.map(() => 0), names = m.opts.map(() => []); let voters = 0, mine = [];
+  for (let i = 0; i < f.length; i += 2) {
+    let v = {}; try { v = JSON.parse(f[i + 1]); } catch {} if (Array.isArray(v)) v = { c: v };  // older votes were a bare list
+    const c = v.c || []; if (!c.length) continue;
+    voters++; c.forEach(x => { counts[x]++; if (!m.anon) names[x].push(v.w || '?'); }); if (f[i] === me) mine = c;
+  }
+  return { q: m.q, opts: m.opts, multi: !!m.multi, anon: !!m.anon, closed: pollClosed(m), ends: new Date(pollEnds(m)).toISOString(), counts, voters, mine, maker: m.by === tag(me), ...(m.anon ? {} : { names }) };
 }
 const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 async function post(room, m) { await redis('LPUSH', 'msgs:' + room, JSON.stringify(m)); await redis('LTRIM', 'msgs:' + room, 0, KEEP - 1); }
@@ -149,8 +158,9 @@ export default async function handler(req, res) {
     if (!room) return send(res, 404, { error: 'room_not_found' });
     const who = room.kind === 'd' && room.mentorUid === me && user.mentor?.status === 'approved' ? fullName(user) : mask(user.name);
     if (b.action === 'notice') {
-      const text = cleanText(b.text, 300);
-      if (text) await setJSON('notice:' + room.id, { text, who, at: new Date().toISOString() }); else await redis('DEL', 'notice:' + room.id);
+      let text = cleanText(b.text, 300), poll = '';
+      if (b.poll) { const pm = /^[a-z0-9]{6,20}$/.test(String(b.poll)) ? await getJSON(`pollm:${room.id}:${b.poll}`) : null; if (!pm) return send(res, 404, { error: 'poll_not_found' }); poll = String(b.poll); text = '투표: ' + pm.q; }
+      if (text) await setJSON('notice:' + room.id, { text, who, at: new Date().toISOString(), ...(poll ? { poll } : {}) }); else await redis('DEL', 'notice:' + room.id);
       await post(room.id, { id: newId(), u: 'sys', who: '교환가자', av: '', sys: true, text: text ? `${who} 님이 공지를 등록했어요: ${text.slice(0, 80)}` : `${who} 님이 공지를 내렸어요.`, at: new Date().toISOString() });
       return send(res, 200, { notice: text ? await getJSON('notice:' + room.id) : null });
     }
@@ -158,8 +168,9 @@ export default async function handler(req, res) {
       const q = cleanText(b.q, 120), opts = (Array.isArray(b.opts) ? b.opts : []).map(o => cleanText(o, 60)).filter(Boolean).slice(0, 6);
       if (!q || opts.length < 2 || new Set(opts).size !== opts.length) return send(res, 400, { error: 'bad_poll' });
       const m = { id: newId(), u: tag(me), who, av: user.avatar?.id || '', text: '', poll: true, at: new Date().toISOString() };
-      await setJSON(`pollm:${room.id}:${m.id}`, { q, opts, multi: b.multi === true, by: tag(me), at: m.at });
+      await setJSON(`pollm:${room.id}:${m.id}`, { q, opts, multi: b.multi === true, anon: b.anon === true, by: tag(me), at: m.at });
       await post(room.id, m); await markRead(room.id, me);
+      if (b.notice === true) await setJSON('notice:' + room.id, { text: '투표: ' + q, who, at: m.at, poll: m.id });
       if (room.kind === 'd') await sendPush(room.members.find(x => x !== me), `교환가자 · ${who}`, `투표: ${q}`, { go: 'chat', room: room.id }).catch(() => 0);
       return send(res, 200, { message: view(m, me), poll: await pollView(room.id, m.id, me) });
     }
@@ -169,10 +180,10 @@ export default async function handler(req, res) {
       if (meta.by !== tag(me)) return send(res, 403, { error: 'not_yours' });
       meta.closed = true; await setJSON(`pollm:${room.id}:${id}`, meta);
     } else {
-      if (meta.closed) return send(res, 409, { error: 'poll_closed' });
+      if (pollClosed(meta)) return send(res, 409, { error: 'poll_closed' });
       const c = [...new Set((Array.isArray(b.choice) ? b.choice : []).filter(x => Number.isInteger(x) && x >= 0 && x < meta.opts.length))].sort();
       if (!meta.multi && c.length > 1) return send(res, 400, { error: 'bad_poll' });
-      if (c.length) await redis('HSET', `pollv:${room.id}:${id}`, me, JSON.stringify(c)); else await redis('HDEL', `pollv:${room.id}:${id}`, me);
+      if (c.length) await redis('HSET', `pollv:${room.id}:${id}`, me, JSON.stringify({ c, w: who })); else await redis('HDEL', `pollv:${room.id}:${id}`, me);
     }
     return send(res, 200, { poll: await pollView(room.id, id, me) });
   }

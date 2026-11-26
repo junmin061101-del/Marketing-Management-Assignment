@@ -4,14 +4,18 @@ import { guard, body, send, currentUser, saveUser, publicUser, cleanText, redis,
 // mode: how sessions run (the mentor chooses). Price and meeting place are agreed with each student in chat;
 // the mentor enters the agreed price when accepting a request (see api/sessions.js).
 const MODES = ['in_person', 'video', 'both'];
+// where, when and how long the mentor went (students search mentors by these)
+const PROGS = ['exS', 'exY', 'ss', 'ws', 'visit'];
 function clean(p = {}) {
-  const n = Number(p.sessions);
+  const n = Number(p.sessions), year = Number(p.year), thisYear = new Date().getFullYear();
   return {
     home: cleanText(p.home, 100), major: cleanText(p.major, 60),
     act: cleanText(p.act, 2000), club: cleanText(p.club, 2000), lab: cleanText(p.lab, 2000), course: cleanText(p.course, 2000), offer: cleanText(p.offer, 2000),
     length: cleanText(p.length, 30), format: cleanText(p.format, 30),
     sessions: Number.isInteger(n) && n >= 1 && n <= 20 ? n : null, // no zero, negative or fractional counts
     mode: MODES.includes(p.mode) ? p.mode : '',
+    host: cleanText(p.host, 200), hostCC: /^[A-Z]{2}$/.test(p.hostCC || '') ? p.hostCC : '',
+    year: Number.isInteger(year) && year >= 2000 && year <= thisYear + 1 ? year : null, prog: PROGS.includes(p.prog) ? p.prog : '',
   };
 }
 export default async function handler(req, res) {
@@ -23,7 +27,7 @@ export default async function handler(req, res) {
   user.mentor = { ...(user.mentor || { status: 'none' }) };
   if (b.action === 'publish') {
     if (user.mentor.status !== 'approved') return send(res, 403, { error: 'review_not_approved' });
-    if (!p.home || !p.major || !p.offer || !p.length || !p.mode || !p.sessions) return send(res, 400, { error: 'profile_incomplete' });
+    if (!p.home || !p.major || !p.offer || !p.length || !p.mode || !p.sessions || !p.host || !p.year || !p.prog) return send(res, 400, { error: 'profile_incomplete' });
     p.format = { in_person: 'In person', video: 'Video call', both: 'In person or video call' }[p.mode];
     const key = 'm-' + hmac('mentor|' + uid(user)).slice(0, 16); // public id for reviews; does not reveal the email
     await redis('SET', 'mkey:' + key, uid(user));

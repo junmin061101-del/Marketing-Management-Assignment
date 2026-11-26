@@ -344,6 +344,7 @@ p{margin:0}
 .mentor{display:flex;gap:14px;padding:18px 0;border-bottom:1px solid var(--line);text-align:left;width:100%}
 .mentor .ava{width:56px;height:56px;background:var(--primary-soft);color:var(--primary-ink)}
 .mentor .t{flex:1;min-width:0}
+.msearch{display:flex;flex-direction:column;gap:8px;margin:0 0 12px}.msearch .hscroll{display:flex;gap:6px}
 #view .mentor .mchips{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:6px;margin-top:12px;text-align:left}
 #view .mentor .mchips span{display:inline-flex;align-items:center;padding:5px 10px;border-radius:8px;background:var(--surface);color:var(--ink-2);font-size:12px;font-weight:600;line-height:1.3}
 .mentor .name{display:flex;align-items:center;gap:6px;font-weight:800;font-size:16px;flex-wrap:wrap}
@@ -469,7 +470,8 @@ p{margin:0}
 .pollc .pk{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--primary-ink)}.pollc .pq{font-size:15px;line-height:1.35}
 .popt{position:relative;display:flex;align-items:center;gap:8px;width:100%;min-height:38px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface);text-align:left;overflow:hidden;font-size:14px;color:var(--ink)}
 .popt .bar{position:absolute;left:0;top:0;bottom:0;background:var(--primary-soft);transition:width .3s}.popt>span:not(.bar){position:relative}
-.popt .pm{width:14px;font-weight:800;color:var(--primary-ink)}.popt .po{flex:1;min-width:0;overflow-wrap:anywhere}.popt .pn{font-size:12px;font-weight:700;color:var(--ink-2)}
+.popt .pm{width:14px;font-weight:800;color:var(--primary-ink)}.popt .po{flex:1;min-width:0;overflow-wrap:anywhere;display:flex;flex-direction:column}
+.popt .po small{font-size:11px;color:var(--ink-3);margin-top:2px}.pollc .pk .pt{margin-left:auto;color:var(--ink-3);font-weight:600}.popt .pn{font-size:12px;font-weight:700;color:var(--ink-2)}
 .popt.on{border-color:var(--primary)}.popt:disabled{opacity:.85}
 .pollc .pf{font-size:12px;color:var(--ink-3)}.pollc .pf .linkbtn{display:inline;padding:0;font-size:12px}
 .moregrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:8px 0 calc(28px + env(safe-area-inset-bottom,0px))}
@@ -1438,7 +1440,7 @@ const ERR={bad_poll:'Write a question and at least two different options.',poll_
   code_expired:'The code has expired. Ask for a new one.',too_many_attempts:'Too many wrong codes. Ask for a new one.',code_wrong:'That code is not right.',
   invalid_login:'The ID or password is not right.',login_required:'Please log in first.',not_university_email:'Use a university email ending in .ac.kr or .edu.',
   verify_university_email_first:'Verify your university email first.',file_too_large:'The file must be 3 MB or smaller.',pdf_jpg_png_only:'Upload a PDF, JPG or PNG file.',
-  review_not_approved:'You can publish after the review is approved.',profile_incomplete:'Fill in your school, major, what you offer, the session length, number of sessions and format.',bad_rating:'Choose a star rating.',review_too_short:'Write at least 10 characters.',own_profile:'You cannot review your own profile.',unknown_mentor:'This mentor could not be found.',
+  review_not_approved:'You can publish after the review is approved.',profile_incomplete:'Fill in your school, major, where, when and how long you went, what you offer, the session length, number of sessions and format.',bad_rating:'Choose a star rating.',review_too_short:'Write at least 10 characters.',own_profile:'You cannot review your own profile.',unknown_mentor:'This mentor could not be found.',
   already_approved:'Your review is already approved.',bad_sessions:'Sessions must be a whole number from 1 to 20.',not_configured:'Accounts are not connected yet. You can keep browsing without one.',network:'Could not reach the server. Check your connection.',wrong_password:'The current password is not right.',bad_username:'Use 4–20 lowercase letters, numbers or _, starting with a letter.',username_taken:'This ID is already taken. Try another.',mail_failed:'We could not send the email. Please try again in a moment.'};
 Object.assign(KO,{
 // accounts
@@ -1519,7 +1521,7 @@ Object.assign(KO,{
 "Reviews":"후기","Log in to write a review":"로그인하고 후기 쓰기","Write a review":"후기 쓰기","Edit my review":"내 후기 수정","My review":"내 후기","Cancel":"취소","Post review":"후기 올리기","Rating":"별점",
 "What helped you most? At least 10 characters.":"어떤 점이 가장 도움이 됐나요? 10자 이상 적어 주세요.","Review posted":"후기를 올렸어요","Reviews open once accounts are connected.":"계정 기능이 연결되면 후기를 쓸 수 있어요.",
 "Choose a star rating.":"별점을 선택하세요.","Write at least 10 characters.":"10자 이상 적어 주세요.","You cannot review your own profile.":"내 프로필에는 후기를 쓸 수 없어요.","This mentor could not be found.":"멘토를 찾을 수 없어요.",
-"Fill in your school, major, what you offer, the session length, number of sessions and format.":"학교, 학과, 멘토링 내용, 세션 길이, 횟수, 방식을 모두 입력하세요.",
+"Fill in your school, major, where, when and how long you went, what you offer, the session length, number of sessions and format.":"학교, 학과, 다녀온 파견교·연도·기간, 멘토링 내용, 세션 길이, 횟수, 방식을 모두 입력하세요.",
 "Home university":"본교","Students see your school and major first. Many look for a mentor from their own school and major.":"학생들은 멘토의 학교와 학과를 가장 먼저 봐요. 같은 학교·학과 멘토를 찾는 학생이 많아요.",
 "Could not load the page. Check your connection.":"페이지를 불러오지 못했어요. 인터넷 연결을 확인하세요.","Loading…":"불러오는 중…","Back to start":"처음으로","North America":"북아메리카",
 "Find the nomination email":"추천 안내 메일 찾기","Create your login":"로그인 계정 만들기","Save your applicant number":"지원자 번호 저장하기","Log in to the portal":"포털에 로그인하기",
@@ -2495,7 +2497,7 @@ const S={
   done:new Set(), bcat:'All', showDone:false, mentorSheet:null,
   joined:new Set(), cv:null, cq:'', cinfo:{}, jstatus:{}, joining:null,
   ccat:'all', draftPost:null, hiddenPosts:new Set(),
-  reviews:{}, chf:'all', doc:null,
+  reviews:{}, chf:'all', doc:null, mq:'', myear:'', mprog:'',
   apply:{step:0,email:'',file:'',sent:false,busy:false,err:''},
   auth:{mode:'login',id:'',name:'',busy:false,err:''},
 };
@@ -2704,6 +2706,10 @@ const SCREENS={
         <div class="act mform">
           <div class="mrow two"><label>Home university<input class="input" id="mfHome" maxlength="100" value="${esc(homeKo(d.home||(u.profile&&u.profile.home)||S.profile.univ||''))}"></label><label>Major<input class="input" id="mfMajor" maxlength="60" value="${esc(d.major||(u.profile&&u.profile.major)||S.profile.major||'')}"></label></div>
           <p class="hint" style="margin-top:-4px">Students see your school and major first. Many look for a mentor from their own school and major.</p>
+          ${(()=>{const pl=u.plan||{}, y0=new Date().getFullYear(), host0=d.host||(pl.host&&pl.host[0])||'', cc0=d.hostCC||(pl.host&&pl.host[1])||'', yr=d.year||(pl.dep?+pl.dep.slice(0,4):''), pg=d.prog||({exS:'exS',exF:'exS',exY:'exY',ss:'ss',ws:'ws',visit:'visit'}[pl.progId]||'');
+            return `<label data-notr>${KX('Where you went on exchange','다녀온 파견교')}<input class="input" id="mfHost" maxlength="200" autocomplete="off" placeholder="${KX('Search universities','파견교 검색')}" value="${esc(host0)}"><input type="hidden" id="mfHostCC" value="${esc(cc0)}"></label><div id="mfHostList"></div>
+            <div class="mrow two" data-notr><label>${KX('Year','연도')}<select class="input" id="mfYear"><option value="">${KX('Choose','선택')}</option>${Array.from({length:y0-2009},(_,i)=>y0-i).map(y=>`<option value="${y}"${+yr===y?' selected':''}>${y}</option>`).join('')}</select></label>
+            <label>${KX('Program','기간·프로그램')}<select class="input" id="mfProg"><option value="">${KX('Choose','선택')}</option>${Object.keys(MPROG).map(k=>`<option value="${k}"${pg===k?' selected':''}>${mprogL(k)}</option>`).join('')}</select></label></div>`})()}
           <p class="hint" data-notr>${KX(`As a verified mentor you appear by your full name (${esc((u&&u.name)||'')}), not masked like other students.`,`인증 멘토는 다른 학생처럼 가려지지 않고 가입 이름(${esc((u&&u.name)||'')}) 그대로 표시돼요.`)}</p>
           ${ta('mfAct','Activities you took part in','e.g. Orientation buddy, hackathon, volunteering',d.act)}
           ${ta('mfClub','Clubs and networking','e.g. Korean Students Association, consulting club',d.club)}
@@ -2943,7 +2949,7 @@ function realMentorCard(m){return `<button class="mentor" data-act="rmentor" dat
       <span class="ava">${avaImg(m.av?{id:m.av}:null,(m.name||'?')[0])}</span>
       <span class="t"><span class="name"><span data-notr>${esc(m.name)}</span><span class="badge">${ic('shield',14,2.4)}Verified</span></span>
         <span class="school"><b data-notr>${esc([m.home,m.major].filter(Boolean).join(' · '))}</b></span>
-        ${m.host?`<span class="prog">${ic('plane',13)} <span data-notr>${esc(m.host)}</span></span>`:''}
+        ${m.host?`<span class="prog">${ic('plane',13)} <span data-notr>${esc(mTrip(m))}</span></span>`:''}
         ${m.offer?`<span class="intro" data-notr>${esc(m.offer.slice(0,140))}</span>`:''}
         ${m.mode?`<span class="mchips" data-notr><span>${modeL(m.mode)}</span>${m.length?`<span>${esc(trText(m.length))}</span>`:''}<span>${KX('Price agreed in chat','가격은 채팅으로 협의')}</span></span>`:''}</span>
     </button>`}
@@ -2951,7 +2957,7 @@ function openRealMentor(key){const m=(REALM.list||[]).find(x=>x.key===key); if(!
   const row=(icn,label,v)=>v?`<div class="did">${ic(icn,18)}<span><small>${label}</small><b data-notr>${esc(v)}</b></span></div>`:'';
   sheet.innerHTML=`<div class="grab"></div><div class="scroll">
       <div class="mentor" style="border:0;box-shadow:none;padding-top:6px"><span class="ava">${avaImg(m.av?{id:m.av}:null,(m.name||'?')[0])}</span><span class="t"><span class="name"><span data-notr>${esc(m.name)}</span><span class="badge">${ic('shield',14,2.4)}Verified</span></span>
-        <span class="school"><b data-notr>${esc([m.home,m.major].filter(Boolean).join(' · '))}</b></span>${m.host?`<span class="prog">${ic('plane',13)} <span data-notr>${esc(m.host)}</span></span>`:''}</span></div>
+        <span class="school"><b data-notr>${esc([m.home,m.major].filter(Boolean).join(' · '))}</b></span>${m.host?`<span class="prog">${ic('plane',13)} <span data-notr>${esc(mTrip(m))}</span></span>`:''}</span></div>
       ${m.offer?`<div class="d-sec"><h3>Mentoring I offer</h3><p data-notr style="white-space:pre-wrap">${esc(m.offer)}</p><div class="ometa">${m.length?`<span>${ic('clock',14)} ${esc(m.length)}</span>`:''}${m.sessions?`<span>${m.sessions} sessions</span>`:''}${m.mode?`<span data-notr>${modeL(m.mode)}</span>`:m.format?`<span>${esc(m.format)}</span>`:''}</div>
         <p class="hint" style="margin-top:8px" data-notr>${KX('Price and place are agreed with the mentor in chat. You pay the session fee to the mentor directly; there is no app fee for students.','가격과 장소는 멘토와 채팅으로 정해요. 세션비는 멘토에게 직접 보내고, 학생에게는 앱 수수료가 없어요.')}</p></div>`:''}
       ${m.act||m.club||m.lab||m.course?`<div class="d-sec"><h3>What I did there</h3><div class="dids">${row('globe','Activities',m.act)}${row('chat','Clubs and networking',m.club)}${row('doc','Research or lab work',m.lab)}${row('star','Courses that helped',m.course)}</div></div>`:''}
@@ -2967,6 +2973,10 @@ function openRealMentor(key){const m=(REALM.list||[]).find(x=>x.key===key); if(!
   if(!S.reviews[m.key]) loadReviews({key:m.key}).then(()=>{ if($('#sheet').classList.contains('on')&&$('#rmRv')) openRealMentor(key) })}
 /* ---------------- mentoring sessions: request → mentor accepts (paid: 5% fee by card on /pay) → confirmed → done → review ---------------- */
 const KX=(en,ko)=>LANG==='ko'?ko:en;
+const MPROG={exS:['Exchange · 1 semester','교환학생 1학기'],exY:['Exchange · 1 year','교환학생 1년'],ss:['Summer school','서머스쿨'],ws:['Winter school','윈터스쿨'],visit:['Visiting student','방문학생']};
+const mprogL=k=>MPROG[k]?KX(...MPROG[k]):'';
+// "Harvard University · 2025 · 교환학생 1학기"
+const mTrip=m=>[m.host,m.year,mprogL(m.prog)].filter(Boolean).join(' · ');
 const won=n=>LANG==='ko'?Number(n).toLocaleString('ko-KR')+'원':'₩'+Number(n).toLocaleString('en-US');
 const MODEL={in_person:['In person','대면'],video:['Video call','화상'],both:['In person or video','대면 또는 화상']};
 const modeL=m=>MODEL[m]?KX(...MODEL[m]):'';
@@ -3071,6 +3081,18 @@ function openSessReport(x){const sheet=$('#sheet');
     <textarea class="input area" id="srpText" rows="4" maxlength="300" style="margin-top:12px" placeholder="${KX('What happened?','무슨 일이 있었나요?')}"></textarea><p class="aerr" id="srpErr" role="alert"></p></div>
     <div class="cta"><button class="btn" data-act="srpSend" data-v="${esc(x.id)}">${KX('Send report','신고 보내기')}</button></div>`;
   sheet.classList.add('on'); $('#scrim').classList.add('on')}
+/* mentor search: by where they went (school or country), year, program, and their home school and major */
+function mSearchHTML(real){ const years=[...new Set(real.map(m=>m.year).filter(Boolean))].sort((a,b)=>b-a), progs=Object.keys(MPROG).filter(k=>real.some(m=>m.prog===k));
+  const chip=(k,v,l)=>`<button class="chip sm${S[k]===v?' on':''}" data-act="mfilter" data-k="${k}" data-v="${esc(v)}">${l}</button>`;
+  return `<div class="msearch" data-notr><div class="search">${ic('search',18)}<input class="input" id="mq" autocomplete="off" placeholder="${KX('Search by exchange school, home school or major','파견교, 출신 학교, 학과로 검색')}" value="${esc(S.mq||'')}"></div>
+    ${years.length>1?`<div class="hscroll">${chip('myear','',KX('All years','전체 연도'))}${years.map(y=>chip('myear',String(y),String(y))).join('')}</div>`:''}
+    ${progs.length>1?`<div class="hscroll">${chip('mprog','',KX('All programs','전체 기간'))}${progs.map(k=>chip('mprog',k,mprogL(k))).join('')}</div>`:''}</div>` }
+function mMatch(m){ const q=squash(S.mq||''); if(S.myear&&String(m.year)!==S.myear) return false; if(S.mprog&&m.prog!==S.mprog) return false; if(!q) return true;
+  const u=DATA&&DATA.unis.find(x=>x[0]===m.host), ko=u?u[3]:'', ctry=m.hostCC&&COUNTRIES[m.hostCC]?COUNTRIES[m.hostCC][0]:'';
+  return [m.name,m.host,ko,ALIAS[m.host],ctry,NAME_KO[ctry],m.home,m.major,m.offer,String(m.year||''),mprogL(m.prog)].some(x=>squash(x||'').includes(q)) }
+function mListHTML(here,other){ const all=[...here,...other].filter(mMatch);
+  return all.length?all.map(realMentorCard).join(''):`<div class="empty-state">${ic('search',28)}<b data-notr>${KX('No mentors match','조건에 맞는 멘토가 없어요')}</b><small data-notr>${KX('Try another school, year or program.','다른 학교, 연도, 기간으로 찾아보세요.')}</small></div>` }
+function paintMentors(){ const el=$('#mList'); if(!el||!REALM.list) return; const h=host(), real=REALM.list; el.innerHTML=mListHTML(real.filter(m=>m.host===h.name),real.filter(m=>m.host!==h.name)); translate(el) }
 function mentorTab(){
   const h=host(), list=mentorsFor().sort((a,b)=>mScore(b)-mScore(a));
   if(!REALM.list||REALM.host!==h.name||Date.now()-REALM.at>60000) setTimeout(loadMentors,0);
@@ -3082,8 +3104,9 @@ function mentorTab(){
       <div class="flow"><span>View the profile</span><span>Chat 1:1</span><span>Request a session</span></div></section>
     ${AUTH.user&&(!SESS.at||Date.now()-SESS.at>60000)?(setTimeout(()=>loadSessions(),0),''):''}${sessOpen().length?`<button class="apply-card" data-go="sessions" style="margin:16px 0 4px"><span class="t" data-notr><b>${KX('My mentoring','내 멘토링')}</b><small>${sessTodo()?KX(`${sessTodo()} need your action`,`확인이 필요한 멘토링 ${sessTodo()}건`):KX(`${sessOpen().length} in progress`,`진행 중 ${sessOpen().length}건`)}</small></span>${ic('chev',22)}</button>`:''}
     <div class="list-head"><h3>Verified mentors</h3><span>${REALM.list?`${real.length}`:''}</span></div>
-    ${!REALM.list?'<p class="loadmsg">Loading mentors…</p>':real.length?[...here,...other].map(realMentorCard).join('')
-      :`<div class="empty-state">${ic('mentor',28)}<b>No verified mentors yet</b><small>Students who completed an exchange can become mentors. Be the first for ${esc(h.short)}.</small></div>`}
+    ${real.length?mSearchHTML(real):''}
+    <div id="mList">${!REALM.list?'<p class="loadmsg">Loading mentors…</p>':real.length?mListHTML(here,other)
+      :`<div class="empty-state">${ic('mentor',28)}<b>No verified mentors yet</b><small>Students who completed an exchange can become mentors. Be the first for ${esc(h.short)}.</small></div>`}</div>
     <div class="list-head" style="margin-top:22px"><h3>Sample profiles</h3></div>
     <p class="hint" style="margin:-4px 2px 10px">These are examples of what a mentor profile looks like. They are not real people, and you cannot chat with them.</p>
     ${list.map(m=>{const rt=ratingOf(m); return `<button class="mentor" data-act="mentor" data-v="${m.id}">
@@ -3299,7 +3322,7 @@ function loadRoom(rid,first){ const R=ROOMS[rid]||(ROOMS[rid]={msgs:[],loading:t
     if(first) R.msgs=j.messages||[]; else{const have=new Set(R.msgs.map(m=>m.id)); (j.messages||[]).forEach(m=>{if(!have.has(m.id)) R.msgs.push(m)})}
     const seenChanged=JSON.stringify(j.seen||{})!==JSON.stringify(R.seen||{}); if(j.seen) R.seen=j.seen;
     const extra=JSON.stringify([j.polls||{},j.notice||null]), extraChanged=extra!==R.extra; R.extra=extra; R.polls=j.polls||{}; R.notice=j.notice||null;
-    if(extraChanged){ const nb=$('#noticeBar'); if(nb&&S.room===rid) nb.innerHTML=noticeHTML(rid) }
+    if(extraChanged){ const nb=$('#noticeBar'); if(nb&&S.room===rid) nb.innerHTML=noticeHTML(rid); const ps=$('#pollSheet'); if(ps&&S.room===rid){ ps.innerHTML=pollHTML(rid,ps.dataset.id); const c=ps.querySelector('.pollc'); if(c) c.style.width='100%' } }
     if(j.title) R.title=j.title; if(j.folder) R.folder=j.folder; if(typeof j.peerMentor==='boolean'&&R.peerMentor!==j.peerMentor){ R.peerMentor=j.peerMentor; if(first&&S.screen==='chat'&&S.room===rid) render(true) } R.loading=false; R.err=''; if(first||wasLoading||R.msgs.length!==n0||seenChanged||extraChanged) paintRoom(rid,first);
     if(first&&S.screen==='chat'&&S.room===rid){const t=document.querySelector('.bar span[data-notr]'); if(t&&j.title) t.textContent=j.title}})
     .catch(e=>{R.loading=false; R.err=e.code; if(e.code==='login_required'){toast('Log in to use chat')} paintRoom(rid)}) }
@@ -3308,13 +3331,17 @@ function openRoom(rid){ if(!AUTH.user){toast('Log in to use chat'); return} clos
   setTimeout(()=>{const i=$('#chatInput'); i&&i.focus()},60) }
 /* chat notices and polls (anyone in the room can pin a notice or start a poll) */
 function noticeHTML(rid){ const n=(ROOMS[rid]||{}).notice; if(!n) return '';
-  return `<button class="cnotice" data-act="noticeOpen" data-notr>${ic('megaphone',18)}<span class="t"><b>${esc(n.text)}</b><small>${esc(n.who)} · ${esc(fmtShort(new Date(n.at)))}</small></span>${ic('chev',16)}</button>` }
-function pollHTML(rid,id){ const p=((ROOMS[rid]||{}).polls||{})[id]; if(!p) return `<div class="pollc"><b>${KX('Poll','투표')}</b></div>`;
-  const total=p.voters||0, mx=Math.max(1,...p.counts);
-  return `<div class="pollc" data-notr><span class="pk">${ic('poll',14)} ${KX('Poll','투표')}${p.multi?' · '+KX('multiple choice','복수 선택'):''}${p.closed?' · '+KX('closed','마감'):''}</span><b class="pq">${esc(p.q)}</b>
-    ${p.opts.map((o,i)=>{const on=p.mine.includes(i), pct=total?Math.round(p.counts[i]/total*100):0;
-      return `<button class="popt${on?' on':''}" data-act="pollVote" data-v="${esc(id)}:${i}" ${p.closed?'disabled':''}><span class="bar" style="width:${p.counts[i]/mx*100}%"></span><span class="pm">${on?'✓':''}</span><span class="po">${esc(o)}</span><span class="pn">${p.counts[i]}</span></button>`}).join('')}
-    <span class="pf">${KX(`${total} voted`,`${total}명 참여`)}${p.maker&&!p.closed?` · <button class="linkbtn" data-act="pollClose" data-v="${esc(id)}">${KX('Close poll','투표 마감')}</button>`:''}</span></div>` }
+  return `<button class="cnotice" data-act="${n.poll?'noticePoll':'noticeOpen'}" data-v="${esc(n.poll||'')}" data-notr>${ic(n.poll?'poll':'megaphone',18)}<span class="t"><b>${esc(n.text)}</b><small>${esc(n.who)} · ${esc(fmtShort(new Date(n.at)))}</small></span>${ic('chev',16)}</button>` }
+const pollLeft=p=>{const ms=Date.parse(p.ends)-Date.now(); if(p.closed||ms<=0) return KX('closed','마감');
+  const h=Math.floor(ms/3600e3), m=Math.max(1,Math.round(ms%3600e3/6e4)); return h?KX(`${h}h left`,`${h}시간 남음`):KX(`${m} min left`,`${m}분 남음`)};
+function pollHTML(rid,id){ const R=ROOMS[rid]||{}, p=(R.polls||{})[id]; if(!p) return `<div class="pollc"><b>${KX('Poll','투표')}</b></div>`;
+  const total=p.voters||0, mx=Math.max(1,...p.counts), pinned=R.notice&&R.notice.poll===id;
+  return `<div class="pollc" data-notr><span class="pk">${ic('poll',14)} ${KX('Poll','투표')}${p.anon?' · '+KX('anonymous','익명'):''}${p.multi?' · '+KX('multiple choice','복수 선택'):''}<span class="pt">${pollLeft(p)}</span></span><b class="pq">${esc(p.q)}</b>
+    ${p.opts.map((o,i)=>{const on=p.mine.includes(i), nm=!p.anon&&p.names&&p.names[i].length?p.names[i]:null;
+      return `<button class="popt${on?' on':''}" data-act="pollVote" data-v="${esc(id)}:${i}" ${p.closed?'disabled':''}><span class="bar" style="width:${p.counts[i]/mx*100}%"></span><span class="pm">${on?'✓':''}</span><span class="po">${esc(o)}${nm?`<small>${esc(nm.slice(0,6).join(', '))}${nm.length>6?KX(` and ${nm.length-6} more`,` 외 ${nm.length-6}명`):''}</small>`:''}</span><span class="pn">${p.counts[i]}</span></button>`}).join('')}
+    <span class="pf">${KX(`${total} voted`,`${total}명 참여`)}${!p.closed&&!pinned?` · <button class="linkbtn" data-act="pollPin" data-v="${esc(id)}">${KX('Post as notice','공지로 올리기')}</button>`:''}${p.maker&&!p.closed?` · <button class="linkbtn" data-act="pollClose" data-v="${esc(id)}">${KX('Close now','지금 마감')}</button>`:''}</span></div>` }
+function openPollNotice(id){ const sheet=$('#sheet'); sheet.innerHTML=`<div class="grab"></div><div class="scroll" id="pollSheet" data-id="${esc(id)}">${pollHTML(S.room,id)}</div>`;
+  sheet.querySelector('.pollc').style.width='100%'; sheet.classList.add('on'); $('#scrim').classList.add('on') }
 function openChatMore(){ const sheet=$('#sheet');
   sheet.innerHTML=`<div class="grab"></div><div class="scroll" data-notr><div class="moregrid">
     <button data-act="chatAttach">${ic('photo',24)}<span>${KX('Photo or video','사진·동영상')}</span></button>
@@ -3326,7 +3353,10 @@ function openPollSheet(n){ const sheet=$('#sheet'), keep=[...document.querySelec
     <div class="mform" style="margin-top:12px"><label>${KX('Question','질문')}<input class="input" id="pollQ" maxlength="120" placeholder="${KX('e.g. When shall we meet?','예: 언제 만날까요?')}" value="${esc(q)}"></label>
     ${Array.from({length:n},(_,i)=>`<input class="input popin" maxlength="60" placeholder="${KX('Option','항목')} ${i+1}" value="${esc(keep[i]||'')}">`).join('')}
     ${n<6?`<button class="linkbtn" data-act="pollMoreOpt" data-v="${n+1}">+ ${KX('Add option','항목 추가')}</button>`:''}
-    <label class="cmt-anon pchk" style="margin-top:10px"><input type="checkbox" id="pollMulti"${multi?' checked':''}> ${KX('Allow multiple choices','여러 개 선택 가능')}</label></div>
+    <label class="cmt-anon pchk" style="margin-top:10px"><input type="checkbox" id="pollMulti"${multi?' checked':''}> ${KX('Allow multiple choices','여러 개 선택 가능')}</label>
+    <label class="cmt-anon pchk"><input type="checkbox" id="pollAnon"${($('#pollAnon')||{}).checked?' checked':''}> ${KX('Anonymous (only counts are shown)','익명 투표 (누가 골랐는지 안 보여요)')}</label>
+    <label class="cmt-anon pchk"><input type="checkbox" id="pollNotice"${($('#pollNotice')||{}).checked?' checked':''}> ${KX('Also pin as the chat notice','채팅방 공지로도 올리기')}</label>
+    <p class="hint" style="margin-top:6px">${KX('Polls close automatically 24 hours after they are posted.','투표는 올린 뒤 24시간이 지나면 자동으로 마감돼요.')}</p></div>
     <p class="aerr" id="pollErr" role="alert"></p></div>
     <div class="cta"><button class="btn" data-act="pollCreate">${KX('Post poll','투표 올리기')}</button></div>`;
   sheet.classList.add('on'); $('#scrim').classList.add('on'); setTimeout(()=>{const i=$('#pollQ'); i&&!q&&i.focus()},50) }
@@ -3406,7 +3436,7 @@ function signedIn(u){AUTH.user=u; if(NATIVE&&NOTE.on()) setTimeout(pushRegister,
 function mentorForm(F){const g=id=>String(F[id]||'').trim(), pickV=id=>F[id+'Sel']==='__custom'?g(id):String(F[id+'Sel']||'');
   const raw=pickV('mfN'), n=Number(raw);
   const pf={home:g('mfHome'),major:g('mfMajor'),act:g('mfAct'),club:g('mfClub'),lab:g('mfLab'),course:g('mfCourse'),offer:g('mfOffer'),length:pickV('mfLen'),sessions:Number.isInteger(n)?n:raw,
-    mode:g('mfMode')||'video'};
+    mode:g('mfMode')||'video',host:g('mfHost'),hostCC:g('mfHostCC'),year:g('mfYear')?+g('mfYear'):null,prog:g('mfProg')};
   S.apply.form=pf; // keep the text on screen even if validation fails
   if(!/^\d+$/.test(String(raw))||n<1||n>20) throw {code:'bad_sessions'};
   return pf}
@@ -3559,6 +3589,8 @@ document.addEventListener('click',e=>{
     case 'openConv': {openRoom(v); break}
     case 'year': S.profile.year=v; render(true); break;
     case 'pickHome': {S.profile.univ=v; S.homeQ=''; const sc=krmOf(v); if(sc&&S.profile.major&&!sc[3].includes(S.profile.major)) S.profile.major=''; S.majorOpen=false; render(true); break}
+    case 'mfilter': S[a.dataset.k]=v; render(true); break;
+    case 'pickMfHost': {const i=$('#mfHost'), cc=$('#mfHostCC'); if(i) i.value=v; if(cc) cc.value=a.dataset.cc||''; const l=$('#mfHostList'); if(l) l.innerHTML=''; break}
     case 'pickMajor': {S.profile.major=v; S.majorOpen=false; const i=$('#major'); if(i) i.value=v; const l=$('#majorList'); if(l) l.innerHTML=''; render(true); break}
     case 'unpickHome': S.profile.univ=''; S.homeQ=''; render(true); setTimeout(()=>$('#homeQ')&&$('#homeQ').focus()); break;
     case 'region': S.region=v; S.scountry='All'; S.slimit=40; render(); break;
@@ -3619,10 +3651,13 @@ document.addEventListener('click',e=>{
     case 'pollMoreOpt': openPollSheet(+v); break;
     case 'pollCreate': {const q=($('#pollQ')||{}).value.trim(), opts=[...document.querySelectorAll('#sheet .popin')].map(i=>i.value.trim()).filter(Boolean), err=$('#pollErr');
       if(!q){err.textContent=KX('Write the question.','질문을 적어 주세요.'); break} if(opts.length<2||new Set(opts).size!==opts.length){err.textContent=KX('Add at least two different options.','서로 다른 항목을 2개 이상 적어 주세요.'); break}
-      closeSheet(); chatAction({action:'poll',q,opts,multi:!!($('#pollMulti')||{}).checked}).then(()=>paintRoom(S.room,true)); break}
+      const flags={multi:!!($('#pollMulti')||{}).checked,anon:!!($('#pollAnon')||{}).checked,notice:!!($('#pollNotice')||{}).checked};
+      closeSheet(); chatAction({action:'poll',q,opts,...flags}).then(()=>paintRoom(S.room,true)); break}
     case 'pollVote': {const [id,i]=v.split(':'), p=((ROOMS[S.room]||{}).polls||{})[id]; if(!p||p.closed) break; const k=+i;
       const choice=p.multi?(p.mine.includes(k)?p.mine.filter(x=>x!==k):[...p.mine,k]):(p.mine.includes(k)?[]:[k]);
       chatAction({action:'vote',id,choice}); break}
+    case 'pollPin': chatAction({action:'notice',poll:v}); break;
+    case 'noticePoll': openPollNotice(v); break;
     case 'pollClose': if(confirm(KX('Close this poll? Nobody can vote after that.','투표를 마감할까요? 마감 후에는 투표할 수 없어요.'))) chatAction({action:'closePoll',id:v}); break;
     case 'noticeEdit': openNoticeSheet(); break;
     case 'noticeOpen': openNoticeSheet(); break;
@@ -3696,6 +3731,9 @@ document.addEventListener('focusin',e=>{ const id=e.target&&e.target.id; if(S.sc
 document.addEventListener('input',e=>{
   const t=e.target;
   if(t.dataset.model) S.profile[t.dataset.model]=t.value;
+  if(t.id==='mfHost'){ const q=t.value.trim(), l=$('#mfHostList'), cc=$('#mfHostCC'); if(cc) cc.value='';
+    if(l) l.innerHTML=q&&DATA?`<div class="sugg" data-notr>${DATA.unis.filter(u=>uniHit(u[0],u[3],q)).sort((a,b)=>uniRank(a[0],a[3],q)-uniRank(b[0],b[3],q)).slice(0,6).map(u=>`<button data-act="pickMfHost" data-v="${esc(u[0])}" data-cc="${u[1]}"><span class="hn"><b>${esc(u[0])}</b><small>${esc(COUNTRIES[u[1]]?trText(COUNTRIES[u[1]][0]):'')}</small></span></button>`).join('')}</div>`:'' }
+  if(t.id==='mq'){ S.mq=t.value; paintMentors() }
   if(t.id==='major'){S.majorOpen=true; const l=$('#majorList'); if(l) l.innerHTML=majorListHTML(); const b=$('[data-act="saveProfile"]'); if(b) b.disabled=!(S.profile.univ&&t.value.trim())}
   if(t.id==='homeQ'){S.homeQ=t.value; ($('#homeList').innerHTML=homeListHTML(),translate($('#homeList')))}
   if(t.id==='cQ'){S.cq=t.value; const b=$('#cBody'); if(b){b.innerHTML=cBodyHTML(); translate(b)}}
