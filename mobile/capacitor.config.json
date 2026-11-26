@@ -2,9 +2,38 @@
   "appId": "com.gyohwangaja.app",
   "appName": "교환가자",
   "webDir": "www",
-  "android": { "allowMixedContent": false },
-  "ios": { "contentInset": "never" },
+  "android": {
+    "allowMixedContent": false
+  },
+  "ios": {
+    "contentInset": "never"
+  },
   "plugins": {
-    "SplashScreen": { "launchAutoHide": false, "backgroundColor": "#F2F4F6" }
+    "SplashScreen": {
+      "launchAutoHide": false,
+      "backgroundColor": "#F2F4F6"
+    },
+    "FirebaseMessaging": {
+      "presentationOptions": [
+        "badge",
+        "sound",
+        "alert"
+      ]
+    },
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_notify",
+      "iconColor": "#2F6FED"
+    }
+  },
+  "experimental": {
+    "ios": {
+      "spm": {
+        "packageOptions": {
+          "@capacitor-firebase/messaging": {
+            "symlink": true
+          }
+        }
+      }
+    }
   }
 }

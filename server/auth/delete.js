@@ -14,6 +14,7 @@ export default async function handler(req, res) {
   for (const k of await scanKeys('reviews:*')) await redis('HDEL', k, id);
   await deleteProof(id);
   await redis('DEL', 'user:' + id);
+  await redis('DEL', 'push:' + id);
   await endSession(req, res);
   await adminLog('self_delete', id);
   send(res, 200, { ok: true });

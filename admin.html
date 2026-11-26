@@ -81,6 +81,7 @@ td small{display:block;color:var(--ink-3);font-size:12px}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--card);padding:10px 18px;border-radius:12px;font-size:14px;font-weight:600;opacity:0;transition:.2s;pointer-events:none}
 .toast.on{opacity:1;transform:translateX(-50%)}
 @media (max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.app{grid-template-columns:1fr}.app dl{grid-template-columns:84px 1fr}header h1{font-size:19px}}
+.bcast{display:grid;gap:8px;max-width:560px}.bcast .btn{justify-self:start}
 </style>
 </head>
 <body>
@@ -109,7 +110,7 @@ const who=u=>u.username?'@'+u.username:u.phone?fmtPhone(u.phone):(u.email||u.key
 const stars=n=>`<span class="stars">${'★'.repeat(n)}<i>${'★'.repeat(5-n)}</i></span>`;
 const STATUS={none:['신청 전',''],pending:['심사 대기','warn'],approved:['승인','ok'],rejected:['반려','']};
 const statusPill=u=>u.published?'<span class="pill ok">멘토 공개 중</span>':`<span class="pill ${STATUS[u.status]?.[1]||''}">${STATUS[u.status]?.[0]||esc(u.status)}</span>`;
-const LOGT={reset_password:'비밀번호 초기화',sign_in:'관리자 로그인',approve:'멘토 승인',reject:'멘토 반려',revoke:'멘토 자격 취소',delete_user:'회원 삭제',self_delete:'회원 직접 탈퇴',delete_review:'후기 삭제'};
+const LOGT={reset_password:'비밀번호 초기화',sign_in:'관리자 로그인',approve:'멘토 승인',reject:'멘토 반려',revoke:'멘토 자격 취소',delete_user:'회원 삭제',broadcast:'공지 알림 발송',self_delete:'회원 직접 탈퇴',delete_review:'후기 삭제'};
 
 async function load(){
   try{A.data=await api('data'); A.view='dash'}
@@ -142,7 +143,11 @@ function overviewHTML(){const s=A.data.stats, U=A.data.users;
   ${pend.length?pend.map(u=>{const h=hoursSince(u.submittedAt), late=h>24;return `<div class="todo"><span class="t"><b>${esc(u.name)}</b> 멘토 신청 심사<small>${esc(who(u))} · ${fmt(u.submittedAt)} 접수</small></span><span class="pill ${late?'warn':h>18?'warn':'blue'}">${late?`${Math.floor(h-24)}시간 지연`:`${Math.ceil(24-h)}시간 남음`}</span><button class="btn sm" data-act="tab" data-v="queue">심사하기</button></div>`}).join('')
     :'<div class="empty">처리할 심사가 없어요.</div>'}
   <h2>최근 14일 가입</h2>
-  <div class="bars">${per.map((n,i)=>`<span style="height:${n/max*100}%" title="${n}명">${n?`<b>${n}</b>`:''}${i%2===0?`<i>${days[i].getMonth()+1}/${days[i].getDate()}</i>`:''}</span>`).join('')}</div>`}
+  <div class="bars">${per.map((n,i)=>`<span style="height:${n/max*100}%" title="${n}명">${n?`<b>${n}</b>`:''}${i%2===0?`<i>${days[i].getMonth()+1}/${days[i].getDate()}</i>`:''}</span>`).join('')}</div>
+  <h2>공지 알림 보내기 <span>${s.pushOn?`앱에서 알림을 켠 회원 ${s.pushUsers||0}명`:'Firebase 서비스 계정(FIREBASE_SERVICE_ACCOUNT)을 Vercel에 넣으면 사용할 수 있어요'}</span></h2>
+  <div class="bcast"><input class="input" id="bcTitle" maxlength="60" placeholder="제목 (예: 2027 봄학기 비자 안내)" ${s.pushOn?'':'disabled'}>
+    <textarea class="input" id="bcText" maxlength="200" rows="3" placeholder="내용 (200자 이내)" ${s.pushOn?'':'disabled'}></textarea>
+    <button class="btn sm" data-act="broadcast" ${s.pushOn?'':'disabled'}>앱 알림 보내기</button></div>`}
 
 function queueHTML(){const U=A.data.users;
   const pend=U.filter(u=>u.status==='pending').sort((a,b)=>a.submittedAt<b.submittedAt?-1:1);
@@ -225,6 +230,10 @@ document.addEventListener('click',e=>{
     return act(async()=>{const j=await api('action',{type:'reset_password',key:em}); await load(); prompt('임시 비밀번호예요. 본인에게 전달하고 로그인 후 바꾸도록 안내하세요.',j.temp)})}
   if(t==='deluser'){const c=prompt(`회원 정보, 후기, 증빙 파일이 영구 삭제되고 되돌릴 수 없어요.\n삭제하려면 아이디를 그대로 입력하세요:\n${fmtPhone(em)}`); if(c===null) return;
     return act(async()=>{await api('action',{type:'delete_user',key:em,confirm:c}); await load(); toast('회원을 삭제했어요')})}
+  if(t==='broadcast'){const title=document.getElementById('bcTitle').value.trim(), text=document.getElementById('bcText').value.trim();
+    if(!title||!text) return toast('제목과 내용을 모두 입력하세요');
+    if(!confirm(`앱 알림을 켠 회원 모두에게 보낼까요?\n\n${title}\n${text}`)) return;
+    return act(async()=>{const j=await api('action',{type:'broadcast',title,text}); await load(); toast(`${j.users}명에게 보냈어요 (기기 ${j.sent}대)`)})}
   if(t==='delreview'){ if(!confirm('이 후기를 삭제할까요? 되돌릴 수 없어요.')) return;
     return act(async()=>{await api('action',{type:'delete_review',mentor:b.dataset.m,key:em}); await load(); toast('후기를 삭제했어요')})}
 });

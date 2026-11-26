@@ -5,7 +5,7 @@
 //   reset_password {key}              returns a temporary password to pass on to the student
 //   delete_review {mentor, key}       remove a review
 import crypto from 'node:crypto';
-import { guard, body, send, isAdmin, hashPassword, saveUser, normEmail, normPhone, getJSON, redis, cleanText, decideMentor, deleteProof, adminLog, scanKeys, allow } from '../../api/_lib.js';
+import { guard, body, send, isAdmin, hashPassword, saveUser, normEmail, normPhone, getJSON, redis, cleanText, decideMentor, deleteProof, adminLog, scanKeys, allow, sendPush, pushConfigured } from '../../api/_lib.js';
 
 export default async function handler(req, res) {
   if (!guard(req, res, ['POST'])) return;
@@ -17,6 +17,16 @@ export default async function handler(req, res) {
     const n = await redis('HDEL', 'reviews:' + b.mentor, email);
     await adminLog(type, `${b.mentor} / ${email}`);
     return send(res, 200, { ok: true, removed: n });
+  }
+  // announcement push to everyone who turned notifications on in the app
+  if (type === 'broadcast') {
+    const title = cleanText(b.title, 60), text = cleanText(b.text, 200);
+    if (!title || !text) return send(res, 400, { error: 'bad_request' });
+    if (!pushConfigured()) return send(res, 503, { error: 'push_not_configured' });
+    let users = 0, sent = 0;
+    for (const k of (await scanKeys('push:*')).slice(0, 2000)) { const n = await sendPush(k.slice(5), title, text, { go: 'home' }).catch(() => 0); users++; sent += n; }
+    await adminLog(type, `${sent}대 발송`, title);
+    return send(res, 200, { ok: true, users, sent });
   }
   const user = email ? await getJSON('user:' + email) : null;
   if (!user) return send(res, 404, { error: 'user_not_found' });

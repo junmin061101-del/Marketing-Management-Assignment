@@ -273,6 +273,7 @@ export async function decideMentor(user, d, reason = '') {
   await deleteProof(uid(user));   // the proof is used for this review only and destroyed once it is decided
   const [subject, title, text] = DECISION[d];
   if (user.phone && smsConfigured()) await sendSms(user.phone, `[교환가자] ${title}. ${reason ? '메모: ' + reason.slice(0, 40) + ' ' : ''}자세한 내용은 앱에서 확인하세요.`).catch(() => {});
+  await sendPush(uid(user), '교환가자', title, { go: d === 'approve' ? 'mentorApply' : 'me' }).catch(() => 0);
   if (contactEmail(user)) await sendMail({ to: contactEmail(user), subject, html: mailLayout(title, `<p>${text}</p>${reason ? `<p style="background:#F2F4F6;padding:12px;border-radius:8px">운영팀 메모: ${escHtml(reason)}</p>` : ''}`) }).catch(() => {});
 }
 
@@ -304,4 +305,58 @@ export async function scanKeys(pattern, max = 20000) {
   let cur = '0'; const keys = [];
   do { const [next, k] = await redis('SCAN', cur, 'MATCH', pattern, 'COUNT', 500); cur = String(next); keys.push(...k); } while (cur !== '0' && keys.length < max);
   return keys;
+}
+
+/* ---------- push notifications (Firebase Cloud Messaging, HTTP v1) ----------
+   FIREBASE_SERVICE_ACCOUNT = the service-account JSON from Firebase (raw or base64). Without it nothing is sent.
+   Device tokens are kept per account in push:<id> (at most 5 devices) and removed when the student turns
+   notifications off, logs out or deletes the account, or when Google reports the token as gone. */
+const FCM_PROJECT = 'gyohwan-gaja';
+function serviceAccount() {
+  const raw = process.env.FIREBASE_SERVICE_ACCOUNT || '';
+  if (!raw) return null;
+  try { return JSON.parse(raw.trim().startsWith('{') ? raw : Buffer.from(raw, 'base64').toString('utf8')); } catch { return null; }
+}
+export const pushConfigured = () => !!serviceAccount();
+let fcmToken = { v: '', exp: 0 };
+async function fcmAccessToken() {
+  if (fcmToken.v && Date.now() < fcmToken.exp - 60000) return fcmToken.v;
+  const sa = serviceAccount(); if (!sa) return '';
+  const b64 = o => Buffer.from(JSON.stringify(o)).toString('base64url'), now = Math.floor(Date.now() / 1000);
+  const unsigned = b64({ alg: 'RS256', typ: 'JWT' }) + '.' + b64({ iss: sa.client_email, scope: 'https://www.googleapis.com/auth/firebase.messaging', aud: 'https://oauth2.googleapis.com/token', iat: now, exp: now + 3600 });
+  const jwt = unsigned + '.' + crypto.createSign('RSA-SHA256').update(unsigned).sign(sa.private_key, 'base64url');
+  const r = await fetch('https://oauth2.googleapis.com/token', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer', assertion: jwt }) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok || !j.access_token) { console.error('fcm auth failed', r.status, j.error); return ''; }
+  fcmToken = { v: j.access_token, exp: Date.now() + (j.expires_in || 3600) * 1000 };
+  return fcmToken.v;
+}
+export async function pushTokens(id) { return (await getJSON('push:' + id)) || []; }
+export async function savePushToken(id, token, platform) {
+  const list = (await pushTokens(id)).filter(x => x.t !== token);
+  list.unshift({ t: token, p: platform, at: new Date().toISOString() });
+  await setJSON('push:' + id, list.slice(0, 5));
+}
+export async function removePushToken(id, token) {
+  const list = (await pushTokens(id)).filter(x => x.t !== token);
+  if (list.length) await setJSON('push:' + id, list); else await redis('DEL', 'push:' + id);
+}
+// title/body are shown as-is; data (string values) tells the app where to open, e.g. { go: 'mentorApply' }
+export async function sendPush(id, title, body, data = {}) {
+  const tokens = await pushTokens(id);
+  if (!tokens.length) return 0;
+  const access = await fcmAccessToken();
+  if (!access) return 0;
+  let sent = 0;
+  for (const { t } of tokens) {
+    const r = await fetch(`https://fcm.googleapis.com/v1/projects/${FCM_PROJECT}/messages:send`, {
+      method: 'POST', headers: { Authorization: 'Bearer ' + access, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: { token: t, notification: { title, body }, data, android: { notification: { icon: 'ic_stat_notify', color: '#2F6FED' } }, apns: { payload: { aps: { sound: 'default' } } } } }),
+    }).catch(() => null);
+    if (r && r.ok) { sent++; continue; }
+    const j = r ? await r.json().catch(() => ({})) : {};
+    const code = JSON.stringify(j.error || '');
+    if (r && (r.status === 404 || /UNREGISTERED|INVALID_ARGUMENT/.test(code))) await removePushToken(id, t); // the app was removed or the token rotated
+  }
+  return sent;
 }

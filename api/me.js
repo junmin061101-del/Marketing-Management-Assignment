@@ -1,7 +1,7 @@
 // GET → the signed-in user (or null); each visit extends the one-year login.
 // POST {name?, profile?:{home, major, year}, plan?:{host, progId, dep, ret, done}} → updates the user's own data only.
 // The user is always taken from the session cookie, never from an id in the request.
-import { guard, send, body, configured, smsConfigured, currentUser, refreshSession, saveUser, publicUser, cleanText, allow, uid } from './_lib.js';
+import { guard, send, body, configured, smsConfigured, currentUser, refreshSession, saveUser, publicUser, cleanText, allow, uid, savePushToken, removePushToken, pushConfigured } from './_lib.js';
 
 const PROGS = new Set(['exS', 'exF', 'exY', 'visit', 'ss', 'ws']);
 const day = v => (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null);
@@ -23,7 +23,7 @@ export default async function handler(req, res) {
   const user = await currentUser(req);
   if (req.method === 'GET') {
     if (user) await refreshSession(req, res);
-    return send(res, 200, { user: publicUser(user), configured: true, sms: smsConfigured() });
+    return send(res, 200, { user: publicUser(user), configured: true, sms: smsConfigured(), push: pushConfigured() });
   }
   if (!user) return send(res, 401, { error: 'login_required' });
   if (!(await allow(`me:${uid(user)}`, 600, 3600))) return send(res, 429, { error: 'too_many_requests' });
@@ -31,6 +31,11 @@ export default async function handler(req, res) {
   if (b.name !== undefined) user.name = cleanText(b.name, 40) || user.name;
   if (p) user.profile = { home: cleanText(p.home, 80), major: cleanText(p.major, 60), year: cleanText(p.year, 20) };
   if (b.plan !== undefined) user.plan = cleanPlan(b.plan);
+  // push: {add: token, platform: 'android'|'ios'} when notifications are turned on, {remove: token} when turned off or on logout
+  const tok = v => typeof v === 'string' && /^[\w:.-]{20,4096}$/.test(v) ? v : '';
+  if (b.push && tok(b.push.add) && ['android', 'ios'].includes(b.push.platform)) await savePushToken(uid(user), b.push.add, b.push.platform);
+  if (b.push && tok(b.push.remove)) await removePushToken(uid(user), b.push.remove);
+  if (b.push && !b.name && !p && b.plan === undefined) return send(res, 200, { ok: true });
   await saveUser(user);
   send(res, 200, { user: publicUser(user) });
 }
