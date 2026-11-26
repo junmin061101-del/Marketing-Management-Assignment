@@ -11,6 +11,7 @@ await mkdir(out, { recursive: true });
 for (const f of ['privacy.html', 'terms.html']) await copyFile(new URL(f, root), new URL(f, out));
 await mkdir(new URL('vendor/', out), { recursive: true });
 await copyFile(new URL('vendor/blob-upload.js', root), new URL('vendor/blob-upload.js', out));  // chat photo/video uploads
+for (const f of ['logo.png', 'favicon-32.png', 'icon-180.png']) await copyFile(new URL(f, root), new URL(f, out));  // app logo (splash, top bar)
 const html = (await readFile(new URL('index.html', root), 'utf8')).replace('<script>', `<script>window.GG_PUSH=${JSON.stringify(push)};</script>\n<script>`);
 await writeFile(new URL('index.html', out), html);
 console.log('www/ ready · Firebase push:', JSON.stringify(push));

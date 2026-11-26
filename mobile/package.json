@@ -6,7 +6,7 @@
   "scripts": {
     "build": "node scripts/build-www.mjs",
     "sync": "npm run build && npx cap sync",
-    "assets": "npx capacitor-assets generate --iconBackgroundColor '#2F6FED' --iconBackgroundColorDark '#2F6FED' --splashBackgroundColor '#F2F4F6' --splashBackgroundColorDark '#17181C'",
+    "assets": "npx capacitor-assets generate --ios --android --iconBackgroundColor '#2F6FED' --iconBackgroundColorDark '#2F6FED' --splashBackgroundColor '#F2F4F6' --splashBackgroundColorDark '#17181C'",
     "android": "npm run sync && npx cap open android",
     "ios": "npm run sync && npx cap open ios"
   },

@@ -2,7 +2,7 @@
 //   Group chat: one room per school community ("g:<CC|University name>"), open to signed-in students.
 //   1:1 chat:   a student and a published mentor ("d:<hash>"); only the two members can read it.
 // GET  /api/chat?mentors=1&host=<University name>   → published mentors (host first, then everyone)
-// GET  /api/chat?list=1                              → my 1:1 rooms with the last message
+// GET  /api/chat?list=1&groups=["CC|Name",…]        → my 1:1 rooms and my group chats, each with the last message
 // GET  /api/chat?room=<id>&after=<ISO time>          → messages (newest 100, or only those after a time for polling)
 // POST /api/chat {action:'open', mentor:<public key>} → the 1:1 room with that mentor
 // POST /api/chat {action:'send', room, text, file?}   → posts a message (1:1 rooms also send a push to the other member);
@@ -80,7 +80,15 @@ export default async function handler(req, res) {
         const peer = r.members[0] === me ? 1 : 0;
         rooms.push({ id, title: r.names[peer], av: r.avs[peer] || '', mentor: r.mentorKey, iAmMentor: r.mentorUid === me, last: last ? view(JSON.parse(last), me) : null });
       }
-      return send(res, 200, { rooms });
+      // the last message of each joined school community group chat (groups = JSON list of "CC|University")
+      const groups = {};
+      let keys = []; try { keys = JSON.parse(q.get('groups') || '[]'); } catch {}
+      for (const k of (Array.isArray(keys) ? keys : []).slice(0, 20)) {
+        const id = 'g:' + k; if (typeof k !== 'string' || !GROUP.test(id)) continue;
+        const last = (await redis('LRANGE', 'msgs:' + id, 0, 0) || [])[0];
+        if (last) groups[id] = view(JSON.parse(last), me);
+      }
+      return send(res, 200, { rooms, groups });
     }
     const room = await roomFor(String(q.get('room') || ''), user);
     if (!room) return send(res, 404, { error: 'room_not_found' });
