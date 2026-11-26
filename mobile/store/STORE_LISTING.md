@@ -107,7 +107,8 @@ exchange,study abroad,summer school,visa,F-1,J-1,TOEFL,IELTS,JLPT,HSK,checklist,
 | 개인 정보 → 사용자 ID (아이디) | 예 | 필수 | 계정 관리 |
 | 개인 정보 → 이메일 주소 (학교 이메일) | 예 | 선택 (멘토 신청자만) | 앱 기능 (멘토 인증) |
 | 개인 정보 → 기타 정보 (본교, 학과, 학년, 파견교·일정) | 예 | 선택 | 앱 기능 (맞춤 체크리스트) |
-| 앱 활동 → 기타 사용자 생성 콘텐츠 (후기, 신고 내용) | 예 | 선택 | 앱 기능 |
+| 앱 활동 → 기타 사용자 생성 콘텐츠 (게시글, 후기, 신고 내용) | 예 | 선택 | 앱 기능 |
+| 사진 및 동영상 → 사진 (프로필 사진, JPEG 320×320) | 예 | 선택 | 앱 기능 |
 | 파일 및 문서 (수료 증빙) | 예 | 선택 (멘토 신청자만, 심사 후 즉시 폐기) | 앱 기능 (멘토 심사) |
 | 기기 또는 기타 ID (푸시 알림 토큰) | 예 | 선택 (알림을 켠 경우) | 앱 기능 (알림) |
 
@@ -132,7 +133,8 @@ exchange,study abroad,summer school,visa,F-1,J-1,TOEFL,IELTS,JLPT,HSK,checklist,
 | Contact Info → Email Address | 멘토 신청자의 학교 이메일 (선택) |
 | Identifiers → User ID | 아이디 |
 | Identifiers → Device ID | 푸시 알림 토큰 (알림을 켠 경우) |
-| User Content → Other User Content | 후기, 신고 내용, 수료 증빙 파일(심사 후 폐기) |
+| User Content → Other User Content | 게시글, 후기, 신고 내용, 수료 증빙 파일(심사 후 폐기) |
+| User Content → Photos or Videos | 프로필 사진 (선택) |
 | Other Data → Other Data Types | 본교·학과·학년·파견교·일정 |
 
 **연령 등급:** 4+ (모든 항목 "없음"). 사용자 생성 콘텐츠가 있으므로 신고 기능(게시글 신고 → 관리자 대시보드)과 운영자 삭제 기능이 있음을 심사 메모에 적어 둠.
@@ -153,7 +155,7 @@ Demo account (already set up with a fall 2027 exchange to UC Berkeley):
 How to review:
 - Home: personalized checklist with deadlines. Tap any step for official links and guidance.
 - The "어학 최소 점수" (language requirement) step shows the host university's official requirement with a link to the source.
-- Community tab: boards per host university. Posts can be reported (신고); reports go to our moderation dashboard and are removed by the operator.
+- Community tab: "All boards" (전체 게시판) plus a board per host university. Every post can be reported (신고) and any writer can be hidden on the device (이 사람의 글 모두 숨기기); reports go to our moderation dashboard, where the operator deletes posts.
 - Mentors tab: mentor profiles. Mentors must verify a university email and pass a manual review of their transcript.
 - Me tab → 회원 탈퇴 (Delete account): permanently deletes the account after a password check.
 - Me tab → 알림 (Notifications): deadline reminders scheduled on the device, and push for mentor review results.

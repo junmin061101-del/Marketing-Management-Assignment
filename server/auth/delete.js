@@ -1,5 +1,6 @@
 // POST {password} → the signed-in student deletes their own account (required by the App Store and good practice).
 // Removes the account, their reviews, any mentor proof file and their public mentor ID, then signs them out.
+import { deletePostsOf } from '../../api/posts.js';
 import { guard, body, send, currentUser, checkPassword, redis, scanKeys, deleteProof, endSession, allow, uid, adminLog } from '../../api/_lib.js';
 
 export default async function handler(req, res) {
@@ -15,6 +16,7 @@ export default async function handler(req, res) {
   await deleteProof(id);
   await redis('DEL', 'user:' + id);
   await redis('DEL', 'push:' + id);
+  await deletePostsOf(id);
   if (user.avatar?.id) await redis('DEL', 'avatar:' + user.avatar.id);
   await endSession(req, res);
   await adminLog('self_delete', id);

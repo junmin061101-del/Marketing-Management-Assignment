@@ -5,6 +5,7 @@
 //   reset_password {key}              returns a temporary password to pass on to the student
 //   delete_review {mentor, key}       remove a review
 import crypto from 'node:crypto';
+import { deletePostById } from '../../api/posts.js';
 import { guard, body, send, isAdmin, hashPassword, saveUser, normEmail, normPhone, getJSON, redis, cleanText, decideMentor, deleteProof, adminLog, scanKeys, allow, sendPush, pushConfigured } from '../../api/_lib.js';
 
 export default async function handler(req, res) {
@@ -17,6 +18,13 @@ export default async function handler(req, res) {
     const n = await redis('HDEL', 'reviews:' + b.mentor, email);
     await adminLog(type, `${b.mentor} / ${email}`);
     return send(res, 200, { ok: true, removed: n });
+  }
+  if (type === 'delete_post') {
+    const id = typeof b.id === 'string' && /^[a-z0-9]{6,20}$/.test(b.id) ? b.id : '';
+    if (!id) return send(res, 400, { error: 'bad_request' });
+    const removed = await deletePostById(id);
+    await adminLog(type, id, reason);
+    return send(res, 200, { ok: true, removed });
   }
   // announcement push to everyone who turned notifications on in the app
   if (type === 'broadcast') {

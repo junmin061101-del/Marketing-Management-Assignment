@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   if (!(await allow(`report-ip:${clientIp(req)}`, 20, 3600))) return send(res, 429, { error: 'too_many_requests' });
   const b = body(req), reason = REASONS.has(b.reason) ? b.reason : 'other';
   const user = await currentUser(req);
-  const r = { at: new Date().toISOString(), where: cleanText(b.where, 120), cat: cleanText(b.cat, 30), text: cleanText(b.text, 300), reason, by: user ? uid(user) : '' };
+  const r = { at: new Date().toISOString(), where: cleanText(b.where, 120), cat: cleanText(b.cat, 30), text: cleanText(b.text, 300), id: typeof b.id === 'string' && /^[a-z0-9]{6,20}$/.test(b.id) ? b.id : '', reason, by: user ? uid(user) : '' };
   if (!r.text) return send(res, 400, { error: 'bad_request' });
   await redis('LPUSH', 'admin:reports', JSON.stringify(r));
   await redis('LTRIM', 'admin:reports', 0, 499);

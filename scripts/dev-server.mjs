@@ -23,6 +23,7 @@ function cmd([c, ...x]) {
   if (C === 'SCAN') { const re = new RegExp('^' + String(x[2]).split('*').map(p => p.replace(/[.+?^${}()|[\]\\]/g, '\\$&')).join('.*') + '$'); return ['0', [...db.keys()].filter(k => alive(k) && re.test(k))]; }
   if (C === 'LPUSH') { const l = J(x[0]) || []; l.unshift(...x.slice(1).map(String).reverse()); db.set(x[0], JSON.stringify(l)); return l.length; }
   if (C === 'LTRIM') { const l = J(x[0]); if (l) db.set(x[0], JSON.stringify(l.slice(+x[1], +x[2] + 1))); return 'OK'; }
+  if (C === 'LREM') { const l = J(x[0]); if (!l) return 0; const n = l.filter(v => v === String(x[2])).length; db.set(x[0], JSON.stringify(l.filter(v => v !== String(x[2])))); return n; }
   if (C === 'LRANGE') { const l = J(x[0]); return l ? l.slice(+x[1], +x[2] + 1) : []; }
   throw new Error('unsupported ' + C);
 }
