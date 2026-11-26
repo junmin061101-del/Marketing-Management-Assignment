@@ -3,10 +3,11 @@
 //   node scripts/dev-server.mjs            → http://localhost:8790
 //   GET /__mails, /__sms                   → messages the app "sent"
 //   GET /__keys                            → keys currently in the fake Redis
+//   GET /__toss                            → card payments "confirmed" or "cancelled" (NO_PAY=1 runs without payments)
 // Never deploy this file; Vercel only runs files under /api.
 import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path'; import { pathToFileURL, fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), PORT = Number(process.env.PORT || 8790);
-const db = new Map(), exp = new Map(), mails = [], sms = [];
+const db = new Map(), exp = new Map(), mails = [], sms = [], tossLog = [];
 const alive = k => { if (exp.has(k) && Date.now() > exp.get(k)) { db.delete(k); exp.delete(k); } return db.has(k); };
 const J = k => (alive(k) ? JSON.parse(db.get(k)) : null);
 function cmd([c, ...x]) {
@@ -32,6 +33,7 @@ Object.assign(process.env, {
   RESEND_API_KEY: 'dev', MAIL_FROM: '교환가자 <dev@example.com>', MAIL_API_URL: `http://localhost:${PORT}/__mail`,
   SOLAPI_API_KEY: 'dev', SOLAPI_API_SECRET: 'dev', SMS_FROM: '01000000000', SMS_API_URL: `http://localhost:${PORT}/__smsapi`,
   APP_SECRET: 'dev-secret-'.padEnd(40, 'x'), REVIEW_EMAIL: 'ops@example.com',
+  ...(process.env.NO_PAY ? {} : { TOSS_CLIENT_KEY: 'dev', TOSS_SECRET_KEY: 'dev', TOSS_API_URL: `http://localhost:${PORT}/__toss` }),
 });
 const types = { '.html': 'text/html; charset=utf-8', '.json': 'application/json', '.js': 'text/javascript', '.png': 'image/png' };
 http.createServer(async (req, res) => {
@@ -40,6 +42,10 @@ http.createServer(async (req, res) => {
   if (u.pathname === '/__redis') { try { return json({ result: cmd(JSON.parse(raw)) }); } catch (e) { return json({ error: e.message }); } }
   if (u.pathname === '/__mail') { mails.push(JSON.parse(raw)); return json({ id: '1' }); }
   if (u.pathname === '/__smsapi') { const m = JSON.parse(raw).message; sms.push({ to: m.to, from: m.from, text: m.text, auth: /^HMAC-SHA256 apiKey=/.test(req.headers.authorization || '') }); return json({ statusCode: '2000' }); }
+  // stand-in for the Toss Payments API: confirm and cancel always succeed
+  if (u.pathname === '/__toss/v1/payments/confirm') { const b = JSON.parse(raw); tossLog.push({ op: 'confirm', ...b }); return json({ status: 'DONE', totalAmount: b.amount, method: '카드', receipt: { url: 'https://example.com/receipt' } }); }
+  if (u.pathname.startsWith('/__toss/v1/payments/') && u.pathname.endsWith('/cancel')) { tossLog.push({ op: 'cancel', key: u.pathname.split('/')[4], ...JSON.parse(raw) }); return json({ status: 'CANCELED' }); }
+  if (u.pathname === '/__toss') return json(tossLog);
   if (u.pathname === '/__mails') return json(mails.map(m => ({ to: m.to, subject: m.subject, html: m.html, att: (m.attachments || []).map(a => a.filename) })));
   if (u.pathname === '/__sms') return json(sms);
   if (u.pathname === '/__keys') return json([...db.keys()].filter(alive));

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>멘토링 수수료 결제 · 교환가자</title>
+<style>
+:root{--bg:#F4F6FA;--card:#fff;--ink:#191F28;--sub:#6B7684;--line:#E5E8EB;--brand:#2F6FED;--ok:#0F9D58;--bad:#E5484D}
+@media (prefers-color-scheme:dark){:root{--bg:#0E1116;--card:#171B22;--ink:#F2F4F6;--sub:#9AA4B2;--line:#2A303A;--brand:#5B8CFF;--ok:#3CCB7F;--bad:#FF6B6F}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+main{max-width:480px;margin:0 auto;padding:28px 16px 40px}
+h1{font-size:22px;margin:4px 0 6px;letter-spacing:-.02em}
+.sub{color:var(--sub);margin:0 0 18px;font-size:15px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:12px}
+.row{display:flex;justify-content:space-between;gap:12px;padding:6px 0;font-size:15px}
+.row span{color:var(--sub)}
+.row b{text-align:right}
+.total{border-top:1px solid var(--line);margin-top:8px;padding-top:12px;font-size:17px}
+.total b{color:var(--brand);font-size:20px}
+button{width:100%;border:0;border-radius:14px;padding:16px;font:inherit;font-weight:700;font-size:17px;background:var(--brand);color:#fff;cursor:pointer}
+button:disabled{opacity:.5}
+.note{font-size:13px;color:var(--sub);margin:12px 2px 0}
+.note li{margin:4px 0}
+.state{text-align:center;padding:30px 10px}
+.state .ic{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;margin:0 auto 12px;font-size:28px;color:#fff;background:var(--ok)}
+.state.bad .ic{background:var(--bad)}
+.state h1{margin-bottom:8px}
+.test{display:inline-block;font-size:12px;font-weight:700;color:#B25E00;background:#FFF1DB;border-radius:6px;padding:2px 8px;margin-bottom:8px}
+footer{font-size:12px;color:var(--sub);margin-top:26px;line-height:1.7}
+footer a{color:var(--sub)}
+</style>
+</head>
+<body>
+<main id="app"><p class="sub">불러오는 중…</p></main>
+<script>
+const $=s=>document.querySelector(s), app=$('#app');
+const P=new URLSearchParams(location.search), T=P.get('t')||'';
+const won=n=>Number(n).toLocaleString('ko-KR')+'원';
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const MODE={in_person:'대면',video:'화상'};
+let D=null;
+async function call(path,data){const r=await fetch('/api/sessions'+path,data?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}:{});
+  let j={}; try{j=await r.json()}catch(e){} if(!r.ok) throw Object.assign(new Error(j.error||'error'),{code:j.error,msg:j.message}); return j}
+function footer(b){b=b||{};
+  const line=[b.name&&'상호 '+b.name,b.ceo&&'대표 '+b.ceo,b.no&&'사업자등록번호 '+b.no,b.ecomm&&'통신판매업 신고 '+b.ecomm,b.addr,b.tel&&'전화 '+b.tel,b.mail&&'이메일 '+b.mail].filter(Boolean).map(esc).join(' · ');
+  return `<footer>${line}<br>교환가자는 학생과 멘토를 연결하는 통신판매중개자이며, 멘토링 세션비는 학생과 멘토가 직접 주고받아요. 이 결제는 멘토가 내는 연결 수수료예요.<br><a href="/terms">이용약관</a> · <a href="/privacy">개인정보처리방침</a></footer>`}
+function done(j){app.innerHTML=`<div class="card state"><div class="ic">✓</div><h1>결제가 끝났어요</h1>
+  <p class="sub">${esc(j.date)} ${esc(j.time)} 멘토링이 확정됐어요.<br>앱으로 돌아가 채팅에서 장소나 화상 링크를 정해 주세요.</p>
+  ${j.receipt?`<p class="note"><a href="${esc(j.receipt)}" target="_blank" rel="noopener">카드 영수증 보기</a></p>`:''}
+  <p class="note">앱에서 여셨다면 화면 위의 '완료' 또는 '닫기'를 눌러 돌아가세요.</p></div>${footer(j.biz)}`}
+function fail(title,text){app.innerHTML=`<div class="card state bad"><div class="ic">!</div><h1>${esc(title)}</h1><p class="sub">${esc(text)}</p>
+  ${D&&D.orderId?'<button id="again">다시 결제하기</button>':''}</div>${footer(D&&D.biz)}`;
+  const a=$('#again'); a&&(a.onclick=()=>{history.replaceState(null,'','/pay?t='+encodeURIComponent(T)); show()})}
+function show(){
+  app.innerHTML=`${D.payMode==='test'?'<span class="test">테스트 결제 · 실제로 청구되지 않아요</span>':''}
+  <h1>멘토링 수수료 결제</h1><p class="sub">수수료를 결제하면 세션이 확정돼요.</p>
+  <div class="card">
+    <div class="row"><span>학생</span><b>${esc(D.student)}</b></div>
+    <div class="row"><span>일정</span><b>${esc(D.date)} ${esc(D.time)} (한국 시간)</b></div>
+    <div class="row"><span>방식</span><b>${MODE[D.mode]||''}</b></div>
+    <div class="row"><span>세션비 (학생 → 멘토 직접)</span><b>${won(D.price)}</b></div>
+    <div class="row total"><span>결제할 수수료 (5%)</span><b>${won(D.fee)}</b></div>
+  </div>
+  <button id="pay">${won(D.fee)} 카드로 결제하기</button>
+  <ul class="note">
+    <li>교환가자는 세션비를 받지 않아요. 세션비는 학생이 멘토에게 직접 보내요.</li>
+    <li>학생이 세션 시작 전에 취소하면 수수료는 자동으로 환불돼요.</li>
+    <li>멘토가 취소하거나 나오지 않으면 수수료는 환불되지 않아요. 그 밖의 분쟁은 gyohwan.info@gmail.com으로 알려 주시면 확인 후 환불해 드려요.</li>
+  </ul>${footer(D.biz)}`;
+  $('#pay').onclick=startPay}
+async function startPay(){const btn=$('#pay'); btn.disabled=true;
+  const back='/pay?t='+encodeURIComponent(T);
+  // local test server: no real card window
+  if(D.clientKey==='dev'){location.href=`${back}&ok=1&paymentKey=dev_${Date.now()}_key&orderId=${encodeURIComponent(D.orderId)}&amount=${D.fee}`; return}
+  try{
+    await loadSdk();
+    const payment=window.TossPayments(D.clientKey).payment({customerKey:D.customerKey});
+    await payment.requestPayment({method:'CARD',amount:{currency:'KRW',value:D.fee},orderId:D.orderId,orderName:D.orderName,
+      successUrl:location.origin+back+'&ok=1',failUrl:location.origin+back+'&fail=1',card:{flowMode:'DEFAULT',useEscrow:false,useCardPoint:false,useAppCardOnly:false}});
+  }catch(e){btn.disabled=false; if(e&&e.code==='USER_CANCEL') return; fail('결제를 시작하지 못했어요',e&&e.message||'잠시 후 다시 시도해 주세요.')}}
+function loadSdk(){return window.TossPayments?Promise.resolve():new Promise((ok,no)=>{const s=document.createElement('script'); s.src='https://js.tosspayments.com/v2/standard'; s.onload=ok; s.onerror=()=>no(new Error('결제 모듈을 불러오지 못했어요.')); document.head.appendChild(s)})}
+(async()=>{
+  try{ D=await call('?paytok='+encodeURIComponent(T)) }catch(e){ return fail('결제 링크가 만료됐어요','앱의 "내 멘토링"에서 수수료 결제를 다시 눌러 주세요.') }
+  if(D.done) return done(D);
+  if(D.status!=='awaiting_fee') return fail('결제할 수 없는 상태예요','이미 취소됐거나 처리된 신청이에요. 앱에서 확인해 주세요.');
+  if(P.get('fail')) return fail('결제가 완료되지 않았어요',P.get('message')||'다시 시도해 주세요.');
+  if(P.get('ok')){
+    app.innerHTML='<p class="sub">결제를 확인하는 중…</p>';
+    try{ const j=await call('',{action:'confirm',t:T,paymentKey:P.get('paymentKey'),orderId:P.get('orderId'),amount:Number(P.get('amount'))}); history.replaceState(null,'','/pay?t='+encodeURIComponent(T)); return done(j) }
+    catch(e){ return fail('결제를 확인하지 못했어요',e.msg||'카드 승인이 되지 않았어요. 다시 시도해 주세요.') }
+  }
+  show();
+})();
+</script>
+</body>
+</html>

@@ -111,7 +111,7 @@ const who=u=>u.username?'@'+u.username:u.phone?fmtPhone(u.phone):(u.email||u.key
 const stars=n=>`<span class="stars">${'★'.repeat(n)}<i>${'★'.repeat(5-n)}</i></span>`;
 const STATUS={none:['신청 전',''],pending:['심사 대기','warn'],approved:['승인','ok'],rejected:['반려','']};
 const statusPill=u=>u.published?'<span class="pill ok">멘토 공개 중</span>':`<span class="pill ${STATUS[u.status]?.[1]||''}">${STATUS[u.status]?.[0]||esc(u.status)}</span>`;
-const LOGT={reset_password:'비밀번호 초기화',sign_in:'관리자 로그인',approve:'멘토 승인',reject:'멘토 반려',revoke:'멘토 자격 취소',delete_user:'회원 삭제',broadcast:'공지 알림 발송',delete_avatar:'프로필 사진 삭제',delete_post:'게시글 삭제',delete_comment:'댓글 삭제',self_delete:'회원 직접 탈퇴',delete_review:'후기 삭제'};
+const LOGT={refund_fee:'수수료 환불',session_report:'멘토링 신고',reset_password:'비밀번호 초기화',sign_in:'관리자 로그인',approve:'멘토 승인',reject:'멘토 반려',revoke:'멘토 자격 취소',delete_user:'회원 삭제',broadcast:'공지 알림 발송',delete_avatar:'프로필 사진 삭제',delete_post:'게시글 삭제',delete_comment:'댓글 삭제',self_delete:'회원 직접 탈퇴',delete_review:'후기 삭제'};
 
 async function load(){
   try{A.data=await api('data'); A.view='dash'}
@@ -191,10 +191,13 @@ function reviewsHTML(){const R=A.data.reviews;
 
 const REASON={spam:'스팸·광고',abuse:'욕설·비방',privacy:'개인정보 노출',false:'허위 정보',other:'기타'};
 function reportsHTML(){const R=A.data.reports||[];
-  return `<h2 style="margin-top:0">커뮤니티 신고 <span>최근 200건 · 게시글 일부만 보관해요</span></h2>
+  return `<h2 style="margin-top:0">신고 <span>커뮤니티 글·댓글과 멘토링 · 최근 200건</span></h2>
   ${R.length?R.map(r=>`<div class="rv"><span class="t"><span class="pill warn">${esc(REASON[r.reason]||r.reason)}</span> <b>${esc(r.where||'')}</b>${r.cat?` · <small>${esc(r.cat)}</small>`:''}
-    <p>${esc(r.text)}</p><small>${fmt(r.at)}${r.by?' · 신고자 @'+esc(r.by):' · 비회원 신고'}</small></span>${r.id&&r.cid?`<button class="btn sm warn" data-act="delcomment" data-v="${esc(r.id)}" data-c="${esc(r.cid)}">댓글 삭제</button>`:r.id?`<button class="btn sm warn" data-act="delpost" data-v="${esc(r.id)}">글 삭제</button>`:''}</div>`).join('')
+    <p>${esc(r.text)}</p><small>${fmt(r.at)}${r.by?' · 신고자 @'+esc(r.by):' · 비회원 신고'}</small></span>${r.id&&r.cid?`<button class="btn sm warn" data-act="delcomment" data-v="${esc(r.id)}" data-c="${esc(r.cid)}">댓글 삭제</button>`:r.id?`<button class="btn sm warn" data-act="delpost" data-v="${esc(r.id)}">글 삭제</button>`:r.sid?`<span style="display:flex;flex-direction:column;gap:6px"><button class="btn sm" data-act="refund" data-v="${esc(r.sid)}">수수료 환불</button><button class="btn sm warn" data-act="revoke" data-e="${esc(r.mentor)}">멘토 자격 취소</button></span>`:''}</div>`).join('')
   :'<div class="empty">신고가 없어요.</div>'}`}
+function feesHTML(){const F=A.data.fees||[];
+  return `<h2 style="margin-top:0">멘토 수수료 <span>세션비의 5% · 최근 500건 · 테스트 결제는 합계에서 빠져요</span></h2>
+  ${F.length?`<div class="log">${F.map(f=>`<div><time>${fmt(f.at)}</time><span><b>${f.kind==='refund'?'환불':'결제'} ${Number(f.amount).toLocaleString('ko-KR')}원</b>${f.mode==='test'?' <span class="pill warn">테스트</span>':''} · 주문 ${esc(f.orderId||'')}${f.reason?` <span style="color:var(--ink-3)">— ${esc(f.reason)}</span>`:''}${f.kind==='fee'?` <button class="btn sm" data-act="refund" data-v="${esc(f.id)}">환불</button>`:''}</span></div>`).join('')}</div>`:'<div class="empty">아직 결제된 수수료가 없어요.</div>'}`}
 function logHTML(){const L=A.data.log;
   return `<h2 style="margin-top:0">작업 기록 <span>최근 100건</span></h2>
   ${L.length?`<div class="log">${L.map(x=>`<div><time>${fmt(x.at)}</time><span><b>${esc(LOGT[x.type]||x.type)}</b> · ${esc(x.target)}${x.detail?` <span style="color:var(--ink-3)">— ${esc(x.detail)}</span>`:''}</span></div>`).join('')}</div>`:'<div class="empty">기록이 없어요.</div>'}`}
@@ -204,10 +207,10 @@ function render(){
   if(A.view==='loading'){r.innerHTML='<p style="color:var(--ink-3)">불러오는 중…</p>'; return}
   if(A.view==='login'){r.innerHTML=loginHTML(); const i=$('#code')||$('#email'); i&&i.focus(); return}
   const s=A.data.stats, keepQ=document.activeElement&&document.activeElement.id==='q';
-  const TABS=[['overview','개요',''],['queue','멘토 심사',s.pending?`<span class="count hot">${s.pending}</span>`:''],['users','회원',`<span class="count">${s.users}</span>`],['reviews','후기',`<span class="count">${s.reviews}</span>`],['reports','신고',(s.reports?`<span class="count hot">${s.reports}</span>`:'')],['log','작업 기록','']];
+  const TABS=[['overview','개요',''],['queue','멘토 심사',s.pending?`<span class="count hot">${s.pending}</span>`:''],['users','회원',`<span class="count">${s.users}</span>`],['reviews','후기',`<span class="count">${s.reviews}</span>`],['reports','신고',(s.reports?`<span class="count hot">${s.reports}</span>`:'')],['fees','수수료',s.fees?`<span class="count">${s.fees}</span>`:''],['log','작업 기록','']];
   r.innerHTML=`<header><h1>교환가자 운영</h1><small>${fmt(A.data.now)} 기준</small><button class="btn sm ghost" data-act="refresh">새로고침</button><button class="btn sm ghost" data-act="logout">로그아웃</button></header>
     <nav class="tabs" role="tablist">${TABS.map(([k,l,c])=>`<button role="tab" aria-selected="${A.tab===k}" class="${A.tab===k?'on':''}" data-act="tab" data-v="${k}">${l}${c}</button>`).join('')}</nav>
-    <section>${({overview:overviewHTML,queue:queueHTML,users:usersHTML,reviews:reviewsHTML,reports:reportsHTML,log:logHTML})[A.tab]()}</section>`;
+    <section>${({overview:overviewHTML,queue:queueHTML,users:usersHTML,reviews:reviewsHTML,reports:reportsHTML,fees:feesHTML,log:logHTML})[A.tab]()}</section>`;
   if(keepQ){const q=$('#q'); q.focus(); q.setSelectionRange(q.value.length,q.value.length)}
 }
 
@@ -233,6 +236,8 @@ document.addEventListener('click',e=>{
     return act(async()=>{await api('action',{type:'delete_user',key:em,confirm:c}); await load(); toast('회원을 삭제했어요')})}
   if(t==='delcomment'){ if(!confirm('신고된 댓글을 삭제할까요? 되돌릴 수 없어요.')) return;
     return act(async()=>{const j=await api('action',{type:'delete_comment',id:b.dataset.v,cid:b.dataset.c}); toast(j.removed?'댓글을 삭제했어요':'이미 삭제된 댓글이에요')})}
+  if(t==='refund'){const why=prompt('수수료를 멘토에게 환불할까요? 사유를 적어 주세요 (예: 학생 노쇼 확인).'); if(why===null) return;
+    return act(async()=>{await api('action',{type:'refund_fee',id:b.dataset.v,reason:why}); await load(); toast('수수료를 환불했어요')})}
   if(t==='delpost'){ if(!confirm('신고된 글을 게시판에서 삭제할까요? 되돌릴 수 없어요.')) return;
     return act(async()=>{const j=await api('action',{type:'delete_post',id:b.dataset.v}); toast(j.removed?'글을 삭제했어요':'이미 삭제된 글이에요')})}
   if(t==='delavatar'){ if(!confirm(`${fmtPhone(em)} 님의 프로필 사진을 삭제할까요? 부적절한 사진일 때 사용하세요.`)) return;

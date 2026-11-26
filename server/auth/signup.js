@@ -13,7 +13,7 @@ export default async function handler(req, res) {
   if (!(await allow(`signup-ip:${clientIp(req)}`, 10, 3600))) return send(res, 429, { error: 'too_many_requests' });
   if (await getJSON('user:' + username)) return send(res, 409, { error: 'username_taken' });
   const now = new Date().toISOString();
-  const user = { key: username, username, name, pw: hashPassword(b.password), created: now, consent: { terms: '2026-11-24', privacy: '2026-11-24', at: now }, profile: {}, mentor: { status: 'none' } };
+  const user = { key: username, username, name, pw: hashPassword(b.password), created: now, consent: { terms: '2026-12-03', privacy: '2026-12-03', at: now }, profile: {}, mentor: { status: 'none' } };
   await saveUser(user);
   const sid = await startSession(res, user);
   send(res, 200, isApp(req) ? { user: publicUser(user), token: sid } : { user: publicUser(user) });

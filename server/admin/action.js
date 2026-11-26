@@ -4,8 +4,10 @@
 //   delete_user {key, confirm}          account deletion request (privacy policy §5); confirm must repeat the key
 //   reset_password {key}              returns a temporary password to pass on to the student
 //   delete_review {mentor, key}       remove a review
+//   refund_fee {id}                   give a mentor back the 5% fee of a session (after checking a report)
 import crypto from 'node:crypto';
 import { deletePostById, deleteComment } from '../../api/posts.js';
+import { refundFee } from '../../api/sessions.js';
 import { guard, body, send, isAdmin, hashPassword, saveUser, normEmail, normPhone, getJSON, redis, cleanText, decideMentor, deleteProof, adminLog, scanKeys, allow, sendPush, pushConfigured } from '../../api/_lib.js';
 
 export default async function handler(req, res) {
@@ -18,6 +20,16 @@ export default async function handler(req, res) {
     const n = await redis('HDEL', 'reviews:' + b.mentor, email);
     await adminLog(type, `${b.mentor} / ${email}`);
     return send(res, 200, { ok: true, removed: n });
+  }
+  if (type === 'refund_fee') {
+    const id = typeof b.id === 'string' && /^[a-z0-9]{10,24}$/.test(b.id) ? b.id : '';
+    const bk = id ? await getJSON('bk:' + id) : null;
+    if (!bk) return send(res, 404, { error: 'session_not_found' });
+    if (!bk.pay?.paidAt) return send(res, 409, { error: 'no_fee_paid' });
+    if (bk.pay.refundedAt) return send(res, 409, { error: 'already_refunded' });
+    if (!(await refundFee(bk, reason || '운영자 환불'))) return send(res, 502, { error: 'refund_failed' });
+    await adminLog(type, id, reason);
+    return send(res, 200, { ok: true });
   }
   if (type === 'delete_comment') {
     const id = typeof b.id === 'string' && /^[a-z0-9]{6,20}$/.test(b.id) ? b.id : '', cid = typeof b.cid === 'string' ? b.cid.slice(0, 20) : '';

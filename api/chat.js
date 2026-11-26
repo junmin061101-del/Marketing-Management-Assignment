@@ -21,9 +21,26 @@ async function mentorList(host) {
     const p = u?.mentor?.profile;
     if (!u || u.mentor?.status !== 'approved' || !p) continue;
     out.push({ key: p.key, name: mask(u.name), av: u.avatar?.id || '', home: p.home || '', major: p.major || '', host: u.plan?.host?.[0] || '',
-      offer: p.offer || '', act: p.act || '', club: p.club || '', lab: p.lab || '', course: p.course || '', length: p.length || '', format: p.format || '', sessions: p.sessions || null });
+      offer: p.offer || '', act: p.act || '', club: p.club || '', lab: p.lab || '', course: p.course || '', length: p.length || '', format: p.format || '', sessions: p.sessions || null,
+      mode: p.mode || '', area: p.area || '', price: Number.isInteger(p.price) ? p.price : null });
   }
   return out.sort((a, b) => (b.host === host) - (a.host === host));
+}
+// the 1:1 room between a student and a mentor (created on first use; also used by session bookings)
+export async function openDM(user, mentor, mentorKey) {
+  const me = uid(user), mid = uid(mentor);
+  const id = 'd:' + hmac('dm|' + [me, mid].sort().join('|')).slice(0, 24);
+  if (!(await getJSON('room:' + id))) {
+    await setJSON('room:' + id, { members: [me, mid], names: [mask(user.name), mask(mentor.name)], avs: [user.avatar?.id || '', mentor.avatar?.id || ''], mentorKey, mentorUid: mid, at: new Date().toISOString() });
+    for (const u of [me, mid]) { await redis('LPUSH', 'myrooms:' + u, id); await redis('LTRIM', 'myrooms:' + u, 0, 99); }
+  }
+  return id;
+}
+// a notice from the app inside a 1:1 room (booking updates), shown to both members
+export async function systemMessage(room, text) {
+  const m = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), u: 'sys', who: '교환가자', av: '', sys: true, text: cleanText(text, 300), at: new Date().toISOString() };
+  await redis('LPUSH', 'msgs:' + room, JSON.stringify(m));
+  await redis('LTRIM', 'msgs:' + room, 0, KEEP - 1);
 }
 // members may read; group rooms are open to any signed-in student
 async function roomFor(id, user) {
@@ -32,7 +49,7 @@ async function roomFor(id, user) {
   const r = await getJSON('room:' + id);
   return r && r.members.includes(uid(user)) ? { ...r, id, kind: 'd' } : null;
 }
-const view = (m, me) => ({ id: m.id, who: m.who, av: m.av, text: m.text, at: m.at, mine: m.u === tag(me) });
+const view = (m, me) => ({ id: m.id, who: m.who, av: m.av, text: m.text, at: m.at, mine: m.u === tag(me), ...(m.sys ? { sys: true } : {}) });
 
 export default async function handler(req, res) {
   if (!guard(req, res, ['GET', 'POST'])) return;
@@ -68,12 +85,7 @@ export default async function handler(req, res) {
     const mentor = mid ? await getJSON('user:' + mid) : null;
     if (!mentor || mentor.mentor?.status !== 'approved') return send(res, 404, { error: 'unknown_mentor' });
     if (mid === me) return send(res, 400, { error: 'own_profile' });
-    const id = 'd:' + hmac('dm|' + [me, mid].sort().join('|')).slice(0, 24);
-    if (!(await getJSON('room:' + id))) {
-      await setJSON('room:' + id, { members: [me, mid], names: [mask(user.name), mask(mentor.name)], avs: [user.avatar?.id || '', mentor.avatar?.id || ''], mentorKey: b.mentor, mentorUid: mid, at: new Date().toISOString() });
-      for (const u of [me, mid]) { await redis('LPUSH', 'myrooms:' + u, id); await redis('LTRIM', 'myrooms:' + u, 0, 99); }
-    }
-    return send(res, 200, { room: id });
+    return send(res, 200, { room: await openDM(user, mentor, b.mentor) });
   }
   if (b.action === 'send') {
     if (!(await allow('chat:' + me, 120, 3600))) return send(res, 429, { error: 'too_many_requests' });
