@@ -17,6 +17,7 @@ export default async function handler(req, res) {
   await redis('DEL', 'user:' + id);
   await redis('DEL', 'push:' + id);
   await deletePostsOf(id);
+  await redis('DEL', 'myrooms:' + id);
   if (user.avatar?.id) await redis('DEL', 'avatar:' + user.avatar.id);
   await endSession(req, res);
   await adminLog('self_delete', id);
