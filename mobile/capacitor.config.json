@@ -1,0 +1,10 @@
+{
+  "appId": "com.gyohwangaja.app",
+  "appName": "교환가자",
+  "webDir": "www",
+  "android": { "allowMixedContent": false },
+  "ios": { "contentInset": "never" },
+  "plugins": {
+    "SplashScreen": { "launchAutoHide": false, "backgroundColor": "#F2F4F6" }
+  }
+}

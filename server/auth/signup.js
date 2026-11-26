@@ -1,6 +1,6 @@
 // POST {username, password, name, agree} → creates an account and signs in. No email or text-message step.
 // Only these fields are ever set on sign-up; roles or review status cannot be sent from the page.
-import { guard, body, send, normUsername, validPassword, hashPassword, cleanText, getJSON, saveUser, startSession, publicUser, allow, clientIp } from '../../api/_lib.js';
+import { guard, body, send, normUsername, validPassword, hashPassword, cleanText, getJSON, saveUser, startSession, publicUser, allow, clientIp , isApp } from '../../api/_lib.js';
 
 export default async function handler(req, res) {
   if (!guard(req, res, ['POST'])) return;
@@ -15,6 +15,6 @@ export default async function handler(req, res) {
   const now = new Date().toISOString();
   const user = { key: username, username, name, pw: hashPassword(b.password), created: now, consent: { terms: '2026-11-24', privacy: '2026-11-24', at: now }, profile: {}, mentor: { status: 'none' } };
   await saveUser(user);
-  await startSession(res, user);
-  send(res, 200, { user: publicUser(user) });
+  const sid = await startSession(res, user);
+  send(res, 200, isApp(req) ? { user: publicUser(user), token: sid } : { user: publicUser(user) });
 }

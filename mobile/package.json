@@ -1,0 +1,28 @@
+{
+  "name": "gyohwan-gaja-mobile",
+  "private": true,
+  "type": "module",
+  "description": "iOS and Android app for 교환가자, built with Capacitor from the web app in ../index.html",
+  "scripts": {
+    "build": "node scripts/build-www.mjs",
+    "sync": "npm run build && npx cap sync",
+    "assets": "npx capacitor-assets generate --iconBackgroundColor '#2F6FED' --iconBackgroundColorDark '#2F6FED' --splashBackgroundColor '#F2F4F6' --splashBackgroundColorDark '#17181C'",
+    "android": "npm run sync && npx cap open android",
+    "ios": "npm run sync && npx cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/browser": "^8.0.5",
+    "@capacitor/core": "^8.6.3",
+    "@capacitor/haptics": "^8.0.2",
+    "@capacitor/share": "^8.0.3",
+    "@capacitor/splash-screen": "^8.0.2",
+    "@capacitor/status-bar": "^8.0.4"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^8.6.3",
+    "@capacitor/assets": "^4.0.0",
+    "@capacitor/cli": "^8.6.3",
+    "@capacitor/ios": "^8.6.3"
+  }
+}

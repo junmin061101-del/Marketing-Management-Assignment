@@ -36,14 +36,27 @@ export function send(res, status, body) {
   res.statusCode = status;
   res.end(JSON.stringify(body));
 }
+// The iOS / Android app (Capacitor) serves the page from these origins and signs in with a bearer token,
+// never with the site cookie, so allowing them does not open a cookie-based CSRF hole.
+const APP_ORIGINS = new Set(['capacitor://localhost', 'https://localhost', 'http://localhost']);
+export const isApp = req => APP_ORIGINS.has(String(req.headers.origin || '')) || req.headers['x-gg-client'] === 'app';
 // Method check, configuration check and CSRF protection for state-changing requests:
-// the request must come from this site (Origin header) and carry JSON.
+// the request must come from this site or the app (Origin header) and carry JSON.
 export function guard(req, res, methods) {
+  const origin = String(req.headers.origin || '');
+  if (APP_ORIGINS.has(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Vary', 'Origin');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-GG-Client');
+    res.setHeader('Access-Control-Max-Age', '86400');
+  }
+  if (req.method === 'OPTIONS') { res.statusCode = APP_ORIGINS.has(origin) ? 204 : 403; res.end(); return false; }
   if (!methods.includes(req.method)) { send(res, 405, { error: 'method_not_allowed' }); return false; }
   if (!configured()) { send(res, 503, { error: 'not_configured' }); return false; }
   if (req.method !== 'GET') {
-    let ok = false;
-    try { ok = new URL(req.headers.origin).host === req.headers.host; } catch {}
+    let ok = APP_ORIGINS.has(origin);
+    try { ok = ok || new URL(origin).host === req.headers.host; } catch {}
     if (!ok) { send(res, 403, { error: 'bad_origin' }); return false; }
     if (!String(req.headers['content-type'] || '').startsWith('application/json')) { send(res, 415, { error: 'json_required' }); return false; }
   }
@@ -119,23 +132,27 @@ export async function useCode(purpose, email, code) {
 /* ---------- sessions: random id in an HttpOnly cookie, only its HMAC is stored ---------- */
 const COOKIE = 'gg_sid', DAYS = 365; // students stay signed in; every visit extends it
 const cookieOf = req => Object.fromEntries(String(req.headers.cookie || '').split(';').map(c => c.trim().split('=')).filter(p => p[0]).map(([k, ...v]) => [k, decodeURIComponent(v.join('='))]));
+// The site uses an HttpOnly cookie; the app sends the same session ID as "Authorization: Bearer <id>".
+const sidOf = req => { const m = /^Bearer ([A-Za-z0-9_-]{20,100})$/.exec(String(req.headers.authorization || '')); return m ? m[1] : cookieOf(req)[COOKIE]; };
+// Returns the session ID; login and signup hand it to the app (only) as a token.
 export async function startSession(res, user) {
   const sid = crypto.randomBytes(32).toString('base64url');
   await redis('SET', 'sess:' + hmac(sid), `${uid(user)}|${user.created || ''}`, 'EX', DAYS * 86400);
   res.setHeader('Set-Cookie', `${COOKIE}=${sid}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${DAYS * 86400}`);
+  return sid;
 }
 export async function refreshSession(req, res) {
-  const sid = cookieOf(req)[COOKIE];
+  const sid = sidOf(req);
   if (!sid || sid.length > 100) return;
-  if (await redis('EXPIRE', 'sess:' + hmac(sid), DAYS * 86400)) res.setHeader('Set-Cookie', `${COOKIE}=${sid}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${DAYS * 86400}`);
+  if (await redis('EXPIRE', 'sess:' + hmac(sid), DAYS * 86400) && !req.headers.authorization) res.setHeader('Set-Cookie', `${COOKIE}=${sid}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${DAYS * 86400}`);
 }
 export async function endSession(req, res) {
-  const sid = cookieOf(req)[COOKIE];
+  const sid = sidOf(req);
   if (sid) await redis('DEL', 'sess:' + hmac(sid));
   res.setHeader('Set-Cookie', `${COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`);
 }
 export async function currentUser(req) {
-  const sid = cookieOf(req)[COOKIE];
+  const sid = sidOf(req);
   if (!sid || sid.length > 100) return null;
   const v = await redis('GET', 'sess:' + hmac(sid));
   if (!v) return null;
