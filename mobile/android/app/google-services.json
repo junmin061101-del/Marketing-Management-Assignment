@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "640969060369",
+    "project_id": "gyohwan-gaja",
+    "storage_bucket": "gyohwan-gaja.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:640969060369:android:3d7a016097f8f179e601b0",
+        "android_client_info": {
+          "package_name": "com.gyohwangaja.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3M3Q_T0TfIYFY3P41mCyykk6RmjtuQto"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
