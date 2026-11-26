@@ -1,2 +1,7 @@
 node_modules
 www
+# release signing secrets — never commit (the repository is public)
+android/keystore.properties
+*.jks
+*.keystore
+release/

@@ -2030,7 +2030,7 @@ function englishOf(h,p){
   return {verified:false,t:[],scope:'Not confirmed yet',note:`We have not confirmed ${h.short}’s official English requirement yet. Accepted tests differ by university (TOEFL, IELTS, Cambridge, CEFR level, TOEIC and others), so check the official page before you book a test.`,
     src:(()=>{const P=HOST_PAGES[h.name]||{},u=P.exch||P.intl;return u?{label:`${h.short} · International office`,url:u,verified:true}:{label:`${h.short} · Official website`,url:h.url||'',verified:true}})()};
 }
-const engLine=e=>e.none?'English test not required':!e.t.length?'Not confirmed yet':e.t.slice(0,3).map(x=>`${x[0].replace(' iBT','')} ${x[1]}`).join(' · ');
+const engLine=e=>{if(e.none) return 'English test not required'; if(!e.t.length) return 'Not confirmed yet'; const sc=e.t.filter(x=>/\d/.test(x[1])); return (sc.length?sc:e.t).slice(0,3).map(x=>`${x[0].replace(' iBT','')} ${x[1]}`).join(' · ')};  // scores first; "Accepted"-type rows only when there is no score
 function engPill(e){
   if(!e.verified) return `<span class="pill cat">Not verified</span>`;
   const c=e.check&&e.check.s, d=checkedDay();
