@@ -40,6 +40,15 @@ function cviews(list, me, p) {
   for (const c of list) if (c.anon && c.author !== p.author && !nums.has(c.author)) nums.set(c.author, nums.size + 1);
   return list.map(c => cview(c, me, p, nums));
 }
+// older posts and comments were saved without the school: fill it in from the writer's current profile
+async function fillHomes(items) {
+  const homes = new Map();
+  for (const x of items) {
+    if (x.anon || x.home) continue;
+    if (!homes.has(x.author)) homes.set(x.author, cleanText((await getJSON('user:' + x.author))?.profile?.home, 80));
+    x.home = homes.get(x.author);
+  }
+}
 const profileOf = user => { const pf = user.profile || {}; return { home: cleanText(pf.home, 80), major: cleanText(pf.major, 40), year: cleanText(pf.year, 20) }; };
 async function comments(id) { return ((await redis('LRANGE', 'cmts:' + id, 0, 199)) || []).map(v => { try { return JSON.parse(v); } catch { return null; } }).filter(Boolean).reverse(); }
 export async function deleteComment(id, cid, onlyAuthor) {
@@ -73,7 +82,8 @@ export default async function handler(req, res) {
       const one = /^[a-z0-9]{6,20}$/.test(q0.get('id')) ? await getJSON('post:' + q0.get('id')) : null;
       if (!one) return send(res, 404, { error: 'post_not_found' });
       const me0 = user ? uid(user) : '';
-      return send(res, 200, { post: view(one, user), comments: cviews(await comments(one.id), me0, one) });
+      const list = await comments(one.id); await fillHomes([one, ...list]);
+      return send(res, 200, { post: view(one, user), comments: cviews(list, me0, one) });
     }
     const q = q0, board = q.get('board') || 'all', page = Math.max(0, Math.min(30, Number(q.get('page')) || 0));
     if (!validBoard(board)) return send(res, 400, { error: 'bad_board' });
@@ -127,6 +137,7 @@ export default async function handler(req, res) {
     const notify = new Set(p.author !== me ? [p.author] : []);
     if (parent) { const top = list.find(x => x.cid === parent); if (top && top.author !== me) notify.add(top.author); }
     for (const to of notify) await sendPush(to, parent && to !== p.author ? '교환가자 · 새 답글' : '교환가자 · 새 댓글', text.slice(0, 80), { go: 'post', id }).catch(() => 0);
+    await fillHomes([p, ...list]);
     return send(res, 200, { comments: cviews([...list, c], me, p), post: view(p, user) });
   }
   if (b.action === 'uncomment') {
