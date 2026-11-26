@@ -54,6 +54,8 @@ await mkdir(here('release/screens'), { recursive: true });
 await sharp(clean).resize(256, 256).png({ palette: true, quality: 90, compressionLevel: 9 }).toFile(root('logo.png'));  // 2× of the 120 px splash logo
 await sharp(clean).resize(512, 512).png({ palette: true, quality: 90, compressionLevel: 9 }).toFile(root('brand/public/logo.png'));
 await sharp(full).resize(180, 180).toFile(root('icon-180.png'));
+await sharp(full).resize(192, 192).toFile(root('icon-192.png'));  // home-screen web app (manifest.webmanifest)
+await sharp(full).resize(512, 512).toFile(root('icon-512.png'));
 await sharp(full).resize(180, 180).toFile(root('brand/public/apple-touch-icon.png'));
 await sharp(clean).resize(32, 32).toFile(root('favicon-32.png'));
 await sharp(full).toFile(here('assets/icon-only.png'));
