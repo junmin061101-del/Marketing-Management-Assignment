@@ -7,7 +7,7 @@
 import { guard, body, send, currentUser, saveUser, publicUser, redis, allow, uid, hmac } from './_lib.js';
 
 const MAX = 150 * 1024, SIZE = 320;
-export const avatarId = u => 'a-' + hmac('avatar|' + uid(u)).slice(0, 20);
+const avatarId = u => 'a-' + hmac('avatar|' + uid(u)).slice(0, 20);
 // A complete JPEG (starts FF D8, ends FF D9); returns its pixel size from the frame header, or null.
 function jpegSize(buf) {
   if (buf.length < 4 || buf[0] !== 0xff || buf[1] !== 0xd8 || buf[buf.length - 2] !== 0xff || buf[buf.length - 1] !== 0xd9) return null;

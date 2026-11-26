@@ -1,7 +1,7 @@
 // POST {uniEmail, file:{name, data(base64)}} → records the university email (no code; the team checks the proof), checks the proof of completion really is a PDF, JPG or PNG (by its bytes, not its name),
 // keeps it only for the review in the admin dashboard (never emailed), notifies the operations team with signed
 // approve / reject links, and sets the status to "pending". The file is destroyed as soon as the review is decided.
-import { guard, body, send, currentUser, saveUser, publicUser, allow, sendMail, mailLayout, escHtml, hmac, cleanText, saveProof, uid, contactEmail, sendSms, smsConfigured } from '../../api/_lib.js';
+import { guard, body, send, currentUser, saveUser, publicUser, allow, sendMail, mailLayout, escHtml, hmac, cleanText, saveProof, uid, contactEmail } from '../../api/_lib.js';
 
 const MAX = 3 * 1024 * 1024; // Vercel functions accept about 4.5 MB per request; base64 adds a third
 const kind = buf => buf.subarray(0, 5).toString('latin1') === '%PDF-' ? ['pdf', 'application/pdf']
@@ -34,7 +34,6 @@ export default async function handler(req, res) {
   });
   user.mentor = { ...user.mentor, status: 'pending', submittedAt: new Date().toISOString() };
   await saveUser(user);
-  if (user.phone && smsConfigured()) await sendSms(user.phone, '[교환가자] 멘토 신청이 접수됐어요. 운영팀 심사는 최대 24시간 걸려요.').catch(() => {});
   if (contactEmail(user)) await sendMail({ to: contactEmail(user), subject: '[교환가자] 멘토 신청이 접수됐어요', html: mailLayout('멘토 신청이 접수됐어요', '<p>운영팀 심사는 최대 24시간 걸려요. 결과는 이메일로 알려드려요. 그동안 멘토 프로필을 미리 작성해 임시저장할 수 있어요.</p>') }).catch(() => {});
   send(res, 200, { user: publicUser(user) });
 }

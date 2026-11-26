@@ -11,7 +11,7 @@ import { roomFor, folderOf } from './chat.js';
 
 const VIDEO_MAX = 50 * 1024 * 1024;
 const TYPES = ['image/jpeg', 'video/mp4', 'video/quicktime', 'video/webm'];
-export const blobConfigured = () => !!process.env.BLOB_READ_WRITE_TOKEN;
+const blobConfigured = () => !!process.env.BLOB_READ_WRITE_TOKEN;
 
 export default async function handler(req, res) {
   const b = body(req);

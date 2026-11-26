@@ -3,7 +3,7 @@ import { guard, body, send, currentUser, saveUser, publicUser, cleanText, redis,
 
 // mode: how sessions run (the mentor chooses). Price and meeting place are agreed with each student in chat;
 // the mentor enters the agreed price when accepting a request (see api/sessions.js).
-export const MODES = ['in_person', 'video', 'both'];
+const MODES = ['in_person', 'video', 'both'];
 function clean(p = {}) {
   const n = Number(p.sessions);
   return {

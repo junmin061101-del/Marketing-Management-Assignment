@@ -1,7 +1,7 @@
 // GET → the signed-in user (or null); each visit extends the one-year login.
 // POST {name?, profile?:{home, major, year}, plan?:{host, progId, dep, ret, done}} → updates the user's own data only.
 // The user is always taken from the session cookie, never from an id in the request.
-import { guard, send, body, configured, smsConfigured, currentUser, refreshSession, saveUser, publicUser, cleanText, allow, uid, savePushToken, removePushToken, pushHealth } from './_lib.js';
+import { guard, send, body, configured, currentUser, refreshSession, saveUser, publicUser, cleanText, allow, uid, savePushToken, removePushToken, pushHealth } from './_lib.js';
 
 const PROGS = new Set(['exS', 'exF', 'exY', 'visit', 'ss', 'ws']);
 const day = v => (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null);
@@ -18,12 +18,12 @@ function cleanPlan(p) {
 }
 
 export default async function handler(req, res) {
-  if (req.method === 'GET' && !configured()) return send(res, 200, { user: null, configured: false, sms: false });
+  if (req.method === 'GET' && !configured()) return send(res, 200, { user: null, configured: false });
   if (!guard(req, res, ['GET', 'POST'])) return;
   const user = await currentUser(req);
   if (req.method === 'GET') {
     if (user) await refreshSession(req, res);
-    return send(res, 200, { user: publicUser(user), configured: true, sms: smsConfigured(), push: await pushHealth() });
+    return send(res, 200, { user: publicUser(user), configured: true, push: await pushHealth() });
   }
   if (!user) return send(res, 401, { error: 'login_required' });
   if (!(await allow(`me:${uid(user)}`, 600, 3600))) return send(res, 429, { error: 'too_many_requests' });

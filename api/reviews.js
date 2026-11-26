@@ -32,9 +32,10 @@ export default async function handler(req, res) {
   if (!user) return send(res, 401, { error: 'login_required' });
   const b = body(req), owner = await mentorEmail(b.m);
   if (!owner) return send(res, 404, { error: 'unknown_mentor' });
+  if (owner === 'sample') return send(res, 403, { error: 'session_required' });  // sample profiles are examples
   if (owner === uid(user)) return send(res, 403, { error: 'own_profile' });
   // real mentors can only be reviewed by students who completed a session with them
-  if (owner !== 'sample' && !(await redis('GET', `done:${b.m}:${uid(user)}`))) return send(res, 403, { error: 'session_required' });
+  if (!(await redis('GET', `done:${b.m}:${uid(user)}`))) return send(res, 403, { error: 'session_required' });
   const rating = Number(b.rating), text = cleanText(b.text, 500);
   if (!Number.isInteger(rating) || rating < 1 || rating > 5) return send(res, 400, { error: 'bad_rating' });
   if (text.length < 10) return send(res, 400, { error: 'review_too_short' });

@@ -8,7 +8,6 @@
 //   MAIL_FROM           sender, e.g. "교환가자 <no-reply@your-domain.com>" (domain verified in Resend)
 //   APP_SECRET          long random string; signs codes, sessions and review links
 //   REVIEW_EMAIL        inbox of the operations team that reviews mentor applications
-//   SOLAPI_API_KEY / SOLAPI_API_SECRET / SMS_FROM   text-message login codes (solapi.com; SMS_FROM is the registered sender number)
 //   ADMIN_EMAIL         addresses that can sign in to /admin, comma-separated (REVIEW_EMAIL can always sign in too)
 import crypto from 'node:crypto';
 
@@ -171,24 +170,6 @@ export const publicUser = u => u && ({
     submittedAt: u.mentor?.submittedAt || null, draft: u.mentor?.draft || null, profile: u.mentor?.profile || null },
 });
 
-/* ---------- text messages (SOLAPI) ---------- */
-export const smsConfigured = () => !!(process.env.SOLAPI_API_KEY && process.env.SOLAPI_API_SECRET && process.env.SMS_FROM);
-export async function sendSms(to, text) {
-  const date = new Date().toISOString(), salt = crypto.randomBytes(16).toString('hex');
-  const sig = crypto.createHmac('sha256', process.env.SOLAPI_API_SECRET).update(date + salt).digest('hex');
-  const r = await fetch(process.env.SMS_API_URL || 'https://api.solapi.com/messages/v4/send', {
-    method: 'POST',
-    headers: { Authorization: `HMAC-SHA256 apiKey=${process.env.SOLAPI_API_KEY}, date=${date}, salt=${salt}, signature=${sig}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message: { to, from: normPhone(process.env.SMS_FROM) || String(process.env.SMS_FROM).replace(/\D/g, ''), text } }),
-  });
-  const j = await r.json().catch(() => ({}));
-  // SOLAPI answers 200 with statusCode 2000 when the message is accepted
-  if (!r.ok || (j.statusCode && !String(j.statusCode).startsWith('2'))) {
-    console.error('sms failed', r.status, JSON.stringify(j).slice(0, 500));
-    throw Object.assign(new Error('sms failed'), { code: 'sms_failed' });
-  }
-}
-
 /* ---------- email ---------- */
 let smtp = null;
 async function sendSmtp({ to, subject, html, attachments }) {
@@ -241,12 +222,6 @@ export async function loadProof(email) {
   for (let i = 0; i < m.n; i++) { const part = await redis('GET', `proof:${email}:${i}`); if (part == null) return null; b64 += part; }
   return { ...m, buf: Buffer.from(b64, 'base64') };
 }
-export async function expireProof(email, seconds = PROOF_TTL) {
-  const m = await getJSON(`proof:${email}:m`);
-  if (!m) return;
-  for (let i = 0; i < m.n; i++) await redis('EXPIRE', `proof:${email}:${i}`, seconds);
-  await redis('EXPIRE', `proof:${email}:m`, seconds);
-}
 export async function deleteProof(email) {
   const m = await getJSON(`proof:${email}:m`);
   for (let i = 0; i < (m?.n || 0); i++) await redis('DEL', `proof:${email}:${i}`);
@@ -272,7 +247,6 @@ export async function decideMentor(user, d, reason = '') {
   await saveUser(user);
   await deleteProof(uid(user));   // the proof is used for this review only and destroyed once it is decided
   const [subject, title, text] = DECISION[d];
-  if (user.phone && smsConfigured()) await sendSms(user.phone, `[교환가자] ${title}. ${reason ? '메모: ' + reason.slice(0, 40) + ' ' : ''}자세한 내용은 앱에서 확인하세요.`).catch(() => {});
   await sendPush(uid(user), '교환가자', title, { go: d === 'approve' ? 'mentorApply' : 'me' }).catch(() => 0);
   if (contactEmail(user)) await sendMail({ to: contactEmail(user), subject, html: mailLayout(title, `<p>${text}</p>${reason ? `<p style="background:#F2F4F6;padding:12px;border-radius:8px">운영팀 메모: ${escHtml(reason)}</p>` : ''}`) }).catch(() => {});
 }
@@ -345,7 +319,7 @@ async function fcmAccessToken() {
   fcmToken = { v: j.access_token, exp: Date.now() + (j.expires_in || 3600) * 1000 };
   return fcmToken.v;
 }
-export async function pushTokens(id) { return (await getJSON('push:' + id)) || []; }
+async function pushTokens(id) { return (await getJSON('push:' + id)) || []; }
 export async function savePushToken(id, token, platform) {
   const list = (await pushTokens(id)).filter(x => x.t !== token);
   list.unshift({ t: token, p: platform, at: new Date().toISOString() });

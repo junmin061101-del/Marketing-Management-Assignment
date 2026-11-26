@@ -19,12 +19,12 @@ import crypto from 'node:crypto';
 import { guard, body, send, currentUser, cleanText, redis, allow, uid, hmac, getJSON, setJSON, sendPush, adminLog } from './_lib.js';
 import { openDM, systemMessage } from './chat.js';
 
-export const FEE_RATE = 0.05;
-export const feeOf = price => (price > 0 ? Math.round(price * FEE_RATE) : 0);
-export const okPrice = v => Number.isInteger(v) && (v === 0 || (v >= 5000 && v <= 1000000));
+const FEE_RATE = 0.05;
+const feeOf = price => (price > 0 ? Math.round(price * FEE_RATE) : 0);
+const okPrice = v => Number.isInteger(v) && (v === 0 || (v >= 5000 && v <= 1000000));
 const SITE = 'https://gyohwan-gaja-application-development.vercel.app';
 const TOSS = () => process.env.TOSS_API_URL || 'https://api.tosspayments.com';
-export const payConfigured = () => !!(process.env.TOSS_CLIENT_KEY && process.env.TOSS_SECRET_KEY);
+const payConfigured = () => !!(process.env.TOSS_CLIENT_KEY && process.env.TOSS_SECRET_KEY);
 const payMode = () => (!payConfigured() ? 'off' : String(process.env.TOSS_CLIENT_KEY).startsWith('live_') ? 'live' : 'test');
 const ID = /^[a-z0-9]{10,24}$/, DAY = /^\d{4}-\d{2}-\d{2}$/, HM = /^([01]\d|2[0-3]):[0-5]\d$/;
 const mask = name => (String(name || '?').trim()[0] || '?').toUpperCase() + '**';
@@ -33,7 +33,7 @@ const won = n => n.toLocaleString('ko-KR') + '원';
 
 // the moment the session starts, in Korean time
 const startsAt = b => Date.parse(`${b.date}T${b.time}:00+09:00`);
-export function bizInfo() {
+function bizInfo() {
   const v = k => cleanText(process.env['BIZ_' + k] || '', 120);
   return { name: v('NAME'), ceo: v('CEO'), no: v('NO'), ecomm: v('ECOMM'), addr: v('ADDR'), tel: v('TEL'), mail: v('MAIL') || 'gyohwan.info@gmail.com' };
 }
