@@ -135,6 +135,7 @@ p{margin:0}
 .picked .t{flex:1;min-width:0;font-weight:700}
 .picked .t small{display:block;font-weight:500;color:var(--ink-2);font-size:12px}
 .picked button{font-size:13px;font-weight:700;color:var(--primary-ink)}
+.sugg.majors{max-height:280px;overflow:auto}.sugg .hn small{display:block;font-size:12px;color:var(--ink-3);font-weight:400}
 .sugg{border:1px solid var(--line);border-radius:14px;overflow:hidden}
 .sugg button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);font-size:14px}
 .sugg button:last-child{border-bottom:0}
@@ -1556,7 +1557,7 @@ async function loadData(){
   try{
     const r=await fetch(BASE+(BASE?'/':'')+'data/universities.json',{cache:'no-cache'}); DATA=await r.json(); COUNTRIES=DATA.countries; buildNameKo(COUNTRIES);
   }catch(e){ DATA={unis:[],kr:[],countries:COUNTRIES,error:true}; }
-  await st; await me;
+  await st; await me; setTimeout(loadKRM,1200);  // Korean university names for profiles and posts
   if(!AUTH.user){ try{const g=JSON.parse(localStorage.getItem('gg_profile')||'null'); if(g&&g.univ){S.profile.univ=g.univ; if(g.major) S.profile.major=g.major; if(g.year) S.profile.year=g.year}}catch(e){} try{restoreComm(JSON.parse(localStorage.getItem('gg_comm')||'[]'))}catch(e){} }
   if(['boot','lang','splash','login'].includes(S.screen)){
     if(AUTH.user){ const had=restoreUser(AUTH.user); NAV.replaceNext=true; S.screen=had?'app':'profile'; S.tab='home'; }
@@ -2394,7 +2395,7 @@ const SAMPLE_REVIEWS={
 const uniKo=n=>LANG==='ko'?(krKo(n)||n):n;
 const majorTxt=x=>LANG==='ko'?(KO[x]||x):x;
 const majorNorm=x=>String(x||'').trim().toLowerCase().replace(/\s*(학과|학부|전공)$/,'');
-const sameSchool=m=>!!S.profile.univ&&m.home===S.profile.univ;
+const sameSchool=m=>!!S.profile.univ&&homeKo(m.home)===homeKo(S.profile.univ);
 const sameMajor=m=>{const p=majorNorm(S.profile.major); return !!p&&[m.major,KO[m.major]].some(x=>x&&majorNorm(x)===p)};
 const mScore=m=>(sameSchool(m)?2:0)+(sameMajor(m)?1:0);
 const mSchool=m=>LANG==='ko'?`${uniKo(m.home)} ${majorTxt(m.major)}`:`${m.home} · ${m.major}`;
@@ -2604,11 +2605,13 @@ const SCREENS={
       <h2 class="ob-title">${ed?'Edit your school<br>and major':'Tell us about<br>your home university'}</h2>
       <p class="ob-sub">We use this to match you with mentors and peers from your school.</p>
       <div class="field"><span class="lbl">Home university</span>
-        ${P.univ&&!S.homeQ?`<div class="picked">${ic('school',20)}<span class="t"><span data-notr>${esc(P.univ)}</span><small>South Korea</small></span><button data-act="unpickHome">Change</button></div>`
-        :`<div class="search">${ic('search',18)}<input class="input" id="homeQ" placeholder="Search ${DATA?DATA.kr.length:''} Korean universities" value="${esc(S.homeQ)}" autocomplete="off"></div><div id="homeList"></div>`}
+        ${(loadKRM(),'')}${P.univ&&!S.homeQ?`<div class="picked">${ic('school',20)}<span class="t"><span data-notr>${esc(homeKo(P.univ))}</span><small data-notr>${esc((krmOf(homeKo(P.univ))||[])[1]||KX('South Korea','대한민국'))}</small></span><button data-act="unpickHome">Change</button></div>`
+        :`<div class="search">${ic('search',18)}<input class="input" id="homeQ" placeholder="${KX(`Search ${KRM.list?KRM.list.length:''} Korean universities`,`국내 대학 ${KRM.list?KRM.list.length+'곳 ':''}검색`)}" value="${esc(S.homeQ)}" autocomplete="off"></div><div id="homeList"></div>`}
       </div>
       <div class="field"><label for="major">Major</label>
-        <input class="input" id="major" data-model="major" value="${esc(P.major)}"></div>
+        <input class="input" id="major" data-model="major" value="${esc(P.major)}" autocomplete="off" placeholder="${krmOf(P.univ)?KX('Search your department','학과 검색'):KX('Choose your university first','본교를 먼저 골라 주세요')}"><div id="majorList">${majorListHTML()}</div>
+        ${krmOf(P.univ)&&P.major&&!/[가-힣]/.test(P.major)&&!S.majorOpen?`<p class="aerr" style="margin-top:6px" data-notr>${KX('Your major is in English. Tap the field and pick it again from the list.','학과가 영어로 입력돼 있어요. 칸을 눌러 목록에서 다시 골라 주세요.')}</p>`:''}
+        ${krmOf(P.univ)?`<p class="hint" style="margin-top:6px" data-notr>${KX(`From the ${KRM.year} university disclosure (대학알리미). If yours is missing, type it.`,`${KRM.year} 대학알리미 공시 기준 학과 목록이에요. 목록에 없으면 직접 입력하세요.`)}</p>`:''}</div>
       <div class="field"><span class="lbl">Year</span>
         <div class="chips">${['1st year','2nd year','3rd year','4th year','Graduate'].map(y=>`<button class="chip${y===P.year?' on':''}" data-act="year" data-v="${y}">${y}</button>`).join('')}</div></div>
     </div>
@@ -2723,7 +2726,7 @@ const SCREENS={
         ${step===2?`<div class="act"><button class="btn sm ghost" data-act="apRefresh">Check status</button></div>`:''}</div></div>
       <div class="vstep ${cls(3)}"><span class="n">${n(3)}</span><div class="t"><b>Write your mentor profile</b><small>${approved?'Publish it when you are ready':'You can write and save a draft now. Publishing opens after the review is approved.'}</small>
         <div class="act mform">
-          <div class="mrow two"><label>Home university<input class="input" id="mfHome" maxlength="100" value="${esc(d.home||(u.profile&&u.profile.home)||S.profile.univ||'')}"></label><label>Major<input class="input" id="mfMajor" maxlength="60" value="${esc(d.major||(u.profile&&u.profile.major)||S.profile.major||'')}"></label></div>
+          <div class="mrow two"><label>Home university<input class="input" id="mfHome" maxlength="100" value="${esc(homeKo(d.home||(u.profile&&u.profile.home)||S.profile.univ||''))}"></label><label>Major<input class="input" id="mfMajor" maxlength="60" value="${esc(d.major||(u.profile&&u.profile.major)||S.profile.major||'')}"></label></div>
           <p class="hint" style="margin-top:-4px">Students see your school and major first. Many look for a mentor from their own school and major.</p>
           ${ta('mfAct','Activities you took part in','e.g. Orientation buddy, hackathon, volunteering',d.act)}
           ${ta('mfClub','Clubs and networking','e.g. Korean Students Association, consulting club',d.club)}
@@ -2757,13 +2760,29 @@ function schoolListHTML(){
   out+=`<p class="sect-label">All universities<span class="num">${list.length.toLocaleString()}</span></p>${list.slice(0,S.slimit).map(row).join('')}${list.length>S.slimit?'<button class="more" data-act="more">Show more</button>':''}`;
   return out;
 }
+/* Korean universities and their departments (data/kr-majors.json, built from the Ministry of Education's
+   대학알리미 file by scripts/build-kr-majors.mjs). Home universities are always shown and stored in Korean. */
+const KRM={list:null,loading:null,year:0};
+function loadKRM(){ if(KRM.list) return Promise.resolve(); if(KRM.loading) return KRM.loading;
+  KRM.loading=fetch(BASE+'/data/kr-majors.json').then(r=>r.json()).then(j=>{KRM.list=j.schools; KRM.year=j.year; fixHome();
+    if(S.screen==='profile') render(true); else if(S.screen==='app'&&S.tab==='me') render(true)}).catch(()=>{KRM.loading=null}); return KRM.loading }
+// "Sungkyunkwan University" (older profiles, sample mentors) → "성균관대학교"
+const homeKo=v=>{ if(!v||/[가-힣]/.test(v)) return v||''; const s=KRM.list&&KRM.list.find(x=>x[2]===v); return s?s[0]:(krKo(v)||v) };
+const krmOf=name=>KRM.list&&KRM.list.find(x=>x[0]===name);
+function fixHome(){ const v=S.profile.univ; if(!v||/[가-힣]/.test(v)) return; const k=homeKo(v); if(k===v) return; S.profile.univ=k;
+  if(AUTH.user) api('me',{profile:{home:k,major:S.profile.major,year:S.profile.year}}).then(j=>{AUTH.user=j.user}).catch(()=>{}) }
 function homeListHTML(){
-  if(!DATA) return '<div class="sugg"><p class="empty">Loading universities…</p></div>';
-  const q=S.homeQ.trim().toLowerCase(); if(!q) return '';
-  const seen=new Set();
-  const m=DATA.kr.filter(u=>uniHit(u[0],u[2],q)).map(u=>[uniRank(u[0],u[2],q),u]).sort((a,b)=>a[0]-b[0]||(a[1][0].split(' ').length-b[1][0].split(' ').length)).map(x=>x[1]).filter(u=>{const k=u[2]||u[0]; if(seen.has(k)) return false; seen.add(k); return true}).slice(0,8);
-  return `<div class="sugg">${m.length?m.map(u=>`<button data-act="pickHome" data-v="${esc(u[0])}">${ic('school',18)}<span class="hn" data-notr><b>${esc(u[0])}</b></span></button>`).join(''):'<p class="empty">No match. Try the Korean or English name.</p>'}</div>`;
+  if(!KRM.list){ loadKRM(); return `<div class="sugg"><p class="empty" data-notr>${KX('Loading universities…','대학 목록을 불러오는 중…')}</p></div>` }
+  const q=S.homeQ.trim(); if(!q) return '';
+  const qs=squash(q), hit=u=>squash(u[0]).includes(qs)||squash(u[2]).includes(qs)||squash(ALIAS[u[2]]).includes(qs);
+  const m=KRM.list.filter(hit).map(u=>[squash(u[0]).startsWith(qs)?0:1,u]).sort((a,b)=>a[0]-b[0]||a[1][0].length-b[1][0].length).map(x=>x[1]).slice(0,8);
+  return `<div class="sugg">${m.length?m.map(u=>`<button data-act="pickHome" data-v="${esc(u[0])}">${ic('school',18)}<span class="hn" data-notr><b>${esc(u[0])}</b><small>${esc(u[1])}</small></span></button>`).join('')
+    :`<p class="empty" data-notr>${KX('No match. Try another spelling.','찾는 대학이 없어요. 다른 이름으로 검색해 보세요.')}</p>`}</div>`;
 }
+function majorListHTML(){ const s=krmOf(S.profile.univ); if(!s||!S.majorOpen) return '';
+  const q=squash(S.profile.major||''), all=s[3], m=(q?all.filter(x=>squash(x).includes(q)).sort((a,b)=>(squash(b).startsWith(q))-(squash(a).startsWith(q))):all).slice(0,q?8:60);
+  if(q&&m.length===1&&m[0]===S.profile.major) return '';
+  return `<div class="sugg majors" data-notr>${m.map(x=>`<button data-act="pickMajor" data-v="${esc(x)}"><span class="hn"><b>${esc(x)}</b></span></button>`).join('')||`<p class="empty">${KX('Not in the list. You can keep what you typed.','목록에 없어요. 입력한 그대로 저장할 수 있어요.')}</p>`}</div>` }
 
 function taskHTML(i){const d=S.done.has(i.id);return `
       <div class="task${d?' done':''}">
@@ -2846,7 +2865,7 @@ const POSTV={};
 // "성균관대 경영학과 2학년" (Korean) · "Sungkyunkwan University · Business · 2nd year" (English)
 function metaText(x){ if(!x||x.anon) return '';
   if(!x.home&&!x.major&&!x.year) return (x.meta||'').split(' · ').map(v=>trText(v)).filter(Boolean).join(LANG==='ko'?' ':' · ');
-  const home=x.home?(LANG==='ko'?(krKo(x.home)||x.home).replace(/(대학교|학교)$/,'대'):x.home):'';
+  const home=x.home?homeKo(x.home).replace(/(대학교|학교)( \(|$)/,'대$2'):'';
   return [home,x.major,trText(x.year||'')].filter(Boolean).join(LANG==='ko'?' ':' · ') }
 function openPost(id){ POSTV.id=id; POSTV.reply=''; POSTV.data=POSTV.data&&POSTV.data.post&&POSTV.data.post.id===id?POSTV.data:null; renderPostSheet();
   api('posts?id='+encodeURIComponent(id)).then(j=>{POSTV.data=j; patchPost(j.post); renderPostSheet(true)}).catch(e=>{POSTV.data={err:e.code}; renderPostSheet()}) }
@@ -3140,7 +3159,7 @@ function meTab(){
     <div class="menu">
       ${AUTH.user?`<button data-go="sessions">${ic('clock',20)}<span class="t" data-notr>${KX('My mentoring','내 멘토링')}<br><small>${SESS.list?(sessOpen().length?KX(`${sessOpen().length} in progress`,`진행 중 ${sessOpen().length}건`):KX('Requests and booked sessions','신청·예약한 멘토링')):''}</small></span>${sessTodo()?`<span class="pill warn" style="margin-left:auto">${sessTodo()}</span>`:''}${ic('chev',18)}</button>`:''}
       <div class="m">${ic('globe',20)}<span class="t">My program<br><small>${esc(h.name)} · ${p.type} ${p.term}</small></span></div>
-      <button data-act="editProfile">${ic('school',20)}<span class="t">School and major<br><small>${esc([S.profile.univ||'Home university not set',S.profile.major,S.profile.year].filter(Boolean).join(' · '))}</small></span>${ic('chev',18)}</button>
+      <button data-act="editProfile">${ic('school',20)}<span class="t">School and major<br><small><span data-notr>${esc(homeKo(S.profile.univ))}</span>${S.profile.univ?'':'Home university not set'}${[S.profile.major,S.profile.year].filter(Boolean).map(x=>' · '+esc(x)).join('')}</small></span>${ic('chev',18)}</button>
       <button data-act="changeProg">${ic('swap',20)}<span class="t">Change program</span>${ic('chev',18)}</button>
       <button data-act="editDep">${ic('plane',20)}<span class="t">Travel dates<br><small>${fmtShort(depDate())} → ${fmtY(retDate())} · ${stayShort(stayDays())}</small></span>${ic('chev',18)}</button>
       <button data-act="openLang">${ic('globe',20)}<span class="t">Language<br><small>${LANG==='ko'?'한국어':'English'}</small></span>${ic('chev',18)}</button>
@@ -3501,7 +3520,8 @@ document.addEventListener('click',e=>{
       api('reviews',{m:m.key,rating:S.rv.rating,text:S.rv.text}).then(j=>{const L=(S.reviews[m.key]||{list:[]}).list.filter(x=>!x.mine); S.reviews[m.key]={list:[j.review,...L],loaded:true};
         S.rv={key:null,open:false,rating:0,text:'',busy:false,err:''}; openMentorSheet(id,true); toast('Review posted')}).catch(e=>fail(e.code)); break}
     case 'year': S.profile.year=v; render(true); break;
-    case 'pickHome': S.profile.univ=v; S.homeQ=''; render(true); break;
+    case 'pickHome': {S.profile.univ=v; S.homeQ=''; const sc=krmOf(v); if(sc&&S.profile.major&&!sc[3].includes(S.profile.major)) S.profile.major=''; S.majorOpen=false; render(true); break}
+    case 'pickMajor': {S.profile.major=v; S.majorOpen=false; const i=$('#major'); if(i) i.value=v; const l=$('#majorList'); if(l) l.innerHTML=''; render(true); break}
     case 'unpickHome': S.profile.univ=''; S.homeQ=''; render(true); setTimeout(()=>$('#homeQ')&&$('#homeQ').focus()); break;
     case 'region': S.region=v; S.scountry='All'; S.slimit=40; S.featAll=false; S.partAll=false; render(); break;
     case 'featAll': S.featAll=!S.featAll; render(true); break;
@@ -3627,10 +3647,14 @@ document.addEventListener('click',e=>{
       const j=await api('mentor/profile',{action:act==='apPublish'?'publish':'draft',profile:pf}); AUTH.user=j.user; toast(act==='apPublish'?'Your profile is live':'Draft saved')},'form'); break
   }
 });
+document.addEventListener('focusin',e=>{ const id=e.target&&e.target.id; if(S.screen!=='profile') return;
+  if(id==='major'&&!S.majorOpen){S.majorOpen=true; const l=$('#majorList'); if(l) l.innerHTML=majorListHTML()}
+  else if(id&&id!=='major'&&S.majorOpen){S.majorOpen=false; const l=$('#majorList'); if(l) l.innerHTML=''} });
 document.addEventListener('input',e=>{
   const t=e.target;
   if(t.dataset.model) S.profile[t.dataset.model]=t.value;
   if(t.id==='email') S.email=t.value;
+  if(t.id==='major'){S.majorOpen=true; const l=$('#majorList'); if(l) l.innerHTML=majorListHTML(); const b=$('[data-act="saveProfile"]'); if(b) b.disabled=!(S.profile.univ&&t.value.trim())}
   if(t.id==='homeQ'){S.homeQ=t.value; ($('#homeList').innerHTML=homeListHTML(),translate($('#homeList')))}
   if(t.id==='cQ'){S.cq=t.value; const b=$('#cBody'); if(b){b.innerHTML=cBodyHTML(); translate(b)}}
   if(t.id==='schoolQ'){S.sq=t.value; S.slimit=40; ($('#schoolList').innerHTML=schoolListHTML(),translate($('#schoolList')))}
