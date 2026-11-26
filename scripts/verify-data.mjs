@@ -98,13 +98,13 @@ await pool(Object.entries(ENGLISH).flatMap(([uni, v]) => Object.entries(v).map((
   const r = await get(e.src.url, true);
   if (!r.text) { english[id] = { s: 'unchecked', why: r.pdf && r.code === 200 ? 'pdf reader missing' : 'page ' + (r.code || r.error) }; return; }
   const text = strip(r.text);
-  const missing = e.t.filter(([test, min]) => {
-    if (!/\d/.test(min)) return false; // "Not required", Cambridge grade letters
-    if (!NAME[test]) return false; // CEFR levels, JLPT, French etc. are not machine-checked
-    if (!NAME[test].test(text)) return true;
-    const n = min.replace(/\.0$/, '');
-    return !new RegExp(`(^|[^\\d.,])${n.replace('.', '[.,]')}([.,]0)?(?![\\d])`).test(text); // 6,5 as well as 6.5
-  }).map(([test, min]) => `${test} ${min}`);
+  // only plain scores (80, 6.5) or ranges (6.5–7.0) are compared; grades such as B2, C1, N2 are not
+  const checkable = e.t.filter(([test, min]) => NAME[test] && /^\d+(\.\d+)?(\s*[–-]\s*\d+(\.\d+)?)?$/.test(String(min).trim()));
+  // the page never names any of these tests (scores load by script or sit on a linked page): we cannot tell, so do not call it changed
+  if (checkable.length && !checkable.some(([test]) => NAME[test].test(text))) { english[id] = { s: 'unchecked', why: 'scores not in page text' }; return; }
+  const has = n => { n = n.replace(/\.0$/, ''); return new RegExp(`(^|[^\\d.,])${n.replace('.', '[.,]')}([.,]0)?(?![\\d])`).test(text); }; // 6,5 as well as 6.5
+  const missing = checkable.filter(([test, min]) => !NAME[test].test(text) || !String(min).split(/\s*[–-]\s*/).every(has))
+    .map(([test, min]) => `${test} ${min}`);
   english[id] = missing.length ? { s: 'changed', missing } : { s: 'ok' };
 });
 
