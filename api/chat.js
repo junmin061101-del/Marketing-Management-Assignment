@@ -5,7 +5,8 @@
 // GET  /api/chat?list=1                              → my 1:1 rooms with the last message
 // GET  /api/chat?room=<id>&after=<ISO time>          → messages (newest 100, or only those after a time for polling)
 // POST /api/chat {action:'open', mentor:<public key>} → the 1:1 room with that mentor
-// POST /api/chat {action:'send', room, text}          → posts a message (1:1 rooms also send a push to the other member)
+// POST /api/chat {action:'send', room, text, file?}   → posts a message (1:1 rooms also send a push to the other member);
+//      file = {url, kind:'image'|'video', w, h, name} of a photo or video uploaded to Blob through /api/upload
 import { guard, body, send, currentUser, cleanText, redis, allow, uid, hmac, getJSON, setJSON, scanKeys, sendPush } from './_lib.js';
 
 const GROUP = /^g:[A-Z]{2}\|[^|<>]{2,200}$/, DIRECT = /^d:[a-f0-9]{24}$/;
@@ -42,14 +43,25 @@ export async function systemMessage(room, text) {
   await redis('LPUSH', 'msgs:' + room, JSON.stringify(m));
   await redis('LTRIM', 'msgs:' + room, 0, KEEP - 1);
 }
+// the Blob folder a room's attachments go into (the app gets it with the messages)
+export const folderOf = room => 'chat/' + hmac('files|' + room).slice(0, 16) + '/';
 // members may read; group rooms are open to any signed-in student
-async function roomFor(id, user) {
+export async function roomFor(id, user) {
   if (GROUP.test(id)) return { id, kind: 'g' };
   if (!DIRECT.test(id)) return null;
   const r = await getJSON('room:' + id);
   return r && r.members.includes(uid(user)) ? { ...r, id, kind: 'd' } : null;
 }
-const view = (m, me) => ({ id: m.id, who: m.who, av: m.av, text: m.text, at: m.at, mine: m.u === tag(me), ...(m.sys ? { sys: true } : {}) });
+const view = (m, me) => ({ id: m.id, who: m.who, av: m.av, text: m.text, at: m.at, mine: m.u === tag(me), ...(m.sys ? { sys: true } : {}), ...(m.file ? { file: m.file } : {}) });
+// an attachment must be a file this room's folder holds in our Blob store
+function cleanFile(f, room) {
+  if (!f || typeof f !== 'object' || typeof f.url !== 'string') return null;
+  let u; try { u = new URL(f.url); } catch { return null; }
+  if (u.protocol !== 'https:' || !u.hostname.endsWith('.public.blob.vercel-storage.com') || !u.pathname.startsWith('/' + folderOf(room)) || u.search) return null;
+  const kind = f.kind === 'video' ? 'video' : f.kind === 'image' ? 'image' : '';
+  const n = v => (Number.isInteger(v) && v > 0 && v <= 10000 ? v : 0);
+  return kind ? { url: u.href, kind, w: n(f.w), h: n(f.h), name: cleanText(f.name, 80) } : null;
+}
 
 export default async function handler(req, res) {
   if (!guard(req, res, ['GET', 'POST'])) return;
@@ -75,7 +87,7 @@ export default async function handler(req, res) {
     const raw = (await redis('LRANGE', 'msgs:' + room.id, 0, PAGE - 1)) || [];
     const after = q.get('after') || '';
     const msgs = raw.map(v => { try { return JSON.parse(v); } catch { return null; } }).filter(m => m && (!after || m.at > after)).reverse().map(m => view(m, me));
-    return send(res, 200, { messages: msgs, title: room.kind === 'd' ? room.names[room.members[0] === me ? 1 : 0] : '' });
+    return send(res, 200, { messages: msgs, title: room.kind === 'd' ? room.names[room.members[0] === me ? 1 : 0] : '', folder: folderOf(room.id) });
   }
   if (!user) return send(res, 401, { error: 'login_required' });
   const b = body(req), me = uid(user);
@@ -91,16 +103,18 @@ export default async function handler(req, res) {
     if (!(await allow('chat:' + me, 120, 3600))) return send(res, 429, { error: 'too_many_requests' });
     const room = await roomFor(String(b.room || ''), user);
     if (!room) return send(res, 404, { error: 'room_not_found' });
-    const text = cleanText(b.text, 1000);
-    if (!text) return send(res, 400, { error: 'empty_message' });
-    const m = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), u: tag(me), who: mask(user.name), av: user.avatar?.id || '', text, at: new Date().toISOString() };
+    const text = cleanText(b.text, 1000), file = b.file ? cleanFile(b.file, room.id) : null;
+    if (b.file && !file) return send(res, 400, { error: 'bad_file' });
+    if (!text && !file) return send(res, 400, { error: 'empty_message' });
+    const m = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), u: tag(me), who: mask(user.name), av: user.avatar?.id || '', text, ...(file ? { file } : {}), at: new Date().toISOString() };
+    if (file) { await redis('LPUSH', 'files:' + me, file.url); await redis('LTRIM', 'files:' + me, 0, 1999); }  // removed with the account
     await redis('LPUSH', 'msgs:' + room.id, JSON.stringify(m));
     await redis('LTRIM', 'msgs:' + room.id, 0, KEEP - 1);
     if (room.kind === 'd') {
       const other = room.members.find(x => x !== me);
       await redis('LREM', 'myrooms:' + other, 0, room.id); await redis('LPUSH', 'myrooms:' + other, room.id);
       await redis('LREM', 'myrooms:' + me, 0, room.id); await redis('LPUSH', 'myrooms:' + me, room.id);
-      await sendPush(other, `교환가자 · ${m.who}`, text.slice(0, 80), { go: 'chat', room: room.id }).catch(() => 0);
+      await sendPush(other, `교환가자 · ${m.who}`, text.slice(0, 80) || (file.kind === 'video' ? '동영상을 보냈어요' : '사진을 보냈어요'), { go: 'chat', room: room.id }).catch(() => 0);
     }
     return send(res, 200, { message: view(m, me) });
   }

@@ -8,6 +8,7 @@
 import crypto from 'node:crypto';
 import { deletePostById, deleteComment } from '../../api/posts.js';
 import { refundFee } from '../../api/sessions.js';
+import { deleteFilesOf } from '../../api/upload.js';
 import { guard, body, send, isAdmin, hashPassword, saveUser, normEmail, normPhone, getJSON, redis, cleanText, decideMentor, deleteProof, adminLog, scanKeys, allow, sendPush, pushConfigured } from '../../api/_lib.js';
 
 export default async function handler(req, res) {
@@ -80,6 +81,7 @@ export default async function handler(req, res) {
     for (const k of await scanKeys('reviews:*')) await redis('HDEL', k, email);
     await deleteProof(email);
     await redis('DEL', 'user:' + email);
+    await deleteFilesOf(email);
   } else return send(res, 400, { error: 'bad_request' });
   await adminLog(type, email, reason);
   send(res, 200, { ok: true });

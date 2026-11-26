@@ -4,7 +4,9 @@
 // POST /api/posts {action:'delete', id}  → your own post only
 // POST /api/posts {action:'like', id}    → toggles your like
 // GET  /api/posts?id=<id>                → one post with its comments (for the post view and shared links)
-// POST /api/posts {action:'comment', id, text, anon} · {action:'uncomment', id, cid} → comments (yours to delete)
+// POST /api/posts {action:'comment', id, text, anon, parent?} · {action:'uncomment', id, cid} → comments (yours to delete);
+//      parent = the cid of a top-level comment to reply to. Anonymous commenters are numbered per post in the order
+//      they first commented (익명 1, 익명 2…); the post's writer is marked as such.
 // Reports go to /api/report (with the post id); the operator removes posts from the admin dashboard.
 import { guard, body, send, currentUser, cleanText, redis, allow, uid, hmac, getJSON, setJSON, sendPush } from './_lib.js';
 
@@ -24,12 +26,21 @@ function view(p, user) {
   const me = user ? uid(user) : '';
   return {
     id: p.id, board: p.board, school: p.school, cat: p.cat, text: p.text, at: p.at, anon: !!p.anon,
-    who: p.anon ? '' : p.who, meta: p.anon ? '' : p.meta, av: p.anon ? '' : p.av, st: p.anon ? '' : p.st,
+    who: p.anon ? '' : p.who, meta: p.anon ? '' : p.meta, home: p.anon ? '' : p.home || '', major: p.anon ? '' : p.major || '', year: p.anon ? '' : p.year || '', av: p.anon ? '' : p.av, st: p.anon ? '' : p.st,
     by: tagOf(p.author, p.anon), nc: p.nc || 0, likes: (p.likes || []).length, liked: !!me && (p.likes || []).includes(likeTag(me)), mine: !!me && p.author === me,
   };
 }
-const cview = (c, me) => ({ cid: c.cid, text: c.text, at: c.at, anon: !!c.anon, who: c.anon ? '' : c.who, meta: c.anon ? '' : c.meta, av: c.anon ? '' : c.av,
+const cview = (c, me, p, nums) => ({ cid: c.cid, parent: c.parent || '', text: c.text, at: c.at, anon: !!c.anon, who: c.anon ? '' : c.who,
+  meta: c.anon ? '' : c.meta, home: c.anon ? '' : c.home || '', major: c.anon ? '' : c.major || '', year: c.anon ? '' : c.year || '', av: c.anon ? '' : c.av,
+  op: !!p && c.author === p.author, n: c.anon && !(p && c.author === p.author) ? nums.get(c.author) || 0 : 0,
   by: tagOf(c.author, c.anon), mine: !!me && c.author === me });
+// every comment of a post as the reader sees it, with anonymous writers numbered in the order they first commented
+function cviews(list, me, p) {
+  const nums = new Map();
+  for (const c of list) if (c.anon && c.author !== p.author && !nums.has(c.author)) nums.set(c.author, nums.size + 1);
+  return list.map(c => cview(c, me, p, nums));
+}
+const profileOf = user => { const pf = user.profile || {}; return { home: cleanText(pf.home, 80), major: cleanText(pf.major, 40), year: cleanText(pf.year, 20) }; };
 async function comments(id) { return ((await redis('LRANGE', 'cmts:' + id, 0, 199)) || []).map(v => { try { return JSON.parse(v); } catch { return null; } }).filter(Boolean).reverse(); }
 export async function deleteComment(id, cid, onlyAuthor) {
   const p = await getJSON('post:' + id); if (!p) return false;
@@ -62,7 +73,7 @@ export default async function handler(req, res) {
       const one = /^[a-z0-9]{6,20}$/.test(q0.get('id')) ? await getJSON('post:' + q0.get('id')) : null;
       if (!one) return send(res, 404, { error: 'post_not_found' });
       const me0 = user ? uid(user) : '';
-      return send(res, 200, { post: view(one, user), comments: (await comments(one.id)).map(c => cview(c, me0)) });
+      return send(res, 200, { post: view(one, user), comments: cviews(await comments(one.id), me0, one) });
     }
     const q = q0, board = q.get('board') || 'all', page = Math.max(0, Math.min(30, Number(q.get('page')) || 0));
     if (!validBoard(board)) return send(res, 400, { error: 'bad_board' });
@@ -81,7 +92,7 @@ export default async function handler(req, res) {
     if (text.length < 2) return send(res, 400, { error: 'post_too_short' });
     const pf = user.profile || {}, id = Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
     const p = { id, board, school: board === 'all' ? '' : cleanText(b.school, 80), cat: b.cat, text, anon: b.anon === true, author: me,
-      who: mask(user.name), meta: [cleanText(pf.major, 40), cleanText(pf.year, 20)].filter(Boolean).join(' · '), av: user.avatar?.id || '',
+      who: mask(user.name), meta: [cleanText(pf.major, 40), cleanText(pf.year, 20)].filter(Boolean).join(' · '), ...profileOf(user), av: user.avatar?.id || '',
       st: STAT.has(b.status) ? b.status : '', at: new Date().toISOString(), likes: [] };
     await setJSON('post:' + id, p);
     await redis('LPUSH', 'board:all', id); await redis('LTRIM', 'board:all', 0, KEEP - 1);
@@ -101,13 +112,22 @@ export default async function handler(req, res) {
     if (!(await allow('cmt:' + me, 60, 3600))) return send(res, 429, { error: 'too_many_requests' });
     const text = cleanText(b.text, 500);
     if (text.length < 1) return send(res, 400, { error: 'empty_message' });
-    const pf = user.profile || {};
-    const c = { cid: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), author: me, anon: b.anon === true, who: mask(user.name),
-      meta: [cleanText(pf.major, 40), cleanText(pf.year, 20)].filter(Boolean).join(' · '), av: user.avatar?.id || '', text, at: new Date().toISOString() };
+    const pf = user.profile || {}, list = await comments(id);
+    // replies are one level deep: a reply to a reply attaches to the same top-level comment
+    let parent = '';
+    if (typeof b.parent === 'string' && b.parent) {
+      const to = list.find(x => x.cid === b.parent);
+      if (!to) return send(res, 404, { error: 'comment_not_found' });
+      parent = to.parent || to.cid;
+    }
+    const c = { cid: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), parent, author: me, anon: b.anon === true, who: mask(user.name),
+      meta: [cleanText(pf.major, 40), cleanText(pf.year, 20)].filter(Boolean).join(' · '), ...profileOf(user), av: user.avatar?.id || '', text, at: new Date().toISOString() };
     await redis('LPUSH', 'cmts:' + id, JSON.stringify(c)); await redis('LTRIM', 'cmts:' + id, 0, 499);
     p.nc = (p.nc || 0) + 1; await setJSON('post:' + id, p);
-    if (p.author !== me) await sendPush(p.author, '교환가자 · 새 댓글', text.slice(0, 80), { go: 'post', id }).catch(() => 0);
-    return send(res, 200, { comment: cview(c, me), post: view(p, user) });
+    const notify = new Set(p.author !== me ? [p.author] : []);
+    if (parent) { const top = list.find(x => x.cid === parent); if (top && top.author !== me) notify.add(top.author); }
+    for (const to of notify) await sendPush(to, parent && to !== p.author ? '교환가자 · 새 답글' : '교환가자 · 새 댓글', text.slice(0, 80), { go: 'post', id }).catch(() => 0);
+    return send(res, 200, { comments: cviews([...list, c], me, p), post: view(p, user) });
   }
   if (b.action === 'uncomment') {
     const ok = typeof b.cid === 'string' && await deleteComment(id, b.cid, me);

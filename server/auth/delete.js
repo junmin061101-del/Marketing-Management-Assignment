@@ -1,6 +1,7 @@
 // POST {password} → the signed-in student deletes their own account (required by the App Store and good practice).
 // Removes the account, their reviews, any mentor proof file and their public mentor ID, then signs them out.
 import { deletePostsOf } from '../../api/posts.js';
+import { deleteFilesOf } from '../../api/upload.js';
 import { guard, body, send, currentUser, checkPassword, redis, scanKeys, deleteProof, endSession, allow, uid, adminLog } from '../../api/_lib.js';
 
 export default async function handler(req, res) {
@@ -19,6 +20,7 @@ export default async function handler(req, res) {
   await deletePostsOf(id);
   await redis('DEL', 'myrooms:' + id);
   await redis('DEL', 'mybk:' + id);  // the other side keeps the booking (masked name); fee records stay in admin:fees for tax law
+  await deleteFilesOf(id);  // photos and videos sent in chats
   if (user.avatar?.id) await redis('DEL', 'avatar:' + user.avatar.id);
   await endSession(req, res);
   await adminLog('self_delete', id);

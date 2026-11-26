@@ -111,7 +111,8 @@ exchange,study abroad,summer school,visa,F-1,J-1,TOEFL,IELTS,JLPT,HSK,checklist,
 | 개인 정보 → 기타 정보 (본교, 학과, 학년, 파견교·일정) | 예 | 선택 | 앱 기능 (맞춤 체크리스트) |
 | 앱 활동 → 기타 사용자 생성 콘텐츠 (게시글, 후기, 신고 내용) | 예 | 선택 | 앱 기능 |
 | 메시지 → 기타 인앱 메시지 (커뮤니티 그룹 채팅, 멘토 1:1 채팅) | 예 | 선택 | 앱 기능 |
-| 사진 및 동영상 → 사진 (프로필 사진, JPEG 320×320) | 예 | 선택 | 앱 기능 |
+| 사진 및 동영상 → 사진 (프로필 사진 JPEG 320×320, 채팅으로 보낸 사진) | 예 | 선택 | 앱 기능 |
+| 사진 및 동영상 → 동영상 (채팅으로 보낸 동영상, 50MB 이하) | 예 | 선택 | 앱 기능 |
 | 파일 및 문서 (수료 증빙) | 예 | 선택 (멘토 신청자만, 심사 후 즉시 폐기) | 앱 기능 (멘토 심사) |
 | 기기 또는 기타 ID (푸시 알림 토큰) | 예 | 선택 (알림을 켠 경우) | 앱 기능 (알림) |
 | 앱 활동 → 기타 앱 활동 (멘토링 신청: 날짜·시간, 방식, 지역, 메모) | 예 | 선택 | 앱 기능 |
@@ -139,7 +140,7 @@ exchange,study abroad,summer school,visa,F-1,J-1,TOEFL,IELTS,JLPT,HSK,checklist,
 | Identifiers → User ID | 아이디 |
 | Identifiers → Device ID | 푸시 알림 토큰 (알림을 켠 경우) |
 | User Content → Other User Content | 게시글, 후기, 신고 내용, 수료 증빙 파일(심사 후 폐기) |
-| User Content → Photos or Videos | 프로필 사진 (선택) |
+| User Content → Photos or Videos | 프로필 사진, 채팅으로 보낸 사진·동영상 (선택) |
 | User Content → Other User Content (messages) | 커뮤니티 그룹 채팅, 멘토 1:1 채팅 |
 | Other Data → Other Data Types | 본교·학과·학년·파견교·일정, 멘토링 신청(날짜·방식·지역·메모) |
 | Purchases → Purchase History | 멘토 수수료 결제 기록 (유료 신청을 수락한 멘토만) |
