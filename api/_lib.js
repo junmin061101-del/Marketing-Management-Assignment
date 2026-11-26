@@ -318,6 +318,20 @@ function serviceAccount() {
   try { return JSON.parse(raw.trim().startsWith('{') ? raw : Buffer.from(raw, 'base64').toString('utf8')); } catch { return null; }
 }
 export const pushConfigured = () => !!serviceAccount();
+// 'ok' | 'missing' (no env) | 'bad_key' (not a service-account JSON) | 'auth_failed' (Google refused the key).
+// Checked against Google at most every 10 minutes; tells the operator whether push is really connected.
+export async function pushHealth() {
+  const raw = process.env.FIREBASE_SERVICE_ACCOUNT || '';
+  if (!raw) return 'missing';
+  const sa = serviceAccount();
+  if (!sa || !sa.client_email || !sa.private_key) return 'bad_key';
+  const cached = await redis('GET', 'fcm:health').catch(() => null);
+  if (cached) return cached;
+  let state = 'auth_failed';
+  try { state = (await fcmAccessToken()) ? 'ok' : 'auth_failed'; } catch { state = 'bad_key'; }
+  await redis('SET', 'fcm:health', state, 'EX', 600).catch(() => null);
+  return state;
+}
 let fcmToken = { v: '', exp: 0 };
 async function fcmAccessToken() {
   if (fcmToken.v && Date.now() < fcmToken.exp - 60000) return fcmToken.v;

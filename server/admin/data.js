@@ -1,6 +1,6 @@
 // GET → everything the dashboard shows: counts, members, the review queue, reviews and the action log.
 // Password hashes, consent details and session data never leave the server.
-import { guard, send, isAdmin, redis, scanKeys, pushConfigured } from '../../api/_lib.js';
+import { guard, send, isAdmin, redis, scanKeys, pushHealth } from '../../api/_lib.js';
 
 const SAMPLE = { 'sample-yeon': 'Yeon L. (예시)', 'sample-woo': 'Woo J. (예시)', 'sample-seo': 'Seo H. (예시)' };
 async function mget(keys) {
@@ -33,7 +33,7 @@ export default async function handler(req, res) {
   const now = Date.now(), day = 864e5;
   const pushUsers = (await scanKeys('push:*')).length;
   const stats = {
-    pushOn: pushConfigured(), pushUsers,
+    pushOn: (await pushHealth()) === 'ok', pushUsers,
     users: users.length,
     new1: users.filter(u => now - Date.parse(u.created) < day).length,
     new7: users.filter(u => now - Date.parse(u.created) < 7 * day).length,
