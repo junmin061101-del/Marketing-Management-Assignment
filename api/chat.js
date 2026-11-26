@@ -10,7 +10,7 @@
 // POST /api/chat {action:'notice', room, text}         → pins a notice at the top of the room (anyone in the room; empty text removes it)
 // POST /api/chat {action:'poll', room, q, opts, multi} → posts a poll (2–6 options; multi = several choices allowed)
 // POST /api/chat {action:'vote', room, id, choice:[i]} → my choice in a poll ([] withdraws it) · {action:'closePoll', room, id} (its maker)
-// POST /api/chat {action:'send', room, text, file? | files?} → posts a message (files = up to 10 photos shown together) (1:1 rooms also send a push to the other member);
+// POST /api/chat {action:'send', room, text, file? | files?} → posts a message (files = up to 30 photos shown together) (1:1 rooms also send a push to the other member);
 //      file = {url, kind:'image'|'video', w, h, name} of a photo or video uploaded to Blob through /api/upload
 import { guard, body, send, currentUser, cleanText, redis, allow, uid, hmac, getJSON, setJSON, scanKeys, sendPush } from './_lib.js';
 
@@ -126,12 +126,12 @@ export default async function handler(req, res) {
     await markRead(room.id, me);
     // who has read up to when, by message tag (never account ids): the app counts unread readers per message
     const seen = {}; for (const [u, at] of Object.entries(await seenOf(room.id))) if (room.kind === 'g' || room.members.includes(u)) seen[tag(u)] = at;
-    let title = '';
-    if (room.kind === 'd') { const peer = room.members[0] === me ? 1 : 0; title = room.members[peer] === room.mentorUid ? fullName(await getJSON('user:' + room.mentorUid)) : room.names[peer]; }
+    let title = '', peerMentor = false;
+    if (room.kind === 'd') { const peer = room.members[0] === me ? 1 : 0; peerMentor = room.members[peer] === room.mentorUid; title = peerMentor ? fullName(await getJSON('user:' + room.mentorUid)) : room.names[peer]; }
     // polls among the latest messages (counts change, so they come with every poll of the room) and the pinned notice
     const polls = {};
     for (const v of raw) { try { const m = JSON.parse(v); if (m.poll) polls[m.id] = await pollView(room.id, m.id, me); } catch {} }
-    return send(res, 200, { messages: msgs, seen, title, folder: folderOf(room.id), polls, notice: await getJSON('notice:' + room.id) });
+    return send(res, 200, { messages: msgs, seen, title, peerMentor, folder: folderOf(room.id), polls, notice: await getJSON('notice:' + room.id) });
   }
   if (!user) return send(res, 401, { error: 'login_required' });
   const b = body(req), me = uid(user);
@@ -181,7 +181,7 @@ export default async function handler(req, res) {
     const room = await roomFor(String(b.room || ''), user);
     if (!room) return send(res, 404, { error: 'room_not_found' });
     const text = cleanText(b.text, 1000), file = b.file ? cleanFile(b.file, room.id) : null;
-    const files = Array.isArray(b.files) ? b.files.slice(0, 10).map(f => cleanFile(f, room.id)) : null;  // several photos in one message
+    const files = Array.isArray(b.files) ? b.files.slice(0, 30).map(f => cleanFile(f, room.id)) : null;  // several photos in one message
     if ((b.file && !file) || (files && (!files.length || files.some(f => !f || f.kind !== 'image')))) return send(res, 400, { error: 'bad_file' });
     if (!text && !file && !files) return send(res, 400, { error: 'empty_message' });
     const asMentor = room.kind === 'd' && room.mentorUid === me && user.mentor?.status === 'approved';

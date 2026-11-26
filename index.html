@@ -455,7 +455,9 @@ p{margin:0}
 .mfile .gtxt{display:none}.mfile.gone{aspect-ratio:auto!important;padding:10px 12px;width:auto}.mfile.gone img,.mfile.gone video{display:none}.mfile.gone .gtxt{display:block;font-size:13px;color:var(--ink-3)}
 .chatbar .attach{flex:none;color:var(--ink-2)}
 .mgrid{position:relative;display:grid;gap:3px;width:240px;max-width:100%;border-radius:14px;overflow:hidden}.mgrid.c2{grid-template-columns:1fr 1fr}.mgrid.c3{grid-template-columns:1fr 1fr 1fr}
-.mcell{aspect-ratio:1;border:0;padding:0;background:var(--track);overflow:hidden}.mcell img{width:100%;height:100%;object-fit:cover;display:block}.mcell.gone img{display:none}
+.mcell{position:relative;aspect-ratio:1;border:0;padding:0;background:var(--track);overflow:hidden}
+.mcell .mplus{position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.45);color:#fff;font-size:20px;font-weight:800}
+.mgrid.album{width:100%;border-radius:12px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));background:none}.mcell img{width:100%;height:100%;object-fit:cover;display:block}.mcell.gone img{display:none}
 .mgrid .up{position:absolute;right:8px;bottom:8px;font-size:11px;font-weight:700;color:#fff;background:rgba(0,0,0,.55);padding:3px 8px;border-radius:10px}
 #noticeBar:empty{display:none}
 .cnotice{display:flex;align-items:center;gap:10px;width:calc(100% - 24px);margin:4px 12px 6px;padding:10px 12px;border-radius:14px;background:var(--card);box-shadow:var(--card-shadow);text-align:left;color:var(--ink)}
@@ -468,7 +470,7 @@ p{margin:0}
 .popt .pm{width:14px;font-weight:800;color:var(--primary-ink)}.popt .po{flex:1;min-width:0;overflow-wrap:anywhere}.popt .pn{font-size:12px;font-weight:700;color:var(--ink-2)}
 .popt.on{border-color:var(--primary)}.popt:disabled{opacity:.85}
 .pollc .pf{font-size:12px;color:var(--ink-3)}.pollc .pf .linkbtn{display:inline;padding:0;font-size:12px}
-.moregrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:8px 0 12px}
+.moregrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:8px 0 calc(28px + env(safe-area-inset-bottom,0px))}
 .moregrid button{display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 6px;border-radius:16px;background:var(--surface);font-size:13px;font-weight:600;color:var(--ink)}
 .moregrid .ic{color:var(--primary-ink)}
 .mform .popin{margin-top:8px}
@@ -1530,7 +1532,7 @@ T_('e.g. {X}','예: {X}');
 Object.assign(KO,{
 "Enter 0 (free) or a whole number from 5,000 to 1,000,000 won.":"세션비는 0원(무료) 또는 5,000원~1,000,000원 사이로 입력하세요.","Choose in person or video call.":"대면 또는 화상 중에서 골라 주세요.","Choose a date and time.":"날짜와 시간을 골라 주세요.","Choose a time at least 1 hour from now and within 6 months.":"지금부터 1시간 이후, 6개월 이내의 시간을 골라 주세요.","You already have a request waiting with this mentor.":"이 멘토에게 보낸 신청이 아직 처리 중이에요.","This session could not be found.":"멘토링을 찾을 수 없어요.","This session can no longer be cancelled.":"이 멘토링은 더 이상 취소할 수 없어요.","You can mark it done after the session starts.":"세션 시작 시간이 지나야 완료로 표시할 수 있어요.","You already reported this session.":"이미 신고한 멘토링이에요.","Only students who completed a session with this mentor can review.":"이 멘토와 멘토링을 마친 학생만 후기를 쓸 수 있어요.","This session is not waiting for a fee payment.":"수수료 결제를 기다리는 멘토링이 아니에요.","This request was already handled.":"이미 처리된 신청이에요.","Tell us what happened.":"무슨 일이 있었는지 적어 주세요.","Still processing. Try again in a moment.":"처리 중이에요. 잠시 후 다시 시도해 주세요.","The card payment did not go through.":"카드 결제가 완료되지 않았어요.","This payment link has expired.":"결제 링크가 만료됐어요.","Only the mentor can do this.":"멘토만 할 수 있어요.","Only the student can do this.":"학생만 할 수 있어요.","This session is not confirmed yet.":"아직 확정되지 않은 멘토링이에요.",
 "My mentoring":"내 멘토링","Price per session (KRW)":"세션당 가격 (원)","Area for in-person":"대면 지역","Request a session":"멘토링 신청하기"});
-Object.assign(KO,{"Write a question and at least two different options.":"질문과 서로 다른 항목을 2개 이상 적어 주세요.","This poll is closed.":"마감된 투표예요.","This poll could not be found.":"투표를 찾을 수 없어요."});
+Object.assign(KO,{"Student":"학생","Write a question and at least two different options.":"질문과 서로 다른 항목을 2개 이상 적어 주세요.","This poll is closed.":"마감된 투표예요.","This poll could not be found.":"투표를 찾을 수 없어요."});
 const errMsg=e=>ERR[e.code]||ERR.network;
 async function loadMe(){try{const j=await api('me');AUTH.configured=j.configured!==false;AUTH.user=j.user||null}catch(e){AUTH.configured=false}AUTH.ready=true}
 async function loadData(){
@@ -2630,7 +2632,7 @@ const SCREENS={
     if(!ROOMS[rid]||!pollT) setTimeout(()=>{ if(S.room===rid&&S.screen==='chat'&&!pollT) openRoom(rid) },0);
     const group=rid.startsWith('g:'), R=ROOMS[rid]||{msgs:[],loading:true}, gh=group?boardTarget(rid.slice(2)):null;
     const title=group?(gh?gh.short:rid.slice(2).split('|')[1]):(R.title||'');
-    return `${bar(`<span data-notr>${esc(title)}</span> `+(group?'<span class="pill cat">Group</span>':'<span class="badge">'+ic('shield',13,2.4)+'Mentor</span>'),'back',group?'':`<button class="iconbtn" data-go="sessions" aria-label="My mentoring">${ic('clock',20)}</button>`)}
+    return `${bar(`<span data-notr>${esc(title)}</span> `+(group?'<span class="pill cat">Group</span>':R.peerMentor===false?'<span class="pill cat">Student</span>':'<span class="badge">'+ic('shield',13,2.4)+'Mentor</span>'),'back',group?'':`<button class="iconbtn" data-go="sessions" aria-label="My mentoring">${ic('clock',20)}</button>`)}
     <div id="noticeBar">${noticeHTML(rid)}</div>
     <div class="scroll pad chat" id="chatScroll">${chatMsgsHTML(rid)}</div>
     <div class="cta chatbar"><button class="iconbtn attach" data-act="chatMore" aria-label="More">${ic('plus',24)}</button><input type="file" id="chatFile" accept="image/*,video/mp4,video/quicktime,video/webm" multiple hidden><input class="input" id="chatInput" placeholder="${group?'Message everyone':'Write a message'}" maxlength="1000" autocomplete="off" aria-label="Message"><button class="btn sm" data-act="sendMsg" aria-label="Send">${ic('send',18)}</button></div>`;
@@ -3270,8 +3272,12 @@ function chatMsgsHTML(rid){const R=ROOMS[rid]||{msgs:[],loading:true}, group=rid
     return sep+(m.mine?`<div class="msg me${first?' first':''}"><div class="mrow">${t}<div class="mb">${body}</div></div></div>`
       :`<div class="msg them${first?' first':''}">${group&&first?`<span class="mwho"><span class="ava">${avaImg(m.av?{id:m.av}:null,(m.who||'?')[0])}</span><b data-notr>${esc(m.who)}</b></span>`:''}<div class="mrow"><div class="mb">${body}</div>${t}</div></div>`)}).join('')}
 // several photos in one message: a grid like KakaoTalk (2 per row for 2 or 4 photos, otherwise 3)
-function filesHTML(fs,up){ const cols=fs.length===2||fs.length===4?2:3, gone=`this.parentElement.classList.add('gone')`;
-  return `<span class="mgrid c${cols}">${fs.map(f=>`<button class="mcell" data-act="openMedia" data-v="${esc(f.url)}"><img src="${esc(f.url)}" alt="${KX('Photo','사진')}" loading="lazy" onerror="${gone}"></button>`).join('')}${up!=null?`<span class="up">${KX('Sending','보내는 중')} ${up}%</span>`:''}</span>` }
+function filesHTML(fs,up){ const cols=fs.length===2||fs.length===4?2:3, gone=`this.parentElement.classList.add('gone')`, show=fs.slice(0,9), more=fs.length-show.length;
+  return `<span class="mgrid c${cols}">${show.map((f,i)=>`<button class="mcell" data-act="${more&&i===8?'openAlbum':'openMedia'}" data-v="${esc(more&&i===8?JSON.stringify(fs.map(x=>x.url)):f.url)}"><img src="${esc(f.url)}" alt="${KX('Photo','사진')}" loading="lazy" onerror="${gone}">${more&&i===8?`<span class="mplus">+${more+1}</span>`:''}</button>`).join('')}${up!=null?`<span class="up">${KX('Sending','보내는 중')} ${up}%</span>`:''}</span>` }
+function openAlbum(urls){ const sheet=$('#sheet');
+  sheet.innerHTML=`<div class="grab"></div><div class="scroll" data-notr><h2 class="ob-title" style="font-size:20px;margin:6px 0 12px">${KX(`${urls.length} photos`,`사진 ${urls.length}장`)}</h2>
+    <div class="mgrid c3 album">${urls.map(u=>`<button class="mcell" data-act="openMedia" data-v="${esc(u)}"><img src="${esc(u)}" alt="" loading="lazy"></button>`).join('')}</div></div>`;
+  sheet.classList.add('on'); $('#scrim').classList.add('on') }
 // a photo or video in a chat bubble (up = upload progress while it is still being sent)
 function fileHTML(f,up){const r=f.w&&f.h?`aspect-ratio:${f.w}/${f.h}`:'', gone=`this.parentElement.classList.add('gone')`;
   const prog=up!=null?`<span class="up">${KX('Sending','보내는 중')} ${up}%</span>`:'';
@@ -3286,7 +3292,7 @@ function loadRoom(rid,first){ const R=ROOMS[rid]||(ROOMS[rid]={msgs:[],loading:t
     const seenChanged=JSON.stringify(j.seen||{})!==JSON.stringify(R.seen||{}); if(j.seen) R.seen=j.seen;
     const extra=JSON.stringify([j.polls||{},j.notice||null]), extraChanged=extra!==R.extra; R.extra=extra; R.polls=j.polls||{}; R.notice=j.notice||null;
     if(extraChanged){ const nb=$('#noticeBar'); if(nb&&S.room===rid) nb.innerHTML=noticeHTML(rid) }
-    if(j.title) R.title=j.title; if(j.folder) R.folder=j.folder; R.loading=false; R.err=''; if(first||wasLoading||R.msgs.length!==n0||seenChanged||extraChanged) paintRoom(rid,first);
+    if(j.title) R.title=j.title; if(j.folder) R.folder=j.folder; if(typeof j.peerMentor==='boolean'&&R.peerMentor!==j.peerMentor){ R.peerMentor=j.peerMentor; if(first&&S.screen==='chat'&&S.room===rid) render(true) } R.loading=false; R.err=''; if(first||wasLoading||R.msgs.length!==n0||seenChanged||extraChanged) paintRoom(rid,first);
     if(first&&S.screen==='chat'&&S.room===rid){const t=document.querySelector('.bar span[data-notr]'); if(t&&j.title) t.textContent=j.title}})
     .catch(e=>{R.loading=false; R.err=e.code; if(e.code==='login_required'){toast('Log in to use chat')} paintRoom(rid)}) }
 function openRoom(rid){ if(!AUTH.user){toast('Log in to use chat'); return} closeSheet(); S.room=rid; S.screen='chat'; clearUnread(rid); render();
@@ -3338,11 +3344,11 @@ async function uploadBlob(rid,blob,kind,ext,type,onPct){ const R=ROOMS[rid], pat
   const tok=await api('upload',{type:'blob.generate-client-token',payload:{pathname:path,callbackUrl:SITE+'/api/upload',clientPayload:JSON.stringify({room:rid}),multipart}});
   return window.GGBlob.put(path,blob,{access:'public',token:tok.clientToken,contentType:type,multipart,onUploadProgress:e=>onPct&&onPct(e.percentage||0)}) }
 const upFail=e=>toast(ERR[e.code]&&e.code!=='network'?errMsg(e):KX('Upload failed. Check your connection and try again.','업로드에 실패했어요. 연결을 확인하고 다시 시도해 주세요.'));
-// what the student picked: photos go together in one message (up to 10, like KakaoTalk), each video on its own
+// what the student picked: photos go together in one message (up to 30, like KakaoTalk), each video on its own
 function sendPicked(list){ const fs=[...list], imgs=fs.filter(f=>/^image\//.test(f.type)), vids=fs.filter(f=>/^video\//.test(f.type));
   if(fs.length>imgs.length+vids.length) toast(KX('You can send photos and videos.','사진과 동영상만 보낼 수 있어요.'));
-  if(imgs.length>10) toast(KX('Up to 10 photos at a time. Sending the first 10.','사진은 한 번에 10장까지 보낼 수 있어요. 앞의 10장만 보낼게요.'));
-  if(imgs.length===1) sendFile(imgs[0]); else if(imgs.length) sendPhotos(imgs.slice(0,10));
+  if(imgs.length>30) toast(KX('Up to 30 photos at a time. Sending the first 30.','사진은 한 번에 30장까지 보낼 수 있어요. 앞의 30장만 보낼게요.'));
+  if(imgs.length===1) sendFile(imgs[0]); else if(imgs.length) sendPhotos(imgs.slice(0,30));
   vids.forEach(v=>sendFile(v)) }
 async function sendPhotos(list){ const rid=S.room, R=ROOMS[rid]; if(!rid||!R) return;
   if(!R.folder) return toast(KX('Wait a moment and try again.','잠시 후 다시 시도해 주세요.'));
@@ -3592,6 +3598,7 @@ document.addEventListener('click',e=>{
     case 'noticeSave': {const t=($('#noticeText')||{}).value.trim(); if(!t){$('#noticeText').focus(); break} closeSheet(); chatAction({action:'notice',text:t}); break}
     case 'noticeClear': closeSheet(); chatAction({action:'notice',text:''}); break;
     case 'openMedia': openUrl(v); break;
+    case 'openAlbum': {let urls=[]; try{urls=JSON.parse(v)}catch(e){} openAlbum(urls); break}
     case 'mentor': openMentorSheet(+v); break;
     case 'rmentor': openRealMentor(v); break;
     case 'rqOpen': openReqSheet(v); break;
