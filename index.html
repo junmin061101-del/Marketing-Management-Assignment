@@ -344,6 +344,8 @@ p{margin:0}
 .mentor{display:flex;gap:14px;padding:18px 0;border-bottom:1px solid var(--line);text-align:left;width:100%}
 .mentor .ava{width:56px;height:56px;background:var(--primary-soft);color:var(--primary-ink)}
 .mentor .t{flex:1;min-width:0}
+#view .mentor .mchips{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:6px;margin-top:12px;text-align:left}
+#view .mentor .mchips span{display:inline-flex;align-items:center;padding:5px 10px;border-radius:8px;background:var(--surface);color:var(--ink-2);font-size:12px;font-weight:600;line-height:1.3}
 .mentor .name{display:flex;align-items:center;gap:6px;font-weight:800;font-size:16px;flex-wrap:wrap}
 .mentor .prog{display:flex;align-items:center;gap:4px;font-size:13px;color:var(--ink-3);margin-top:3px}
 .mentor .school{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:4px;font-size:14px}.mentor .school b{font-weight:700;color:var(--ink)}
@@ -2937,7 +2939,7 @@ function realMentorCard(m){return `<button class="mentor" data-act="rmentor" dat
         <span class="school"><b data-notr>${esc([m.home,m.major].filter(Boolean).join(' · '))}</b></span>
         ${m.host?`<span class="prog">${ic('plane',13)} <span data-notr>${esc(m.host)}</span></span>`:''}
         ${m.offer?`<span class="intro" data-notr>${esc(m.offer.slice(0,140))}</span>`:''}
-        ${m.mode?`<span class="ometa" data-notr><span>${modeL(m.mode)}</span>${m.length?`<span>${esc(trText(m.length))}</span>`:''}<span>${KX('Price agreed in chat','가격은 채팅으로 협의')}</span></span>`:''}</span>
+        ${m.mode?`<span class="mchips" data-notr><span>${modeL(m.mode)}</span>${m.length?`<span>${esc(trText(m.length))}</span>`:''}<span>${KX('Price agreed in chat','가격은 채팅으로 협의')}</span></span>`:''}</span>
     </button>`}
 function openRealMentor(key){const m=(REALM.list||[]).find(x=>x.key===key); if(!m) return; const sheet=$('#sheet'), isMe=!!(AUTH.user&&AUTH.user.mentor&&AUTH.user.mentor.profile&&AUTH.user.mentor.profile.key===key), rv=(S.reviews[key]||{}).list||[];
   const row=(icn,label,v)=>v?`<div class="did">${ic(icn,18)}<span><small>${label}</small><b data-notr>${esc(v)}</b></span></div>`:'';
