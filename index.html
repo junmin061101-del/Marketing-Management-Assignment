@@ -344,7 +344,16 @@ p{margin:0}
 .mentor{display:flex;gap:14px;padding:18px 0;border-bottom:1px solid var(--line);text-align:left;width:100%}
 .mentor .ava{width:56px;height:56px;background:var(--primary-soft);color:var(--primary-ink)}
 .mentor .t{flex:1;min-width:0}
-.msearch{display:flex;flex-direction:column;gap:8px;margin:0 0 12px}.msearch .hscroll{display:flex;gap:6px}
+.msearch{display:flex;flex-direction:column;gap:10px;margin:0 0 16px}.msearch .hscroll{display:flex;gap:6px}
+.mfopts{display:flex;flex-direction:column;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+.mfopts button{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 4px;border-bottom:1px solid var(--line);text-align:left;font-size:15px;color:var(--ink)}
+.mfopts button small{color:var(--ink-3);font-size:13px}.mfopts button.on{color:var(--primary-ink);font-weight:700}
+.list-head{margin-bottom:12px}
+.msg.them{position:relative;padding-left:46px}.msg.them .mav{position:absolute;left:0;top:0;width:38px;height:38px;padding:0;border:0;background:none;border-radius:50%}
+.msg.them .mav .ava{width:38px;height:38px;font-size:14px;border-radius:50%;overflow:hidden}.msg.them .mav .ava img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.msg.them .mname{font-size:12px;color:var(--ink-2);margin:0 0 4px 2px}
+.cprof{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:8px 0 18px}.cprof .ava{width:84px;height:84px;font-size:28px;border-radius:50%;overflow:hidden}
+.cprof .ava img{width:100%;height:100%;object-fit:cover}.cprof b{font-size:20px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center}.cprof small{display:flex;align-items:center;gap:4px;font-size:13px;color:var(--ink-2)}
 #view .mentor .mchips{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:6px;margin-top:12px;text-align:left}
 #view .mentor .mchips span{display:inline-flex;align-items:center;padding:5px 10px;border-radius:8px;background:var(--surface);color:var(--ink-2);font-size:12px;font-weight:600;line-height:1.3}
 .mentor .name{display:flex;align-items:center;gap:6px;font-weight:800;font-size:16px;flex-wrap:wrap}
@@ -2497,7 +2506,7 @@ const S={
   done:new Set(), bcat:'All', showDone:false, mentorSheet:null,
   joined:new Set(), cv:null, cq:'', cinfo:{}, jstatus:{}, joining:null,
   ccat:'all', draftPost:null, hiddenPosts:new Set(),
-  reviews:{}, chf:'all', doc:null, mq:'', myear:'', mprog:'',
+  reviews:{}, chf:'all', doc:null, mq:'', mf:{host:'',year:'',prog:'',home:'',major:''},
   apply:{step:0,email:'',file:'',sent:false,busy:false,err:''},
   auth:{mode:'login',id:'',name:'',busy:false,err:''},
 };
@@ -3082,12 +3091,21 @@ function openSessReport(x){const sheet=$('#sheet');
     <div class="cta"><button class="btn" data-act="srpSend" data-v="${esc(x.id)}">${KX('Send report','신고 보내기')}</button></div>`;
   sheet.classList.add('on'); $('#scrim').classList.add('on')}
 /* mentor search: by where they went (school or country), year, program, and their home school and major */
-function mSearchHTML(real){ const years=[...new Set(real.map(m=>m.year).filter(Boolean))].sort((a,b)=>b-a), progs=Object.keys(MPROG).filter(k=>real.some(m=>m.prog===k));
-  const chip=(k,v,l)=>`<button class="chip sm${S[k]===v?' on':''}" data-act="mfilter" data-k="${k}" data-v="${esc(v)}">${l}</button>`;
-  return `<div class="msearch" data-notr><div class="search">${ic('search',18)}<input class="input" id="mq" autocomplete="off" placeholder="${KX('Search by exchange school, home school or major','파견교, 출신 학교, 학과로 검색')}" value="${esc(S.mq||'')}"></div>
-    ${years.length>1?`<div class="hscroll">${chip('myear','',KX('All years','전체 연도'))}${years.map(y=>chip('myear',String(y),String(y))).join('')}</div>`:''}
-    ${progs.length>1?`<div class="hscroll">${chip('mprog','',KX('All programs','전체 기간'))}${progs.map(k=>chip('mprog',k,mprogL(k))).join('')}</div>`:''}</div>` }
-function mMatch(m){ const q=squash(S.mq||''); if(S.myear&&String(m.year)!==S.myear) return false; if(S.mprog&&m.prog!==S.mprog) return false; if(!q) return true;
+const MF=[['host',['Exchange school','파견교']],['year',['Year','연도']],['prog',['Program','기간']],['home',['Home school','출신 학교']],['major',['Major','학과']]];
+const mfVal=(m,k)=>k==='home'?homeKo(m.home||''):k==='year'?String(m.year||''):(m[k]||'');
+const mfLabel=(k,v)=>k==='prog'?mprogL(v):v;
+function mSearchHTML(real){
+  return `<div class="msearch" data-notr><div class="search">${ic('search',18)}<input class="input" id="mq" autocomplete="off" placeholder="${KX('Search by name, school or major','이름, 학교, 학과로 검색')}" value="${esc(S.mq||'')}"></div>
+    <div class="hscroll mfilters">${MF.map(([k,l])=>{const v=S.mf[k]; return `<button class="chip sm${v?' on':''}" data-act="mfOpen" data-k="${k}">${v?esc(mfLabel(k,v)):KX(...l)} ▾</button>`}).join('')}
+      ${Object.values(S.mf).some(Boolean)?`<button class="chip sm" data-act="mfReset">${KX('Reset','초기화')}</button>`:''}</div></div>` }
+function openMfSheet(k){ const real=REALM.list||[], l=(MF.find(x=>x[0]===k)||[])[1], counts={};
+  real.forEach(m=>{const v=mfVal(m,k); if(v) counts[v]=(counts[v]||0)+1});
+  const vals=Object.keys(counts).sort((a,b)=>k==='year'?b-a:a.localeCompare(b,'ko')), sheet=$('#sheet');
+  sheet.innerHTML=`<div class="grab"></div><div class="scroll" data-notr><h2 class="ob-title" style="font-size:20px;margin:6px 0 10px">${KX(...l)}</h2>
+    <div class="mfopts"><button class="${!S.mf[k]?'on':''}" data-act="mfSet" data-k="${k}" data-v=""><span>${KX('All','전체')}</span><small>${real.length}</small></button>
+    ${vals.map(v=>`<button class="${S.mf[k]===v?'on':''}" data-act="mfSet" data-k="${k}" data-v="${esc(v)}"><span>${esc(mfLabel(k,v))}</span><small>${counts[v]}</small></button>`).join('')}</div></div>`;
+  sheet.classList.add('on'); $('#scrim').classList.add('on') }
+function mMatch(m){ const q=squash(S.mq||''); if(MF.some(([k])=>S.mf[k]&&mfVal(m,k)!==S.mf[k])) return false; if(!q) return true;
   const u=DATA&&DATA.unis.find(x=>x[0]===m.host), ko=u?u[3]:'', ctry=m.hostCC&&COUNTRIES[m.hostCC]?COUNTRIES[m.hostCC][0]:'';
   return [m.name,m.host,ko,ALIAS[m.host],ctry,NAME_KO[ctry],m.home,m.major,m.offer,String(m.year||''),mprogL(m.prog)].some(x=>squash(x||'').includes(q)) }
 function mListHTML(here,other){ const all=[...here,...other].filter(mMatch);
@@ -3108,7 +3126,7 @@ function mentorTab(){
     <div id="mList">${!REALM.list?'<p class="loadmsg">Loading mentors…</p>':real.length?mListHTML(here,other)
       :`<div class="empty-state">${ic('mentor',28)}<b>No verified mentors yet</b><small>Students who completed an exchange can become mentors. Be the first for ${esc(h.short)}.</small></div>`}</div>
     <div class="list-head" style="margin-top:22px"><h3>Sample profiles</h3></div>
-    <p class="hint" style="margin:-4px 2px 10px">These are examples of what a mentor profile looks like. They are not real people, and you cannot chat with them.</p>
+    <p class="hint" style="margin:0 0 14px">These are examples of what a mentor profile looks like. They are not real people, and you cannot chat with them.</p>
     ${list.map(m=>{const rt=ratingOf(m); return `<button class="mentor" data-act="mentor" data-v="${m.id}">
       <span class="ava">${m.name[0]}</span>
       <span class="t"><span class="name">${m.name}<span class="badge">${ic('shield',14,2.4)}Verified</span></span>
@@ -3301,7 +3319,7 @@ function chatMsgsHTML(rid){const R=ROOMS[rid]||{msgs:[],loading:true}, group=rid
     const first=!!sep||!same(L[i-1],m), last=!same(m,L[i+1]), n=unread(m), t=n||last?`<span class="mt">${n?`<b class="ur">${n}</b>`:''}${last?`<time>${hm(d)}</time>`:''}</span>`:'';
     const body=(m.poll?pollHTML(rid,m.id):'')+(m.files?filesHTML(m.files,m.up):'')+(m.file?fileHTML(m.file,m.up):'')+(m.text?`<p data-notr>${esc(m.text)}</p>`:'');
     return sep+(m.mine?`<div class="msg me${first?' first':''}"><div class="mrow">${t}<div class="mb">${body}</div></div></div>`
-      :`<div class="msg them${first?' first':''}">${group&&first?`<span class="mwho"><span class="ava">${avaImg(m.av?{id:m.av}:null,(m.who||'?')[0])}</span><b data-notr>${esc(m.who)}</b></span>`:''}<div class="mrow"><div class="mb">${body}</div>${t}</div></div>`)}).join('')}
+      :`<div class="msg them${first?' first':''}">${first?`<button class="mav" data-act="chatProfile" data-v="${esc(m.by||'')}" aria-label="Profile"><span class="ava">${avaImg(m.av?{id:m.av}:null,(m.who||'?')[0])}</span></button><span class="mname" data-notr>${esc(m.who)}</span>`:''}<div class="mrow"><div class="mb">${body}</div>${t}</div></div>`)}).join('')}
 // several photos in one message: a grid like KakaoTalk (2 per row for 2 or 4 photos, otherwise 3)
 function filesHTML(fs,up){ const cols=fs.length===2||fs.length===4?2:3, gone=`this.parentElement.classList.add('gone')`, show=fs.slice(0,9), more=fs.length-show.length;
   return `<span class="mgrid c${cols}">${show.map((f,i)=>`<button class="mcell" data-act="${more&&i===8?'openAlbum':'openMedia'}" data-v="${esc(more&&i===8?JSON.stringify(fs.map(x=>x.url)):f.url)}"><img src="${esc(f.url)}" alt="${KX('Photo','사진')}" loading="lazy" onerror="${gone}">${more&&i===8?`<span class="mplus">+${more+1}</span>`:''}</button>`).join('')}${up!=null?`<span class="up">${KX('Sending','보내는 중')} ${up}%</span>`:''}</span>` }
@@ -3366,6 +3384,15 @@ function openNoticeSheet(){ const sheet=$('#sheet'), n=(ROOMS[S.room]||{}).notic
     <textarea class="input area" id="noticeText" rows="4" maxlength="300" style="margin-top:12px" placeholder="${KX('e.g. Orientation is on Aug 20 at 10 AM','예: 오리엔테이션은 8월 20일 오전 10시예요')}">${esc(n?n.text:'')}</textarea></div>
     <div class="cta"><button class="btn" data-act="noticeSave">${KX('Pin notice','공지 등록')}</button>${n?`<button class="btn ghost" style="margin-top:8px" data-act="noticeClear">${KX('Remove notice','공지 내리기')}</button>`:''}</div>`;
   sheet.classList.add('on'); $('#scrim').classList.add('on'); setTimeout(()=>{const t=$('#noticeText'); t&&t.focus()},50) }
+async function openChatProfile(t){ if(!t) return; const sheet=$('#sheet');
+  sheet.innerHTML=`<div class="grab"></div><div class="scroll"><p class="loadmsg">Loading…</p></div>`; sheet.classList.add('on'); $('#scrim').classList.add('on');
+  let p; try{ p=(await api('chat?room='+encodeURIComponent(S.room)+'&who='+encodeURIComponent(t))).profile }catch(e){ sheet.innerHTML=`<div class="grab"></div><div class="scroll"><p class="loadmsg">${KX('Could not load the profile.','프로필을 불러오지 못했어요.')}</p></div>`; return }
+  const meta=[homeKo(p.home),p.major,trText(p.year||'')].filter(Boolean).join(' · ');
+  sheet.innerHTML=`<div class="grab"></div><div class="scroll" data-notr><div class="cprof"><span class="ava">${avaImg(p.av?{id:p.av}:null,(p.name||'?')[0])}</span>
+    <b>${esc(p.name)}${p.mentorKey?`<span class="badge">${ic('shield',14,2.4)}${KX('Verified mentor','인증 멘토')}</span>`:''}</b>
+    ${meta?`<small>${esc(meta)}</small>`:''}${p.host?`<small>${ic('plane',13)} ${esc(p.host)}</small>`:''}</div></div>
+    ${p.mentorKey&&!p.me?`<div class="cta"><button class="btn" data-act="chatMentor" data-v="${esc(p.mentorKey)}">${KX('View mentor profile','멘토 프로필 보기')}</button></div>`:''}`;
+}
 async function chatAction(data){ const rid=S.room; try{ const j=await api('chat',{room:rid,...data}); await loadRoom(rid); return j }catch(e){ toast(ERR[e.code]?errMsg(e):KX('Could not save. Try again.','저장하지 못했어요. 다시 시도해 주세요.')); return null } }
 /* chat attachments: photos become JPEG (at most 2048 px) on the phone, videos go as they are (MP4/MOV/WebM, 50 MB) */
 function loadBlobLib(){ return window.GGBlob?Promise.resolve():new Promise((ok,no)=>{const sc=document.createElement('script'); sc.src='vendor/blob-upload.js'; sc.onload=ok; sc.onerror=()=>no(new Error('network')); document.head.appendChild(sc)}) }
@@ -3589,7 +3616,9 @@ document.addEventListener('click',e=>{
     case 'openConv': {openRoom(v); break}
     case 'year': S.profile.year=v; render(true); break;
     case 'pickHome': {S.profile.univ=v; S.homeQ=''; const sc=krmOf(v); if(sc&&S.profile.major&&!sc[3].includes(S.profile.major)) S.profile.major=''; S.majorOpen=false; render(true); break}
-    case 'mfilter': S[a.dataset.k]=v; render(true); break;
+    case 'mfOpen': openMfSheet(a.dataset.k); break;
+    case 'mfSet': S.mf[a.dataset.k]=v; closeSheet(); render(true); break;
+    case 'mfReset': S.mf={host:'',year:'',prog:'',home:'',major:''}; render(true); break;
     case 'pickMfHost': {const i=$('#mfHost'), cc=$('#mfHostCC'); if(i) i.value=v; if(cc) cc.value=a.dataset.cc||''; const l=$('#mfHostList'); if(l) l.innerHTML=''; break}
     case 'pickMajor': {S.profile.major=v; S.majorOpen=false; const i=$('#major'); if(i) i.value=v; const l=$('#majorList'); if(l) l.innerHTML=''; render(true); break}
     case 'unpickHome': S.profile.univ=''; S.homeQ=''; render(true); setTimeout(()=>$('#homeQ')&&$('#homeQ').focus()); break;
@@ -3647,6 +3676,9 @@ document.addEventListener('click',e=>{
     case 'sendMsg': sendMsg(); break;
     case 'chatAttach': {closeSheet(); const f=$('#chatFile'); f&&f.click(); break}
     case 'chatMore': openChatMore(); break;
+    case 'chatProfile': openChatProfile(v); break;
+    case 'chatMentor': { const key=v, go=()=>{ if((REALM.list||[]).some(m=>m.key===key)) openRealMentor(key); else toast(KX('This mentor profile is not public right now.','지금은 공개되지 않은 멘토 프로필이에요.')) };
+      if(REALM.list) go(); else { REALM.at=Date.now(); api('chat?mentors=1&host='+encodeURIComponent(host().name)).then(j=>{REALM.list=j.mentors||[]; go()}).catch(()=>toast(errMsg({code:'network'}))) } break }
     case 'pollNew': openPollSheet(2); break;
     case 'pollMoreOpt': openPollSheet(+v); break;
     case 'pollCreate': {const q=($('#pollQ')||{}).value.trim(), opts=[...document.querySelectorAll('#sheet .popin')].map(i=>i.value.trim()).filter(Boolean), err=$('#pollErr');

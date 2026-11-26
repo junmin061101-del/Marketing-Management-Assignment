@@ -5,6 +5,7 @@
 // GET  /api/chat?list=1&groups=["CC|Name",…]        → my 1:1 rooms and my group chats, each with the last message and my unread count
 // Read receipts (like KakaoTalk): seen:<room> holds, per member who opened the room, when they last read it.
 // Opening or polling a room marks it read; each message shows how many members have not read it yet.
+// GET  /api/chat?room=<id>&who=<message tag>          → the public profile of someone in the room (tap on their photo)
 // GET  /api/chat?room=<id>&after=<ISO time>          → messages (newest 100, or only those after a time for polling)
 // POST /api/chat {action:'open', mentor:<public key>} → the 1:1 room with that mentor
 // POST /api/chat {action:'notice', room, text | poll}  → pins a notice (or a poll) at the top of the room (anyone in the room; empty removes it)
@@ -129,6 +130,15 @@ export default async function handler(req, res) {
     }
     const room = await roomFor(String(q.get('room') || ''), user);
     if (!room) return send(res, 404, { error: 'room_not_found' });
+    if (q.get('who')) {
+      // only people in this room can be looked up, and only by the tag their messages carry
+      const want = String(q.get('who')), ids = room.kind === 'd' ? room.members : Object.keys(await seenOf(room.id));
+      const id = ids.find(x => tag(x) === want), u = id ? await getJSON('user:' + id) : null;
+      if (!u) return send(res, 404, { error: 'not_found' });
+      const mentor = u.mentor?.status === 'approved' && u.mentor.profile ? u.mentor.profile : null, pf = u.profile || {};
+      return send(res, 200, { profile: { name: mentor ? fullName(u) : mask(u.name), av: u.avatar?.id || '', home: pf.home || '', major: pf.major || '', year: pf.year || '',
+        host: u.plan?.host?.[0] || '', mentorKey: mentor ? mentor.key : '', me: id === me } });
+    }
     const raw = (await redis('LRANGE', 'msgs:' + room.id, 0, PAGE - 1)) || [];
     const after = q.get('after') || '';
     const msgs = raw.map(v => { try { return JSON.parse(v); } catch { return null; } }).filter(m => m && (!after || m.at > after)).reverse().map(m => view(m, me));
@@ -156,7 +166,7 @@ export default async function handler(req, res) {
     if (!(await allow('chat:' + me, 120, 3600))) return send(res, 429, { error: 'too_many_requests' });
     const room = await roomFor(String(b.room || ''), user);
     if (!room) return send(res, 404, { error: 'room_not_found' });
-    const who = room.kind === 'd' && room.mentorUid === me && user.mentor?.status === 'approved' ? fullName(user) : mask(user.name);
+    const who = user.mentor?.status === 'approved' && user.mentor.profile ? fullName(user) : mask(user.name);
     if (b.action === 'notice') {
       let text = cleanText(b.text, 300), poll = '';
       if (b.poll) { const pm = /^[a-z0-9]{6,20}$/.test(String(b.poll)) ? await getJSON(`pollm:${room.id}:${b.poll}`) : null; if (!pm) return send(res, 404, { error: 'poll_not_found' }); poll = String(b.poll); text = '투표: ' + pm.q; }
@@ -195,7 +205,7 @@ export default async function handler(req, res) {
     const files = Array.isArray(b.files) ? b.files.slice(0, 30).map(f => cleanFile(f, room.id)) : null;  // several photos in one message
     if ((b.file && !file) || (files && (!files.length || files.some(f => !f || f.kind !== 'image')))) return send(res, 400, { error: 'bad_file' });
     if (!text && !file && !files) return send(res, 400, { error: 'empty_message' });
-    const asMentor = room.kind === 'd' && room.mentorUid === me && user.mentor?.status === 'approved';
+    const asMentor = user.mentor?.status === 'approved' && !!user.mentor.profile;  // verified mentors use their full name in every chat
     const m = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), u: tag(me), who: asMentor ? fullName(user) : mask(user.name), av: user.avatar?.id || '', text, ...(file ? { file } : {}), ...(files ? { files } : {}), at: new Date().toISOString() };
     for (const f of file ? [file] : files || []) await redis('LPUSH', 'files:' + me, f.url);  // removed with the account
     if (file || files) await redis('LTRIM', 'files:' + me, 0, 1999);
