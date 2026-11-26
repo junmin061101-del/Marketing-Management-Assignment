@@ -31,11 +31,14 @@ export default async function handler(req, res) {
   if (b.name !== undefined) user.name = cleanText(b.name, 40) || user.name;
   if (p) user.profile = { home: cleanText(p.home, 80), major: cleanText(p.major, 60), year: cleanText(p.year, 20) };
   if (b.plan !== undefined) user.plan = cleanPlan(b.plan);
+  // joined school communities: [{k:'CC|University', st:'soon'|'now'|'done'}], at most 20
+  if (Array.isArray(b.communities)) user.communities = b.communities.filter(c => c && typeof c.k === 'string' && /^[A-Z]{2}\|[^|<>]{2,200}$/.test(c.k))
+    .slice(0, 20).map(c => ({ k: c.k, st: ['soon', 'now', 'done'].includes(c.st) ? c.st : 'soon' }));
   // push: {add: token, platform: 'android'|'ios'} when notifications are turned on, {remove: token} when turned off or on logout
   const tok = v => typeof v === 'string' && /^[\w:.-]{20,4096}$/.test(v) ? v : '';
   if (b.push && tok(b.push.add) && ['android', 'ios'].includes(b.push.platform)) await savePushToken(uid(user), b.push.add, b.push.platform);
   if (b.push && tok(b.push.remove)) await removePushToken(uid(user), b.push.remove);
-  if (b.push && !b.name && !p && b.plan === undefined) return send(res, 200, { ok: true });
+  if (b.push && !b.name && !p && b.plan === undefined && !b.communities) return send(res, 200, { ok: true });
   await saveUser(user);
   send(res, 200, { user: publicUser(user) });
 }

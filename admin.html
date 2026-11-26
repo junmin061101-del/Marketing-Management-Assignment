@@ -111,7 +111,7 @@ const who=u=>u.username?'@'+u.username:u.phone?fmtPhone(u.phone):(u.email||u.key
 const stars=n=>`<span class="stars">${'★'.repeat(n)}<i>${'★'.repeat(5-n)}</i></span>`;
 const STATUS={none:['신청 전',''],pending:['심사 대기','warn'],approved:['승인','ok'],rejected:['반려','']};
 const statusPill=u=>u.published?'<span class="pill ok">멘토 공개 중</span>':`<span class="pill ${STATUS[u.status]?.[1]||''}">${STATUS[u.status]?.[0]||esc(u.status)}</span>`;
-const LOGT={reset_password:'비밀번호 초기화',sign_in:'관리자 로그인',approve:'멘토 승인',reject:'멘토 반려',revoke:'멘토 자격 취소',delete_user:'회원 삭제',broadcast:'공지 알림 발송',delete_avatar:'프로필 사진 삭제',delete_post:'게시글 삭제',self_delete:'회원 직접 탈퇴',delete_review:'후기 삭제'};
+const LOGT={reset_password:'비밀번호 초기화',sign_in:'관리자 로그인',approve:'멘토 승인',reject:'멘토 반려',revoke:'멘토 자격 취소',delete_user:'회원 삭제',broadcast:'공지 알림 발송',delete_avatar:'프로필 사진 삭제',delete_post:'게시글 삭제',delete_comment:'댓글 삭제',self_delete:'회원 직접 탈퇴',delete_review:'후기 삭제'};
 
 async function load(){
   try{A.data=await api('data'); A.view='dash'}
@@ -193,7 +193,7 @@ const REASON={spam:'스팸·광고',abuse:'욕설·비방',privacy:'개인정보
 function reportsHTML(){const R=A.data.reports||[];
   return `<h2 style="margin-top:0">커뮤니티 신고 <span>최근 200건 · 게시글 일부만 보관해요</span></h2>
   ${R.length?R.map(r=>`<div class="rv"><span class="t"><span class="pill warn">${esc(REASON[r.reason]||r.reason)}</span> <b>${esc(r.where||'')}</b>${r.cat?` · <small>${esc(r.cat)}</small>`:''}
-    <p>${esc(r.text)}</p><small>${fmt(r.at)}${r.by?' · 신고자 @'+esc(r.by):' · 비회원 신고'}</small></span>${r.id?`<button class="btn sm warn" data-act="delpost" data-v="${esc(r.id)}">글 삭제</button>`:''}</div>`).join('')
+    <p>${esc(r.text)}</p><small>${fmt(r.at)}${r.by?' · 신고자 @'+esc(r.by):' · 비회원 신고'}</small></span>${r.id&&r.cid?`<button class="btn sm warn" data-act="delcomment" data-v="${esc(r.id)}" data-c="${esc(r.cid)}">댓글 삭제</button>`:r.id?`<button class="btn sm warn" data-act="delpost" data-v="${esc(r.id)}">글 삭제</button>`:''}</div>`).join('')
   :'<div class="empty">신고가 없어요.</div>'}`}
 function logHTML(){const L=A.data.log;
   return `<h2 style="margin-top:0">작업 기록 <span>최근 100건</span></h2>
@@ -231,6 +231,8 @@ document.addEventListener('click',e=>{
     return act(async()=>{const j=await api('action',{type:'reset_password',key:em}); await load(); prompt('임시 비밀번호예요. 본인에게 전달하고 로그인 후 바꾸도록 안내하세요.',j.temp)})}
   if(t==='deluser'){const c=prompt(`회원 정보, 후기, 증빙 파일이 영구 삭제되고 되돌릴 수 없어요.\n삭제하려면 아이디를 그대로 입력하세요:\n${fmtPhone(em)}`); if(c===null) return;
     return act(async()=>{await api('action',{type:'delete_user',key:em,confirm:c}); await load(); toast('회원을 삭제했어요')})}
+  if(t==='delcomment'){ if(!confirm('신고된 댓글을 삭제할까요? 되돌릴 수 없어요.')) return;
+    return act(async()=>{const j=await api('action',{type:'delete_comment',id:b.dataset.v,cid:b.dataset.c}); toast(j.removed?'댓글을 삭제했어요':'이미 삭제된 댓글이에요')})}
   if(t==='delpost'){ if(!confirm('신고된 글을 게시판에서 삭제할까요? 되돌릴 수 없어요.')) return;
     return act(async()=>{const j=await api('action',{type:'delete_post',id:b.dataset.v}); toast(j.removed?'글을 삭제했어요':'이미 삭제된 글이에요')})}
   if(t==='delavatar'){ if(!confirm(`${fmtPhone(em)} 님의 프로필 사진을 삭제할까요? 부적절한 사진일 때 사용하세요.`)) return;
