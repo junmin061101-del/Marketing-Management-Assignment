@@ -142,7 +142,7 @@ export default async function handler(req, res) {
     const room = await openDM(user, mentor, b.mentor);
     const bk = {
       id: Date.now().toString(36) + crypto.randomBytes(3).toString('hex'),
-      s: me, m: mid, mentorKey: b.mentor, sName: mask(user.name), mName: mask(mentor.name), sAv: user.avatar?.id || '', mAv: mentor.avatar?.id || '',
+      s: me, m: mid, mentorKey: b.mentor, sName: mask(user.name), mName: String(mentor.name || '').trim() || '?', sAv: user.avatar?.id || '', mAv: mentor.avatar?.id || '',
       mode, length: p.length || '', date: b.date, time: b.time, note: cleanText(b.note, 500),
       price: null, fee: 0, status: 'requested', room, at: new Date().toISOString(),
     };

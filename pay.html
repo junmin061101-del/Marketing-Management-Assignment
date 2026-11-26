@@ -28,14 +28,17 @@ button:disabled{opacity:.5}
 .state.bad .ic{background:var(--bad)}
 .state h1{margin-bottom:8px}
 .test{display:inline-block;font-size:12px;font-weight:700;color:#B25E00;background:#FFF1DB;border-radius:6px;padding:2px 8px;margin-bottom:8px}
+a.back{display:inline-flex;align-items:center;gap:6px;color:var(--ink);text-decoration:none;font-size:15px;font-weight:600;margin:0 0 14px -2px;padding:6px 2px}
+.btn2{display:block;text-align:center;margin-top:14px;padding:14px;border-radius:14px;background:var(--line);color:var(--ink);font-weight:700;text-decoration:none}
 footer{font-size:12px;color:var(--sub);margin-top:26px;line-height:1.7}
 footer a{color:var(--sub)}
 </style>
 </head>
 <body>
-<main id="app"><p class="sub">불러오는 중…</p></main>
+<main><a class="back" href="/?go=sessions" id="back">‹ 내 멘토링으로 돌아가기</a><div id="app"><p class="sub">불러오는 중…</p></div></main>
 <script>
 const $=s=>document.querySelector(s), app=$('#app');
+$('#back').onclick=e=>{ if(window.opener){ e.preventDefault(); try{window.opener.focus()}catch(x){} window.close(); setTimeout(()=>{location.href='/?go=sessions'},300) } };
 const P=new URLSearchParams(location.search), T=P.get('t')||'';
 const won=n=>Number(n).toLocaleString('ko-KR')+'원';
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -49,7 +52,8 @@ function footer(b){b=b||{};
 function done(j){app.innerHTML=`<div class="card state"><div class="ic">✓</div><h1>결제가 끝났어요</h1>
   <p class="sub">${esc(j.date)} ${esc(j.time)} 멘토링이 확정됐어요.<br>앱으로 돌아가 채팅에서 장소나 화상 링크를 정해 주세요.</p>
   ${j.receipt?`<p class="note"><a href="${esc(j.receipt)}" target="_blank" rel="noopener">카드 영수증 보기</a></p>`:''}
-  <p class="note">앱에서 여셨다면 화면 위의 '완료' 또는 '닫기'를 눌러 돌아가세요.</p></div>${footer(j.biz)}`}
+  <a class="btn2" href="/?go=sessions" onclick="return document.getElementById('back').onclick(event)!==false">내 멘토링으로 돌아가기</a>
+  <p class="note">앱에서 여셨다면 화면 위의 '완료' 또는 '닫기'를 눌러도 돼요.</p></div>${footer(j.biz)}`}
 function fail(title,text){app.innerHTML=`<div class="card state bad"><div class="ic">!</div><h1>${esc(title)}</h1><p class="sub">${esc(text)}</p>
   ${D&&D.orderId?'<button id="again">다시 결제하기</button>':''}</div>${footer(D&&D.biz)}`;
   const a=$('#again'); a&&(a.onclick=()=>{history.replaceState(null,'','/pay?t='+encodeURIComponent(T)); show()})}

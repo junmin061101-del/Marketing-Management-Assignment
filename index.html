@@ -437,6 +437,12 @@ p{margin:0}
 .chatrow .ava{width:40px;height:40px;font-size:14px;background:var(--primary-soft);color:var(--primary-ink)}
 .chatrow small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .chat{display:flex;flex-direction:column;gap:3px}
+.chat .cspacer{flex:1 1 auto;min-height:8px}
+.msg .mt{display:flex;flex-direction:column;flex:none;gap:1px;margin-bottom:3px}.msg.me .mt{align-items:flex-end}.msg.them .mt{align-items:flex-start}
+.msg .mrow .mt time{margin:0}.msg .ur{font-size:10px;font-weight:800;line-height:1;color:#F5B400}
+.ubadge{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#FF5A3C;color:#fff;font-size:11px;font-weight:800;line-height:1}
+.chatrow .cside{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex:none}.chatrow .cside .ct{margin:0}
+.tabbar button{position:relative}.tabbar button .ubadge{position:absolute;top:2px;left:calc(50% + 6px);height:16px;min-width:16px;font-size:10px;padding:0 4px}
 .chat .msg.me{padding:0;gap:0}  /* .me is also the Me-tab card class */
 .chat .msg.first{margin-top:10px}.chat .sysmsg{margin:10px 0 4px}
 .msg .mrow{display:flex;align-items:flex-end;gap:5px}.msg.me .mrow{justify-content:flex-end}
@@ -1518,6 +1524,7 @@ async function loadData(){
   }
   render(true);
   // a shared post link (?post=<id>) opens that post
+  try{ if(new URLSearchParams(location.search).get('go')==='sessions'&&AUTH.user){ S.screen='sessions'; SESS.at=0; render(); history.replaceState(history.state,'',location.pathname) } }catch(e){}
   try{ const pid=new URLSearchParams(location.search).get('post'); if(pid&&/^[a-z0-9]{6,20}$/.test(pid)){ if(S.screen==='app'){S.tab='community'; render()} openPost(pid); history.replaceState(history.state,'',location.pathname) } }catch(e){}
 }
 
@@ -2663,6 +2670,7 @@ const SCREENS={
         <div class="act mform">
           <div class="mrow two"><label>Home university<input class="input" id="mfHome" maxlength="100" value="${esc(homeKo(d.home||(u.profile&&u.profile.home)||S.profile.univ||''))}"></label><label>Major<input class="input" id="mfMajor" maxlength="60" value="${esc(d.major||(u.profile&&u.profile.major)||S.profile.major||'')}"></label></div>
           <p class="hint" style="margin-top:-4px">Students see your school and major first. Many look for a mentor from their own school and major.</p>
+          <p class="hint" data-notr>${KX(`As a verified mentor you appear by your full name (${esc((u&&u.name)||'')}), not masked like other students.`,`인증 멘토는 다른 학생처럼 가려지지 않고 가입 이름(${esc((u&&u.name)||'')}) 그대로 표시돼요.`)}</p>
           ${ta('mfAct','Activities you took part in','e.g. Orientation buddy, hackathon, volunteering',d.act)}
           ${ta('mfClub','Clubs and networking','e.g. Korean Students Association, consulting club',d.club)}
           ${ta('mfLab','Research or lab work','e.g. Research assistant in a robotics lab (optional)',d.lab)}
@@ -2879,16 +2887,16 @@ const hm=d=>`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).pa
 function convList(){
   const out=[];
   for(const k of S.joined){const c=S.cinfo[k]; if(!c) continue; const rid='g:'+k, a=((ROOMS[rid]||{}).msgs||[]).filter(m=>!String(m.id).startsWith('tmp')).slice(-1)[0], b=(DMS.groups||{})[rid], l=a&&b?(a.at>b.at?a:b):a||b;
-    out.push({v:rid,kind:'c',ava:`<span class="mono">${esc(c.h.mono)}</span>`,title:c.h.short,sub:lastText(l),empty:DMS.loaded||!AUTH.user?'No messages yet':'…',time:l?hm(new Date(l.at)):'',ts:l?Date.parse(l.at):0})}
+    out.push({v:rid,kind:'c',ava:`<span class="mono">${esc(c.h.mono)}</span>`,title:c.h.short,unread:unreadOf(rid),sub:lastText(l),empty:DMS.loaded||!AUTH.user?'No messages yet':'…',time:l?hm(new Date(l.at)):'',ts:l?Date.parse(l.at):0})}
   for(const r of (DMS.rooms||[])){const l=r.last;
-    out.push({v:r.id,kind:'m',ava:`<span class="ava">${avaImg(r.av?{id:r.av}:null,(r.title||'?')[0])}</span>`,title:r.title,school:r.iAmMentor?(LANG==='ko'?'나에게 온 멘토링 문의':'Mentoring request to you'):'',sub:lastText(l),empty:'Chat started',time:l?hm(new Date(l.at)):'',ts:l?Date.parse(l.at):0})}
+    out.push({v:r.id,kind:'m',ava:`<span class="ava">${avaImg(r.av?{id:r.av}:null,(r.title||'?')[0])}</span>`,title:r.title,unread:unreadOf(r.id),school:r.iAmMentor?(LANG==='ko'?'나에게 온 멘토링 문의':'Mentoring request to you'):'',sub:lastText(l),empty:'Chat started',time:l?hm(new Date(l.at)):'',ts:l?Date.parse(l.at):0})}
   return out.sort((a,b)=>b.ts-a.ts)}
 function chatsTab(){
   const all=convList(), list=all.filter(x=>S.chf==='all'||x.kind===S.chf);
   return `${mainBar('Chats')}
   <div class="scroll pad">
     <div class="chips" style="margin-bottom:6px">${[['all','All'],['c','Communities'],['m','Mentors']].map(([v,l])=>`<button class="chip sm${S.chf===v?' on':''}" data-act="chf" data-v="${v}">${l}</button>`).join('')}</div>
-    ${AUTH.user&&(!DMS.at||Date.now()-DMS.at>20000)?(setTimeout(loadDMs,0),''):''}${list.length?list.map(x=>`<button class="srow chatrow" data-act="openConv" data-v="${esc(x.v)}">${x.ava}<span class="t"><span class="ctitle"><b data-notr>${esc(x.title)}</b><span class="pill ${x.kind==='c'?'cat':'ok'}">${x.kind==='c'?'Group':x.booked?'Booked':'Mentor'}</span></span>${x.school?`<small class="cs" data-notr>${esc(x.school)}</small>`:''}${x.sub?`<small data-notr>${esc(x.sub.slice(0,60))}</small>`:`<small>${x.empty}</small>`}</span><time class="ct">${x.time}</time></button>`).join('')
+    ${AUTH.user&&(!DMS.at||Date.now()-DMS.at>20000)?(setTimeout(loadDMs,0),''):''}${list.length?list.map(x=>`<button class="srow chatrow" data-act="openConv" data-v="${esc(x.v)}">${x.ava}<span class="t"><span class="ctitle"><b data-notr>${esc(x.title)}</b><span class="pill ${x.kind==='c'?'cat':'ok'}">${x.kind==='c'?'Group':x.booked?'Booked':'Mentor'}</span></span>${x.school?`<small class="cs" data-notr>${esc(x.school)}</small>`:''}${x.sub?`<small data-notr>${esc(x.sub.slice(0,60))}</small>`:`<small>${x.empty}</small>`}</span><span class="cside"><time class="ct">${x.time}</time>${badge(x.unread)}</span></button>`).join('')
       :`<div class="empty-state">${ic('chat',28)}<b>No chats yet</b><small>${S.chf==='m'?'Open a mentor’s profile and start a chat.':S.chf==='c'?'Join a community to open its group chat.':'Join a community or message a mentor. Every chat shows up here.'}</small>
         <div class="empty-acts">${S.chf!=='m'?'<button class="btn sm ghost" data-act="tab" data-v="community">Find a community</button>':''}${S.chf!=='c'?'<button class="btn sm ghost" data-act="tab" data-v="mentor">See mentors</button>':''}</div></div>`}
   </div>`}
@@ -3214,17 +3222,26 @@ function openDepSheet(){
 /* real chats (/api/chat): group rooms per school community, 1:1 rooms with published mentors.
    The open room is refreshed every 4 seconds; new 1:1 messages also arrive as push notifications. */
 const ROOMS={}, DMS={rooms:[],at:0}; let pollT=null;
-function loadDMs(){ if(!AUTH.user) return; DMS.at=Date.now(); api('chat?list=1&groups='+encodeURIComponent(JSON.stringify([...S.joined].slice(0,20)))).then(j=>{DMS.rooms=j.rooms||[]; DMS.groups=j.groups||{}; DMS.loaded=true; if(S.screen==='app'&&S.tab==='chat') render(true)}).catch(()=>{}) }
+function loadDMs(){ if(!AUTH.user) return; DMS.at=Date.now(); api('chat?list=1&groups='+encodeURIComponent(JSON.stringify([...S.joined].slice(0,20)))).then(j=>{DMS.rooms=j.rooms||[]; DMS.groups=j.groups||{}; DMS.unread=j.unread||{}; DMS.loaded=true;
+  if(S.screen==='chat'&&S.room) clearUnread(S.room); if(S.screen==='app'&&S.tab==='chat') render(true); else paintTabBadge()}).catch(()=>{}) }
+// unread messages (KakaoTalk style): per room in the chat list, in total on the Chats tab
+const unreadOf=rid=>rid.startsWith('d:')?((DMS.rooms||[]).find(r=>r.id===rid)||{}).unread||0:(DMS.unread||{})[rid]||0;
+const unreadTotal=()=>(DMS.rooms||[]).reduce((a,r)=>a+(r.unread||0),0)+[...S.joined].reduce((a,k)=>a+((DMS.unread||{})['g:'+k]||0),0);
+const badge=n=>n>0?`<b class="ubadge">${n>99?'99+':n}</b>`:'';
+function clearUnread(rid){ const r=(DMS.rooms||[]).find(x=>x.id===rid); if(r) r.unread=0; if(DMS.unread) DMS.unread[rid]=0; paintTabBadge() }
+function paintTabBadge(){ const b=document.querySelector('.tabbar [data-v="chat"]'); if(!b) return; const o=b.querySelector('.ubadge'); if(o) o.remove(); const n=unreadTotal(); if(n>0) b.insertAdjacentHTML('beforeend',badge(n)) }
+setInterval(()=>{ if(AUTH.user&&!document.hidden&&!(S.screen==='app'&&S.tab==='chat')) loadDMs() },20000);
 const lastText=l=>!l?'':l.text||(l.file?(l.file.kind==='video'?KX('Video','동영상'):KX('Photo','사진')):'');
 function chatMsgsHTML(rid){const R=ROOMS[rid]||{msgs:[],loading:true}, group=rid.startsWith('g:');
   const info=group?`<div class="chat-info">${ic('users',18)}<span><b>Group chat for this school's community</b><br><small>Messages go to everyone in this community. Be kind, and keep personal contact details private.</small></span></div>`
     :`<div class="chat-info">${ic('mentor',18)}<span><b>1:1 chat with a verified mentor</b><br><small>Agree on what you'll cover and when. Report anything inappropriate to gyohwan.info@gmail.com.</small></span></div>`;
   if(!R.msgs.length) return info+(R.loading?'<p class="loadmsg">Loading messages…</p>':`<div class="empty-state">${ic('chat',28)}<b>No messages yet</b><small>${group?'Say hello to students going to the same school.':'Say hello and ask your first question.'}</small></div>`);
+  const seenE=Object.entries(R.seen||{}), unread=m=>m.sys||!m.by?0:seenE.filter(([t,a])=>t!==m.by&&a<m.at).length;
   let day=''; const L=R.msgs, who=x=>x&&!x.sys?(x.mine?'me':(x.who||'')+'|'+(x.av||'')):'', same=(a,b)=>!!(a&&b&&who(a)&&who(a)===who(b)&&hm(new Date(a.at))===hm(new Date(b.at)));
-  return info+L.map((m,i)=>{const d=new Date(m.at), dl=fmtShort(d), sep=dl!==day?(day=dl,`<p class="sysmsg">${esc(dl)}</p>`):'';
+  return info+'<div class="cspacer"></div>'+L.map((m,i)=>{const d=new Date(m.at), dl=fmtShort(d), sep=dl!==day?(day=dl,`<p class="sysmsg">${esc(dl)}</p>`):'';
     if(m.sys) return sep+`<p class="sysmsg notice" data-notr>${esc(m.text)}</p>`;
     // messages from the same person in the same minute stack closely; the time shows once, beside the last one
-    const first=!!sep||!same(L[i-1],m), last=!same(m,L[i+1]), t=last?`<time>${hm(d)}</time>`:'';
+    const first=!!sep||!same(L[i-1],m), last=!same(m,L[i+1]), n=unread(m), t=n||last?`<span class="mt">${n?`<b class="ur">${n}</b>`:''}${last?`<time>${hm(d)}</time>`:''}</span>`:'';
     const body=(m.file?fileHTML(m.file,m.up):'')+(m.text?`<p data-notr>${esc(m.text)}</p>`:'');
     return sep+(m.mine?`<div class="msg me${first?' first':''}"><div class="mrow">${t}<div class="mb">${body}</div></div></div>`
       :`<div class="msg them${first?' first':''}">${group&&first?`<span class="mwho"><span class="ava">${avaImg(m.av?{id:m.av}:null,(m.who||'?')[0])}</span><b data-notr>${esc(m.who)}</b></span>`:''}<div class="mrow"><div class="mb">${body}</div>${t}</div></div>`)}).join('')}
@@ -3239,10 +3256,11 @@ function loadRoom(rid,first){ const R=ROOMS[rid]||(ROOMS[rid]={msgs:[],loading:t
   return api('chat?room='+encodeURIComponent(rid)+(after&&!first?'&after='+encodeURIComponent(after):'')).then(j=>{
     const n0=R.msgs.length, wasLoading=R.loading;
     if(first) R.msgs=j.messages||[]; else{const have=new Set(R.msgs.map(m=>m.id)); (j.messages||[]).forEach(m=>{if(!have.has(m.id)) R.msgs.push(m)})}
-    if(j.title) R.title=j.title; if(j.folder) R.folder=j.folder; R.loading=false; R.err=''; if(first||wasLoading||R.msgs.length!==n0) paintRoom(rid,first);
+    const seenChanged=JSON.stringify(j.seen||{})!==JSON.stringify(R.seen||{}); if(j.seen) R.seen=j.seen;
+    if(j.title) R.title=j.title; if(j.folder) R.folder=j.folder; R.loading=false; R.err=''; if(first||wasLoading||R.msgs.length!==n0||seenChanged) paintRoom(rid,first);
     if(first&&S.screen==='chat'&&S.room===rid){const t=document.querySelector('.bar span[data-notr]'); if(t&&j.title) t.textContent=j.title}})
     .catch(e=>{R.loading=false; R.err=e.code; if(e.code==='login_required'){toast('Log in to use chat')} paintRoom(rid)}) }
-function openRoom(rid){ if(!AUTH.user){toast('Log in to use chat'); return} closeSheet(); S.room=rid; S.screen='chat'; render();
+function openRoom(rid){ if(!AUTH.user){toast('Log in to use chat'); return} closeSheet(); S.room=rid; S.screen='chat'; clearUnread(rid); render();
   loadRoom(rid,true); clearInterval(pollT); pollT=setInterval(()=>{ if(S.screen==='chat'&&S.room===rid&&!document.hidden) loadRoom(rid); else if(S.screen!=='chat'){clearInterval(pollT); pollT=null} },4000);
   setTimeout(()=>{const i=$('#chatInput'); i&&i.focus()},60) }
 /* chat attachments: photos become JPEG (at most 2048 px) on the phone, videos go as they are (MP4/MOV/WebM, 50 MB) */
@@ -3323,7 +3341,7 @@ function render(keepScroll){
   lastKey=key;
   const tb=$('#tabbar'); const showTabs=S.screen==='app';
   tb.hidden=!showTabs;
-  if(showTabs) tb.innerHTML=`<div class="tb-brand" aria-hidden="true"><span class="appicon sm logo">${LOGO}</span><b class="ko">교환가자</b></div>`+TABS.map(([k,i,l])=>`<button class="${S.tab===k?'on':''}" data-act="tab" data-v="${k}" aria-current="${S.tab===k?'page':'false'}">${ic(i,24)}${l}</button>`).join('');
+  if(showTabs) tb.innerHTML=`<div class="tb-brand" aria-hidden="true"><span class="appicon sm logo">${LOGO}</span><b class="ko">교환가자</b></div>`+TABS.map(([k,i,l])=>`<button class="${S.tab===k?'on':''}" data-act="tab" data-v="${k}" aria-current="${S.tab===k?'page':'false'}">${ic(i,24)}${l}${k==='chat'?badge(unreadTotal()):''}</button>`).join('');
   translate(view); translate($('#tabbar'));
 }
 function go(screen){S.screen=screen; if(screen!=='detail')S.detail=null; closeSheet(); render()}

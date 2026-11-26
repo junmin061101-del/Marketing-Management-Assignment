@@ -19,6 +19,7 @@ function cmd([c, ...x]) {
   if (C === 'EXPIRE') { if (!alive(x[0])) return 0; exp.set(x[0], Date.now() + Number(x[1]) * 1000); return 1; }
   if (C === 'MGET') return x.map(k => (alive(k) ? db.get(k) : null));
   if (C === 'HSET') { const h = J(x[0]) || {}; const n = x[1] in h ? 0 : 1; h[x[1]] = String(x[2]); db.set(x[0], JSON.stringify(h)); return n; }
+  if (C === 'HGET') { const h = J(x[0]); return h && x[1] in h ? h[x[1]] : null; }
   if (C === 'HGETALL') { const h = J(x[0]); return h ? Object.entries(h).flat() : []; }
   if (C === 'HDEL') { const h = J(x[0]); if (!h) return 0; const n = x[1] in h ? 1 : 0; delete h[x[1]]; db.set(x[0], JSON.stringify(h)); return n; }
   if (C === 'SCAN') { const re = new RegExp('^' + String(x[2]).split('*').map(p => p.replace(/[.+?^${}()|[\]\\]/g, '\\$&')).join('.*') + '$'); return ['0', [...db.keys()].filter(k => alive(k) && re.test(k))]; }
