@@ -10,7 +10,7 @@
 // POST /api/chat {action:'notice', room, text}         → pins a notice at the top of the room (anyone in the room; empty text removes it)
 // POST /api/chat {action:'poll', room, q, opts, multi} → posts a poll (2–6 options; multi = several choices allowed)
 // POST /api/chat {action:'vote', room, id, choice:[i]} → my choice in a poll ([] withdraws it) · {action:'closePoll', room, id} (its maker)
-// POST /api/chat {action:'send', room, text, file?}   → posts a message (1:1 rooms also send a push to the other member);
+// POST /api/chat {action:'send', room, text, file? | files?} → posts a message (files = up to 10 photos shown together) (1:1 rooms also send a push to the other member);
 //      file = {url, kind:'image'|'video', w, h, name} of a photo or video uploaded to Blob through /api/upload
 import { guard, body, send, currentUser, cleanText, redis, allow, uid, hmac, getJSON, setJSON, scanKeys, sendPush } from './_lib.js';
 
@@ -61,7 +61,7 @@ export async function roomFor(id, user) {
   const r = await getJSON('room:' + id);
   return r && r.members.includes(uid(user)) ? { ...r, id, kind: 'd' } : null;
 }
-const view = (m, me) => ({ id: m.id, by: m.u, who: m.who, av: m.av, text: m.text, at: m.at, mine: m.u === tag(me), ...(m.sys ? { sys: true } : {}), ...(m.file ? { file: m.file } : {}), ...(m.poll ? { poll: true } : {}) });
+const view = (m, me) => ({ id: m.id, by: m.u, who: m.who, av: m.av, text: m.text, at: m.at, mine: m.u === tag(me), ...(m.sys ? { sys: true } : {}), ...(m.file ? { file: m.file } : {}), ...(m.files ? { files: m.files } : {}), ...(m.poll ? { poll: true } : {}) });
 // when each member last read a room: {account id: ISO time}
 async function seenOf(room) { const f = (await redis('HGETALL', 'seen:' + room)) || [], o = {}; for (let i = 0; i < f.length; i += 2) o[f[i]] = f[i + 1]; return o; }
 const markRead = (room, me) => redis('HSET', 'seen:' + room, me, new Date().toISOString());
@@ -181,11 +181,13 @@ export default async function handler(req, res) {
     const room = await roomFor(String(b.room || ''), user);
     if (!room) return send(res, 404, { error: 'room_not_found' });
     const text = cleanText(b.text, 1000), file = b.file ? cleanFile(b.file, room.id) : null;
-    if (b.file && !file) return send(res, 400, { error: 'bad_file' });
-    if (!text && !file) return send(res, 400, { error: 'empty_message' });
+    const files = Array.isArray(b.files) ? b.files.slice(0, 10).map(f => cleanFile(f, room.id)) : null;  // several photos in one message
+    if ((b.file && !file) || (files && (!files.length || files.some(f => !f || f.kind !== 'image')))) return send(res, 400, { error: 'bad_file' });
+    if (!text && !file && !files) return send(res, 400, { error: 'empty_message' });
     const asMentor = room.kind === 'd' && room.mentorUid === me && user.mentor?.status === 'approved';
-    const m = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), u: tag(me), who: asMentor ? fullName(user) : mask(user.name), av: user.avatar?.id || '', text, ...(file ? { file } : {}), at: new Date().toISOString() };
-    if (file) { await redis('LPUSH', 'files:' + me, file.url); await redis('LTRIM', 'files:' + me, 0, 1999); }  // removed with the account
+    const m = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), u: tag(me), who: asMentor ? fullName(user) : mask(user.name), av: user.avatar?.id || '', text, ...(file ? { file } : {}), ...(files ? { files } : {}), at: new Date().toISOString() };
+    for (const f of file ? [file] : files || []) await redis('LPUSH', 'files:' + me, f.url);  // removed with the account
+    if (file || files) await redis('LTRIM', 'files:' + me, 0, 1999);
     await redis('LPUSH', 'msgs:' + room.id, JSON.stringify(m));
     await redis('LTRIM', 'msgs:' + room.id, 0, KEEP - 1);
     await markRead(room.id, me);
@@ -193,7 +195,7 @@ export default async function handler(req, res) {
       const other = room.members.find(x => x !== me);
       await redis('LREM', 'myrooms:' + other, 0, room.id); await redis('LPUSH', 'myrooms:' + other, room.id);
       await redis('LREM', 'myrooms:' + me, 0, room.id); await redis('LPUSH', 'myrooms:' + me, room.id);
-      await sendPush(other, `교환가자 · ${m.who}`, text.slice(0, 80) || (file.kind === 'video' ? '동영상을 보냈어요' : '사진을 보냈어요'), { go: 'chat', room: room.id }).catch(() => 0);
+      await sendPush(other, `교환가자 · ${m.who}`, text.slice(0, 80) || (files ? `사진 ${files.length}장을 보냈어요` : file.kind === 'video' ? '동영상을 보냈어요' : '사진을 보냈어요'), { go: 'chat', room: room.id }).catch(() => 0);
     }
     return send(res, 200, { message: view(m, me) });
   }

@@ -454,6 +454,9 @@ p{margin:0}
 .mfile .up{position:absolute;inset:auto 8px 8px auto;font-size:11px;font-weight:700;color:#fff;background:rgba(0,0,0,.55);padding:3px 8px;border-radius:10px}
 .mfile .gtxt{display:none}.mfile.gone{aspect-ratio:auto!important;padding:10px 12px;width:auto}.mfile.gone img,.mfile.gone video{display:none}.mfile.gone .gtxt{display:block;font-size:13px;color:var(--ink-3)}
 .chatbar .attach{flex:none;color:var(--ink-2)}
+.mgrid{position:relative;display:grid;gap:3px;width:240px;max-width:100%;border-radius:14px;overflow:hidden}.mgrid.c2{grid-template-columns:1fr 1fr}.mgrid.c3{grid-template-columns:1fr 1fr 1fr}
+.mcell{aspect-ratio:1;border:0;padding:0;background:var(--track);overflow:hidden}.mcell img{width:100%;height:100%;object-fit:cover;display:block}.mcell.gone img{display:none}
+.mgrid .up{position:absolute;right:8px;bottom:8px;font-size:11px;font-weight:700;color:#fff;background:rgba(0,0,0,.55);padding:3px 8px;border-radius:10px}
 #noticeBar:empty{display:none}
 .cnotice{display:flex;align-items:center;gap:10px;width:calc(100% - 24px);margin:4px 12px 6px;padding:10px 12px;border-radius:14px;background:var(--card);box-shadow:var(--card-shadow);text-align:left;color:var(--ink)}
 .cnotice>.ic:first-child{color:var(--primary-ink);flex:none}.cnotice .t{flex:1;min-width:0;display:flex;flex-direction:column}
@@ -2630,7 +2633,7 @@ const SCREENS={
     return `${bar(`<span data-notr>${esc(title)}</span> `+(group?'<span class="pill cat">Group</span>':'<span class="badge">'+ic('shield',13,2.4)+'Mentor</span>'),'back',group?'':`<button class="iconbtn" data-go="sessions" aria-label="My mentoring">${ic('clock',20)}</button>`)}
     <div id="noticeBar">${noticeHTML(rid)}</div>
     <div class="scroll pad chat" id="chatScroll">${chatMsgsHTML(rid)}</div>
-    <div class="cta chatbar"><button class="iconbtn attach" data-act="chatMore" aria-label="More">${ic('plus',24)}</button><input type="file" id="chatFile" accept="image/*,video/mp4,video/quicktime,video/webm" hidden><input class="input" id="chatInput" placeholder="${group?'Message everyone':'Write a message'}" maxlength="1000" autocomplete="off" aria-label="Message"><button class="btn sm" data-act="sendMsg" aria-label="Send">${ic('send',18)}</button></div>`;
+    <div class="cta chatbar"><button class="iconbtn attach" data-act="chatMore" aria-label="More">${ic('plus',24)}</button><input type="file" id="chatFile" accept="image/*,video/mp4,video/quicktime,video/webm" multiple hidden><input class="input" id="chatInput" placeholder="${group?'Message everyone':'Write a message'}" maxlength="1000" autocomplete="off" aria-label="Message"><button class="btn sm" data-act="sendMsg" aria-label="Send">${ic('send',18)}</button></div>`;
   },
   sessions(){return sessionsScreen()},
   app(){return ({home:homeTab,community:communityTab,mentor:mentorTab,chat:chatsTab,perks:perksTab,me:meTab}[S.tab]||homeTab)()},
@@ -3252,7 +3255,7 @@ const badge=n=>n>0?`<b class="ubadge">${n>99?'99+':n}</b>`:'';
 function clearUnread(rid){ const r=(DMS.rooms||[]).find(x=>x.id===rid); if(r) r.unread=0; if(DMS.unread) DMS.unread[rid]=0; paintTabBadge() }
 function paintTabBadge(){ const b=document.querySelector('.tabbar [data-v="chat"]'); if(!b) return; const o=b.querySelector('.ubadge'); if(o) o.remove(); const n=unreadTotal(); if(n>0) b.insertAdjacentHTML('beforeend',badge(n)) }
 setInterval(()=>{ if(AUTH.user&&!document.hidden&&!(S.screen==='app'&&S.tab==='chat')) loadDMs() },20000);
-const lastText=l=>!l?'':l.text||(l.poll?KX('Poll','투표'):l.file?(l.file.kind==='video'?KX('Video','동영상'):KX('Photo','사진')):'');
+const lastText=l=>!l?'':l.text||(l.poll?KX('Poll','투표'):l.files?KX(`${l.files.length} photos`,`사진 ${l.files.length}장`):l.file?(l.file.kind==='video'?KX('Video','동영상'):KX('Photo','사진')):'');
 function chatMsgsHTML(rid){const R=ROOMS[rid]||{msgs:[],loading:true}, group=rid.startsWith('g:');
   const info=group?`<div class="chat-info">${ic('users',18)}<span><b>Group chat for this school's community</b><br><small>Messages go to everyone in this community. Be kind, and keep personal contact details private.</small></span></div>`
     :`<div class="chat-info">${ic('mentor',18)}<span><b>1:1 chat with a verified mentor</b><br><small>Agree on what you'll cover and when. Report anything inappropriate to gyohwan.info@gmail.com.</small></span></div>`;
@@ -3263,9 +3266,12 @@ function chatMsgsHTML(rid){const R=ROOMS[rid]||{msgs:[],loading:true}, group=rid
     if(m.sys) return sep+`<p class="sysmsg notice" data-notr>${esc(m.text)}</p>`;
     // messages from the same person in the same minute stack closely; the time shows once, beside the last one
     const first=!!sep||!same(L[i-1],m), last=!same(m,L[i+1]), n=unread(m), t=n||last?`<span class="mt">${n?`<b class="ur">${n}</b>`:''}${last?`<time>${hm(d)}</time>`:''}</span>`:'';
-    const body=(m.poll?pollHTML(rid,m.id):'')+(m.file?fileHTML(m.file,m.up):'')+(m.text?`<p data-notr>${esc(m.text)}</p>`:'');
+    const body=(m.poll?pollHTML(rid,m.id):'')+(m.files?filesHTML(m.files,m.up):'')+(m.file?fileHTML(m.file,m.up):'')+(m.text?`<p data-notr>${esc(m.text)}</p>`:'');
     return sep+(m.mine?`<div class="msg me${first?' first':''}"><div class="mrow">${t}<div class="mb">${body}</div></div></div>`
       :`<div class="msg them${first?' first':''}">${group&&first?`<span class="mwho"><span class="ava">${avaImg(m.av?{id:m.av}:null,(m.who||'?')[0])}</span><b data-notr>${esc(m.who)}</b></span>`:''}<div class="mrow"><div class="mb">${body}</div>${t}</div></div>`)}).join('')}
+// several photos in one message: a grid like KakaoTalk (2 per row for 2 or 4 photos, otherwise 3)
+function filesHTML(fs,up){ const cols=fs.length===2||fs.length===4?2:3, gone=`this.parentElement.classList.add('gone')`;
+  return `<span class="mgrid c${cols}">${fs.map(f=>`<button class="mcell" data-act="openMedia" data-v="${esc(f.url)}"><img src="${esc(f.url)}" alt="${KX('Photo','사진')}" loading="lazy" onerror="${gone}"></button>`).join('')}${up!=null?`<span class="up">${KX('Sending','보내는 중')} ${up}%</span>`:''}</span>` }
 // a photo or video in a chat bubble (up = upload progress while it is still being sent)
 function fileHTML(f,up){const r=f.w&&f.h?`aspect-ratio:${f.w}/${f.h}`:'', gone=`this.parentElement.classList.add('gone')`;
   const prog=up!=null?`<span class="up">${KX('Sending','보내는 중')} ${up}%</span>`:'';
@@ -3326,6 +3332,28 @@ async function toJPEG(file,max){ let img;
   const blob=await new Promise(ok=>c.toBlob(ok,'image/jpeg',.85)); if(!blob) throw new Error('decode'); return {blob,w,h} }
 function videoSize(file){ return new Promise(ok=>{const v=document.createElement('video'), u=URL.createObjectURL(file), done=r=>{URL.revokeObjectURL(u); ok(r)};
   v.preload='metadata'; v.onloadedmetadata=()=>done({w:v.videoWidth,h:v.videoHeight}); v.onerror=()=>done({w:0,h:0}); setTimeout(()=>done({w:0,h:0}),4000); v.src=u}) }
+// one file to Blob with a short-lived token; onPct gets 0–100
+async function uploadBlob(rid,blob,kind,ext,type,onPct){ const R=ROOMS[rid], path=R.folder+kind+'.'+ext, multipart=blob.size>8*1024*1024;
+  await loadBlobLib();
+  const tok=await api('upload',{type:'blob.generate-client-token',payload:{pathname:path,callbackUrl:SITE+'/api/upload',clientPayload:JSON.stringify({room:rid}),multipart}});
+  return window.GGBlob.put(path,blob,{access:'public',token:tok.clientToken,contentType:type,multipart,onUploadProgress:e=>onPct&&onPct(e.percentage||0)}) }
+const upFail=e=>toast(ERR[e.code]&&e.code!=='network'?errMsg(e):KX('Upload failed. Check your connection and try again.','업로드에 실패했어요. 연결을 확인하고 다시 시도해 주세요.'));
+// what the student picked: photos go together in one message (up to 10, like KakaoTalk), each video on its own
+function sendPicked(list){ const fs=[...list], imgs=fs.filter(f=>/^image\//.test(f.type)), vids=fs.filter(f=>/^video\//.test(f.type));
+  if(fs.length>imgs.length+vids.length) toast(KX('You can send photos and videos.','사진과 동영상만 보낼 수 있어요.'));
+  if(imgs.length>10) toast(KX('Up to 10 photos at a time. Sending the first 10.','사진은 한 번에 10장까지 보낼 수 있어요. 앞의 10장만 보낼게요.'));
+  if(imgs.length===1) sendFile(imgs[0]); else if(imgs.length) sendPhotos(imgs.slice(0,10));
+  vids.forEach(v=>sendFile(v)) }
+async function sendPhotos(list){ const rid=S.room, R=ROOMS[rid]; if(!rid||!R) return;
+  if(!R.folder) return toast(KX('Wait a moment and try again.','잠시 후 다시 시도해 주세요.'));
+  let ready; try{ ready=await Promise.all(list.map(f=>toJPEG(f,2048))) }catch(e){ return toast(KX('A photo could not be read. Try other photos.','읽지 못한 사진이 있어요. 다른 사진을 골라 주세요.')) }
+  const temp={id:'tmp'+Date.now(),mine:true,text:'',at:new Date().toISOString(),files:ready.map(x=>({url:URL.createObjectURL(x.blob),kind:'image',w:x.w,h:x.h})),up:0}; R.msgs.push(temp); paintRoom(rid,true);
+  const pct=ready.map(()=>0); let step=0; const tick=()=>{const p=Math.floor(pct.reduce((a,b)=>a+b,0)/pct.length/10)*10; if(p!==step){step=p; temp.up=p; paintRoom(rid)}};
+  try{ const urls=[];
+    for(let i=0;i<ready.length;i+=3) urls.push(...await Promise.all(ready.slice(i,i+3).map((x,k)=>uploadBlob(rid,x.blob,'image','jpg','image/jpeg',p=>{pct[i+k]=p; tick()}).then(r=>r.url))));  // three at a time
+    const j=await api('chat',{action:'send',room:rid,files:ready.map((x,k)=>({url:urls[k],kind:'image',w:x.w,h:x.h,name:list[k].name||''}))});
+    const k=R.msgs.indexOf(temp); if(k>=0) R.msgs[k]=j.message; temp.files.forEach(f=>URL.revokeObjectURL(f.url)); paintRoom(rid,true) }
+  catch(e){ R.msgs=R.msgs.filter(m=>m!==temp); paintRoom(rid); upFail(e) } }
 async function sendFile(f){ const rid=S.room, R=ROOMS[rid]; if(!f||!rid||!R) return;
   const isV=/^video\//.test(f.type), isI=/^image\//.test(f.type);
   if(!isV&&!isI) return toast(KX('You can send photos and videos.','사진과 동영상만 보낼 수 있어요.'));
@@ -3334,15 +3362,13 @@ async function sendFile(f){ const rid=S.room, R=ROOMS[rid]; if(!f||!rid||!R) ret
   if(!R.folder) return toast(KX('Wait a moment and try again.','잠시 후 다시 시도해 주세요.'));
   let blob=f,w=0,h=0;
   try{ if(isI) ({blob,w,h}=await toJPEG(f,2048)); else ({w,h}=await videoSize(f)) }catch(e){ return toast(KX('This photo could not be read. Try another one.','사진을 읽지 못했어요. 다른 사진을 골라 주세요.')) }
-  const kind=isV?'video':'image', ext=isV?({'video/quicktime':'mov','video/webm':'webm'}[f.type]||'mp4'):'jpg', path=R.folder+kind+'.'+ext, multipart=blob.size>8*1024*1024;
-  const temp={id:'tmp'+Date.now(),mine:true,text:'',at:new Date().toISOString(),file:{url:URL.createObjectURL(blob),kind,w,h},up:0}; R.msgs.push(temp); paintRoom(rid,true);
-  try{ await loadBlobLib();
-    const tok=await api('upload',{type:'blob.generate-client-token',payload:{pathname:path,callbackUrl:SITE+'/api/upload',clientPayload:JSON.stringify({room:rid}),multipart}});
-    let step=0; const r=await window.GGBlob.put(path,blob,{access:'public',token:tok.clientToken,contentType:isV?f.type:'image/jpeg',multipart,
-      onUploadProgress:e=>{const p=Math.floor((e.percentage||0)/10)*10; if(p!==step){step=p; temp.up=p; paintRoom(rid)}}});
+  const kind=isV?'video':'image', ext=isV?({'video/quicktime':'mov','video/webm':'webm'}[f.type]||'mp4'):'jpg';
+  const temp={id:'tmp'+Date.now()+Math.random(),mine:true,text:'',at:new Date().toISOString(),file:{url:URL.createObjectURL(blob),kind,w,h},up:0}; R.msgs.push(temp); paintRoom(rid,true);
+  try{ let step=0;
+    const r=await uploadBlob(rid,blob,kind,ext,isV?f.type:'image/jpeg',pc=>{const p=Math.floor(pc/10)*10; if(p!==step){step=p; temp.up=p; paintRoom(rid)}});
     const j=await api('chat',{action:'send',room:rid,file:{url:r.url,kind,w,h,name:f.name||''}});
     const k=R.msgs.indexOf(temp); if(k>=0) R.msgs[k]=j.message; URL.revokeObjectURL(temp.file.url); paintRoom(rid,true) }
-  catch(e){ R.msgs=R.msgs.filter(m=>m!==temp); paintRoom(rid); toast(ERR[e.code]&&e.code!=='network'?errMsg(e):KX('Upload failed. Check your connection and try again.','업로드에 실패했어요. 연결을 확인하고 다시 시도해 주세요.')) } }
+  catch(e){ R.msgs=R.msgs.filter(m=>m!==temp); paintRoom(rid); upFail(e) } }
 function sendMsg(){
   const i=$('#chatInput'), t=i&&i.value.trim(), rid=S.room; if(!t||!rid){i&&i.focus();return}
   i.value=''; const R=ROOMS[rid]||(ROOMS[rid]={msgs:[]}); const temp={id:'tmp'+Date.now(),mine:true,text:t,at:new Date().toISOString()};
@@ -3639,7 +3665,7 @@ document.addEventListener('input',e=>{
 });
 function updStay(a,b,c,h){const x=$('#'+a),y=$('#'+b),z=$('#'+c); if(x&&y&&z&&x.value&&y.value){z.innerHTML=stayInfoHTML(h,D(x.value),D(y.value)); translate(z)}}
 document.addEventListener('change',e=>{
-  if(e.target.id==='chatFile'){ const f=e.target.files&&e.target.files[0]; e.target.value=''; if(f) sendFile(f); return }
+  if(e.target.id==='chatFile'){ const fs=[...(e.target.files||[])]; e.target.value=''; if(fs.length) sendPicked(fs); return }
   if(e.target.type==='date'&&e.target.value){const dv=e.target.parentElement.querySelector('.dv'); if(dv) dv.textContent=fmtY(D(e.target.value))}
   if(e.target.id==='depInput'&&e.target.value){S.pickDep=e.target.value; if(!S.pickRet){const r=$('#retInput'); if(r){r.value=iso(addDays(D(S.pickDep),STAY[S.pickProg])); r.parentElement.querySelector('.dv').textContent=fmtY(D(r.value))}} updStay('depInput','retInput','stayInfo',S.pick||host())}
   if(e.target.id==='retInput'&&e.target.value){S.pickRet=e.target.value; updStay('depInput','retInput','stayInfo',S.pick||host())}
