@@ -37,7 +37,7 @@ export default async function handler(req, res) {
   if (text.length < 10) return send(res, 400, { error: 'review_too_short' });
   if (!(await allow('review:' + uid(user), 10, 86400))) return send(res, 429, { error: 'too_many_requests' });
   const p = user.profile || {};
-  const r = { who: mask(user.name), home: cleanText(p.home, 100), major: cleanText(p.major, 60), rating, text, at: new Date().toISOString() };
+  const r = { who: mask(user.name), av: user.avatar?.id || '', home: cleanText(p.home, 100), major: cleanText(p.major, 60), rating, text, at: new Date().toISOString() };
   await redis('HSET', 'reviews:' + b.m, uid(user), JSON.stringify(r));
   send(res, 200, { review: { ...r, mine: true } });
 }

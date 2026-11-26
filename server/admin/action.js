@@ -42,8 +42,13 @@ export default async function handler(req, res) {
     await saveUser(user);
     await adminLog(type, email);
     return send(res, 200, { ok: true, temp });
+  } else if (type === 'delete_avatar') {
+    if (user.avatar?.id) await redis('DEL', 'avatar:' + user.avatar.id);
+    user.avatar = null;
+    await saveUser(user);
   } else if (type === 'delete_user') {
     if (normEmail(b.confirm) !== email && normPhone(b.confirm) !== email) return send(res, 400, { error: 'confirm_mismatch' });
+    if (user.avatar?.id) await redis('DEL', 'avatar:' + user.avatar.id);
     if (user.mentor?.profile?.key) await redis('DEL', 'mkey:' + user.mentor.profile.key);
     for (const k of await scanKeys('reviews:*')) await redis('HDEL', k, email);
     await deleteProof(email);

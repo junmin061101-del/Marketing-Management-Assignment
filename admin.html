@@ -82,6 +82,7 @@ td small{display:block;color:var(--ink-3);font-size:12px}
 .toast.on{opacity:1;transform:translateX(-50%)}
 @media (max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.app{grid-template-columns:1fr}.app dl{grid-template-columns:84px 1fr}header h1{font-size:19px}}
 .bcast{display:grid;gap:8px;max-width:560px}.bcast .btn{justify-self:start}
+.urow{display:flex;align-items:center;gap:10px}.urow .av{width:32px;height:32px;border-radius:50%;object-fit:cover;flex:none;display:grid;place-items:center;background:var(--surface,#F2F4F6);font-weight:700;font-size:13px}
 </style>
 </head>
 <body>
@@ -110,7 +111,7 @@ const who=u=>u.username?'@'+u.username:u.phone?fmtPhone(u.phone):(u.email||u.key
 const stars=n=>`<span class="stars">${'★'.repeat(n)}<i>${'★'.repeat(5-n)}</i></span>`;
 const STATUS={none:['신청 전',''],pending:['심사 대기','warn'],approved:['승인','ok'],rejected:['반려','']};
 const statusPill=u=>u.published?'<span class="pill ok">멘토 공개 중</span>':`<span class="pill ${STATUS[u.status]?.[1]||''}">${STATUS[u.status]?.[0]||esc(u.status)}</span>`;
-const LOGT={reset_password:'비밀번호 초기화',sign_in:'관리자 로그인',approve:'멘토 승인',reject:'멘토 반려',revoke:'멘토 자격 취소',delete_user:'회원 삭제',broadcast:'공지 알림 발송',self_delete:'회원 직접 탈퇴',delete_review:'후기 삭제'};
+const LOGT={reset_password:'비밀번호 초기화',sign_in:'관리자 로그인',approve:'멘토 승인',reject:'멘토 반려',revoke:'멘토 자격 취소',delete_user:'회원 삭제',broadcast:'공지 알림 발송',delete_avatar:'프로필 사진 삭제',self_delete:'회원 직접 탈퇴',delete_review:'후기 삭제'};
 
 async function load(){
   try{A.data=await api('data'); A.view='dash'}
@@ -176,9 +177,9 @@ function usersHTML(){const q=A.q.trim().toLowerCase();
     ${[['all','전체'],['uni','멘토 신청'],['pending','심사 대기'],['mentor','멘토'],['rejected','반려']].map(([k,l])=>`<button class="chip${A.f===k?' on':''}" data-act="filter" data-v="${k}">${l}</button>`).join('')}
     <span style="color:var(--ink-3);font-size:13px;margin-left:auto">${list.length}명</span></div>
   ${list.length?`<div class="tablewrap"><table><tr><th>이름 · 아이디</th><th>본교 · 학과</th><th>가입일</th><th>학교 이메일</th><th>멘토</th><th></th></tr>
-    ${list.map(u=>`<tr><td><b>${esc(u.name)}</b><small>${esc(who(u))}</small></td><td>${esc(u.home||'—')}<small>${esc([u.major,u.year].filter(Boolean).join(' · '))}</small></td><td>${fmtDay(u.created)}</td>
+    ${list.map(u=>`<tr><td><span class="urow">${u.avatar?`<img class="av" src="/api/avatar?id=${esc(u.avatar.id)}&v=${u.avatar.v}" alt="">`:`<span class="av">${esc((u.name||'?')[0])}</span>`}<span><b>${esc(u.name)}</b><small>${esc(who(u))}</small></span></span></td><td>${esc(u.home||'—')}<small>${esc([u.major,u.year].filter(Boolean).join(' · '))}</small></td><td>${fmtDay(u.created)}</td>
       <td>${u.uniEmail?`${esc(u.uniEmail)}<small>${u.uniVerified?'인증됨':'신청자 입력'}</small>`:'—'}</td><td>${statusPill(u)}${u.mentorProfile?`<small>${esc(u.mentorProfile.length||'')} · ${esc(u.mentorProfile.sessions||'')}회 · ${esc(u.mentorProfile.format||'')}</small>`:''}</td>
-      <td style="white-space:nowrap">${u.status==='pending'?'<button class="btn sm ghost" data-act="tab" data-v="queue">심사</button> ':''}${u.status==='approved'?`<button class="btn sm ghost" data-act="revoke" data-e="${esc(u.key)}">자격 취소</button> `:''}<button class="btn sm ghost" data-act="resetpw" data-e="${esc(u.key)}">비밀번호 초기화</button> <button class="btn sm warn" data-act="deluser" data-e="${esc(u.key)}">탈퇴 처리</button></td></tr>`).join('')}</table></div>`
+      <td style="white-space:nowrap">${u.status==='pending'?'<button class="btn sm ghost" data-act="tab" data-v="queue">심사</button> ':''}${u.status==='approved'?`<button class="btn sm ghost" data-act="revoke" data-e="${esc(u.key)}">자격 취소</button> `:''}${u.avatar?`<button class="btn sm ghost" data-act="delavatar" data-e="${esc(u.key)}">사진 삭제</button> `:''}<button class="btn sm ghost" data-act="resetpw" data-e="${esc(u.key)}">비밀번호 초기화</button> <button class="btn sm warn" data-act="deluser" data-e="${esc(u.key)}">탈퇴 처리</button></td></tr>`).join('')}</table></div>`
     :'<div class="empty">조건에 맞는 회원이 없어요.</div>'}`}
 
 function reviewsHTML(){const R=A.data.reviews;
@@ -230,6 +231,8 @@ document.addEventListener('click',e=>{
     return act(async()=>{const j=await api('action',{type:'reset_password',key:em}); await load(); prompt('임시 비밀번호예요. 본인에게 전달하고 로그인 후 바꾸도록 안내하세요.',j.temp)})}
   if(t==='deluser'){const c=prompt(`회원 정보, 후기, 증빙 파일이 영구 삭제되고 되돌릴 수 없어요.\n삭제하려면 아이디를 그대로 입력하세요:\n${fmtPhone(em)}`); if(c===null) return;
     return act(async()=>{await api('action',{type:'delete_user',key:em,confirm:c}); await load(); toast('회원을 삭제했어요')})}
+  if(t==='delavatar'){ if(!confirm(`${fmtPhone(em)} 님의 프로필 사진을 삭제할까요? 부적절한 사진일 때 사용하세요.`)) return;
+    return act(async()=>{await api('action',{type:'delete_avatar',key:em}); await load(); toast('프로필 사진을 삭제했어요')})}
   if(t==='broadcast'){const title=document.getElementById('bcTitle').value.trim(), text=document.getElementById('bcText').value.trim();
     if(!title||!text) return toast('제목과 내용을 모두 입력하세요');
     if(!confirm(`앱 알림을 켠 회원 모두에게 보낼까요?\n\n${title}\n${text}`)) return;

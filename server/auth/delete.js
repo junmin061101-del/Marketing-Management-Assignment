@@ -15,6 +15,7 @@ export default async function handler(req, res) {
   await deleteProof(id);
   await redis('DEL', 'user:' + id);
   await redis('DEL', 'push:' + id);
+  if (user.avatar?.id) await redis('DEL', 'avatar:' + user.avatar.id);
   await endSession(req, res);
   await adminLog('self_delete', id);
   send(res, 200, { ok: true });

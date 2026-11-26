@@ -166,7 +166,7 @@ export const contactEmail = u => u.email || u.mentor?.uniEmail || '';
 export const saveUser = u => setJSON('user:' + uid(u), u);
 // What the page may see. Never the password hash.
 export const publicUser = u => u && ({
-  key: uid(u), username: u.username || '', phone: u.phone || '', email: u.email || '', name: u.name, profile: u.profile || {}, plan: u.plan || null,
+  key: uid(u), username: u.username || '', phone: u.phone || '', email: u.email || '', name: u.name, profile: u.profile || {}, plan: u.plan || null, avatar: u.avatar || null,
   mentor: { uniEmail: u.mentor?.uniEmail || '', uniVerified: !!u.mentor?.uniVerified, status: u.mentor?.status || 'none',
     submittedAt: u.mentor?.submittedAt || null, draft: u.mentor?.draft || null, profile: u.mentor?.profile || null },
 });
