@@ -22,6 +22,7 @@ export default async function handler(req, res) {
   await redis('DEL', 'mybk:' + id);  // the other side keeps the booking (masked name); fee records stay in admin:fees for tax law
   await deleteFilesOf(id);  // photos and videos sent in chats
   for (const k of await scanKeys('seen:*')) await redis('HDEL', k, id);  // chat read receipts
+  for (const k of await scanKeys('pollv:*')) await redis('HDEL', k, id);  // chat poll votes
   if (user.avatar?.id) await redis('DEL', 'avatar:' + user.avatar.id);
   await endSession(req, res);
   await adminLog('self_delete', id);

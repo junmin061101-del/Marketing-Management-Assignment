@@ -454,6 +454,22 @@ p{margin:0}
 .mfile .up{position:absolute;inset:auto 8px 8px auto;font-size:11px;font-weight:700;color:#fff;background:rgba(0,0,0,.55);padding:3px 8px;border-radius:10px}
 .mfile .gtxt{display:none}.mfile.gone{aspect-ratio:auto!important;padding:10px 12px;width:auto}.mfile.gone img,.mfile.gone video{display:none}.mfile.gone .gtxt{display:block;font-size:13px;color:var(--ink-3)}
 .chatbar .attach{flex:none;color:var(--ink-2)}
+#noticeBar:empty{display:none}
+.cnotice{display:flex;align-items:center;gap:10px;width:calc(100% - 24px);margin:4px 12px 6px;padding:10px 12px;border-radius:14px;background:var(--card);box-shadow:var(--card-shadow);text-align:left;color:var(--ink)}
+.cnotice>.ic:first-child{color:var(--primary-ink);flex:none}.cnotice .t{flex:1;min-width:0;display:flex;flex-direction:column}
+.cnotice b{font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cnotice small{font-size:11px;color:var(--ink-3)}
+.pollc{width:250px;max-width:100%;display:flex;flex-direction:column;gap:6px;padding:12px;border-radius:16px;background:var(--card);border:1px solid var(--line);color:var(--ink)}
+.pollc .pk{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--primary-ink)}.pollc .pq{font-size:15px;line-height:1.35}
+.popt{position:relative;display:flex;align-items:center;gap:8px;width:100%;min-height:38px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface);text-align:left;overflow:hidden;font-size:14px;color:var(--ink)}
+.popt .bar{position:absolute;left:0;top:0;bottom:0;background:var(--primary-soft);transition:width .3s}.popt>span:not(.bar){position:relative}
+.popt .pm{width:14px;font-weight:800;color:var(--primary-ink)}.popt .po{flex:1;min-width:0;overflow-wrap:anywhere}.popt .pn{font-size:12px;font-weight:700;color:var(--ink-2)}
+.popt.on{border-color:var(--primary)}.popt:disabled{opacity:.85}
+.pollc .pf{font-size:12px;color:var(--ink-3)}.pollc .pf .linkbtn{display:inline;padding:0;font-size:12px}
+.moregrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:8px 0 12px}
+.moregrid button{display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 6px;border-radius:16px;background:var(--surface);font-size:13px;font-weight:600;color:var(--ink)}
+.moregrid .ic{color:var(--primary-ink)}
+.mform .popin{margin-top:8px}
+.mform label.pchk{flex-direction:row;align-items:center;gap:6px;font-size:14px}
 .chat-info{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:14px;background:var(--primary-soft);font-size:13px;color:var(--ink-2);line-height:1.5;margin-bottom:6px}
 .chat-info b{color:var(--ink)}.chat-info .ic{color:var(--primary-ink);flex:none;margin-top:1px}
 .msg{max-width:80%;display:flex;flex-direction:column;gap:3px}
@@ -1248,6 +1264,9 @@ KO_RE.push([/^(Exchange|Visiting student|Summer school|Winter school) (Academic 
 
 /* ---------------- icons ---------------- */
 const I={
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  megaphone:'<path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z"/><path d="M15 9a4 4 0 0 1 0 6"/><path d="M18 6a8 8 0 0 1 0 12"/>',
+  poll:'<path d="M5 20V10M12 20V4M19 20v-7"/>',
   photo:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/>',
   camera:'<path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/>',
   share:'<path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/>',
@@ -1401,7 +1420,7 @@ async function api(path,data){
   return j;
 }
 const mStat=()=>{const m=AUTH.user&&AUTH.user.mentor; return !m?'none':m.profile?'published':m.status};
-const ERR={bad_price:'Enter 0 (free) or a whole number from 5,000 to 1,000,000 won.',pick_mode:'Choose in person or video call.',pick_time:'Choose a date and time.',bad_time:'Choose a time at least 1 hour from now and within 6 months.',request_pending:'You already have a request waiting with this mentor.',session_not_found:'This session could not be found.',cannot_cancel:'This session can no longer be cancelled.',not_started:'You can mark it done after the session starts.',already_reported:'You already reported this session.',session_required:'Only students who completed a session with this mentor can review.',not_awaiting_fee:'This session is not waiting for a fee payment.',not_requested:'This request was already handled.',report_empty:'Tell us what happened.',in_progress:'Still processing. Try again in a moment.',payment_failed:'The card payment did not go through.',link_expired:'This payment link has expired.',mentor_only:'Only the mentor can do this.',student_only:'Only the student can do this.',not_confirmed:'This session is not confirmed yet.',bad_email:'Enter a valid email address.',wait_a_minute:'Please wait a minute before asking for another code.',too_many_requests:'Too many tries. Please try again later.',
+const ERR={bad_poll:'Write a question and at least two different options.',poll_closed:'This poll is closed.',poll_not_found:'This poll could not be found.',bad_price:'Enter 0 (free) or a whole number from 5,000 to 1,000,000 won.',pick_mode:'Choose in person or video call.',pick_time:'Choose a date and time.',bad_time:'Choose a time at least 1 hour from now and within 6 months.',request_pending:'You already have a request waiting with this mentor.',session_not_found:'This session could not be found.',cannot_cancel:'This session can no longer be cancelled.',not_started:'You can mark it done after the session starts.',already_reported:'You already reported this session.',session_required:'Only students who completed a session with this mentor can review.',not_awaiting_fee:'This session is not waiting for a fee payment.',not_requested:'This request was already handled.',report_empty:'Tell us what happened.',in_progress:'Still processing. Try again in a moment.',payment_failed:'The card payment did not go through.',link_expired:'This payment link has expired.',mentor_only:'Only the mentor can do this.',student_only:'Only the student can do this.',not_confirmed:'This session is not confirmed yet.',bad_email:'Enter a valid email address.',wait_a_minute:'Please wait a minute before asking for another code.',too_many_requests:'Too many tries. Please try again later.',
   weak_password:'Use 8 or more characters with at least one letter and one number.',consent_required:'Please agree to the Terms and Privacy Policy.',name_required:'Enter your name.',
   code_expired:'The code has expired. Ask for a new one.',too_many_attempts:'Too many wrong codes. Ask for a new one.',code_wrong:'That code is not right.',
   invalid_login:'The ID or password is not right.',login_required:'Please log in first.',not_university_email:'Use a university email ending in .ac.kr or .edu.',
@@ -1508,6 +1527,7 @@ T_('e.g. {X}','예: {X}');
 Object.assign(KO,{
 "Enter 0 (free) or a whole number from 5,000 to 1,000,000 won.":"세션비는 0원(무료) 또는 5,000원~1,000,000원 사이로 입력하세요.","Choose in person or video call.":"대면 또는 화상 중에서 골라 주세요.","Choose a date and time.":"날짜와 시간을 골라 주세요.","Choose a time at least 1 hour from now and within 6 months.":"지금부터 1시간 이후, 6개월 이내의 시간을 골라 주세요.","You already have a request waiting with this mentor.":"이 멘토에게 보낸 신청이 아직 처리 중이에요.","This session could not be found.":"멘토링을 찾을 수 없어요.","This session can no longer be cancelled.":"이 멘토링은 더 이상 취소할 수 없어요.","You can mark it done after the session starts.":"세션 시작 시간이 지나야 완료로 표시할 수 있어요.","You already reported this session.":"이미 신고한 멘토링이에요.","Only students who completed a session with this mentor can review.":"이 멘토와 멘토링을 마친 학생만 후기를 쓸 수 있어요.","This session is not waiting for a fee payment.":"수수료 결제를 기다리는 멘토링이 아니에요.","This request was already handled.":"이미 처리된 신청이에요.","Tell us what happened.":"무슨 일이 있었는지 적어 주세요.","Still processing. Try again in a moment.":"처리 중이에요. 잠시 후 다시 시도해 주세요.","The card payment did not go through.":"카드 결제가 완료되지 않았어요.","This payment link has expired.":"결제 링크가 만료됐어요.","Only the mentor can do this.":"멘토만 할 수 있어요.","Only the student can do this.":"학생만 할 수 있어요.","This session is not confirmed yet.":"아직 확정되지 않은 멘토링이에요.",
 "My mentoring":"내 멘토링","Price per session (KRW)":"세션당 가격 (원)","Area for in-person":"대면 지역","Request a session":"멘토링 신청하기"});
+Object.assign(KO,{"Write a question and at least two different options.":"질문과 서로 다른 항목을 2개 이상 적어 주세요.","This poll is closed.":"마감된 투표예요.","This poll could not be found.":"투표를 찾을 수 없어요."});
 const errMsg=e=>ERR[e.code]||ERR.network;
 async function loadMe(){try{const j=await api('me');AUTH.configured=j.configured!==false;AUTH.user=j.user||null}catch(e){AUTH.configured=false}AUTH.ready=true}
 async function loadData(){
@@ -2608,8 +2628,9 @@ const SCREENS={
     const group=rid.startsWith('g:'), R=ROOMS[rid]||{msgs:[],loading:true}, gh=group?boardTarget(rid.slice(2)):null;
     const title=group?(gh?gh.short:rid.slice(2).split('|')[1]):(R.title||'');
     return `${bar(`<span data-notr>${esc(title)}</span> `+(group?'<span class="pill cat">Group</span>':'<span class="badge">'+ic('shield',13,2.4)+'Mentor</span>'),'back',group?'':`<button class="iconbtn" data-go="sessions" aria-label="My mentoring">${ic('clock',20)}</button>`)}
+    <div id="noticeBar">${noticeHTML(rid)}</div>
     <div class="scroll pad chat" id="chatScroll">${chatMsgsHTML(rid)}</div>
-    <div class="cta chatbar"><button class="iconbtn attach" data-act="chatAttach" aria-label="Photo or video">${ic('photo',22)}</button><input type="file" id="chatFile" accept="image/*,video/mp4,video/quicktime,video/webm" hidden><input class="input" id="chatInput" placeholder="${group?'Message everyone':'Write a message'}" maxlength="1000" autocomplete="off" aria-label="Message"><button class="btn sm" data-act="sendMsg" aria-label="Send">${ic('send',18)}</button></div>`;
+    <div class="cta chatbar"><button class="iconbtn attach" data-act="chatMore" aria-label="More">${ic('plus',24)}</button><input type="file" id="chatFile" accept="image/*,video/mp4,video/quicktime,video/webm" hidden><input class="input" id="chatInput" placeholder="${group?'Message everyone':'Write a message'}" maxlength="1000" autocomplete="off" aria-label="Message"><button class="btn sm" data-act="sendMsg" aria-label="Send">${ic('send',18)}</button></div>`;
   },
   sessions(){return sessionsScreen()},
   app(){return ({home:homeTab,community:communityTab,mentor:mentorTab,chat:chatsTab,perks:perksTab,me:meTab}[S.tab]||homeTab)()},
@@ -3231,7 +3252,7 @@ const badge=n=>n>0?`<b class="ubadge">${n>99?'99+':n}</b>`:'';
 function clearUnread(rid){ const r=(DMS.rooms||[]).find(x=>x.id===rid); if(r) r.unread=0; if(DMS.unread) DMS.unread[rid]=0; paintTabBadge() }
 function paintTabBadge(){ const b=document.querySelector('.tabbar [data-v="chat"]'); if(!b) return; const o=b.querySelector('.ubadge'); if(o) o.remove(); const n=unreadTotal(); if(n>0) b.insertAdjacentHTML('beforeend',badge(n)) }
 setInterval(()=>{ if(AUTH.user&&!document.hidden&&!(S.screen==='app'&&S.tab==='chat')) loadDMs() },20000);
-const lastText=l=>!l?'':l.text||(l.file?(l.file.kind==='video'?KX('Video','동영상'):KX('Photo','사진')):'');
+const lastText=l=>!l?'':l.text||(l.poll?KX('Poll','투표'):l.file?(l.file.kind==='video'?KX('Video','동영상'):KX('Photo','사진')):'');
 function chatMsgsHTML(rid){const R=ROOMS[rid]||{msgs:[],loading:true}, group=rid.startsWith('g:');
   const info=group?`<div class="chat-info">${ic('users',18)}<span><b>Group chat for this school's community</b><br><small>Messages go to everyone in this community. Be kind, and keep personal contact details private.</small></span></div>`
     :`<div class="chat-info">${ic('mentor',18)}<span><b>1:1 chat with a verified mentor</b><br><small>Agree on what you'll cover and when. Report anything inappropriate to gyohwan.info@gmail.com.</small></span></div>`;
@@ -3242,7 +3263,7 @@ function chatMsgsHTML(rid){const R=ROOMS[rid]||{msgs:[],loading:true}, group=rid
     if(m.sys) return sep+`<p class="sysmsg notice" data-notr>${esc(m.text)}</p>`;
     // messages from the same person in the same minute stack closely; the time shows once, beside the last one
     const first=!!sep||!same(L[i-1],m), last=!same(m,L[i+1]), n=unread(m), t=n||last?`<span class="mt">${n?`<b class="ur">${n}</b>`:''}${last?`<time>${hm(d)}</time>`:''}</span>`:'';
-    const body=(m.file?fileHTML(m.file,m.up):'')+(m.text?`<p data-notr>${esc(m.text)}</p>`:'');
+    const body=(m.poll?pollHTML(rid,m.id):'')+(m.file?fileHTML(m.file,m.up):'')+(m.text?`<p data-notr>${esc(m.text)}</p>`:'');
     return sep+(m.mine?`<div class="msg me${first?' first':''}"><div class="mrow">${t}<div class="mb">${body}</div></div></div>`
       :`<div class="msg them${first?' first':''}">${group&&first?`<span class="mwho"><span class="ava">${avaImg(m.av?{id:m.av}:null,(m.who||'?')[0])}</span><b data-notr>${esc(m.who)}</b></span>`:''}<div class="mrow"><div class="mb">${body}</div>${t}</div></div>`)}).join('')}
 // a photo or video in a chat bubble (up = upload progress while it is still being sent)
@@ -3257,12 +3278,45 @@ function loadRoom(rid,first){ const R=ROOMS[rid]||(ROOMS[rid]={msgs:[],loading:t
     const n0=R.msgs.length, wasLoading=R.loading;
     if(first) R.msgs=j.messages||[]; else{const have=new Set(R.msgs.map(m=>m.id)); (j.messages||[]).forEach(m=>{if(!have.has(m.id)) R.msgs.push(m)})}
     const seenChanged=JSON.stringify(j.seen||{})!==JSON.stringify(R.seen||{}); if(j.seen) R.seen=j.seen;
-    if(j.title) R.title=j.title; if(j.folder) R.folder=j.folder; R.loading=false; R.err=''; if(first||wasLoading||R.msgs.length!==n0||seenChanged) paintRoom(rid,first);
+    const extra=JSON.stringify([j.polls||{},j.notice||null]), extraChanged=extra!==R.extra; R.extra=extra; R.polls=j.polls||{}; R.notice=j.notice||null;
+    if(extraChanged){ const nb=$('#noticeBar'); if(nb&&S.room===rid) nb.innerHTML=noticeHTML(rid) }
+    if(j.title) R.title=j.title; if(j.folder) R.folder=j.folder; R.loading=false; R.err=''; if(first||wasLoading||R.msgs.length!==n0||seenChanged||extraChanged) paintRoom(rid,first);
     if(first&&S.screen==='chat'&&S.room===rid){const t=document.querySelector('.bar span[data-notr]'); if(t&&j.title) t.textContent=j.title}})
     .catch(e=>{R.loading=false; R.err=e.code; if(e.code==='login_required'){toast('Log in to use chat')} paintRoom(rid)}) }
 function openRoom(rid){ if(!AUTH.user){toast('Log in to use chat'); return} closeSheet(); S.room=rid; S.screen='chat'; clearUnread(rid); render();
   loadRoom(rid,true); clearInterval(pollT); pollT=setInterval(()=>{ if(S.screen==='chat'&&S.room===rid&&!document.hidden) loadRoom(rid); else if(S.screen!=='chat'){clearInterval(pollT); pollT=null} },4000);
   setTimeout(()=>{const i=$('#chatInput'); i&&i.focus()},60) }
+/* chat notices and polls (anyone in the room can pin a notice or start a poll) */
+function noticeHTML(rid){ const n=(ROOMS[rid]||{}).notice; if(!n) return '';
+  return `<button class="cnotice" data-act="noticeOpen" data-notr>${ic('megaphone',18)}<span class="t"><b>${esc(n.text)}</b><small>${esc(n.who)} · ${esc(fmtShort(new Date(n.at)))}</small></span>${ic('chev',16)}</button>` }
+function pollHTML(rid,id){ const p=((ROOMS[rid]||{}).polls||{})[id]; if(!p) return `<div class="pollc"><b>${KX('Poll','투표')}</b></div>`;
+  const total=p.voters||0, mx=Math.max(1,...p.counts);
+  return `<div class="pollc" data-notr><span class="pk">${ic('poll',14)} ${KX('Poll','투표')}${p.multi?' · '+KX('multiple choice','복수 선택'):''}${p.closed?' · '+KX('closed','마감'):''}</span><b class="pq">${esc(p.q)}</b>
+    ${p.opts.map((o,i)=>{const on=p.mine.includes(i), pct=total?Math.round(p.counts[i]/total*100):0;
+      return `<button class="popt${on?' on':''}" data-act="pollVote" data-v="${esc(id)}:${i}" ${p.closed?'disabled':''}><span class="bar" style="width:${p.counts[i]/mx*100}%"></span><span class="pm">${on?'✓':''}</span><span class="po">${esc(o)}</span><span class="pn">${p.counts[i]}</span></button>`}).join('')}
+    <span class="pf">${KX(`${total} voted`,`${total}명 참여`)}${p.maker&&!p.closed?` · <button class="linkbtn" data-act="pollClose" data-v="${esc(id)}">${KX('Close poll','투표 마감')}</button>`:''}</span></div>` }
+function openChatMore(){ const sheet=$('#sheet');
+  sheet.innerHTML=`<div class="grab"></div><div class="scroll" data-notr><div class="moregrid">
+    <button data-act="chatAttach">${ic('photo',24)}<span>${KX('Photo or video','사진·동영상')}</span></button>
+    <button data-act="pollNew">${ic('poll',24)}<span>${KX('Poll','투표')}</span></button>
+    <button data-act="noticeEdit">${ic('megaphone',24)}<span>${KX('Notice','공지')}</span></button></div></div>`;
+  sheet.classList.add('on'); $('#scrim').classList.add('on') }
+function openPollSheet(n){ const sheet=$('#sheet'), keep=[...document.querySelectorAll('#sheet .popin')].map(i=>i.value), q=($('#pollQ')||{}).value||'', multi=!!($('#pollMulti')||{}).checked; n=Math.min(6,Math.max(2,n||keep.length||2));
+  sheet.innerHTML=`<div class="grab"></div><div class="scroll" data-notr><h2 class="ob-title" style="font-size:22px;margin-top:6px">${KX('New poll','투표 만들기')}</h2>
+    <div class="mform" style="margin-top:12px"><label>${KX('Question','질문')}<input class="input" id="pollQ" maxlength="120" placeholder="${KX('e.g. When shall we meet?','예: 언제 만날까요?')}" value="${esc(q)}"></label>
+    ${Array.from({length:n},(_,i)=>`<input class="input popin" maxlength="60" placeholder="${KX('Option','항목')} ${i+1}" value="${esc(keep[i]||'')}">`).join('')}
+    ${n<6?`<button class="linkbtn" data-act="pollMoreOpt" data-v="${n+1}">+ ${KX('Add option','항목 추가')}</button>`:''}
+    <label class="cmt-anon pchk" style="margin-top:10px"><input type="checkbox" id="pollMulti"${multi?' checked':''}> ${KX('Allow multiple choices','여러 개 선택 가능')}</label></div>
+    <p class="aerr" id="pollErr" role="alert"></p></div>
+    <div class="cta"><button class="btn" data-act="pollCreate">${KX('Post poll','투표 올리기')}</button></div>`;
+  sheet.classList.add('on'); $('#scrim').classList.add('on'); setTimeout(()=>{const i=$('#pollQ'); i&&!q&&i.focus()},50) }
+function openNoticeSheet(){ const sheet=$('#sheet'), n=(ROOMS[S.room]||{}).notice;
+  sheet.innerHTML=`<div class="grab"></div><div class="scroll" data-notr><h2 class="ob-title" style="font-size:22px;margin-top:6px">${KX('Notice','공지')}</h2>
+    <p class="ob-sub" style="margin-top:6px">${KX('Pinned at the top of this chat for everyone in it.','이 채팅방 맨 위에 고정돼 모두에게 보여요.')}</p>
+    <textarea class="input area" id="noticeText" rows="4" maxlength="300" style="margin-top:12px" placeholder="${KX('e.g. Orientation is on Aug 20 at 10 AM','예: 오리엔테이션은 8월 20일 오전 10시예요')}">${esc(n?n.text:'')}</textarea></div>
+    <div class="cta"><button class="btn" data-act="noticeSave">${KX('Pin notice','공지 등록')}</button>${n?`<button class="btn ghost" style="margin-top:8px" data-act="noticeClear">${KX('Remove notice','공지 내리기')}</button>`:''}</div>`;
+  sheet.classList.add('on'); $('#scrim').classList.add('on'); setTimeout(()=>{const t=$('#noticeText'); t&&t.focus()},50) }
+async function chatAction(data){ const rid=S.room; try{ const j=await api('chat',{room:rid,...data}); await loadRoom(rid); return j }catch(e){ toast(ERR[e.code]?errMsg(e):KX('Could not save. Try again.','저장하지 못했어요. 다시 시도해 주세요.')); return null } }
 /* chat attachments: photos become JPEG (at most 2048 px) on the phone, videos go as they are (MP4/MOV/WebM, 50 MB) */
 function loadBlobLib(){ return window.GGBlob?Promise.resolve():new Promise((ok,no)=>{const sc=document.createElement('script'); sc.src='vendor/blob-upload.js'; sc.onload=ok; sc.onerror=()=>no(new Error('network')); document.head.appendChild(sc)}) }
 async function toJPEG(file,max){ let img;
@@ -3496,7 +3550,21 @@ document.addEventListener('click',e=>{
       api('report',{where:(x.school||'All boards')+(cm?' · comment':''),cat:ccatName(x.cat),text:cm?cm.text:x.text,reason:v,id:x.id,cid:cm?cm.cid:''}).catch(()=>{});
       if(cm){S.hiddenPosts.add(x.id+':'+cm.cid); S.reportCid=null; openPost(x.id)} else {S.hiddenPosts.add(x.id); POSTV.id=null; closeSheet()} render(true); toast('Reported. Our team will review it'); break}
     case 'sendMsg': sendMsg(); break;
-    case 'chatAttach': {const f=$('#chatFile'); f&&f.click(); break}
+    case 'chatAttach': {closeSheet(); const f=$('#chatFile'); f&&f.click(); break}
+    case 'chatMore': openChatMore(); break;
+    case 'pollNew': openPollSheet(2); break;
+    case 'pollMoreOpt': openPollSheet(+v); break;
+    case 'pollCreate': {const q=($('#pollQ')||{}).value.trim(), opts=[...document.querySelectorAll('#sheet .popin')].map(i=>i.value.trim()).filter(Boolean), err=$('#pollErr');
+      if(!q){err.textContent=KX('Write the question.','질문을 적어 주세요.'); break} if(opts.length<2||new Set(opts).size!==opts.length){err.textContent=KX('Add at least two different options.','서로 다른 항목을 2개 이상 적어 주세요.'); break}
+      closeSheet(); chatAction({action:'poll',q,opts,multi:!!($('#pollMulti')||{}).checked}).then(()=>paintRoom(S.room,true)); break}
+    case 'pollVote': {const [id,i]=v.split(':'), p=((ROOMS[S.room]||{}).polls||{})[id]; if(!p||p.closed) break; const k=+i;
+      const choice=p.multi?(p.mine.includes(k)?p.mine.filter(x=>x!==k):[...p.mine,k]):(p.mine.includes(k)?[]:[k]);
+      chatAction({action:'vote',id,choice}); break}
+    case 'pollClose': if(confirm(KX('Close this poll? Nobody can vote after that.','투표를 마감할까요? 마감 후에는 투표할 수 없어요.'))) chatAction({action:'closePoll',id:v}); break;
+    case 'noticeEdit': openNoticeSheet(); break;
+    case 'noticeOpen': openNoticeSheet(); break;
+    case 'noticeSave': {const t=($('#noticeText')||{}).value.trim(); if(!t){$('#noticeText').focus(); break} closeSheet(); chatAction({action:'notice',text:t}); break}
+    case 'noticeClear': closeSheet(); chatAction({action:'notice',text:''}); break;
     case 'openMedia': openUrl(v); break;
     case 'mentor': openMentorSheet(+v); break;
     case 'rmentor': openRealMentor(v); break;
