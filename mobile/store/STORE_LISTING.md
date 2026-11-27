@@ -154,7 +154,7 @@ exchange,study abroad,summer school,visa,F-1,J-1,TOEFL,IELTS,JLPT,HSK,checklist,
 ```
 Gyohwan-gaja helps Korean university students prepare for an exchange semester or summer school abroad.
 
-Demo account (already set up with a fall 2027 exchange to UC Berkeley):
+Demo account (already set up for Harvard Summer School 2027):
   Username: appreview
   Password: (see below)
 
@@ -165,7 +165,7 @@ How to review:
 - Mentors tab: verified mentors (university email + manual transcript review) can be messaged 1:1. The three "Sample profiles" are clearly labeled examples and cannot be messaged.
 - Mentoring sessions: a student requests a session (date, time, in person or video call) from a mentor's profile; the mentor accepts it in Me → My mentoring (내 멘토링). Sessions are real-time, one-to-one services between two people, delivered in person or over a video call outside the app.
   **No payments of any kind.** The app has no in-app purchase, no payment screen and no link or button to pay anywhere, in or outside the app. Mentor profiles only show, as information, whether that mentor offers free or paid mentoring; any amount is agreed between the two people themselves. The app only connects people and says so in every chat and in Terms §4: "교환가자는 연결만 제공하며, 개별 멘토링 및 금전 거래의 책임은 당사자에게 있습니다."
-  Demo mentor account: Username appreview_mentor / Password (see below).
+  The verified mentor shown in the list (이준민) is our own demo mentor, so the reviewer can open the profile, chat 1:1 and send a request.
 - Chats tab: a group chat per joined school community and 1:1 chats with mentors, stored on our server. In any chat, tap a person's photo → 신고하기 (Report: sent to our moderation dashboard with their recent messages) or 차단하기 (Block: hides their messages). The operator can remove accounts from the dashboard.
 - Me tab → 회원 탈퇴 (Delete account): permanently deletes the account after a password check.
 - Me tab → 알림 (Notifications): deadline reminders scheduled on the device, and push for mentor review results.
