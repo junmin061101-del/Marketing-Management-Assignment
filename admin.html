@@ -188,11 +188,11 @@ function reviewsHTML(){const R=A.data.reviews;
     <button class="btn sm warn" data-act="delreview" data-m="${esc(r.mentor)}" data-e="${esc(r.key)}">삭제</button></div>`).join('')
   :'<div class="empty">아직 후기가 없어요.</div>'}`}
 
-const REASON={spam:'스팸·광고',abuse:'욕설·비방',privacy:'개인정보 노출',false:'허위 정보',other:'기타'};
+const REASON={spam:'스팸·광고',abuse:'욕설·비방',privacy:'개인정보 노출',false:'허위 정보',scam:'사기·금전 요구',other:'기타'};
 function reportsHTML(){const R=A.data.reports||[];
   return `<h2 style="margin-top:0">신고 <span>커뮤니티 글·댓글과 멘토링 · 최근 200건</span></h2>
   ${R.length?R.map(r=>`<div class="rv"><span class="t"><span class="pill warn">${esc(REASON[r.reason]||r.reason)}</span> <b>${esc(r.where||'')}</b>${r.cat?` · <small>${esc(r.cat)}</small>`:''}
-    <p>${esc(r.text)}</p><small>${fmt(r.at)}${r.by?' · 신고자 @'+esc(r.by):' · 비회원 신고'}</small></span>${r.id&&r.cid?`<button class="btn sm warn" data-act="delcomment" data-v="${esc(r.id)}" data-c="${esc(r.cid)}">댓글 삭제</button>`:r.id?`<button class="btn sm warn" data-act="delpost" data-v="${esc(r.id)}">글 삭제</button>`:r.sid?`<span style="display:flex;flex-direction:column;gap:6px"><button class="btn sm" data-act="refund" data-v="${esc(r.sid)}">수수료 환불</button><button class="btn sm warn" data-act="revoke" data-e="${esc(r.mentor)}">멘토 자격 취소</button></span>`:''}</div>`).join('')
+    <p>${esc(r.text)}</p><small>${fmt(r.at)}${r.by?' · 신고자 @'+esc(r.by):' · 비회원 신고'}</small></span>${r.id&&r.cid?`<button class="btn sm warn" data-act="delcomment" data-v="${esc(r.id)}" data-c="${esc(r.cid)}">댓글 삭제</button>`:r.id?`<button class="btn sm warn" data-act="delpost" data-v="${esc(r.id)}">글 삭제</button>`:r.sid?`<span style="display:flex;flex-direction:column;gap:6px"><button class="btn sm" data-act="refund" data-v="${esc(r.sid)}">수수료 환불</button><button class="btn sm warn" data-act="revoke" data-e="${esc(r.mentor)}">멘토 자격 취소</button></span>`:r.target?`<span style="display:flex;flex-direction:column;gap:6px"><small>대상 @${esc(r.target)}</small><button class="btn sm warn" data-act="revoke" data-e="${esc(r.target)}">멘토 자격 취소</button><button class="btn sm warn" data-act="deluser" data-e="${esc(r.target)}">회원 삭제</button></span>`:''}</div>`).join('')
   :'<div class="empty">신고가 없어요.</div>'}`}
 function feesHTML(){const F=A.data.fees||[];
   return `<h2 style="margin-top:0">멘토 수수료 <span>세션비의 5% · 최근 500건 · 테스트 결제는 합계에서 빠져요</span></h2>

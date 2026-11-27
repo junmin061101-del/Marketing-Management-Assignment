@@ -101,6 +101,7 @@ exchange,study abroad,summer school,visa,F-1,J-1,TOEFL,IELTS,JLPT,HSK,checklist,
 
 - 데이터를 수집하나요? **예** · 제3자와 공유하나요? **아니요** (Google 등 처리 위탁은 '공유'가 아님)
 - 전송 중 암호화? **예 (HTTPS)** · 사용자가 삭제를 요청할 수 있나요? **예** (앱 → 마이 → 회원 탈퇴, 또는 이메일)
+- **계정 삭제 웹 URL** (Play Console → 앱 콘텐츠 → 데이터 보안의 "계정 삭제" 칸): https://gyohwan-gaja-application-development.vercel.app/privacy#delete-account
 
 | 데이터 유형 (Play 항목) | 수집 | 필수/선택 | 목적 |
 |---|---|---|---|
@@ -163,9 +164,9 @@ How to review:
 - Community tab: "All boards" (전체 게시판) plus a board per host university. Every post can be reported (신고) and any writer can be hidden on the device (이 사람의 글 모두 숨기기); reports go to our moderation dashboard, where the operator deletes posts.
 - Mentors tab: verified mentors (university email + manual transcript review) can be messaged 1:1. The three "Sample profiles" are clearly labeled examples and cannot be messaged.
 - Mentoring sessions: a student requests a session (date, time, in person or video call) from a mentor's profile; the mentor accepts it in Me → My mentoring (내 멘토링). Sessions are real-time, one-to-one services between two people, delivered in person or over a video call outside the app.
-  The app has no payments of any kind and sells nothing. Whether a mentoring session is paid or free is agreed between the two people in chat; the app only connects them and states that any arrangement and money between them is their own responsibility (Terms §4).
+  **No payments of any kind.** The app has no in-app purchase, no payment screen and no link or button to pay anywhere, in or outside the app. Mentor profiles only show, as information, whether that mentor offers free or paid mentoring; any amount is agreed between the two people themselves. The app only connects people and says so in every chat and in Terms §4: "교환가자는 연결만 제공하며, 개별 멘토링 및 금전 거래의 책임은 당사자에게 있습니다."
   Demo mentor account: Username appreview_mentor / Password (see below).
-- Chats tab: a group chat per joined school community and 1:1 chats with mentors, stored on our server.
+- Chats tab: a group chat per joined school community and 1:1 chats with mentors, stored on our server. In any chat, tap a person's photo → 신고하기 (Report: sent to our moderation dashboard with their recent messages) or 차단하기 (Block: hides their messages). The operator can remove accounts from the dashboard.
 - Me tab → 회원 탈퇴 (Delete account): permanently deletes the account after a password check.
 - Me tab → 알림 (Notifications): deadline reminders scheduled on the device, and push for mentor review results.
 - The app is in Korean by default; Me → Language (언어) switches it to English.

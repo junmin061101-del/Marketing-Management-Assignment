@@ -351,6 +351,8 @@ p{margin:0}
 .msg.them{position:relative;padding-left:46px}.msg.them .mav{position:absolute;left:0;top:0;width:38px;height:38px;padding:0;border:0;background:none;border-radius:50%}
 .msg.them .mav .ava{width:38px;height:38px;font-size:14px;border-radius:50%;overflow:hidden}.msg.them .mav .ava img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .msg.them .mname{font-size:12px;color:var(--ink-2);margin:0 0 4px 2px}
+.cprof-acts{display:flex;gap:8px;margin-top:8px}.cprof-acts .btn{flex:1}
+.rreasons{display:flex;flex-direction:column;gap:2px;margin:12px 0}.rreasons label{display:flex;align-items:center;gap:8px;padding:10px 2px;font-size:15px;border-bottom:1px solid var(--line)}
 .cprof{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:8px 0 18px}.cprof .ava{width:84px;height:84px;font-size:28px;border-radius:50%;overflow:hidden}
 .cprof .ava img{width:100%;height:100%;object-fit:cover}.cprof b{font-size:20px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center}.cprof small{display:flex;align-items:center;gap:4px;font-size:13px;color:var(--ink-2)}
 #view .mentor .mchips{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:6px;margin-top:12px;text-align:left}
@@ -2846,6 +2848,9 @@ const statPill=st=>`<span class="pill ${st==='now'?'ok':st==='done'?'cat':'warn'
 const BOARD={};
 const blocked=(()=>{try{return new Set(JSON.parse(localStorage.getItem('gg_blocked')||'[]'))}catch(e){return new Set()}})();
 const saveBlocked=()=>{try{localStorage.setItem('gg_blocked',JSON.stringify([...blocked]))}catch(e){}};
+// people blocked in chats (by their message tag): their messages are hidden on this device
+const cblocked=(()=>{try{return new Set(JSON.parse(localStorage.getItem('gg_cblocked')||'[]'))}catch(e){return new Set()}})();
+const saveCBlocked=()=>{try{localStorage.setItem('gg_cblocked',JSON.stringify([...cblocked]))}catch(e){}};
 const cScope=()=>S.cscope||'all';
 const ago=t=>{const m=Math.max(0,Math.round((Date.now()-Date.parse(t))/6e4)), ko=LANG==='ko';
   return m<1?(ko?'방금':'just now'):m<60?(ko?`${m}분 전`:`${m}m ago`):m<1440?(ko?`${Math.floor(m/60)}시간 전`:`${Math.floor(m/60)}h ago`):m<10080?(ko?`${Math.floor(m/1440)}일 전`:`${Math.floor(m/1440)}d ago`):fmtShort(new Date(t))};
@@ -3334,8 +3339,9 @@ function chatMsgsHTML(rid){const R=ROOMS[rid]||{msgs:[],loading:true}, group=rid
     :`<div class="chat-info">${ic('mentor',18)}<span><b>1:1 chat with a verified mentor</b><br><small>Agree on what you'll cover and when. Report anything inappropriate to gyohwan.info@gmail.com.</small><br><small data-notr>${KX('Gyohwan-gaja only connects you. Each mentoring session and any money involved are between the two of you.','교환가자는 연결만 제공하며, 개별 멘토링 및 금전 거래의 책임은 당사자에게 있어요.')}</small></span></div>`;
   if(!R.msgs.length) return info+(R.loading?'<p class="loadmsg">Loading messages…</p>':`<div class="empty-state">${ic('chat',28)}<b>No messages yet</b><small>${group?'Say hello to students going to the same school.':'Say hello and ask your first question.'}</small></div>`);
   const seenE=Object.entries(R.seen||{}), unread=m=>m.sys||!m.by?0:seenE.filter(([t,a])=>t!==m.by&&a<m.at).length;
-  let day=''; const L=R.msgs, who=x=>x&&!x.sys?(x.mine?'me':(x.who||'')+'|'+(x.av||'')):'', same=(a,b)=>!!(a&&b&&who(a)&&who(a)===who(b)&&hm(new Date(a.at))===hm(new Date(b.at)));
-  return info+'<div class="cspacer"></div>'+L.map((m,i)=>{const d=new Date(m.at), dl=fmtShort(d), sep=dl!==day?(day=dl,`<p class="sysmsg">${esc(dl)}</p>`):'';
+  const hid=R.msgs.filter(m=>m.by&&!m.mine&&cblocked.has(m.by)).length;
+  let day=''; const L=R.msgs.filter(m=>!(m.by&&!m.mine&&cblocked.has(m.by))), who=x=>x&&!x.sys?(x.mine?'me':(x.who||'')+'|'+(x.av||'')):'', same=(a,b)=>!!(a&&b&&who(a)&&who(a)===who(b)&&hm(new Date(a.at))===hm(new Date(b.at)));
+  return info+'<div class="cspacer"></div>'+(hid?`<p class="sysmsg" data-notr>${KX(`${hid} messages from people you blocked are hidden`,`차단한 사용자의 메시지 ${hid}개를 숨겼어요`)}</p>`:'')+L.map((m,i)=>{const d=new Date(m.at), dl=fmtShort(d), sep=dl!==day?(day=dl,`<p class="sysmsg">${esc(dl)}</p>`):'';
     if(m.sys) return sep+`<p class="sysmsg notice" data-notr>${esc(m.text)}</p>`;
     // messages from the same person in the same minute stack closely; the time shows once, beside the last one
     const first=!!sep||!same(L[i-1],m), last=!same(m,L[i+1]), n=unread(m), t=n||last?`<span class="mt">${n?`<b class="ur">${n}</b>`:''}${last?`<time>${hm(d)}</time>`:''}</span>`:'';
@@ -3413,8 +3419,17 @@ async function openChatProfile(t){ if(!t) return; const sheet=$('#sheet');
   sheet.innerHTML=`<div class="grab"></div><div class="scroll" data-notr><div class="cprof"><span class="ava">${avaImg(p.av?{id:p.av}:null,(p.name||'?')[0])}</span>
     <b>${esc(p.name)}${p.mentorKey?`<span class="badge">${ic('shield',14,2.4)}${KX('Verified mentor','인증 멘토')}</span>`:''}</b>
     ${meta?`<small>${esc(meta)}</small>`:''}${p.host?`<small>${ic('plane',13)} ${esc(p.host)}</small>`:''}</div></div>
-    ${p.mentorKey&&!p.me?`<div class="cta"><button class="btn" data-act="chatMentor" data-v="${esc(p.mentorKey)}">${KX('View mentor profile','멘토 프로필 보기')}</button></div>`:''}`;
+    ${p.me?'':`<div class="cta">${p.mentorKey?`<button class="btn" data-act="chatMentor" data-v="${esc(p.mentorKey)}">${KX('View mentor profile','멘토 프로필 보기')}</button>`:''}
+      <div class="row cprof-acts" data-notr><button class="btn ghost" data-act="chatReport" data-v="${esc(t)}">${ic('flag',16)} ${KX('Report','신고하기')}</button>
+      <button class="btn ghost" data-act="chatBlock" data-v="${esc(t)}">${cblocked.has(t)?KX('Unblock','차단 해제'):KX('Block','차단하기')}</button></div></div>`}`;
 }
+function openChatReport(t){ const sheet=$('#sheet'), R=[['spam',KX('Spam or ads','스팸·광고')],['abuse',KX('Abuse or harassment','욕설·비방·괴롭힘')],['scam',KX('Scam or asking for money','사기·금전 요구')],['privacy',KX('Sharing private information','개인정보 노출')],['other',KX('Something else','기타')]];
+  sheet.innerHTML=`<div class="grab"></div><div class="scroll" data-notr><h2 class="ob-title" style="font-size:22px;margin-top:6px">${KX('Report this person','이 사용자 신고하기')}</h2>
+    <p class="ob-sub" style="margin-top:6px">${KX('Our team checks every report together with their recent messages, and may remove the account.','운영팀이 최근 메시지와 함께 확인하고, 필요하면 계정 이용을 제한해요.')}</p>
+    <div class="rreasons">${R.map(([k,l],i)=>`<label><input type="radio" name="crr" value="${k}"${i?'':' checked'}> ${l}</label>`).join('')}</div>
+    <textarea class="input area" id="crText" rows="3" maxlength="200" placeholder="${KX('What happened? (optional)','무슨 일이 있었나요? (선택)')}"></textarea></div>
+    <div class="cta"><button class="btn" data-act="chatReportSend" data-v="${esc(t)}">${KX('Send report','신고 보내기')}</button></div>`;
+  sheet.classList.add('on'); $('#scrim').classList.add('on') }
 async function chatAction(data){ const rid=S.room; try{ const j=await api('chat',{room:rid,...data}); await loadRoom(rid); return j }catch(e){ toast(ERR[e.code]?errMsg(e):KX('Could not save. Try again.','저장하지 못했어요. 다시 시도해 주세요.')); return null } }
 /* chat attachments: photos become JPEG (at most 2048 px) on the phone, videos go as they are (MP4/MOV/WebM, 50 MB) */
 function loadBlobLib(){ return window.GGBlob?Promise.resolve():new Promise((ok,no)=>{const sc=document.createElement('script'); sc.src='vendor/blob-upload.js'; sc.onload=ok; sc.onerror=()=>no(new Error('network')); document.head.appendChild(sc)}) }
@@ -3697,6 +3712,12 @@ document.addEventListener('click',e=>{
     case 'chatAttach': {closeSheet(); const f=$('#chatFile'); f&&f.click(); break}
     case 'chatMore': openChatMore(); break;
     case 'chatProfile': openChatProfile(v); break;
+    case 'chatReport': openChatReport(v); break;
+    case 'chatReportSend': {const r=(document.querySelector('input[name="crr"]:checked')||{}).value||'other', text=($('#crText')||{}).value||'';
+      api('chat',{action:'report',room:S.room,who:v,reason:r,text}).then(()=>{closeSheet(); toast(KX('Report sent. Our team will check it.','신고가 접수됐어요. 운영팀이 확인할게요.'))}).catch(e=>toast(errMsg(e))); break}
+    case 'chatBlock': { if(cblocked.has(v)){ cblocked.delete(v); saveCBlocked(); toast(KX('Unblocked','차단을 풀었어요')) }
+      else { if(!confirm(KX('Block this person? Their messages will be hidden on this device. You can also report them.','이 사용자를 차단할까요? 이 기기에서 이 사람의 메시지가 보이지 않아요. 필요하면 신고도 함께 해 주세요.'))) break; cblocked.add(v); saveCBlocked(); toast(KX('Blocked','차단했어요')) }
+      closeSheet(); paintRoom(S.room,true); break }
     case 'chatMentor': { const key=v, go=()=>{ if((REALM.list||[]).some(m=>m.key===key)) openRealMentor(key); else toast(KX('This mentor profile is not public right now.','지금은 공개되지 않은 멘토 프로필이에요.')) };
       if(REALM.list) go(); else { REALM.at=Date.now(); api('chat?mentors=1&host='+encodeURIComponent(host().name)).then(j=>{REALM.list=j.mentors||[]; go()}).catch(()=>toast(errMsg({code:'network'}))) } break }
     case 'pollNew': openPollSheet(2); break;

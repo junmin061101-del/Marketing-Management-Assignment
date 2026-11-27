@@ -12,6 +12,8 @@
 // POST /api/chat {action:'poll', room, q, opts, multi, anon, notice} → posts a poll (2–6 options); it closes by itself after 24 hours;
 //      anon = only counts are shown (otherwise who chose what); notice = also pin it as the room notice
 // POST /api/chat {action:'vote', room, id, choice:[i]} → my choice in a poll ([] withdraws it) · {action:'closePoll', room, id} (its maker)
+// POST /api/chat {action:'report', room, who, reason, text} → reports someone in the room to the operations team
+//      (their last few messages in the room are attached so the team can check)
 // POST /api/chat {action:'send', room, text, file? | files?} → posts a message (files = up to 30 photos shown together) (1:1 rooms also send a push to the other member);
 //      file = {url, kind:'image'|'video', w, h, name} of a photo or video uploaded to Blob through /api/upload
 import { guard, body, send, currentUser, cleanText, redis, allow, uid, hmac, getJSON, setJSON, scanKeys, sendPush } from './_lib.js';
@@ -162,11 +164,22 @@ export default async function handler(req, res) {
     if (mid === me) return send(res, 400, { error: 'own_profile' });
     return send(res, 200, { room: await openDM(user, mentor, b.mentor) });
   }
-  if (['notice', 'poll', 'vote', 'closePoll'].includes(b.action)) {
+  if (['notice', 'poll', 'vote', 'closePoll', 'report'].includes(b.action)) {
     if (!(await allow('chat:' + me, 120, 3600))) return send(res, 429, { error: 'too_many_requests' });
     const room = await roomFor(String(b.room || ''), user);
     if (!room) return send(res, 404, { error: 'room_not_found' });
     const who = user.mentor?.status === 'approved' && user.mentor.profile ? fullName(user) : mask(user.name);
+    if (b.action === 'report') {
+      const want = String(b.who || ''), ids = room.kind === 'd' ? room.members : Object.keys(await seenOf(room.id)), target = ids.find(x => tag(x) === want);
+      if (!target || target === me) return send(res, 404, { error: 'not_found' });
+      const recent = ((await redis('LRANGE', 'msgs:' + room.id, 0, 199)) || []).map(v => { try { return JSON.parse(v); } catch { return null; } })
+        .filter(m => m && m.u === want).slice(0, 5).map(m => m.text || (m.poll ? '[투표]' : m.file || m.files ? '[사진·동영상]' : '')).filter(Boolean);
+      const reason = ['spam', 'abuse', 'privacy', 'scam', 'other'].includes(b.reason) ? b.reason : 'other', note = cleanText(b.text, 200);
+      await redis('LPUSH', 'admin:reports', JSON.stringify({ at: new Date().toISOString(), where: room.kind === 'd' ? '1:1 채팅 신고' : '그룹 채팅 신고', cat: 'chat',
+        text: [note, recent.length ? '최근 메시지: ' + recent.join(' / ') : ''].filter(Boolean).join(' · ').slice(0, 300) || '(내용 없음)', reason, by: me, target, room: room.id }));
+      await redis('LTRIM', 'admin:reports', 0, 499);
+      return send(res, 200, { ok: true });
+    }
     if (b.action === 'notice') {
       let text = cleanText(b.text, 300), poll = '';
       if (b.poll) { const pm = /^[a-z0-9]{6,20}$/.test(String(b.poll)) ? await getJSON(`pollm:${room.id}:${b.poll}`) : null; if (!pm) return send(res, 404, { error: 'poll_not_found' }); poll = String(b.poll); text = '투표: ' + pm.q; }
