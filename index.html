@@ -344,10 +344,7 @@ p{margin:0}
 .mentor{display:flex;gap:14px;padding:18px 0;border-bottom:1px solid var(--line);text-align:left;width:100%}
 .mentor .ava{width:56px;height:56px;background:var(--primary-soft);color:var(--primary-ink)}
 .mentor .t{flex:1;min-width:0}
-.msearch{display:flex;flex-direction:column;gap:10px;margin:0 0 16px}.msearch .hscroll{display:flex;gap:6px}
-.mfopts{display:flex;flex-direction:column;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
-.mfopts button{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 4px;border-bottom:1px solid var(--line);text-align:left;font-size:15px;color:var(--ink)}
-.mfopts button small{color:var(--ink-3);font-size:13px}.mfopts button.on{color:var(--primary-ink);font-weight:700}
+.msearch{display:flex;flex-direction:column;gap:10px;margin:0 0 16px}
 .list-head{margin-bottom:12px}
 .msg.them{position:relative;padding-left:46px}.msg.them .mav{position:absolute;left:0;top:0;width:38px;height:38px;padding:0;border:0;background:none;border-radius:50%}
 .msg.them .mav .ava{width:38px;height:38px;font-size:14px;border-radius:50%;overflow:hidden}.msg.them .mav .ava img{width:100%;height:100%;object-fit:cover;border-radius:50%}
@@ -2513,7 +2510,7 @@ const S={
   done:new Set(), bcat:'All', showDone:false, mentorSheet:null,
   joined:new Set(), cv:null, cq:'', cinfo:{}, jstatus:{}, joining:null,
   ccat:'all', draftPost:null, hiddenPosts:new Set(),
-  reviews:{}, chf:'all', doc:null, mq:'', mf:{host:'',pay:'',year:'',prog:'',home:'',major:''},
+  reviews:{}, chf:'all', doc:null, mq:'',
   apply:{step:0,email:'',file:'',sent:false,busy:false,err:''},
   auth:{mode:'login',id:'',name:'',busy:false,err:''},
 };
@@ -3111,21 +3108,9 @@ function openSessReport(x){const sheet=$('#sheet');
     <div class="cta"><button class="btn" data-act="srpSend" data-v="${esc(x.id)}">${KX('Send report','신고 보내기')}</button></div>`;
   sheet.classList.add('on'); $('#scrim').classList.add('on')}
 /* mentor search: by where they went (school or country), year, program, and their home school and major */
-const MF=[['host',['Exchange school','파견교']],['pay',['Cost','비용']],['year',['Year','연도']],['prog',['Program','기간']],['home',['Home school','출신 학교']],['major',['Major','학과']]];
-const mfVal=(m,k)=>k==='home'?homeKo(m.home||''):k==='year'?String(m.year||''):(m[k]||'');
-const mfLabel=(k,v)=>k==='prog'?mprogL(v):k==='pay'?(MPAYS[v]?KX(...MPAYS[v]):v):v;
 function mSearchHTML(real){
-  return `<div class="msearch" data-notr><div class="search">${ic('search',18)}<input class="input" id="mq" autocomplete="off" placeholder="${KX('Search by name, school or major','이름, 학교, 학과로 검색')}" value="${esc(S.mq||'')}"></div>
-    <div class="hscroll mfilters">${MF.map(([k,l])=>{const v=S.mf[k]; return `<button class="chip sm${v?' on':''}" data-act="mfOpen" data-k="${k}">${v?esc(mfLabel(k,v)):KX(...l)} ▾</button>`}).join('')}
-      ${Object.values(S.mf).some(Boolean)?`<button class="chip sm" data-act="mfReset">${KX('Reset','초기화')}</button>`:''}</div></div>` }
-function openMfSheet(k){ const real=REALM.list||[], l=(MF.find(x=>x[0]===k)||[])[1], counts={};
-  real.forEach(m=>{const v=mfVal(m,k); if(v) counts[v]=(counts[v]||0)+1});
-  const vals=Object.keys(counts).sort((a,b)=>k==='year'?b-a:a.localeCompare(b,'ko')), sheet=$('#sheet');
-  sheet.innerHTML=`<div class="grab"></div><div class="scroll" data-notr><h2 class="ob-title" style="font-size:20px;margin:6px 0 10px">${KX(...l)}</h2>
-    <div class="mfopts"><button class="${!S.mf[k]?'on':''}" data-act="mfSet" data-k="${k}" data-v=""><span>${KX('All','전체')}</span><small>${real.length}</small></button>
-    ${vals.map(v=>`<button class="${S.mf[k]===v?'on':''}" data-act="mfSet" data-k="${k}" data-v="${esc(v)}"><span>${esc(mfLabel(k,v))}</span><small>${counts[v]}</small></button>`).join('')}</div></div>`;
-  sheet.classList.add('on'); $('#scrim').classList.add('on') }
-function mMatch(m){ const q=squash(S.mq||''); if(MF.some(([k])=>S.mf[k]&&mfVal(m,k)!==S.mf[k])) return false; if(!q) return true;
+  return `<div class="msearch" data-notr><div class="search">${ic('search',18)}<input class="input" id="mq" autocomplete="off" placeholder="${KX('Search by name, school, major or exchange school','이름, 학교, 학과, 파견교로 검색')}" value="${esc(S.mq||'')}"></div></div>` }
+function mMatch(m){ const q=squash(S.mq||''); if(!q) return true;
   const u=DATA&&DATA.unis.find(x=>x[0]===m.host), ko=u?u[3]:'', ctry=m.hostCC&&COUNTRIES[m.hostCC]?COUNTRIES[m.hostCC][0]:'';
   return [m.name,m.host,ko,ALIAS[m.host],ctry,NAME_KO[ctry],m.home,m.major,m.offer,String(m.year||''),mprogL(m.prog),mpayL(m.pay)].some(x=>squash(x||'').includes(q)) }
 function mListHTML(here,other){ const all=[...here,...other].filter(mMatch);
@@ -3637,9 +3622,6 @@ document.addEventListener('click',e=>{
     case 'openConv': {openRoom(v); break}
     case 'year': S.profile.year=v; render(true); break;
     case 'pickHome': {S.profile.univ=v; S.homeQ=''; const sc=krmOf(v); if(sc&&S.profile.major&&!sc[3].includes(S.profile.major)) S.profile.major=''; S.majorOpen=false; render(true); break}
-    case 'mfOpen': openMfSheet(a.dataset.k); break;
-    case 'mfSet': S.mf[a.dataset.k]=v; closeSheet(); render(true); break;
-    case 'mfReset': S.mf={host:'',pay:'',year:'',prog:'',home:'',major:''}; render(true); break;
     case 'pickMfHost': {const i=$('#mfHost'), cc=$('#mfHostCC'); if(i) i.value=v; if(cc) cc.value=a.dataset.cc||''; const l=$('#mfHostList'); if(l) l.innerHTML=''; break}
     case 'pickMajor': {S.profile.major=v; S.majorOpen=false; const i=$('#major'); if(i) i.value=v; const l=$('#majorList'); if(l) l.innerHTML=''; render(true); break}
     case 'unpickHome': S.profile.univ=''; S.homeQ=''; render(true); setTimeout(()=>$('#homeQ')&&$('#homeQ').focus()); break;
