@@ -1455,7 +1455,7 @@ const ERR={not_awaiting_student:'This session is not waiting for your amount che
   code_expired:'The code has expired. Ask for a new one.',too_many_attempts:'Too many wrong codes. Ask for a new one.',code_wrong:'That code is not right.',
   invalid_login:'The ID or password is not right.',login_required:'Please log in first.',not_university_email:'Use a university email ending in .ac.kr or .edu.',
   verify_university_email_first:'Verify your university email first.',file_too_large:'The file must be 3 MB or smaller.',pdf_jpg_png_only:'Upload a PDF, JPG or PNG file.',
-  review_not_approved:'You can publish after the review is approved.',profile_incomplete:'Fill in your school, major, where, when and how long you went, what you offer, the session length, number of sessions and format.',bad_rating:'Choose a star rating.',review_too_short:'Write at least 10 characters.',own_profile:'You cannot review your own profile.',unknown_mentor:'This mentor could not be found.',
+  review_not_approved:'You can publish after the review is approved.',profile_incomplete:'Fill in your school, major, where, when and how long you went, free or paid, what you offer, the session length, number of sessions and format.',bad_rating:'Choose a star rating.',review_too_short:'Write at least 10 characters.',own_profile:'You cannot review your own profile.',unknown_mentor:'This mentor could not be found.',
   already_approved:'Your review is already approved.',bad_sessions:'Sessions must be a whole number from 1 to 20.',not_configured:'Accounts are not connected yet. You can keep browsing without one.',network:'Could not reach the server. Check your connection.',wrong_password:'The current password is not right.',bad_username:'Use 4–20 lowercase letters, numbers or _, starting with a letter.',username_taken:'This ID is already taken. Try another.',mail_failed:'We could not send the email. Please try again in a moment.'};
 Object.assign(KO,{
 // accounts
@@ -1536,7 +1536,7 @@ Object.assign(KO,{
 "Reviews":"후기","Log in to write a review":"로그인하고 후기 쓰기","Write a review":"후기 쓰기","Edit my review":"내 후기 수정","My review":"내 후기","Cancel":"취소","Post review":"후기 올리기","Rating":"별점",
 "What helped you most? At least 10 characters.":"어떤 점이 가장 도움이 됐나요? 10자 이상 적어 주세요.","Review posted":"후기를 올렸어요","Reviews open once accounts are connected.":"계정 기능이 연결되면 후기를 쓸 수 있어요.",
 "Choose a star rating.":"별점을 선택하세요.","Write at least 10 characters.":"10자 이상 적어 주세요.","You cannot review your own profile.":"내 프로필에는 후기를 쓸 수 없어요.","This mentor could not be found.":"멘토를 찾을 수 없어요.",
-"Fill in your school, major, where, when and how long you went, what you offer, the session length, number of sessions and format.":"학교, 학과, 다녀온 파견교·연도·기간, 멘토링 내용, 세션 길이, 횟수, 방식을 모두 입력하세요.",
+"Fill in your school, major, where, when and how long you went, free or paid, what you offer, the session length, number of sessions and format.":"학교, 학과, 다녀온 파견교·연도·기간, 멘토링 비용(무료·유료), 멘토링 내용, 세션 길이, 횟수, 방식을 모두 입력하세요.",
 "Home university":"본교","Students see your school and major first. Many look for a mentor from their own school and major.":"학생들은 멘토의 학교와 학과를 가장 먼저 봐요. 같은 학교·학과 멘토를 찾는 학생이 많아요.",
 "Could not load the page. Check your connection.":"페이지를 불러오지 못했어요. 인터넷 연결을 확인하세요.","Loading…":"불러오는 중…","Back to start":"처음으로","North America":"북아메리카",
 "Find the nomination email":"추천 안내 메일 찾기","Create your login":"로그인 계정 만들기","Save your applicant number":"지원자 번호 저장하기","Log in to the portal":"포털에 로그인하기",
@@ -2513,7 +2513,7 @@ const S={
   done:new Set(), bcat:'All', showDone:false, mentorSheet:null,
   joined:new Set(), cv:null, cq:'', cinfo:{}, jstatus:{}, joining:null,
   ccat:'all', draftPost:null, hiddenPosts:new Set(),
-  reviews:{}, chf:'all', doc:null, mq:'', mf:{host:'',year:'',prog:'',home:'',major:''},
+  reviews:{}, chf:'all', doc:null, mq:'', mf:{host:'',pay:'',year:'',prog:'',home:'',major:''},
   apply:{step:0,email:'',file:'',sent:false,busy:false,err:''},
   auth:{mode:'login',id:'',name:'',busy:false,err:''},
 };
@@ -2733,8 +2733,9 @@ const SCREENS={
           ${ta('mfCourse','Courses that helped','e.g. Negotiation: real company cases',d.course)}
           ${ta('mfOffer','What your mentoring covers','e.g. Course plan review and credit transfer check',d.offer)}
           <div class="mrow two">${pick('mfLen','Session length',['30 min','1 hour','2 hours'],d.length||'1 hour')}${pick('mfN','Sessions',['1','2','3','4'],d.sessions||'1','number')}</div>
+          <div class="mrow one" data-notr><label>${KX('Cost','멘토링 비용')}<select class="input" id="mfPay"><option value="">${KX('Choose','선택')}</option>${Object.keys(MPAYS).map(k=>`<option value="${k}"${d.pay===k?' selected':''}>${KX(...MPAYS[k])}</option>`).join('')}</select></label></div>
           <div class="mrow one"><label>Format<select class="input" id="mfMode">${['in_person','video','both'].map(k=>`<option value="${k}"${(d.mode||(d.format==='In person'?'in_person':'video'))===k?' selected':''}>${modeL(k)}</option>`).join('')}</select></label></div>
-          <p class="hint" data-notr>${AUTH.paid?KX('Price and meeting place are agreed with each student in chat. When you accept a request, you enter the agreed fee (0 for free). For a paid session you pay a 5% service fee by card to confirm it. Students pay the session fee to you directly.','가격과 만날 장소는 학생과 채팅으로 정해요. 신청을 수락할 때 합의한 세션비를 입력하고(무료면 0원), 유료면 세션비의 5%를 수수료로 카드 결제해야 확정돼요. 세션비는 학생이 멘토에게 직접 보내요.'):KX('Paid or free is up to you: agree on the cost and place with each student in chat. Gyohwan-gaja only connects you. Each mentoring session and any money involved are between the two of you.','유료/무료는 자유롭게 정해요. 비용과 장소는 학생과 채팅으로 정해요. 교환가자는 연결만 제공하며, 개별 멘토링 및 금전 거래의 책임은 당사자에게 있어요.')}${m.draft&&m.draft.savedAt?` · ${KX('Draft saved','임시 저장')} ${fmtShort(new Date(m.draft.savedAt))}`:''}</p>
+          <p class="hint" data-notr>${AUTH.paid?KX('Price and meeting place are agreed with each student in chat. When you accept a request, you enter the agreed fee (0 for free). For a paid session you pay a 5% service fee by card to confirm it. Students pay the session fee to you directly.','가격과 만날 장소는 학생과 채팅으로 정해요. 신청을 수락할 때 합의한 세션비를 입력하고(무료면 0원), 유료면 세션비의 5%를 수수료로 카드 결제해야 확정돼요. 세션비는 학생이 멘토에게 직접 보내요.'):KX('Choose free or paid above; the amount and place are agreed with each student in chat. Gyohwan-gaja only connects you. Each mentoring session and any money involved are between the two of you.','무료·유료는 위에서 고르고, 금액과 장소는 학생과 채팅으로 정해요. 교환가자는 연결만 제공하며, 개별 멘토링 및 금전 거래의 책임은 당사자에게 있어요.')}${m.draft&&m.draft.savedAt?` · ${KX('Draft saved','임시 저장')} ${fmtShort(new Date(m.draft.savedAt))}`:''}</p>
           <div class="row" style="gap:8px"><button class="btn sm ghost" data-act="apDraft" ${A.busy?'disabled':''}>Save draft</button><button class="btn sm" data-act="apPublish" ${approved&&!A.busy?'':'disabled'}>${live?'Update profile':'Publish profile'}</button></div>
           ${ferr}</div></div></div>
       <div class="vstep ${cls(4)}"><span class="n">${live?ic('shield',16,2.4):5}</span><div class="t"><b>Get your verified badge</b><small>${live?'Your profile is live. Students can now chat with you.':'Students find you by your profile and chat with you'}</small></div></div>
@@ -2967,7 +2968,7 @@ function realMentorCard(m){return `<button class="mentor" data-act="rmentor" dat
         <span class="school"><b data-notr>${esc([m.home,m.major].filter(Boolean).join(' · '))}</b></span>
         ${m.host?`<span class="prog">${ic('plane',13)} <span data-notr>${esc(mTrip(m))}</span></span>`:''}
         ${m.offer?`<span class="intro" data-notr>${esc(m.offer.slice(0,140))}</span>`:''}
-        ${m.mode?`<span class="mchips" data-notr><span>${modeL(m.mode)}</span>${m.length?`<span>${esc(trText(m.length))}</span>`:''}<span>${KX('Paid or free · agreed in chat','유료/무료 멘토링 가능 · 채팅으로 협의')}</span></span>`:''}</span>
+        ${m.mode?`<span class="mchips" data-notr><span>${modeL(m.mode)}</span>${m.length?`<span>${esc(trText(m.length))}</span>`:''}${m.pay?`<span>${mpayL(m.pay)}</span>`:''}</span>`:''}</span>
     </button>`}
 function openRealMentor(key){const m=(REALM.list||[]).find(x=>x.key===key); if(!m) return; const sheet=$('#sheet'), isMe=!!(AUTH.user&&AUTH.user.mentor&&AUTH.user.mentor.profile&&AUTH.user.mentor.profile.key===key), rv=(S.reviews[key]||{}).list||[];
   const row=(icn,label,v)=>v?`<div class="did">${ic(icn,18)}<span><small>${label}</small><b data-notr>${esc(v)}</b></span></div>`:'';
@@ -2975,7 +2976,7 @@ function openRealMentor(key){const m=(REALM.list||[]).find(x=>x.key===key); if(!
       <div class="mentor" style="border:0;box-shadow:none;padding-top:6px"><span class="ava">${avaImg(m.av?{id:m.av}:null,(m.name||'?')[0])}</span><span class="t"><span class="name"><span data-notr>${esc(m.name)}</span><span class="badge">${ic('shield',14,2.4)}Verified</span></span>
         <span class="school"><b data-notr>${esc([m.home,m.major].filter(Boolean).join(' · '))}</b></span>${m.host?`<span class="prog">${ic('plane',13)} <span data-notr>${esc(mTrip(m))}</span></span>`:''}</span></div>
       ${m.offer?`<div class="d-sec"><h3>Mentoring I offer</h3><p data-notr style="white-space:pre-wrap">${esc(m.offer)}</p><div class="ometa">${m.length?`<span>${ic('clock',14)} ${esc(m.length)}</span>`:''}${m.sessions?`<span>${m.sessions} sessions</span>`:''}${m.mode?`<span data-notr>${modeL(m.mode)}</span>`:m.format?`<span>${esc(m.format)}</span>`:''}</div>
-        <p class="hint" style="margin-top:8px" data-notr>${AUTH.paid?KX('Price and place are agreed with the mentor in chat. You pay the session fee to the mentor directly; there is no app fee for students.','가격과 장소는 멘토와 채팅으로 정해요. 세션비는 멘토에게 직접 보내고, 학생에게는 앱 수수료가 없어요.'):KX('Paid or free mentoring · details are agreed in chat. Gyohwan-gaja only connects you. Each mentoring session and any money involved are between the two of you.','유료/무료 멘토링 가능 · 세부 내용은 채팅으로 협의해요. 교환가자는 연결만 제공하며, 개별 멘토링 및 금전 거래의 책임은 당사자에게 있어요.')}</p></div>`:''}
+        <p class="hint" style="margin-top:8px" data-notr>${AUTH.paid?KX('Price and place are agreed with the mentor in chat. You pay the session fee to the mentor directly; there is no app fee for students.','가격과 장소는 멘토와 채팅으로 정해요. 세션비는 멘토에게 직접 보내고, 학생에게는 앱 수수료가 없어요.'):(m.pay?mpayL(m.pay)+' · ':'')+KX('Details are agreed in chat. Gyohwan-gaja only connects you. Each mentoring session and any money involved are between the two of you.','세부 내용은 채팅으로 협의해요. 교환가자는 연결만 제공하며, 개별 멘토링 및 금전 거래의 책임은 당사자에게 있어요.')}</p></div>`:''}
       ${m.act||m.club||m.lab||m.course?`<div class="d-sec"><h3>What I did there</h3><div class="dids">${row('globe','Activities',m.act)}${row('chat','Clubs and networking',m.club)}${row('doc','Research or lab work',m.lab)}${row('star','Courses that helped',m.course)}</div></div>`:''}
       <div class="d-sec" id="rmRv"><h3 data-notr>${KX('Reviews','후기')} ${rv.length?`<span class="num">★ ${(rv.reduce((a,r)=>a+r.rating,0)/rv.length).toFixed(1)} · ${rv.length}</span>`:''}</h3>
         ${rv.length?rv.slice(0,10).map(reviewHTML).join(''):`<p class="hint" data-notr>${KX('No reviews yet. Only students who completed a session can write one.','아직 후기가 없어요. 멘토링을 마친 학생만 후기를 쓸 수 있어요.')}</p>`}</div>
@@ -2991,6 +2992,10 @@ function openRealMentor(key){const m=(REALM.list||[]).find(x=>x.key===key); if(!
 const KX=(en,ko)=>LANG==='ko'?ko:en;
 const MPROG={exS:['Exchange · 1 semester','교환학생 1학기'],exY:['Exchange · 1 year','교환학생 1년'],ss:['Summer school','서머스쿨'],ws:['Winter school','윈터스쿨'],visit:['Visiting student','방문학생']};
 const mprogL=k=>MPROG[k]?KX(...MPROG[k]):'';
+// free or paid mentoring, as the mentor chose it (the amount is agreed in chat)
+const MPAY={free:['Free mentoring','무료 멘토링'],paid:['Paid mentoring · cost agreed in chat','유료 멘토링 · 비용은 채팅으로 협의'],both:['Free or paid · agreed in chat','무료·유료 모두 가능 · 채팅으로 협의']};
+const MPAYS={free:['Free','무료'],paid:['Paid','유료'],both:['Free or paid','무료·유료']};
+const mpayL=k=>MPAY[k]?KX(...MPAY[k]):'';
 // "Harvard University · 2025 · 교환학생 1학기"
 const mTrip=m=>[m.host,m.year,mprogL(m.prog)].filter(Boolean).join(' · ');
 const won=n=>LANG==='ko'?Number(n).toLocaleString('ko-KR')+'원':'₩'+Number(n).toLocaleString('en-US');
@@ -3106,9 +3111,9 @@ function openSessReport(x){const sheet=$('#sheet');
     <div class="cta"><button class="btn" data-act="srpSend" data-v="${esc(x.id)}">${KX('Send report','신고 보내기')}</button></div>`;
   sheet.classList.add('on'); $('#scrim').classList.add('on')}
 /* mentor search: by where they went (school or country), year, program, and their home school and major */
-const MF=[['host',['Exchange school','파견교']],['year',['Year','연도']],['prog',['Program','기간']],['home',['Home school','출신 학교']],['major',['Major','학과']]];
+const MF=[['host',['Exchange school','파견교']],['pay',['Cost','비용']],['year',['Year','연도']],['prog',['Program','기간']],['home',['Home school','출신 학교']],['major',['Major','학과']]];
 const mfVal=(m,k)=>k==='home'?homeKo(m.home||''):k==='year'?String(m.year||''):(m[k]||'');
-const mfLabel=(k,v)=>k==='prog'?mprogL(v):v;
+const mfLabel=(k,v)=>k==='prog'?mprogL(v):k==='pay'?(MPAYS[v]?KX(...MPAYS[v]):v):v;
 function mSearchHTML(real){
   return `<div class="msearch" data-notr><div class="search">${ic('search',18)}<input class="input" id="mq" autocomplete="off" placeholder="${KX('Search by name, school or major','이름, 학교, 학과로 검색')}" value="${esc(S.mq||'')}"></div>
     <div class="hscroll mfilters">${MF.map(([k,l])=>{const v=S.mf[k]; return `<button class="chip sm${v?' on':''}" data-act="mfOpen" data-k="${k}">${v?esc(mfLabel(k,v)):KX(...l)} ▾</button>`}).join('')}
@@ -3122,7 +3127,7 @@ function openMfSheet(k){ const real=REALM.list||[], l=(MF.find(x=>x[0]===k)||[])
   sheet.classList.add('on'); $('#scrim').classList.add('on') }
 function mMatch(m){ const q=squash(S.mq||''); if(MF.some(([k])=>S.mf[k]&&mfVal(m,k)!==S.mf[k])) return false; if(!q) return true;
   const u=DATA&&DATA.unis.find(x=>x[0]===m.host), ko=u?u[3]:'', ctry=m.hostCC&&COUNTRIES[m.hostCC]?COUNTRIES[m.hostCC][0]:'';
-  return [m.name,m.host,ko,ALIAS[m.host],ctry,NAME_KO[ctry],m.home,m.major,m.offer,String(m.year||''),mprogL(m.prog)].some(x=>squash(x||'').includes(q)) }
+  return [m.name,m.host,ko,ALIAS[m.host],ctry,NAME_KO[ctry],m.home,m.major,m.offer,String(m.year||''),mprogL(m.prog),mpayL(m.pay)].some(x=>squash(x||'').includes(q)) }
 function mListHTML(here,other){ const all=[...here,...other].filter(mMatch);
   return all.length?all.map(realMentorCard).join(''):`<div class="empty-state">${ic('search',28)}<b data-notr>${KX('No mentors match','조건에 맞는 멘토가 없어요')}</b><small data-notr>${KX('Try another school, year or program.','다른 학교, 연도, 기간으로 찾아보세요.')}</small></div>` }
 function paintMentors(){ const el=$('#mList'); if(!el||!REALM.list) return; const h=host(), real=REALM.list; el.innerHTML=mListHTML(real.filter(m=>m.host===h.name),real.filter(m=>m.host!==h.name)); translate(el) }
@@ -3478,7 +3483,7 @@ function signedIn(u){AUTH.user=u; if(NATIVE&&NOTE.on()) setTimeout(pushRegister,
 function mentorForm(F){const g=id=>String(F[id]||'').trim(), pickV=id=>F[id+'Sel']==='__custom'?g(id):String(F[id+'Sel']||'');
   const raw=pickV('mfN'), n=Number(raw);
   const pf={home:g('mfHome'),major:g('mfMajor'),act:g('mfAct'),club:g('mfClub'),lab:g('mfLab'),course:g('mfCourse'),offer:g('mfOffer'),length:pickV('mfLen'),sessions:Number.isInteger(n)?n:raw,
-    mode:g('mfMode')||'video',host:g('mfHost'),hostCC:g('mfHostCC'),year:g('mfYear')?+g('mfYear'):null,prog:g('mfProg')};
+    mode:g('mfMode')||'video',host:g('mfHost'),hostCC:g('mfHostCC'),year:g('mfYear')?+g('mfYear'):null,prog:g('mfProg'),pay:g('mfPay')};
   S.apply.form=pf; // keep the text on screen even if validation fails
   if(!/^\d+$/.test(String(raw))||n<1||n>20) throw {code:'bad_sessions'};
   return pf}
@@ -3634,7 +3639,7 @@ document.addEventListener('click',e=>{
     case 'pickHome': {S.profile.univ=v; S.homeQ=''; const sc=krmOf(v); if(sc&&S.profile.major&&!sc[3].includes(S.profile.major)) S.profile.major=''; S.majorOpen=false; render(true); break}
     case 'mfOpen': openMfSheet(a.dataset.k); break;
     case 'mfSet': S.mf[a.dataset.k]=v; closeSheet(); render(true); break;
-    case 'mfReset': S.mf={host:'',year:'',prog:'',home:'',major:''}; render(true); break;
+    case 'mfReset': S.mf={host:'',pay:'',year:'',prog:'',home:'',major:''}; render(true); break;
     case 'pickMfHost': {const i=$('#mfHost'), cc=$('#mfHostCC'); if(i) i.value=v; if(cc) cc.value=a.dataset.cc||''; const l=$('#mfHostList'); if(l) l.innerHTML=''; break}
     case 'pickMajor': {S.profile.major=v; S.majorOpen=false; const i=$('#major'); if(i) i.value=v; const l=$('#majorList'); if(l) l.innerHTML=''; render(true); break}
     case 'unpickHome': S.profile.univ=''; S.homeQ=''; render(true); setTimeout(()=>$('#homeQ')&&$('#homeQ').focus()); break;

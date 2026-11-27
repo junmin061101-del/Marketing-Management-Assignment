@@ -31,7 +31,7 @@ async function mentorList(host) {
     const p = u?.mentor?.profile;
     if (!u || u.mentor?.status !== 'approved' || !p) continue;
     out.push({ key: p.key, name: fullName(u), av: u.avatar?.id || '', home: p.home || '', major: p.major || '', host: p.host || u.plan?.host?.[0] || '', hostCC: p.hostCC || u.plan?.host?.[1] || '',
-      year: p.year || (u.plan?.dep ? Number(u.plan.dep.slice(0, 4)) : null), prog: p.prog || '',
+      year: p.year || (u.plan?.dep ? Number(u.plan.dep.slice(0, 4)) : null), prog: p.prog || '', pay: p.pay || '',
       offer: p.offer || '', act: p.act || '', club: p.club || '', lab: p.lab || '', course: p.course || '', length: p.length || '', format: p.format || '', sessions: p.sessions || null,
       mode: p.mode || '' });
   }

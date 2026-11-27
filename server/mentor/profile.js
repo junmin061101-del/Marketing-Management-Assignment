@@ -6,6 +6,8 @@ import { guard, body, send, currentUser, saveUser, publicUser, cleanText, redis,
 const MODES = ['in_person', 'video', 'both'];
 // where, when and how long the mentor went (students search mentors by these)
 const PROGS = ['exS', 'exY', 'ss', 'ws', 'visit'];
+// whether the mentor offers free or paid mentoring (the amount itself is agreed in chat)
+const PAYS = ['free', 'paid', 'both'];
 function clean(p = {}) {
   const n = Number(p.sessions), year = Number(p.year), thisYear = new Date().getFullYear();
   return {
@@ -16,6 +18,7 @@ function clean(p = {}) {
     mode: MODES.includes(p.mode) ? p.mode : '',
     host: cleanText(p.host, 200), hostCC: /^[A-Z]{2}$/.test(p.hostCC || '') ? p.hostCC : '',
     year: Number.isInteger(year) && year >= 2000 && year <= thisYear + 1 ? year : null, prog: PROGS.includes(p.prog) ? p.prog : '',
+    pay: PAYS.includes(p.pay) ? p.pay : '',
   };
 }
 export default async function handler(req, res) {
@@ -27,7 +30,7 @@ export default async function handler(req, res) {
   user.mentor = { ...(user.mentor || { status: 'none' }) };
   if (b.action === 'publish') {
     if (user.mentor.status !== 'approved') return send(res, 403, { error: 'review_not_approved' });
-    if (!p.home || !p.major || !p.offer || !p.length || !p.mode || !p.sessions || !p.host || !p.year || !p.prog) return send(res, 400, { error: 'profile_incomplete' });
+    if (!p.home || !p.major || !p.offer || !p.length || !p.mode || !p.sessions || !p.host || !p.year || !p.prog || !p.pay) return send(res, 400, { error: 'profile_incomplete' });
     p.format = { in_person: 'In person', video: 'Video call', both: 'In person or video call' }[p.mode];
     const key = 'm-' + hmac('mentor|' + uid(user)).slice(0, 16); // public id for reviews; does not reveal the email
     await redis('SET', 'mkey:' + key, uid(user));
