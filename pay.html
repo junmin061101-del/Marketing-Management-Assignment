@@ -35,7 +35,7 @@ footer a{color:var(--sub)}
 </style>
 </head>
 <body>
-<main><a class="back" href="/?go=sessions" id="back">‹ 내 멘토링으로 돌아가기</a><div id="app"><p class="sub">불러오는 중…</p></div></main>
+<main><a class="back" href="/?go=sessions" id="back" hidden>‹ 내 멘토링으로 돌아가기</a><div id="app"><p class="sub">불러오는 중…</p></div></main>
 <script>
 const $=s=>document.querySelector(s), app=$('#app');
 $('#back').onclick=e=>{ if(window.opener){ e.preventDefault(); try{window.opener.focus()}catch(x){} window.close(); setTimeout(()=>{location.href='/?go=sessions'},300) } };
@@ -49,15 +49,15 @@ async function call(path,data){const r=await fetch('/api/sessions'+path,data?{me
 function footer(b){b=b||{};
   const line=[b.name&&'상호 '+b.name,b.ceo&&'대표 '+b.ceo,b.no&&'사업자등록번호 '+b.no,b.ecomm&&'통신판매업 신고 '+b.ecomm,b.addr,b.tel&&'전화 '+b.tel,b.mail&&'이메일 '+b.mail].filter(Boolean).map(esc).join(' · ');
   return `<footer>${line}<br>교환가자는 학생과 멘토를 연결하는 통신판매중개자이며, 멘토링 세션비는 학생과 멘토가 직접 주고받아요. 이 결제는 멘토가 내는 연결 수수료예요.<br><a href="/terms">이용약관</a> · <a href="/privacy">개인정보처리방침</a></footer>`}
-function done(j){app.innerHTML=`<div class="card state"><div class="ic">✓</div><h1>결제가 끝났어요</h1>
+function done(j){ $('#back').hidden=false;app.innerHTML=`<div class="card state"><div class="ic">✓</div><h1>결제가 끝났어요</h1>
   <p class="sub">${esc(j.date)} ${esc(j.time)} 멘토링이 확정됐어요.<br>앱으로 돌아가 채팅에서 장소나 화상 링크를 정해 주세요.</p>
   ${j.receipt?`<p class="note"><a href="${esc(j.receipt)}" target="_blank" rel="noopener">카드 영수증 보기</a></p>`:''}
   <a class="btn2" href="/?go=sessions" onclick="return document.getElementById('back').onclick(event)!==false">내 멘토링으로 돌아가기</a>
   <p class="note">앱에서 여셨다면 화면 위의 '완료' 또는 '닫기'를 눌러도 돼요.</p></div>${footer(j.biz)}`}
-function fail(title,text){app.innerHTML=`<div class="card state bad"><div class="ic">!</div><h1>${esc(title)}</h1><p class="sub">${esc(text)}</p>
+function fail(title,text){ $('#back').hidden=false;app.innerHTML=`<div class="card state bad"><div class="ic">!</div><h1>${esc(title)}</h1><p class="sub">${esc(text)}</p>
   ${D&&D.orderId?'<button id="again">다시 결제하기</button>':''}</div>${footer(D&&D.biz)}`;
   const a=$('#again'); a&&(a.onclick=()=>{history.replaceState(null,'','/pay?t='+encodeURIComponent(T)); show()})}
-function show(){
+function show(){ $('#back').hidden=false;
   app.innerHTML=`${D.payMode==='test'?'<span class="test">테스트 결제 · 실제로 청구되지 않아요</span>':''}
   <h1>멘토링 수수료 결제</h1><p class="sub">수수료를 결제하면 세션이 확정돼요.</p>
   <div class="card">
@@ -86,6 +86,8 @@ async function startPay(){const btn=$('#pay'); btn.disabled=true;
   }catch(e){btn.disabled=false; if(e&&e.code==='USER_CANCEL') return; fail('결제를 시작하지 못했어요',e&&e.message||'잠시 후 다시 시도해 주세요.')}}
 function loadSdk(){return window.TossPayments?Promise.resolve():new Promise((ok,no)=>{const s=document.createElement('script'); s.src='https://js.tosspayments.com/v2/standard'; s.onload=ok; s.onerror=()=>no(new Error('결제 모듈을 불러오지 못했어요.')); document.head.appendChild(s)})}
 (async()=>{
+  // paid sessions are switched off (PAID_SESSIONS): this page is not used, so send anyone who lands here to the app
+  try{ const me=await (await fetch('/api/me')).json(); if(!me.paid){ location.replace('/'); return } }catch(e){ location.replace('/'); return }
   try{ D=await call('?paytok='+encodeURIComponent(T)) }catch(e){ return fail('결제 링크가 만료됐어요','앱의 "내 멘토링"에서 수수료 결제를 다시 눌러 주세요.') }
   if(D.done) return done(D);
   if(D.status!=='awaiting_fee') return fail('결제할 수 없는 상태예요','이미 취소됐거나 처리된 신청이에요. 앱에서 확인해 주세요.');
