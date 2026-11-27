@@ -777,6 +777,10 @@ body{word-break:keep-all;overflow-wrap:break-word}
    ===================================================================== */
 html,body{height:100%;overflow:hidden;overscroll-behavior:none;touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{display:block;padding:0;gap:0;background:var(--bg);position:fixed;inset:0;width:100%}
+/* no text selection or long-press menu (copy, look up) on the app's own text; typing fields still work normally */
+body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+img{-webkit-user-drag:none;user-drag:none}
 /* iOS zooms into any field under 16px when it gets focus; keep fields at 16px on phones */
 @media (max-width:700px){input,textarea,select,.input{font-size:16px!important}}
 #ptr{position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 6px);z-index:30;display:flex;justify-content:center;pointer-events:none;opacity:0;transform:translateY(-40px);transition:opacity .15s}
@@ -3560,6 +3564,7 @@ if(NATIVE){
   // ask once, the first time the student reaches the dashboard
   const ask=setInterval(()=>{ if(NOTE.asked()) return clearInterval(ask); if(S.screen==='app'&&!$('#sheet').classList.contains('on')){ clearInterval(ask); openNoteSheet() } },2000);
 }
+document.addEventListener('contextmenu',e=>{ if(!e.target.closest('input,textarea,[contenteditable]')) e.preventDefault() });
 // pull down from the top of a page to refresh it
 async function refreshNow(){ const jobs=[loadMe().catch(()=>{})];
   if(S.screen==='app'){ if(S.tab==='community') loadBoard(cScope(),true); if(S.tab==='mentor'){ REALM.at=0; loadMentors() } if(S.tab==='chat') loadDMs(); if(S.tab==='me'||S.tab==='mentor') jobs.push(loadSessions(true)) }
