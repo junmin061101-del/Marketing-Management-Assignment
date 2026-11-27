@@ -27,7 +27,10 @@ const feeOf = price => (price > 0 ? Math.round(price * FEE_RATE) : 0);
 const okPrice = v => Number.isInteger(v) && (v === 0 || (v >= 5000 && v <= 1000000));
 const SITE = 'https://gyohwan-gaja-application-development.vercel.app';
 const TOSS = () => process.env.TOSS_API_URL || 'https://api.tosspayments.com';
-const payConfigured = () => !!(process.env.TOSS_CLIENT_KEY && process.env.TOSS_SECRET_KEY);
+// Paid sessions (amount check, 5% fee, /pay) are switched off for now: mentoring terms and money are settled
+// between the two people in chat. The code stays; set PAID_SESSIONS=1 (plus the Toss keys) to bring it back.
+export const paidSessions = () => process.env.PAID_SESSIONS === '1';
+const payConfigured = () => paidSessions() && !!(process.env.TOSS_CLIENT_KEY && process.env.TOSS_SECRET_KEY);
 const payMode = () => (!payConfigured() ? 'off' : String(process.env.TOSS_CLIENT_KEY).startsWith('live_') ? 'live' : 'test');
 const ID = /^[a-z0-9]{10,24}$/, DAY = /^\d{4}-\d{2}-\d{2}$/, HM = /^([01]\d|2[0-3]):[0-5]\d$/;
 const mask = name => (String(name || '?').trim()[0] || '?').toUpperCase() + '**';
@@ -79,7 +82,8 @@ export async function refundFee(b, reason) {
 async function confirmed(b) {
   b.status = 'confirmed'; b.confirmedAt = new Date().toISOString();
   await save(b);
-  await systemMessage(b.room, `멘토링이 확정됐어요 · ${b.date} ${b.time} · ${LABEL[b.mode]} · ${b.price ? '세션비 ' + won(b.price) + ' (학생이 멘토에게 직접 지급)' : '무료'}. ${b.mode === 'in_person' ? '만날 장소' : '화상 링크'}는 이 채팅에서 정해 주세요.`);
+  const money = !paidSessions() ? '' : ` · ${b.price ? '세션비 ' + won(b.price) + ' (학생이 멘토에게 직접 지급)' : '무료'}`;
+  await systemMessage(b.room, `멘토링이 확정됐어요 · ${b.date} ${b.time} · ${LABEL[b.mode]}${money}. ${b.mode === 'in_person' ? '만날 장소' : '화상 링크'}는 이 채팅에서 정해 주세요.`);
   await note(b, b.s, '교환가자 · 멘토링 확정', `${b.mName} 멘토와 ${b.date} ${b.time} 세션이 확정됐어요.`);
 }
 
@@ -92,6 +96,7 @@ export default async function handler(req, res) {
   if (req.method === 'GET' && q.get('biz')) return send(res, 200, bizInfo());
   // the payment page works with a one-time link instead of a login (it opens in the phone's browser)
   if (req.method === 'GET' && q.get('paytok') || b0.action === 'confirm') {
+    if (!paidSessions()) return send(res, 404, { error: 'link_expired' });
     const t = String(q.get('paytok') || b0.t || '');
     const ref = /^[a-f0-9]{40}$/.test(t) ? await getJSON('paytok:' + t) : null;
     const b = ref ? await getJSON('bk:' + ref.id) : null;
@@ -123,7 +128,7 @@ export default async function handler(req, res) {
     const ids = [...new Set((await redis('LRANGE', 'mybk:' + me, 0, 99)) || [])];
     const list = [];
     for (const id of ids) { const b = await getJSON('bk:' + id); if (b && (b.s === me || b.m === me)) list.push(view(b, me)); }
-    return send(res, 200, { sessions: list, feeRate: FEE_RATE, payMode: payMode() });
+    return send(res, 200, { sessions: list, feeRate: FEE_RATE, payMode: payMode(), paid: paidSessions() });
   }
   const b = b0;
   if (!(await allow('sess:' + me, 60, 3600))) return send(res, 429, { error: 'too_many_requests' });
@@ -151,7 +156,9 @@ export default async function handler(req, res) {
     };
     await save(bk);
     for (const u of [me, mid]) { await redis('LPUSH', 'mybk:' + u, bk.id); await redis('LTRIM', 'mybk:' + u, 0, 99); }
-    await systemMessage(room, `멘토링 신청 · ${bk.date} ${bk.time} · ${LABEL[mode]}${bk.note ? `\n“${bk.note}”` : ''}\n세션비${mode === 'in_person' ? '와 장소' : ''}는 이 채팅에서 정하고, 멘토가 수락할 때 합의한 금액을 입력해요.`);
+    await systemMessage(room, `멘토링 신청 · ${bk.date} ${bk.time} · ${LABEL[mode]}${bk.note ? `\n“${bk.note}”` : ''}\n` + (paidSessions()
+      ? `세션비${mode === 'in_person' ? '와 장소' : ''}는 이 채팅에서 정하고, 멘토가 수락할 때 합의한 금액을 입력해요.`
+      : `${mode === 'in_person' ? '장소와 ' : ''}비용 등 세부 내용은 이 채팅에서 두 분이 정해 주세요. 교환가자는 연결만 제공해요.`));
     await note(bk, mid, '교환가자 · 멘토링 신청', `${bk.sName} 학생이 ${bk.date} ${bk.time} ${LABEL[mode]} 멘토링을 신청했어요.`);
     return send(res, 200, { session: view(bk, me) });
   }
@@ -169,6 +176,7 @@ export default async function handler(req, res) {
       await systemMessage(bk.room, '멘토가 이번 신청을 거절했어요. 다른 시간으로 다시 신청할 수 있어요.');
       await note(bk, bk.s, '교환가자 · 멘토링', `${bk.mName} 멘토가 이번 신청을 거절했어요.`);
     } else {
+      if (!paidSessions()) { bk.price = null; bk.fee = 0; await confirmed(bk); return send(res, 200, { session: view(bk, me) }); }
       const price = Number(b.price);
       if (!okPrice(price)) return send(res, 400, { error: 'bad_price' });
       bk.price = price; bk.fee = feeOf(price);

@@ -17,8 +17,7 @@
 | 이용약관 URL | https://gyohwan-gaja-application-development.vercel.app/terms |
 | 지원 URL / 웹사이트 | https://gyohwan-gaja.vercel.app |
 | 지원 이메일 | gyohwan.info@gmail.com |
-| 가격 | 무료 · 광고 없음 · **인앱 결제(IAP) 없음** |
-| 외부 결제 | 멘토가 유료 멘토링 신청을 수락할 때만 세션비의 5% 수수료를 웹 결제(토스페이먼츠)로 냄. 멘토링은 실시간 1:1 대면·화상 서비스라 App Store 지침 3.1.3(d)·(e), Google Play 결제 정책의 "앱 밖에서 제공되는 실물 서비스"에 해당 |
+| 가격 | 무료 · 광고 없음 · **앱 내 결제·외부 결제 모두 없음** |
 
 ---
 
@@ -116,9 +115,8 @@ exchange,study abroad,summer school,visa,F-1,J-1,TOEFL,IELTS,JLPT,HSK,checklist,
 | 파일 및 문서 (수료 증빙) | 예 | 선택 (멘토 신청자만, 심사 후 즉시 폐기) | 앱 기능 (멘토 심사) |
 | 기기 또는 기타 ID (푸시 알림 토큰) | 예 | 선택 (알림을 켠 경우) | 앱 기능 (알림) |
 | 앱 활동 → 기타 앱 활동 (멘토링 신청: 날짜·시간, 방식, 지역, 메모) | 예 | 선택 | 앱 기능 |
-| 금융 정보 → 구매 기록 (멘토 수수료 결제 금액·일시·주문번호) | 예 | 선택 (유료 신청을 수락한 멘토만) | 앱 기능 (결제·환불), 법령상 기록 보관 |
 
-위치, 연락처, 건강, 웹 기록 등은 **수집하지 않음**. 카드 번호 등 결제 정보는 토스페이먼츠가 직접 처리하고 앱·서버는 받지 않음("금융 정보 → 신용카드" 항목은 수집 안 함으로 표시). 광고·분석 목적 수집 **없음**.
+위치, 연락처, 건강, 웹 기록 등은 **수집하지 않음**. 결제 정보는 수집하지 않음(앱에 결제 기능 없음).
 
 **콘텐츠 등급 설문 (IARC):** 폭력·성적·약물·도박 콘텐츠 없음. "사용자 간 상호작용/콘텐츠 공유" → 예 (커뮤니티, 멘토 후기). 위치 공유 없음. 디지털 구매 없음.
 
@@ -143,7 +141,6 @@ exchange,study abroad,summer school,visa,F-1,J-1,TOEFL,IELTS,JLPT,HSK,checklist,
 | User Content → Photos or Videos | 프로필 사진, 채팅으로 보낸 사진·동영상 (선택) |
 | User Content → Other User Content (messages) | 커뮤니티 그룹 채팅, 멘토 1:1 채팅 |
 | Other Data → Other Data Types | 본교·학과·학년·파견교·일정, 멘토링 신청(날짜·방식·지역·메모) |
-| Purchases → Purchase History | 멘토 수수료 결제 기록 (유료 신청을 수락한 멘토만) |
 
 **연령 등급:** 4+ (모든 항목 "없음"). 사용자 생성 콘텐츠가 있으므로 신고 기능(게시글 신고 → 관리자 대시보드)과 운영자 삭제 기능이 있음을 심사 메모에 적어 둠.
 
@@ -166,8 +163,8 @@ How to review:
 - Community tab: "All boards" (전체 게시판) plus a board per host university. Every post can be reported (신고) and any writer can be hidden on the device (이 사람의 글 모두 숨기기); reports go to our moderation dashboard, where the operator deletes posts.
 - Mentors tab: verified mentors (university email + manual transcript review) can be messaged 1:1. The three "Sample profiles" are clearly labeled examples and cannot be messaged.
 - Mentoring sessions: a student requests a session (date, time, in person or video call) from a mentor's profile; the mentor accepts it in Me → My mentoring (내 멘토링). Sessions are real-time, one-to-one services between two people, delivered in person or over a video call outside the app.
-  The student pays the session fee to the mentor directly; the app does not sell anything to students. When a mentor accepts a paid request, the mentor pays a 5% service fee for that one-to-one session on a web checkout (Toss Payments, Korea). Per App Review Guideline 3.1.3(d) (person-to-person services) and 3.1.3(e) (services consumed outside the app), this does not use in-app purchase. No digital content, features or chat access are unlocked by any payment; chat is free.
-  Demo mentor account: Username appreview_mentor / Password (see below). It offers a free session so the full flow can be tried without paying.
+  The app has no payments of any kind and sells nothing. Whether a mentoring session is paid or free is agreed between the two people in chat; the app only connects them and states that any arrangement and money between them is their own responsibility (Terms §4).
+  Demo mentor account: Username appreview_mentor / Password (see below).
 - Chats tab: a group chat per joined school community and 1:1 chats with mentors, stored on our server.
 - Me tab → 회원 탈퇴 (Delete account): permanently deletes the account after a password check.
 - Me tab → 알림 (Notifications): deadline reminders scheduled on the device, and push for mentor review results.

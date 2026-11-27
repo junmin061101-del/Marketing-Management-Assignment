@@ -1176,7 +1176,7 @@ Object.assign(KO,{
 "How we verified":"인증 방법","University email verified":"학교 이메일 인증 완료","Enrollment confirmed":"재학 확인 완료","Matched by our team":"운영팀 대조 완료","Team review passed":"운영팀 심사 통과","Approved Dec 2025":"2025년 12월 승인",
 "Total":"결제 금액","Free cancellation up to 24 hours before the session.":"세션 24시간 전까지 무료로 취소할 수 있어요.","Pick a time":"시간을 선택하세요",
 "Become a mentor":"멘토 되기","Help the next student":"다녀온 경험으로","with what you learned":"후배를 도와주세요",
-"Mentoring is paid, so we verify that every mentor actually completed the program. Pass the review to get a verified badge.":"유료 멘토링이라 모든 멘토가 실제로 프로그램을 수료했는지 확인해요. 심사를 통과하면 인증 배지가 붙어요.",
+"We verify that every mentor actually completed the program. Pass the review to get a verified badge.":"모든 멘토가 실제로 프로그램을 수료했는지 확인해요. 심사를 통과하면 인증 배지가 붙어요.",
 "Verify your university email":"학교 이메일 인증하기","Confirms you are a current student or graduate":"재학생 또는 졸업생임을 확인해요","Verify":"인증",
 "Upload proof of completion":"수료 증빙 올리기","Host transcript or certificate of attendance":"파견교 성적증명서 또는 수료증","Upload a PDF or image":"PDF 또는 이미지 올리기","Submit":"제출하기",
 "We match your documents against the program":"서류를 프로그램 정보와 대조해요","In review":"심사 중","results within 3 business days":"영업일 기준 3일 이내 결과 안내","Approve (demo)":"심사 통과 (데모)",
@@ -1468,7 +1468,7 @@ Object.assign(KO,{
 "Browsing as a guest":"게스트로 둘러보는 중","Log in to apply as a mentor and keep your account.":"로그인하면 멘토 신청을 하고 정보를 계정에 저장할 수 있어요.","Log out":"로그아웃","Log in or sign up":"로그인 또는 회원가입","Log in to apply":"로그인하고 신청하기",
 "Your application and review status are saved to your account.":"신청 내용과 심사 상태는 계정에 저장돼요.",
 // mentor application
-"Mentoring is paid, so we verify that every mentor actually completed the program. The operations team reviews every application, which takes up to 24 hours.":"멘토링은 유료라서 멘토가 실제로 프로그램을 마쳤는지 확인해요. 운영팀이 모든 신청을 직접 심사하며, 심사에는 최대 24시간이 걸릴 수 있어요.",
+"We verify that every mentor actually completed the program. The operations team reviews every application, which takes up to 24 hours.":"모든 멘토가 실제로 프로그램을 마쳤는지 확인해요. 운영팀이 모든 신청을 직접 심사하며, 심사에는 최대 24시간이 걸릴 수 있어요.",
 "Verify your university email":"학교 이메일 인증","Confirms you are a current student or graduate":"재학생 또는 졸업생임을 확인해요","Verify":"인증",
 "Upload proof of completion":"수료 증빙 올리기","Host transcript or certificate of attendance · PDF, JPG or PNG up to 3 MB":"파견교 성적표 또는 수료증 · PDF, JPG, PNG 3MB 이하",
 "The last proof could not be confirmed. Upload a certificate or host transcript.":"지난번 증빙은 확인되지 않았어요. 수료증이나 파견교 성적표를 다시 올려 주세요.","Choose a PDF, JPG or PNG":"PDF, JPG, PNG 파일 선택","Submit for review":"심사 요청하기",
@@ -1560,7 +1560,7 @@ Object.assign(KO,{
 Object.assign(KO,{"Student":"학생","Write a question and at least two different options.":"질문과 서로 다른 항목을 2개 이상 적어 주세요.","This poll is closed.":"마감된 투표예요.","This poll could not be found.":"투표를 찾을 수 없어요."});
 Object.assign(KO,{"This session is not waiting for your amount check.":"금액 확인을 기다리는 멘토링이 아니에요."});
 const errMsg=e=>ERR[e.code]||ERR.network;
-async function loadMe(){try{const j=await api('me');AUTH.configured=j.configured!==false;AUTH.user=j.user||null}catch(e){AUTH.configured=false}AUTH.ready=true}
+async function loadMe(){try{const j=await api('me');AUTH.configured=j.configured!==false;AUTH.paid=!!j.paid;AUTH.user=j.user||null}catch(e){AUTH.configured=false}AUTH.ready=true}
 async function loadData(){
   const me=loadMe();
   const st=fetch(BASE+(BASE?'/':'')+'data/status.json',{cache:'no-cache'}).then(r=>r.json()).then(j=>{STATUS=j}).catch(()=>{});
@@ -2697,7 +2697,7 @@ const SCREENS={
     const u=AUTH.user, m=u?u.mentor:null, A=S.apply, ferr=A.err&&A.errAt==='form'?`<p class="aerr" role="alert">${esc(A.err)}</p>`:'', err=A.err&&A.errAt!=='form'?`<p class="aerr" role="alert">${esc(A.err)}</p>`:'';
     const head=`${bar('Become a mentor','back')}<div class="scroll pad">
       <h2 class="ob-title" style="font-size:24px">Help the next student<br>with what you learned</h2>
-      <p class="ob-sub" style="margin-bottom:22px">Mentoring is paid, so we verify that every mentor actually completed the program. The operations team reviews every application, which takes up to 24 hours.</p>`;
+      <p class="ob-sub" style="margin-bottom:22px">We verify that every mentor actually completed the program. The operations team reviews every application, which takes up to 24 hours.</p>`;
     if(AUTH.ready&&!AUTH.configured) return head+`<div class="pnote">${ic('flag',14)}<span>Accounts are not connected yet. You can keep browsing without one.</span></div></div>`;
     if(!u) return head+`<div class="compose clock"><p>Log in to apply</p><small>Your application and review status are saved to your account.</small><button class="btn sm" data-go="login">Log in or sign up</button></div></div>`;
     const st=m.status, uniOK=!!m.uniVerified, approved=st==='approved', live=!!m.profile;
@@ -2734,7 +2734,7 @@ const SCREENS={
           ${ta('mfOffer','What your mentoring covers','e.g. Course plan review and credit transfer check',d.offer)}
           <div class="mrow two">${pick('mfLen','Session length',['30 min','1 hour','2 hours'],d.length||'1 hour')}${pick('mfN','Sessions',['1','2','3','4'],d.sessions||'1','number')}</div>
           <div class="mrow one"><label>Format<select class="input" id="mfMode">${['in_person','video','both'].map(k=>`<option value="${k}"${(d.mode||(d.format==='In person'?'in_person':'video'))===k?' selected':''}>${modeL(k)}</option>`).join('')}</select></label></div>
-          <p class="hint" data-notr>${KX('Price and meeting place are agreed with each student in chat. When you accept a request, you enter the agreed fee (0 for free). For a paid session you pay a 5% service fee by card to confirm it. Students pay the session fee to you directly.','가격과 만날 장소는 학생과 채팅으로 정해요. 신청을 수락할 때 합의한 세션비를 입력하고(무료면 0원), 유료면 세션비의 5%를 수수료로 카드 결제해야 확정돼요. 세션비는 학생이 멘토에게 직접 보내요.')}${m.draft&&m.draft.savedAt?` · ${KX('Draft saved','임시 저장')} ${fmtShort(new Date(m.draft.savedAt))}`:''}</p>
+          <p class="hint" data-notr>${AUTH.paid?KX('Price and meeting place are agreed with each student in chat. When you accept a request, you enter the agreed fee (0 for free). For a paid session you pay a 5% service fee by card to confirm it. Students pay the session fee to you directly.','가격과 만날 장소는 학생과 채팅으로 정해요. 신청을 수락할 때 합의한 세션비를 입력하고(무료면 0원), 유료면 세션비의 5%를 수수료로 카드 결제해야 확정돼요. 세션비는 학생이 멘토에게 직접 보내요.'):KX('Paid or free is up to you: agree on the cost and place with each student in chat. Gyohwan-gaja only connects you. Each mentoring session and any money involved are between the two of you.','유료/무료는 자유롭게 정해요. 비용과 장소는 학생과 채팅으로 정해요. 교환가자는 연결만 제공하며, 개별 멘토링 및 금전 거래의 책임은 당사자에게 있어요.')}${m.draft&&m.draft.savedAt?` · ${KX('Draft saved','임시 저장')} ${fmtShort(new Date(m.draft.savedAt))}`:''}</p>
           <div class="row" style="gap:8px"><button class="btn sm ghost" data-act="apDraft" ${A.busy?'disabled':''}>Save draft</button><button class="btn sm" data-act="apPublish" ${approved&&!A.busy?'':'disabled'}>${live?'Update profile':'Publish profile'}</button></div>
           ${ferr}</div></div></div>
       <div class="vstep ${cls(4)}"><span class="n">${live?ic('shield',16,2.4):5}</span><div class="t"><b>Get your verified badge</b><small>${live?'Your profile is live. Students can now chat with you.':'Students find you by your profile and chat with you'}</small></div></div>
@@ -2967,7 +2967,7 @@ function realMentorCard(m){return `<button class="mentor" data-act="rmentor" dat
         <span class="school"><b data-notr>${esc([m.home,m.major].filter(Boolean).join(' · '))}</b></span>
         ${m.host?`<span class="prog">${ic('plane',13)} <span data-notr>${esc(mTrip(m))}</span></span>`:''}
         ${m.offer?`<span class="intro" data-notr>${esc(m.offer.slice(0,140))}</span>`:''}
-        ${m.mode?`<span class="mchips" data-notr><span>${modeL(m.mode)}</span>${m.length?`<span>${esc(trText(m.length))}</span>`:''}<span>${KX('Price agreed in chat','가격은 채팅으로 협의')}</span></span>`:''}</span>
+        ${m.mode?`<span class="mchips" data-notr><span>${modeL(m.mode)}</span>${m.length?`<span>${esc(trText(m.length))}</span>`:''}<span>${KX('Paid or free · agreed in chat','유료/무료 멘토링 가능 · 채팅으로 협의')}</span></span>`:''}</span>
     </button>`}
 function openRealMentor(key){const m=(REALM.list||[]).find(x=>x.key===key); if(!m) return; const sheet=$('#sheet'), isMe=!!(AUTH.user&&AUTH.user.mentor&&AUTH.user.mentor.profile&&AUTH.user.mentor.profile.key===key), rv=(S.reviews[key]||{}).list||[];
   const row=(icn,label,v)=>v?`<div class="did">${ic(icn,18)}<span><small>${label}</small><b data-notr>${esc(v)}</b></span></div>`:'';
@@ -2975,7 +2975,7 @@ function openRealMentor(key){const m=(REALM.list||[]).find(x=>x.key===key); if(!
       <div class="mentor" style="border:0;box-shadow:none;padding-top:6px"><span class="ava">${avaImg(m.av?{id:m.av}:null,(m.name||'?')[0])}</span><span class="t"><span class="name"><span data-notr>${esc(m.name)}</span><span class="badge">${ic('shield',14,2.4)}Verified</span></span>
         <span class="school"><b data-notr>${esc([m.home,m.major].filter(Boolean).join(' · '))}</b></span>${m.host?`<span class="prog">${ic('plane',13)} <span data-notr>${esc(mTrip(m))}</span></span>`:''}</span></div>
       ${m.offer?`<div class="d-sec"><h3>Mentoring I offer</h3><p data-notr style="white-space:pre-wrap">${esc(m.offer)}</p><div class="ometa">${m.length?`<span>${ic('clock',14)} ${esc(m.length)}</span>`:''}${m.sessions?`<span>${m.sessions} sessions</span>`:''}${m.mode?`<span data-notr>${modeL(m.mode)}</span>`:m.format?`<span>${esc(m.format)}</span>`:''}</div>
-        <p class="hint" style="margin-top:8px" data-notr>${KX('Price and place are agreed with the mentor in chat. You pay the session fee to the mentor directly; there is no app fee for students.','가격과 장소는 멘토와 채팅으로 정해요. 세션비는 멘토에게 직접 보내고, 학생에게는 앱 수수료가 없어요.')}</p></div>`:''}
+        <p class="hint" style="margin-top:8px" data-notr>${AUTH.paid?KX('Price and place are agreed with the mentor in chat. You pay the session fee to the mentor directly; there is no app fee for students.','가격과 장소는 멘토와 채팅으로 정해요. 세션비는 멘토에게 직접 보내고, 학생에게는 앱 수수료가 없어요.'):KX('Paid or free mentoring · details are agreed in chat. Gyohwan-gaja only connects you. Each mentoring session and any money involved are between the two of you.','유료/무료 멘토링 가능 · 세부 내용은 채팅으로 협의해요. 교환가자는 연결만 제공하며, 개별 멘토링 및 금전 거래의 책임은 당사자에게 있어요.')}</p></div>`:''}
       ${m.act||m.club||m.lab||m.course?`<div class="d-sec"><h3>What I did there</h3><div class="dids">${row('globe','Activities',m.act)}${row('chat','Clubs and networking',m.club)}${row('doc','Research or lab work',m.lab)}${row('star','Courses that helped',m.course)}</div></div>`:''}
       <div class="d-sec" id="rmRv"><h3 data-notr>${KX('Reviews','후기')} ${rv.length?`<span class="num">★ ${(rv.reduce((a,r)=>a+r.rating,0)/rv.length).toFixed(1)} · ${rv.length}</span>`:''}</h3>
         ${rv.length?rv.slice(0,10).map(reviewHTML).join(''):`<p class="hint" data-notr>${KX('No reviews yet. Only students who completed a session can write one.','아직 후기가 없어요. 멘토링을 마친 학생만 후기를 쓸 수 있어요.')}</p>`}</div>
@@ -3022,7 +3022,7 @@ function sessCard(x){const M=x.role==='mentor', [en,ko,tone]=sessStatus(x), A=(a
   if(['confirmed','completed'].includes(x.status)) acts.push(A('report',KX('Report a problem','문제 신고')));
   return `<div class="sess" data-notr>
     <div class="sh"><span class="ava">${avaImg(x.peerAv?{id:x.peerAv}:null,(x.peer||'?')[0])}</span><span class="t"><b>${esc(x.peer)}</b><small>${M?KX('Student','학생'):KX('Mentor','멘토')}</small></span><span class="pill ${tone}">${KX(en,ko)}</span></div>
-    <div class="ometa"><span>${ic('clock',14)} ${esc(x.date)} · ${esc(x.time)}</span><span>${modeL(x.mode)}</span><span>${x.price==null?KX('Price in chat','가격 협의 중'):priceL(x.price)+(x.price?KX(' to the mentor',' (멘토에게 직접)'):'')}</span>${M&&feeTxt?`<span>${feeTxt}</span>`:''}</div>
+    <div class="ometa"><span>${ic('clock',14)} ${esc(x.date)} · ${esc(x.time)}</span><span>${modeL(x.mode)}</span>${AUTH.paid?`<span>${x.price==null?KX('Price in chat','가격 협의 중'):priceL(x.price)+(x.price?KX(' to the mentor',' (멘토에게 직접)'):'')}</span>`:''}${M&&feeTxt&&AUTH.paid?`<span>${feeTxt}</span>`:''}</div>
     ${x.note?`<p class="snote">“${esc(x.note)}”</p>`:''}
     ${x.status==='confirmed'&&x.mode==='in_person'?`<p class="snote safe">${ic('shield',14)} ${KX('Meet in a public place like a café or campus. Never send money before you meet, and report anything wrong.','카페나 캠퍼스처럼 사람이 많은 곳에서 만나세요. 만나기 전에 돈을 먼저 보내지 말고, 문제가 있으면 신고해 주세요.')}</p>`:''}
     ${!M&&x.status==='awaiting_fee'?`<p class="snote">${KX('The mentor accepted. It is confirmed once they pay the app fee.','멘토가 수락했어요. 멘토가 앱 수수료를 결제하면 확정돼요.')}</p>`:''}
@@ -3037,7 +3037,7 @@ function sessionsScreen(){
   return `${bar(KX('My mentoring','내 멘토링'),'back')}<div class="scroll pad">
     ${!SESS.list?'<p class="loadmsg">Loading…</p>':L.length?sec(KX('Sessions I booked','내가 신청한 멘토링'),mine)+sec(KX('Requests to me (mentor)','나에게 온 신청 (멘토)'),asM)
       :`<div class="empty-state">${ic('mentor',28)}<b data-notr>${KX('No sessions yet','아직 멘토링이 없어요')}</b><small data-notr>${KX('Open a verified mentor’s profile and request a session.','인증 멘토의 프로필에서 멘토링을 신청해 보세요.')}</small><div class="empty-acts"><button class="btn sm ghost" data-act="tab" data-v="mentor">${KX('See mentors','멘토 보기')}</button></div></div>`}
-    <p class="hint" style="margin-top:18px" data-notr>${KX('Session fees go straight from the student to the mentor. The app only charges mentors a 5% fee on paid sessions. If a student cancels before the start, the fee is refunded.','세션비는 학생이 멘토에게 직접 보내요. 앱은 유료 세션에 한해 멘토에게 5% 수수료만 받아요. 학생이 시작 전에 취소하면 수수료는 환불돼요.')}</p>
+    <p class="hint" style="margin-top:18px" data-notr>${AUTH.paid?KX('Session fees go straight from the student to the mentor. The app only charges mentors a 5% fee on paid sessions. If a student cancels before the start, the fee is refunded.','세션비는 학생이 멘토에게 직접 보내요. 앱은 유료 세션에 한해 멘토에게 5% 수수료만 받아요. 학생이 시작 전에 취소하면 수수료는 환불돼요.'):KX('Schedule, place and cost are agreed in chat. Gyohwan-gaja only connects you. Each mentoring session and any money involved are between the two of you.','일정, 장소, 비용은 채팅에서 정해요. 교환가자는 연결만 제공하며, 개별 멘토링 및 금전 거래의 책임은 당사자에게 있어요.')}</p>
   </div>`}
 function openUrl(url,onClose){const B=PLUG('Browser');
   if(B){ B.open({url}); if(onClose){ let h; B.addListener('browserFinished',()=>{ onClose(); h&&h.remove&&h.remove() }).then(x=>{h=x}).catch(()=>{}) } return }
@@ -3051,7 +3051,7 @@ async function sessAct(a,id){const x=(SESS.list||[]).find(s=>s.id===id); if(!x) 
   if(a==='disagree'){ if(!confirm(KX('Send it back to the mentor to fix the amount?','멘토에게 금액을 다시 입력해 달라고 할까요?'))) return; return run({action:'disagree'},KX('Sent back to the mentor','멘토에게 다시 요청했어요')) }
   if(a==='decline'&&!confirm(KX('Decline this request?','이 신청을 거절할까요?'))) return;
   if(a==='cancel'&&!confirm(x.role==='mentor'&&x.feePaid?KX('Cancel this session? The fee you paid is not refunded when a mentor cancels.','이 멘토링을 취소할까요? 멘토가 취소하면 결제한 수수료는 환불되지 않아요.'):KX('Cancel this session?','이 멘토링을 취소할까요?'))) return;
-  if(a==='accept') return openAcceptSheet(x);
+  if(a==='accept'){ if(AUTH.paid) return openAcceptSheet(x); if(!confirm(KX('Accept this request?','이 신청을 수락할까요?'))) return; if(await run({action:'accept'})) toast(KX('Confirmed','확정됐어요')); return }
   if(a==='acceptGo'){ const inp=$('#acPrice'), err=$('#acErr'), raw=inp?inp.value.replace(/[,\s원₩]/g,''):'', price=raw===''?NaN:Number(raw);
     if(!(Number.isInteger(price)&&(price===0||price>=5000&&price<=1000000))){ err.textContent=trText(ERR.bad_price); return }
     closeSheet(); if(!(await run({action:'accept',price}))) return; const y=(SESS.list||[]).find(s=>s.id===id);
@@ -3083,7 +3083,7 @@ function openReqSheet(key){const m=(REALM.list||[]).find(x=>x.key===key); if(!m)
       <div class="mrow two"><label>${KX('Date','날짜')}<input class="input" type="date" id="rqDate" min="${min}"></label><label>${KX('Time (KST)','시간 (한국 시간)')}<input class="input" type="time" id="rqTime" step="600" value="19:00"></label></div>
       <label>${KX('What would you like to ask?','무엇을 물어보고 싶나요?')}<textarea class="input area" id="rqNote" rows="4" maxlength="500" placeholder="${KX('e.g. Course plan and housing at the host','예: 파견교 수강 계획, 기숙사 정하는 법')}"></textarea></label>
     </div>
-    <p class="hint" style="margin-top:10px">${KX('Agree on the price and place with the mentor in chat. The mentor enters the agreed fee when accepting, and you pay it to the mentor directly. There is no app fee for students.','가격과 장소는 멘토와 채팅으로 정해요. 멘토가 수락할 때 합의한 금액을 입력하고, 세션비는 멘토에게 직접 보내요. 학생에게는 앱 수수료가 없어요.')}</p>
+    <p class="hint" style="margin-top:10px">${AUTH.paid?KX('Agree on the price and place with the mentor in chat. The mentor enters the agreed fee when accepting, and you pay it to the mentor directly. There is no app fee for students.','가격과 장소는 멘토와 채팅으로 정해요. 멘토가 수락할 때 합의한 금액을 입력하고, 세션비는 멘토에게 직접 보내요. 학생에게는 앱 수수료가 없어요.'):KX('Place, cost and other details are agreed with the mentor in chat. Gyohwan-gaja only connects you. Each mentoring session and any money involved are between the two of you.','장소, 비용 등 세부 내용은 멘토와 채팅으로 정해요. 교환가자는 연결만 제공하며, 개별 멘토링 및 금전 거래의 책임은 당사자에게 있어요.')}</p>
     <p class="aerr" id="rqErr" role="alert"></p></div>
     <div class="cta"><button class="btn" data-act="rqSend" data-v="${esc(m.key)}">${KX('Send request','신청 보내기')}</button></div>`;
   sheet.classList.add('on'); $('#scrim').classList.add('on')}
@@ -3323,8 +3323,8 @@ function paintTabBadge(){ const b=document.querySelector('.tabbar [data-v="chat"
 setInterval(()=>{ if(AUTH.user&&!document.hidden&&!(S.screen==='app'&&S.tab==='chat')) loadDMs() },20000);
 const lastText=l=>!l?'':l.text||(l.poll?KX('Poll','투표'):l.files?KX(`${l.files.length} photos`,`사진 ${l.files.length}장`):l.file?(l.file.kind==='video'?KX('Video','동영상'):KX('Photo','사진')):'');
 function chatMsgsHTML(rid){const R=ROOMS[rid]||{msgs:[],loading:true}, group=rid.startsWith('g:');
-  const info=group?`<div class="chat-info">${ic('users',18)}<span><b>Group chat for this school's community</b><br><small>Messages go to everyone in this community. Be kind, and keep personal contact details private.</small></span></div>`
-    :`<div class="chat-info">${ic('mentor',18)}<span><b>1:1 chat with a verified mentor</b><br><small>Agree on what you'll cover and when. Report anything inappropriate to gyohwan.info@gmail.com.</small></span></div>`;
+  const info=group?`<div class="chat-info">${ic('users',18)}<span><b>Group chat for this school's community</b><br><small>Messages go to everyone in this community. Be kind, and keep personal contact details private.</small><br><small data-notr>${KX('Gyohwan-gaja only connects you. Each mentoring session and any money involved are between the two of you.','교환가자는 연결만 제공하며, 개별 멘토링 및 금전 거래의 책임은 당사자에게 있어요.')}</small></span></div>`
+    :`<div class="chat-info">${ic('mentor',18)}<span><b>1:1 chat with a verified mentor</b><br><small>Agree on what you'll cover and when. Report anything inappropriate to gyohwan.info@gmail.com.</small><br><small data-notr>${KX('Gyohwan-gaja only connects you. Each mentoring session and any money involved are between the two of you.','교환가자는 연결만 제공하며, 개별 멘토링 및 금전 거래의 책임은 당사자에게 있어요.')}</small></span></div>`;
   if(!R.msgs.length) return info+(R.loading?'<p class="loadmsg">Loading messages…</p>':`<div class="empty-state">${ic('chat',28)}<b>No messages yet</b><small>${group?'Say hello to students going to the same school.':'Say hello and ask your first question.'}</small></div>`);
   const seenE=Object.entries(R.seen||{}), unread=m=>m.sys||!m.by?0:seenE.filter(([t,a])=>t!==m.by&&a<m.at).length;
   let day=''; const L=R.msgs, who=x=>x&&!x.sys?(x.mine?'me':(x.who||'')+'|'+(x.av||'')):'', same=(a,b)=>!!(a&&b&&who(a)&&who(a)===who(b)&&hm(new Date(a.at))===hm(new Date(b.at)));
