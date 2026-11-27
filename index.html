@@ -3787,7 +3787,8 @@ document.addEventListener('input',e=>{
   if(t.dataset.model) S.profile[t.dataset.model]=t.value;
   if(t.id==='mfHost'){ const q=t.value.trim(), l=$('#mfHostList'), cc=$('#mfHostCC'); if(cc) cc.value='';
     if(l) l.innerHTML=q&&DATA?`<div class="sugg" data-notr>${DATA.unis.filter(u=>uniHit(u[0],u[3],q)).sort((a,b)=>uniRank(a[0],a[3],q)-uniRank(b[0],b[3],q)).slice(0,6).map(u=>`<button data-act="pickMfHost" data-v="${esc(u[0])}" data-cc="${u[1]}"><span class="hn"><b>${esc(u[0])}</b><small>${esc(COUNTRIES[u[1]]?trText(COUNTRIES[u[1]][0]):'')}</small></span></button>`).join('')}</div>`:'' }
-  if(t.id==='mq'){ S.mq=t.value; paintMentors() }
+  if(t.id==='mq'){ if(t.value.trim()==='테스트모드'||t.value.trim().toLowerCase()==='#demo'){ try{ DEMO?localStorage.removeItem('gg_demo'):localStorage.setItem('gg_demo','1') }catch(e){} location.reload(); return }  // hidden switch for the test mode (works in the home-screen app too)
+    S.mq=t.value; paintMentors() }
   if(t.id==='major'){S.majorOpen=true; const l=$('#majorList'); if(l) l.innerHTML=majorListHTML(); const b=$('[data-act="saveProfile"]'); if(b) b.disabled=!(S.profile.univ&&t.value.trim())}
   if(t.id==='homeQ'){S.homeQ=t.value; ($('#homeList').innerHTML=homeListHTML(),translate($('#homeList')))}
   if(t.id==='cQ'){S.cq=t.value; const b=$('#cBody'); if(b){b.innerHTML=cBodyHTML(); translate(b)}}
