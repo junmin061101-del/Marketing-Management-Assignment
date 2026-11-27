@@ -8,6 +8,10 @@
 	<string>프로필 사진이나 채팅으로 보낼 사진·동영상을 바로 찍기 위해 카메라를 사용해요.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>채팅으로 보낼 동영상을 찍을 때 소리를 함께 녹음하기 위해 마이크를 사용해요.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
   <key>CAPACITOR_DEBUG</key>

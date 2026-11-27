@@ -30,6 +30,11 @@ npm run android      # Android Studio로 열기
 
 ## iOS (App Store)
 
+**Mac이 없으면:** GitHub Actions의 Mac에서 빌드해 App Store Connect로 바로 올려요.
+`.github/workflows/ios-release.yml` → GitHub 저장소 Actions 탭 → "iOS build → App Store Connect" → Run workflow.
+필요한 저장소 비밀값: `APPLE_TEAM_ID`, `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_P8` (파일 맨 위 설명 참고). 서명은 API 키로 자동이에요.
+
+
 필요: Mac + Xcode, Apple Developer Program 가입(연 $99). Mac이 없으면 Codemagic·Ionic Appflow 같은 클라우드 빌드를 써요.
 
 ```bash
