@@ -1448,7 +1448,7 @@ async function api(path,data){
   return j;
 }
 const mStat=()=>{const m=AUTH.user&&AUTH.user.mentor; return !m?'none':m.profile?'published':m.status};
-const ERR={bad_poll:'Write a question and at least two different options.',poll_closed:'This poll is closed.',poll_not_found:'This poll could not be found.',bad_price:'Enter 0 (free) or a whole number from 5,000 to 1,000,000 won.',pick_mode:'Choose in person or video call.',pick_time:'Choose a date and time.',bad_time:'Choose a time at least 1 hour from now and within 6 months.',request_pending:'You already have a request waiting with this mentor.',session_not_found:'This session could not be found.',cannot_cancel:'This session can no longer be cancelled.',not_started:'You can mark it done after the session starts.',already_reported:'You already reported this session.',session_required:'Only students who completed a session with this mentor can review.',not_awaiting_fee:'This session is not waiting for a fee payment.',not_requested:'This request was already handled.',report_empty:'Tell us what happened.',in_progress:'Still processing. Try again in a moment.',payment_failed:'The card payment did not go through.',link_expired:'This payment link has expired.',mentor_only:'Only the mentor can do this.',student_only:'Only the student can do this.',not_confirmed:'This session is not confirmed yet.',bad_email:'Enter a valid email address.',wait_a_minute:'Please wait a minute before asking for another code.',too_many_requests:'Too many tries. Please try again later.',
+const ERR={not_awaiting_student:'This session is not waiting for your amount check.',bad_poll:'Write a question and at least two different options.',poll_closed:'This poll is closed.',poll_not_found:'This poll could not be found.',bad_price:'Enter 0 (free) or a whole number from 5,000 to 1,000,000 won.',pick_mode:'Choose in person or video call.',pick_time:'Choose a date and time.',bad_time:'Choose a time at least 1 hour from now and within 6 months.',request_pending:'You already have a request waiting with this mentor.',session_not_found:'This session could not be found.',cannot_cancel:'This session can no longer be cancelled.',not_started:'You can mark it done after the session starts.',already_reported:'You already reported this session.',session_required:'Only students who completed a session with this mentor can review.',not_awaiting_fee:'This session is not waiting for a fee payment.',not_requested:'This request was already handled.',report_empty:'Tell us what happened.',in_progress:'Still processing. Try again in a moment.',payment_failed:'The card payment did not go through.',link_expired:'This payment link has expired.',mentor_only:'Only the mentor can do this.',student_only:'Only the student can do this.',not_confirmed:'This session is not confirmed yet.',bad_email:'Enter a valid email address.',wait_a_minute:'Please wait a minute before asking for another code.',too_many_requests:'Too many tries. Please try again later.',
   weak_password:'Use 8 or more characters with at least one letter and one number.',consent_required:'Please agree to the Terms and Privacy Policy.',name_required:'Enter your name.',
   code_expired:'The code has expired. Ask for a new one.',too_many_attempts:'Too many wrong codes. Ask for a new one.',code_wrong:'That code is not right.',
   invalid_login:'The ID or password is not right.',login_required:'Please log in first.',not_university_email:'Use a university email ending in .ac.kr or .edu.',
@@ -1556,6 +1556,7 @@ Object.assign(KO,{
 "Enter 0 (free) or a whole number from 5,000 to 1,000,000 won.":"세션비는 0원(무료) 또는 5,000원~1,000,000원 사이로 입력하세요.","Choose in person or video call.":"대면 또는 화상 중에서 골라 주세요.","Choose a date and time.":"날짜와 시간을 골라 주세요.","Choose a time at least 1 hour from now and within 6 months.":"지금부터 1시간 이후, 6개월 이내의 시간을 골라 주세요.","You already have a request waiting with this mentor.":"이 멘토에게 보낸 신청이 아직 처리 중이에요.","This session could not be found.":"멘토링을 찾을 수 없어요.","This session can no longer be cancelled.":"이 멘토링은 더 이상 취소할 수 없어요.","You can mark it done after the session starts.":"세션 시작 시간이 지나야 완료로 표시할 수 있어요.","You already reported this session.":"이미 신고한 멘토링이에요.","Only students who completed a session with this mentor can review.":"이 멘토와 멘토링을 마친 학생만 후기를 쓸 수 있어요.","This session is not waiting for a fee payment.":"수수료 결제를 기다리는 멘토링이 아니에요.","This request was already handled.":"이미 처리된 신청이에요.","Tell us what happened.":"무슨 일이 있었는지 적어 주세요.","Still processing. Try again in a moment.":"처리 중이에요. 잠시 후 다시 시도해 주세요.","The card payment did not go through.":"카드 결제가 완료되지 않았어요.","This payment link has expired.":"결제 링크가 만료됐어요.","Only the mentor can do this.":"멘토만 할 수 있어요.","Only the student can do this.":"학생만 할 수 있어요.","This session is not confirmed yet.":"아직 확정되지 않은 멘토링이에요.",
 "My mentoring":"내 멘토링","Price per session (KRW)":"세션당 가격 (원)","Area for in-person":"대면 지역","Request a session":"멘토링 신청하기"});
 Object.assign(KO,{"Student":"학생","Write a question and at least two different options.":"질문과 서로 다른 항목을 2개 이상 적어 주세요.","This poll is closed.":"마감된 투표예요.","This poll could not be found.":"투표를 찾을 수 없어요."});
+Object.assign(KO,{"This session is not waiting for your amount check.":"금액 확인을 기다리는 멘토링이 아니에요."});
 const errMsg=e=>ERR[e.code]||ERR.network;
 async function loadMe(){try{const j=await api('me');AUTH.configured=j.configured!==false;AUTH.user=j.user||null}catch(e){AUTH.configured=false}AUTH.ready=true}
 async function loadData(){
@@ -2998,10 +2999,11 @@ const SESS={list:null,at:0,payMode:'off'};
 function loadSessions(force){ if(!AUTH.user) return Promise.resolve(); if(!force&&SESS.at&&Date.now()-SESS.at<15000) return Promise.resolve(); SESS.at=Date.now();
   return api('sessions').then(j=>{SESS.list=j.sessions||[]; SESS.payMode=j.payMode||'off'}).catch(()=>{SESS.list=SESS.list||[]})
     .then(()=>{ if(S.screen==='sessions'||S.screen==='app'&&(S.tab==='me'||S.tab==='mentor')) render(true) })}
-const sessOpen=()=>(SESS.list||[]).filter(x=>['requested','awaiting_fee','confirmed'].includes(x.status));
-const sessTodo=()=>(SESS.list||[]).filter(x=>x.role==='mentor'&&['requested','awaiting_fee'].includes(x.status)||x.role==='student'&&x.status==='confirmed'&&x.started).length;
+const sessOpen=()=>(SESS.list||[]).filter(x=>['requested','awaiting_student','awaiting_fee','confirmed'].includes(x.status));
+const sessTodo=()=>(SESS.list||[]).filter(x=>x.role==='mentor'&&['requested','awaiting_fee'].includes(x.status)||x.role==='student'&&(x.status==='awaiting_student'||x.status==='confirmed'&&x.started)).length;
 function sessStatus(x){const M=x.role==='mentor';
   return ({requested:M?['New request','새 신청','warn']:['Waiting for the mentor','멘토 수락 대기','cat'],
+    awaiting_student:M?['Student is checking the fee','학생 금액 확인 중','cat']:['Check the amount','금액 확인 필요','warn'],
     awaiting_fee:M?['Pay the fee to confirm','수수료 결제 후 확정','warn']:['Accepted · confirming','수락됨 · 확정 대기','cat'],
     confirmed:x.started&&!M?['Mark it done','완료 표시하기','warn']:['Confirmed','확정','ok'],completed:['Done','완료','ok'],declined:['Declined','거절됨','bad'],cancelled:['Cancelled','취소됨','bad']})[x.status]||['','','cat']}
 function sessCard(x){const M=x.role==='mentor', [en,ko,tone]=sessStatus(x), A=(a,label,cls='ghost')=>`<button class="btn sm ${cls}" data-act="ss" data-v="${a}:${x.id}">${label}</button>`;
@@ -3009,17 +3011,21 @@ function sessCard(x){const M=x.role==='mentor', [en,ko,tone]=sessStatus(x), A=(a
   const acts=[];
   if(M&&x.status==='requested') acts.push(A('accept',KX('Accept','수락하기'),''),A('decline',KX('Decline','거절')));
   if(M&&x.status==='awaiting_fee') acts.push(A('pay',KX(`Pay ${won(x.fee)} fee`,`수수료 ${won(x.fee)} 결제`),''),A('accept',KX('Change price','금액 수정')));
+  if(M&&x.status==='awaiting_student') acts.push(A('accept',KX('Change price','금액 수정')));
+  if(!M&&x.status==='awaiting_student') acts.push(A('agree',KX(`${won(x.price)} is right`,`${won(x.price)}이 맞아요`),''),A('disagree',KX('Amount is wrong','금액이 달라요')));
   if(!M&&x.status==='confirmed'&&x.started) acts.push(A('complete',KX('Mark as done','완료로 표시'),''));
   if(!M&&x.status==='completed') acts.push(A('review',KX('Write a review','후기 쓰기'),''));
   if(x.room&&!['declined'].includes(x.status)) acts.push(A('chat',KX('Chat','채팅')));
-  if(['requested','awaiting_fee'].includes(x.status)||x.status==='confirmed'&&!x.started) acts.push(A('cancel',KX('Cancel','취소')));
+  if(['requested','awaiting_student','awaiting_fee'].includes(x.status)||x.status==='confirmed'&&!x.started) acts.push(A('cancel',KX('Cancel','취소')));
   if(['confirmed','completed'].includes(x.status)) acts.push(A('report',KX('Report a problem','문제 신고')));
   return `<div class="sess" data-notr>
     <div class="sh"><span class="ava">${avaImg(x.peerAv?{id:x.peerAv}:null,(x.peer||'?')[0])}</span><span class="t"><b>${esc(x.peer)}</b><small>${M?KX('Student','학생'):KX('Mentor','멘토')}</small></span><span class="pill ${tone}">${KX(en,ko)}</span></div>
-    <div class="ometa"><span>${ic('clock',14)} ${esc(x.date)} ${esc(x.time)}</span><span>${modeL(x.mode)}</span><span>${x.price==null?KX('Price in chat','가격 협의 중'):priceL(x.price)+(x.price?KX(' to the mentor',' (멘토에게 직접)'):'')}</span>${M&&feeTxt?`<span>${feeTxt}</span>`:''}</div>
+    <div class="ometa"><span>${ic('clock',14)} ${esc(x.date)} · ${esc(x.time)}</span><span>${modeL(x.mode)}</span><span>${x.price==null?KX('Price in chat','가격 협의 중'):priceL(x.price)+(x.price?KX(' to the mentor',' (멘토에게 직접)'):'')}</span>${M&&feeTxt?`<span>${feeTxt}</span>`:''}</div>
     ${x.note?`<p class="snote">“${esc(x.note)}”</p>`:''}
     ${x.status==='confirmed'&&x.mode==='in_person'?`<p class="snote safe">${ic('shield',14)} ${KX('Meet in a public place like a café or campus. Never send money before you meet, and report anything wrong.','카페나 캠퍼스처럼 사람이 많은 곳에서 만나세요. 만나기 전에 돈을 먼저 보내지 말고, 문제가 있으면 신고해 주세요.')}</p>`:''}
     ${!M&&x.status==='awaiting_fee'?`<p class="snote">${KX('The mentor accepted. It is confirmed once they pay the app fee.','멘토가 수락했어요. 멘토가 앱 수수료를 결제하면 확정돼요.')}</p>`:''}
+    ${!M&&x.status==='awaiting_student'?`<p class="snote safe">${ic('shield',14)} ${KX(`Is ${won(x.price)} the amount you agreed in chat? Only confirm the real amount: if it is lower than what you pay, the app cannot help with refunds or disputes.`,`채팅에서 합의한 금액이 ${won(x.price)}이 맞나요? 실제로 낼 금액과 같을 때만 확인해 주세요. 앱에 적힌 금액보다 많이 내면 환불·분쟁 때 도와드릴 수 없어요.`)}</p>`:''}
+    ${M&&x.status==='awaiting_student'?`<p class="snote">${KX('Waiting for the student to confirm the amount. You pay the fee after that.','학생이 금액을 확인하면 수수료를 결제할 수 있어요.')}</p>`:''}
     ${acts.length?`<div class="sacts">${acts.join('')}</div>`:''}</div>`}
 function sessionsScreen(){
   if(!AUTH.user){ return `${bar(KX('My mentoring','내 멘토링'),'back')}<div class="scroll pad"><div class="compose clock"><p>${KX('Log in to see your sessions','로그인하고 멘토링을 확인하세요')}</p><button class="btn sm" data-go="login">${KX('Log in','로그인')}</button></div></div>` }
@@ -3039,12 +3045,15 @@ async function sessAct(a,id){const x=(SESS.list||[]).find(s=>s.id===id); if(!x) 
   if(a==='chat') return x.room&&openRoom(x.room);
   if(a==='review') return openSessReview(x);
   if(a==='report') return openSessReport(x);
+  if(a==='agree'){ if(!confirm(KX(`Confirm ${won(x.price)} as the amount you will pay the mentor?`,`멘토에게 낼 세션비가 ${won(x.price)}이 맞나요?`))) return; return run({action:'agree'},KX('Amount confirmed','금액을 확인했어요')) }
+  if(a==='disagree'){ if(!confirm(KX('Send it back to the mentor to fix the amount?','멘토에게 금액을 다시 입력해 달라고 할까요?'))) return; return run({action:'disagree'},KX('Sent back to the mentor','멘토에게 다시 요청했어요')) }
   if(a==='decline'&&!confirm(KX('Decline this request?','이 신청을 거절할까요?'))) return;
   if(a==='cancel'&&!confirm(x.role==='mentor'&&x.feePaid?KX('Cancel this session? The fee you paid is not refunded when a mentor cancels.','이 멘토링을 취소할까요? 멘토가 취소하면 결제한 수수료는 환불되지 않아요.'):KX('Cancel this session?','이 멘토링을 취소할까요?'))) return;
   if(a==='accept') return openAcceptSheet(x);
   if(a==='acceptGo'){ const inp=$('#acPrice'), err=$('#acErr'), raw=inp?inp.value.replace(/[,\s원₩]/g,''):'', price=raw===''?NaN:Number(raw);
     if(!(Number.isInteger(price)&&(price===0||price>=5000&&price<=1000000))){ err.textContent=trText(ERR.bad_price); return }
     closeSheet(); if(!(await run({action:'accept',price}))) return; const y=(SESS.list||[]).find(s=>s.id===id);
+    if(y&&y.status==='awaiting_student'){ toast(KX('Sent to the student to confirm the amount','학생에게 금액 확인을 요청했어요')); return }
     if(y&&y.status==='awaiting_fee') return sessAct('pay',id); toast(KX('Confirmed','확정됐어요')); return }
   if(a==='pay'){ try{const j=await api('sessions',{action:'pay',id}); openUrl(j.url,()=>loadSessions(true))}catch(e){toast(errMsg(e))} return }
   await run({action:a},{decline:KX('Declined','거절했어요'),cancel:KX('Cancelled','취소했어요'),complete:KX('Marked as done','완료로 표시했어요')}[a]) }

@@ -9,6 +9,9 @@
 // POST /api/sessions {action:'request', mentor, mode, date, time, note}   student
 // POST /api/sessions {action:'accept', id, price}     mentor; price = the agreed session fee in won (0 = free).
 //                                                     Also used to correct the price while the fee is still unpaid.
+// POST /api/sessions {action:'agree' | 'disagree', id} student: confirms the amount the mentor entered, or sends it back.
+//      The student has to confirm the amount before the mentor pays the fee, so a mentor cannot enter a lower
+//      amount than the one agreed in chat to pay less fee.
 // POST /api/sessions {action:'decline', id}           mentor
 // POST /api/sessions {action:'pay', id}               mentor → {url} of the payment page
 // POST /api/sessions {action:'confirm', t, paymentKey, orderId, amount}   /pay after Toss redirects back
@@ -137,7 +140,7 @@ export default async function handler(req, res) {
     const start = Date.parse(`${b.date}T${b.time}:00+09:00`);
     if (!(start > Date.now() + 3600e3 && start < Date.now() + 180 * 86400e3)) return send(res, 400, { error: 'bad_time' });
     const open = [];
-    for (const id of ((await redis('LRANGE', 'mybk:' + me, 0, 99)) || [])) { const x = await getJSON('bk:' + id); if (x && x.s === me && x.m === mid && ['requested', 'awaiting_fee'].includes(x.status)) open.push(x); }
+    for (const id of ((await redis('LRANGE', 'mybk:' + me, 0, 99)) || [])) { const x = await getJSON('bk:' + id); if (x && x.s === me && x.m === mid && ['requested', 'awaiting_student', 'awaiting_fee'].includes(x.status)) open.push(x); }
     if (open.length) return send(res, 409, { error: 'request_pending' });
     const room = await openDM(user, mentor, b.mentor);
     const bk = {
@@ -160,7 +163,7 @@ export default async function handler(req, res) {
   if (b.action === 'accept' || b.action === 'decline') {
     if (!isMentor) return send(res, 403, { error: 'mentor_only' });
     // accept again while the fee is unpaid = correct the agreed price
-    if (bk.status !== 'requested' && !(b.action === 'accept' && bk.status === 'awaiting_fee')) return send(res, 409, { error: 'not_requested' });
+    if (bk.status !== 'requested' && !(b.action === 'accept' && ['awaiting_student', 'awaiting_fee'].includes(bk.status))) return send(res, 409, { error: 'not_requested' });
     if (b.action === 'decline') {
       bk.status = 'declined'; await save(bk);
       await systemMessage(bk.room, '멘토가 이번 신청을 거절했어요. 다른 시간으로 다시 신청할 수 있어요.');
@@ -169,16 +172,33 @@ export default async function handler(req, res) {
       const price = Number(b.price);
       if (!okPrice(price)) return send(res, 400, { error: 'bad_price' });
       bk.price = price; bk.fee = feeOf(price);
-      if (!bk.fee || !payConfigured()) {
-        // free session, or the fee is waived until card payments are set up
-        if (bk.fee) bk.waived = true;
-        await confirmed(bk);
-      } else {
-        bk.status = 'awaiting_fee'; bk.pay = { orderId: 'gg-' + bk.id + '-' + crypto.randomBytes(3).toString('hex') };
+      if (!bk.fee) await confirmed(bk);  // a free session needs no amount check
+      else {
+        // the student checks the amount against what was agreed in chat before anything is paid
+        bk.status = 'awaiting_student'; delete bk.pay;
         await save(bk);
-        await systemMessage(bk.room, `멘토가 신청을 수락했어요 · 세션비 ${won(bk.price)}. 멘토가 앱 수수료(${won(bk.fee)})를 결제하면 세션이 확정돼요.`);
-        await note(bk, bk.s, '교환가자 · 멘토링', `${bk.mName} 멘토가 세션비 ${won(bk.price)}로 수락했어요.`);
+        await systemMessage(bk.room, `멘토가 세션비 ${won(bk.price)}으로 수락했어요. 학생이 채팅에서 합의한 금액과 같은지 확인하면 다음 단계로 넘어가요.`);
+        await note(bk, bk.s, '교환가자 · 금액 확인', `${bk.mName} 멘토가 세션비 ${won(bk.price)}으로 수락했어요. 금액이 맞는지 확인해 주세요.`);
       }
+    }
+    return send(res, 200, { session: view(bk, me) });
+  }
+  if (b.action === 'agree' || b.action === 'disagree') {
+    if (isMentor) return send(res, 403, { error: 'student_only' });
+    if (bk.status !== 'awaiting_student') return send(res, 409, { error: 'not_awaiting_student' });
+    if (b.action === 'disagree') {
+      bk.status = 'requested'; bk.price = null; bk.fee = 0; bk.disputes = (bk.disputes || 0) + 1;
+      await save(bk);
+      await systemMessage(bk.room, '학생이 입력된 세션비가 채팅에서 합의한 금액과 다르다고 했어요. 금액을 다시 맞춘 뒤 멘토가 다시 수락해 주세요.');
+      await note(bk, bk.m, '교환가자 · 금액 확인', `${bk.sName} 학생이 세션비가 합의한 금액과 다르다고 했어요.`);
+    } else if (!payConfigured()) {
+      bk.waived = true; bk.agreedAt = new Date().toISOString();
+      await confirmed(bk);  // the fee is waived until card payments are set up
+    } else {
+      bk.status = 'awaiting_fee'; bk.agreedAt = new Date().toISOString(); bk.pay = { orderId: 'gg-' + bk.id + '-' + crypto.randomBytes(3).toString('hex') };
+      await save(bk);
+      await systemMessage(bk.room, `학생이 세션비 ${won(bk.price)}을 확인했어요. 멘토가 앱 수수료(${won(bk.fee)})를 결제하면 세션이 확정돼요.`);
+      await note(bk, bk.m, '교환가자 · 수수료 결제', `${bk.sName} 학생이 금액을 확인했어요. 수수료 ${won(bk.fee)}를 결제하면 확정돼요.`);
     }
     return send(res, 200, { session: view(bk, me) });
   }
@@ -194,7 +214,7 @@ export default async function handler(req, res) {
   }
   if (b.action === 'cancel') {
     // after the start time a confirmed session can only be marked done or reported
-    if (!['requested', 'awaiting_fee', 'confirmed'].includes(bk.status) || bk.status === 'confirmed' && Date.now() >= startsAt(bk)) return send(res, 409, { error: 'cannot_cancel' });
+    if (!['requested', 'awaiting_student', 'awaiting_fee', 'confirmed'].includes(bk.status) || bk.status === 'confirmed' && Date.now() >= startsAt(bk)) return send(res, 409, { error: 'cannot_cancel' });
     const was = bk.status;
     bk.status = 'cancelled'; bk.cancelledBy = me; bk.cancelledAt = new Date().toISOString();
     await save(bk);
